@@ -181,7 +181,7 @@
 3-2. **バージョン `GVER`（タイトル画面の右下に小さく表示）を公開のたびに1つ上げる**（例 1.49→1.50。ユーザー指定）。返答で新しいバージョン番号を毎回伝える。
 4. ~~SendUserFile で index.html を送る~~ → 送らない（ユーザー指定で変更：変更後はアーティファクトだけ送る）。
 5. git にコミットする。
-6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19、Ver2.23 が index20、Ver2.26 が index21。Ver2.30 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
+6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19、Ver2.23 が index20、Ver2.26 が index21、Ver2.30 が index22。Ver2.32 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
 7. **変更のたびに、作業版とメモを GitHub の `dev/` にも保存する**（ユーザー同意・Ver2.24から）：`dev/index.html`・`dev/CLAUDE.md`（先頭に置き場所の説明あり）・`dev/tests/` を最新にして push。公開中の直下 `index.html` は「アプデして」の時だけ変える。
 
 ## 動作確認
@@ -382,3 +382,8 @@ Playwright（chromium）入りの環境なら、ページを開いて `page.eval
     - 前の曲は「音が小さい」「ドラムがプツプツする」と言われた。原因は、立ち上がりが急な `mkick`・ノイズ・短い水滴の音。そのため、なめらかに立ち上がる `uKick`/`uTom`/`uNote`（直線の立ち上がり・ノイズ無し）を使う。
     - 音の大きさ（RMS）は 0.023 で、2層の曲 0.017 より少し大きい。
     - 見本の作成は scratchpad の act1/b1sv.js・bgmrender2.js（案A・B・C）。
+- Ver2.31 ホーリー大輔の「ショートスリープまで残り」の表示を、戦闘中だけ左下（エナジーの丸と山札の間、x=4〜88・y=284〜316）に2行で小さく出すようにした（ユーザー指摘：右上だと敵の次の攻撃の予告に重なって見えない）。地図など戦闘以外の画面は、今までどおり右上。
+- Ver2.32 沈没都市のボス専用曲 `b1x`＝`b1xStep()`（`TR.b1x`、`bsp` .105）。ユーザー指定：通常曲とは全くの別物で、雰囲気だけ合わせる。
+  - 曲名は「沈黙の聖堂」（採用の案2）。ヘ短調、進行は `Y2R`/`Y2T`。チェンバロの16分の分散和音、8分の脈打つ低音（矩形波）、毎拍の太鼓、4小節目の終わりにティンパニの連打。前半はオルガン、後半は合唱と金管の旋律 `Y2M`。2小節ごとに、三全音で鐘を2つ鳴らす。
+  - `go()` で、沈没都市なら通常戦闘・エリートは `b1s`、ボスは `b1x`。
+  - 見本は scratchpad の act1/bossbgm2.js・bossrender2.js（案1「渦潮」も残してある）。

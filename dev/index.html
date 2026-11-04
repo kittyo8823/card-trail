@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.30';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.32';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -91,7 +91,7 @@ else if(k==='ls')[392,330,262,196].forEach((f,i)=>tone(f,f*.9,.28,'sawtooth',.1,
 else if(k==='pk')tone(900,1500,.07,'square',.08);
 else if(k==='cl')tone(600,640,.03,'square',.05);else if(k==='tn'){tone(660,880,.1,'square',.1);tone(880,1320,.18,'square',.1,.1)}else if(k==='te'){tone(220,150,.2,'sawtooth',.14);tone(165,100,.3,'sawtooth',.14,.15)}}
 const TR={b:{lt:'square',lv:.11,dr:1,L:[76,0,71,76,79,76,71,0,72,0,67,72,76,72,67,0,74,0,69,74,78,74,69,0,71,0,66,71,75,71,78,75,83,0,79,76,83,0,79,76,84,0,79,76,84,0,79,76,81,0,78,74,81,0,78,74,83,0,78,75,71,0,75,78],B:[40,36,38,35,40,36,38,35]},
-x:{mt:1},t:{amb:1},b2:{fn:'b2'},b3:{fn:'b3'},x3:{fn:'x3'},v:{fn:'v'},b1s:{fn:'b1s'},
+x:{mt:1},t:{amb:1},b2:{fn:'b2'},b3:{fn:'b3'},x3:{fn:'x3'},v:{fn:'v'},b1s:{fn:'b1s'},b1x:{fn:'b1x'},
 m:{lt:'triangle',lv:.2,dr:0,L:[69,0,72,0,76,0,72,0,65,0,69,0,72,0,69,0,60,0,64,0,67,0,64,0,62,0,67,0,71,0,67,0],B:[45,41,48,43]}};
 function bnote(m,t,d,ty,v){const o=AC.createOscillator(),g=AC.createGain();o.type=ty;o.frequency.value=440*Math.pow(2,(m-69)/12);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(BG);o.start(t);o.stop(t+d)}
 // ボス曲用：ローパスを通した音（こもった重い音）、鐘、1ステップ分の演奏
@@ -258,7 +258,7 @@ function ambTick(){if(!AC||!ENV.g)return;const t=AC.currentTime,k=ENV.k,g=ENV.g;
  else if(k==='shop'){if(Math.random()<.018){ping(2400,2380,.35,.03,0);ping(3150,3120,.3,.022,.06)}if(Math.random()<.01)ping(660,655,1.2,.02,0);if(ENV.n[0])ENV.n[0].gg.gain.setTargetAtTime(.022+.012*Math.sin(t*.7),t,.3)}
  else if(k==='wind'&&ENV.w){const s2=.5+.5*Math.sin(t*.35)*Math.sin(t*.13+1);ENV.w.gg.gain.setTargetAtTime(.015+.04*s2,t,.4);ENV.w.f.frequency.setTargetAtTime(380+500*s2,t,.5)}
  else if(k==='drone'){if(Math.random()<.025)ping(1300,600,.25,.03,0)}}
-function bgmTick(){const tr=TR[cb];if(!AC||!tr)return;if(bnext<AC.currentTime-.3)bnext=AC.currentTime;while(bnext<AC.currentTime+.25){const t=bnext;if(tr.fn)({b2:b2Step,b3:b3Step,x3:x3Step,v:vStep,b1s:b1sStep})[tr.fn](bst,t);else if(tr.amb)ambStep(bst,t);else if(tr.mt)metalStep(bst%256,t);else if(tr.dr)batStep(bst,t);else if(tr.L.length===32)mapStep(bst,t);else{const i=bst%tr.L.length,bar=i>>3,s=i&7,l=tr.L[i],bs=tr.B[bar%tr.B.length];if(l)bnote(l,t,bsp*.8,tr.lt,tr.lv);
+function bgmTick(){const tr=TR[cb];if(!AC||!tr)return;if(bnext<AC.currentTime-.3)bnext=AC.currentTime;while(bnext<AC.currentTime+.25){const t=bnext;if(tr.fn)({b2:b2Step,b3:b3Step,x3:x3Step,v:vStep,b1s:b1sStep,b1x:b1xStep})[tr.fn](bst,t);else if(tr.amb)ambStep(bst,t);else if(tr.mt)metalStep(bst%256,t);else if(tr.dr)batStep(bst,t);else if(tr.L.length===32)mapStep(bst,t);else{const i=bst%tr.L.length,bar=i>>3,s=i&7,l=tr.L[i],bs=tr.B[bar%tr.B.length];if(l)bnote(l,t,bsp*.8,tr.lt,tr.lv);
 if(tr.dr){bnote(bs+(s===2||s===6?12:0),t,bsp*.85,'triangle',.35);if(s===0||s===4)kick(t);if(s===2||s===6)noise(.08,.25,1800,t,BG);else noise(.03,.1,7000,t,BG)}
 else if(!(s&1))bnote(bs,t,bsp*1.6,'triangle',.3)}
 bst++;bnext+=bsp}}
@@ -276,7 +276,18 @@ function b1sStep(n,t){const i=n%256,bar=i>>4,s=i&15,r=B1SR[bar],ch=B1ST[r],B=bar
  if(s===0||s===3)uKick(t,s?.32:.5);if(s===8)uTom(r-12,t,.12);
  if(s===0&&bar%4===2)bell(r+12,t);
  for(const q of B1SM)if(q[0]===(B?bar:bar+8)&&q[1]===s&&(B||bar%2===0))uNote(q[2]+(B?0:-12),t,bsp*q[3]*.95,'sine',B?.09:.06,1800,0,.04)}
-function bgm(n,sp){const v=sp||({b:.2,x:.115,t:60/76/2,b2:.19,b3:.13,x3:.17,v:.45,b1s:.15})[n]||.3;if(cb===n&&bsp===v)return;if(cb==='v'&&n!=='v'&&VDK.vg&&AC){try{VDK.vg.gain.setTargetAtTime(0,AC.currentTime,.3)}catch(e){}VDK.ac=null}cb=n;bsp=v;if(!AC)return;if(!BG){BG=AC.createGain();BG.connect(MG)}bst=0;bnext=AC.currentTime+.1;clearInterval(btm);btm=setInterval(bgmTick,80)}
+// Ver2.32 沈没都市のボス曲「沈黙の聖堂」（ユーザー採用の案2。通常曲とは別の曲で、雰囲気だけ合わせた）：ヘ短調。チェンバロの16分の分散和音が絶えず回り、8分で脈打つ低音、毎拍の重い太鼓。前半はオルガン、後半は合唱が旋律を歌い、三全音の鐘
+const Y2R=[41,37,46,48,41,39,37,48,44,46,37,48,41,39,49,48],Y2T={41:[65,68,72],37:[61,65,68],46:[58,61,65],48:[60,64,67],39:[63,67,70],44:[56,60,63],49:[61,64,68]};
+const Y2M=[[8,0,77,8],[8,8,75,8],[9,0,73,8],[9,8,72,8],[10,0,73,6],[10,6,72,2],[10,8,68,8],[11,0,67,16],[12,0,77,4],[12,4,79,4],[12,8,80,8],[13,0,79,6],[13,6,77,2],[13,8,75,8],[14,0,73,8],[14,8,76,8],[15,0,77,16]];
+function b1xStep(n,t){const i=n%256,bar=i>>4,s=i&15,r=Y2R[bar],ch=Y2T[r],B=bar>=8,c4=[ch[0],ch[1],ch[2],ch[0]+12];
+ aHarpsi(c4[[0,1,2,3,2,1,0,1][s&7]]+(s>=8?12:0),t,.028);
+ if(!(s&1))uNote(r-24+(s%4===2?12:0),t,bsp*1.6,'square',.04,420,0,.01);
+ if(s%4===0)uKick(t,s===0?.55:.38);if(s===12&&bar%2)uTom(r-12,t,.14);
+ if(bar%4===3&&s>=12)aTimp(r-12+[0,3,7,12][s-12],t,.07);
+ if(s===0){aOrgan(ch.map(x=>x-12),t,bsp*16,B?.012:.022);uNote(r-36,t,bsp*16,'sine',.1,200,0,.2)}
+ if(s===0&&bar%2===0){bell(r+12,t);bell(r+18,t+bsp*8)}
+ if(B)for(const q of Y2M)if(q[0]===bar&&q[1]===s){aChoir([q[2]-12],t,bsp*q[3],.045);aBrass(q[2]-24,t,bsp*q[3]*.9,.03)}}
+function bgm(n,sp){const v=sp||({b:.2,x:.115,t:60/76/2,b2:.19,b3:.13,x3:.17,v:.45,b1s:.15,b1x:.105})[n]||.3;if(cb===n&&bsp===v)return;if(cb==='v'&&n!=='v'&&VDK.vg&&AC){try{VDK.vg.gain.setTargetAtTime(0,AC.currentTime,.3)}catch(e){}VDK.ac=null}cb=n;bsp=v;if(!AC)return;if(!BG){BG=AC.createGain();BG.connect(MG)}bst=0;bnext=AC.currentTime+.1;clearInterval(btm);btm=setInterval(bgmTick,80)}
 /* ===== 描画ヘルパー ===== */
 function mk(rows,pal,s){const h=rows.length,w=rows[0].length,c=document.createElement('canvas');c.width=w*s;c.height=h*s;const x=c.getContext('2d');rows.forEach((r,j)=>{for(let i=0;i<w;i++){const k=r[i];if(pal[k]){x.fillStyle=pal[k];x.fillRect(i*s,j*s,s,s)}}});return c}
 function txt(s,x,y,c,al,sz){ctx.font=(sz||12)+'px DotGothic16,sans-serif';ctx.textAlign=al||'left';ctx.fillStyle='#000';ctx.fillText(s,x+1,y+1);ctx.fillStyle=c||'#fff';ctx.fillText(s,x,y)}
@@ -2042,7 +2053,7 @@ function clrGet(c){const a=clrAll()[c];return new Set(Array.isArray(a)?a:[])}
 const anyClr=()=>Object.values(clrAll()).some(l=>Array.isArray(l)&&l.length);
 // Ver2.25 初めてのクリアで、タイトルの D への誘導を出す（cardtower_hdg）
 function clrAdd(c,a){if(!anyClr()&&!HDU)try{localStorage.setItem('cardtower_hdg','1')}catch(e){}const d=clrAll(),l=Array.isArray(d[c])?d[c]:[];if(!l.includes(a)){l.push(a);d[c]=l;try{localStorage.setItem('cardtower_clr',JSON.stringify(d))}catch(e){}}}
-function go(s){ENTIP=null;if((s==='win'||s==='over')&&P)rkEnd(s==='win');if(s==='map'||s==='over'||s==='win'||s==='title')rkFlush();try{ambSet(s==='event'?'drone':null)}catch(e){}if(s==='win'&&P)clrAdd(P.cls,P.asc||0);if(!MPON()&&(s==='map'||s==='act'))saveRun();if(s==='map'&&CUR)MSC=Math.max(0,Math.min(MSW-624,MX(CUR.f)-200));if((s==='over'||s==='win')&&!MPON())clearSave();S=s;scr=0;mpGo(s);if(B)B.sel=-1;const bt=s==='battle'&&B;bgm(s==='title'||s==='select'?'t':s==='eyein'||(bt&&B.en.some(e=>e.k==='eye'))?'v':bt&&A1S()?'b1s':bt&&B.boss?(P.act===3?'x3':'x'):bt?['b','b2','b3'][P.act-1]:'m',0)}
+function go(s){ENTIP=null;if((s==='win'||s==='over')&&P)rkEnd(s==='win');if(s==='map'||s==='over'||s==='win'||s==='title')rkFlush();try{ambSet(s==='event'?'drone':null)}catch(e){}if(s==='win'&&P)clrAdd(P.cls,P.asc||0);if(!MPON()&&(s==='map'||s==='act'))saveRun();if(s==='map'&&CUR)MSC=Math.max(0,Math.min(MSW-624,MX(CUR.f)-200));if((s==='over'||s==='win')&&!MPON())clearSave();S=s;scr=0;mpGo(s);if(B)B.sel=-1;const bt=s==='battle'&&B;bgm(s==='title'||s==='select'?'t':s==='eyein'||(bt&&B.en.some(e=>e.k==='eye'))?'v':bt&&A1S()?(B.boss?'b1x':'b1s'):bt&&B.boss?(P.act===3?'x3':'x'):bt?['b','b2','b3'][P.act-1]:'m',0)}
 function gain(k){P.relics.push(k);if(k==='astro')shuf(P.deck.filter(canUp)).slice(0,3).forEach(o=>o.u=1);if(k==='pandora')for(const o of P.deck)if(C[o.i].r===-1){o.i=cardPick(0);o.u=0}if(k==='calling'){P.deck.push({i:randCurse(),u:0});for(let j=0;j<3;j++){const r=relicPick();if(r)gain(r)}}if(k==='heart'){P.mhp+=14;P.hp+=14}if(k==='ring'){P.mhp-=8;P.hp=Math.min(P.hp,P.mhp)}if(k==='apple'){P.mhp+=10;P.hp+=10}if(k==='clover')P.gold+=100;if(k==='bottle')P.ps++;if(k==='fruit'){P.mhp+=30;P.hp+=30}if(k==='coffer'){P.ps++;while(P.pot.length<P.ps)P.pot.push(potPick())}if(k==='tome'||k==='cage')(P.bq=P.bq||[]).push(k);if(k==='kifuda')shuf(P.deck.filter(o=>encFor(o).length)).slice(0,3).forEach(o=>ench(o,pk(encFor(o))));say('レリック：'+RL[k][0]+'！ '+RL[k][1])}
 const CH=[{n:'ユウキング',hp:80,rel:'burn',s:'pl',col:'#e8505b',dk:'#3a0c14',lt:'#ff9a7a',dk:[0,0,0,0,0,1,1,1,1,2],dkt:'斬撃×5　防御×4　強打×1',st:'筋力と重い一撃で押し切る屈強な戦士。強化とブロックを得意とする。',key:'得意：筋力・ブロック・全体攻撃'},
 {n:'坂井',hp:70,rel:'snake',s:'si',col:'#58d46a',dk:'#0c2a14',lt:'#a8ffb0',dk:[0,0,0,0,0,1,1,1,1,1,44,45],dkt:'斬撃×5　防御×5　しびれ薬　見逃し',st:'毒と小ナイフで素早く仕留める暗殺者。カードを捨てて手札を回す。',key:'得意：毒・小ナイフ・ドロー'},
@@ -3671,7 +3682,7 @@ function drawEmv(){if(!EMV)return emvClose();ctx.drawImage(BGB,0,0);const e=EMV.
 function draw(){btns=[];LPC=[];ENI=[];const ti=S==='title'||S==='splash';if(ti&&(!(TLS==='title'||TLS==='splash')||TV<0))pickTitle();TLS=S;
 if(S==='title'||S==='splash')drawTitle();else if(S==='map'){drawMap()}else if(S==='mapv'){drawMapV()}else if(S==='battle'){drawBattle();topbar()}else if(S==='reward')drawReward();else if(S==='rank')drawRank();else if(S==='rest')drawRest();else if(S==='event')drawEvent();else if(S==='shop')drawShop();else if(S==='pick')drawPick();else if(S==='select')drawSelect();else if(S==='neow')drawNeow();else if(S==='help')drawHelp();else if(S==='lib')drawLib();else if(S==='mpm')drawMpMenu();else if(S==='mpn')drawMpName();else if(S==='mpj')drawMpJoin();else if(S==='mpl')drawMpLobby();else if(S==='act')drawAct();else if(S==='conf')drawConf();else if(S==='btr')drawBT();else if(S==='eyein')drawEyeIn();else if(S==='over')drawEnd(0);else if(S==='win')drawEnd(1);else if(S==='emv')drawEmv();else if(S==='mprj')drawMpRj();
 drawPotMenu();
-if(P&&P.hz&&!['title','splash','select','help','over','win'].includes(S)){const ms=Math.max(0,P.hz-Date.now()),mm=Math.floor(ms/60000),ss=Math.floor(ms/1000)%60,lw=ms<300000,s='ショートスリープまで残り '+String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0');ctx.fillStyle='rgba(0,0,0,.72)';ctx.fillRect(444,31,194,17);ctx.fillStyle=lw?'#ff3b5c':'#5aff7a';ctx.fillRect(444,31,2,17);txt(s,632,44,lw&&Math.floor(T*2)%2?'#ff9a9a':lw?'#ff6a6a':'#c8ffd0','right',11);
+if(P&&P.hz&&!['title','splash','select','help','over','win'].includes(S)){const ms=Math.max(0,P.hz-Date.now()),mm=Math.floor(ms/60000),ss=Math.floor(ms/1000)%60,lw=ms<300000,tm=String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0'),s='ショートスリープまで残り '+tm,tc=lw&&Math.floor(T*2)%2?'#ff9a9a':lw?'#ff6a6a':'#c8ffd0';if(S==='battle'){/* Ver2.31 戦闘中は左下（エナジーと山札の間）に小さく出す。右上だと敵の予告に重なった（ユーザー指摘） */ctx.fillStyle='rgba(0,0,0,.72)';ctx.fillRect(4,284,84,32);ctx.fillStyle=lw?'#ff3b5c':'#5aff7a';ctx.fillRect(4,284,2,32);txt('ショートスリープ',10,297,'#a8c8b0','left',9);txt('まで '+tm,10,311,tc,'left',11)}else{ctx.fillStyle='rgba(0,0,0,.72)';ctx.fillRect(444,31,194,17);ctx.fillStyle=lw?'#ff3b5c':'#5aff7a';ctx.fillRect(444,31,2,17);txt(s,632,44,tc,'right',11)}
  if(ms<=0){P.slept=1;P.killer=null;sfx('ls');go('over')}}
 lpTick();drawLPV();drawEnTip();if(PZ){if(['title','splash','select','over','win','mpm','mpj','mpn','mpl','rank'].includes(S))PZ=null;else drawPause()}
 if(VP){if(PZ||['title','splash','select','over','win','mpm','mpj','mpn','mpl','rank','help','lib','eyein'].includes(S))VP=0;else drawVol()}
