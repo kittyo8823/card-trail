@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.24';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.25';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -1866,7 +1866,9 @@ function loadRun(){const d=HS;if(!d)return;P=JSON.parse(JSON.stringify(d.P));if(
 // クリアの記録（キャラごとに、クリアしたアセンションの番号。localStorage cardtower_clr）。第3層ボス撃破・勝利画面で記録し、キャラ選択の難易度バーで金色に光らせる
 function clrAll(){try{return JSON.parse(localStorage.getItem('cardtower_clr')||'{}')||{}}catch(e){return{}}}
 function clrGet(c){const a=clrAll()[c];return new Set(Array.isArray(a)?a:[])}
-function clrAdd(c,a){const d=clrAll(),l=Array.isArray(d[c])?d[c]:[];if(!l.includes(a)){l.push(a);d[c]=l;try{localStorage.setItem('cardtower_clr',JSON.stringify(d))}catch(e){}}}
+const anyClr=()=>Object.values(clrAll()).some(l=>Array.isArray(l)&&l.length);
+// Ver2.25 初めてのクリアで、タイトルの D への誘導を出す（cardtower_hdg）
+function clrAdd(c,a){if(!anyClr()&&!HDU)try{localStorage.setItem('cardtower_hdg','1')}catch(e){}const d=clrAll(),l=Array.isArray(d[c])?d[c]:[];if(!l.includes(a)){l.push(a);d[c]=l;try{localStorage.setItem('cardtower_clr',JSON.stringify(d))}catch(e){}}}
 function go(s){ENTIP=null;if((s==='win'||s==='over')&&P)rkEnd(s==='win');if(s==='map'||s==='over'||s==='win'||s==='title')rkFlush();try{ambSet(s==='event'?'drone':null)}catch(e){}if(s==='win'&&P)clrAdd(P.cls,P.asc||0);if(!MPON()&&(s==='map'||s==='act'))saveRun();if(s==='map'&&CUR)MSC=Math.max(0,Math.min(MSW-624,MX(CUR.f)-200));if((s==='over'||s==='win')&&!MPON())clearSave();S=s;scr=0;mpGo(s);if(B)B.sel=-1;const bt=s==='battle'&&B;bgm(s==='title'||s==='select'?'t':s==='eyein'||(bt&&B.en.some(e=>e.k==='eye'))?'v':bt&&B.boss?(P.act===3?'x3':'x'):bt?['b','b2','b3'][P.act-1]:'m',0)}
 function gain(k){P.relics.push(k);if(k==='astro')shuf(P.deck.filter(canUp)).slice(0,3).forEach(o=>o.u=1);if(k==='pandora')for(const o of P.deck)if(C[o.i].r===-1){o.i=cardPick(0);o.u=0}if(k==='calling'){P.deck.push({i:randCurse(),u:0});for(let j=0;j<3;j++){const r=relicPick();if(r)gain(r)}}if(k==='heart'){P.mhp+=14;P.hp+=14}if(k==='ring'){P.mhp-=8;P.hp=Math.min(P.hp,P.mhp)}if(k==='apple'){P.mhp+=10;P.hp+=10}if(k==='clover')P.gold+=100;if(k==='bottle')P.ps++;if(k==='fruit'){P.mhp+=30;P.hp+=30}if(k==='coffer'){P.ps++;while(P.pot.length<P.ps)P.pot.push(potPick())}if(k==='tome'||k==='cage')(P.bq=P.bq||[]).push(k);if(k==='kifuda')shuf(P.deck.filter(o=>encFor(o).length)).slice(0,3).forEach(o=>ench(o,pk(encFor(o))));say('レリック：'+RL[k][0]+'！ '+RL[k][1])}
 const CH=[{n:'ユウキング',hp:80,rel:'burn',s:'pl',col:'#e8505b',dk:'#3a0c14',lt:'#ff9a7a',dk:[0,0,0,0,0,1,1,1,1,2],dkt:'斬撃×5　防御×4　強打×1',st:'筋力と重い一撃で押し切る屈強な戦士。強化とブロックを得意とする。',key:'得意：筋力・ブロック・全体攻撃'},
@@ -1877,13 +1879,39 @@ const CH=[{n:'ユウキング',hp:80,rel:'burn',s:'pl',col:'#e8505b',dk:'#3a0c14
 // ネブラ（Ver2.06、ユーザー指定：スレスパ2のディフェクトと同じ性能）。カードの持ち主番号 k と同じ 6（5 は無色なので空ける）。選択画面の並びは CHV()
 CH[6]={n:'ネブラ',hp:75,rel:'ccore',s:'neb',col:'#5ab8ff',lt:'#bfe8ff',dk:[...Array(4).fill(CI('触手打ち')),...Array(4).fill(CI('泡の膜')),CI('放電'),CI('二連放出')],dkt:'触手打ち×4 泡の膜×4 放電 二連放出',st:'宇宙を漂う機械仕掛けの浮遊生命体。半透明の傘に光る核を宿し、周りに小クラゲを従える。',key:'得意：小クラゲ・集中・連鎖'};
 const CHV=()=>[0,1,2,3,6].concat(HDU?[4]:[]),htab=cl=>2+(cl===6?4:cl===4?5:cl);
-// 隠しキャラ：タイトルの「CARD」の D を10回タップで解放。ゲームを閉じて30分たつと消える
-const HDK='cardtower_hd';let HDU=0;try{const v=JSON.parse(localStorage.getItem(HDK)||'null');if(v&&Date.now()-v.ls<1800000)HDU=1;else localStorage.removeItem(HDK)}catch(e){}
+// 隠しキャラ：タイトルの「CARD」の D を10回タップで解放（Ver2.25 から、1回以上クリアしていることが条件）
+// Ver2.25 一度解放したらずっと残る（30分で消えるのはやめた）。解放には1回以上のクリアが必要
+const HDK='cardtower_hd';let HDU=0;try{if(localStorage.getItem(HDK))HDU=1}catch(e){}
 function hdSeen(){if(HDU)try{localStorage.setItem(HDK,JSON.stringify({ls:Date.now()}))}catch(e){}}
-setInterval(hdSeen,15000);addEventListener('pagehide',hdSeen);addEventListener('visibilitychange',hdSeen);addEventListener('visibilitychange',()=>{try{if(!document.hidden&&MPR&&MPR.pl){const n=Date.now();for(const q of MPR.pl)MPR.seen[q.id]=n;MPR.lt=n}}catch(e){}});
+addEventListener('visibilitychange',()=>{try{if(!document.hidden&&MPR&&MPR.pl){const n=Date.now();for(const q of MPR.pl)MPR.seen[q.id]=n;MPR.lt=n}}catch(e){}});
 const NCH=()=>CHV().length;let DTP={n:0,t:-9},DTT={n:0,t:-9},EMV=null;
 function tapT(){if(T-DTT.t>2.5)DTT.n=0;DTT.n++;DTT.t=T;if(DTT.n<10){sfx('cl');return}DTT.n=0;sfx('hd');emvOpen()}
-function tapD(){if(T-DTP.t>2.5)DTP.n=0;DTP.n++;DTP.t=T;if(DTP.n<10){sfx('cl');return}DTP.n=0;HDU=1;hdSeen();sfx('hd');shk=8;say('隠しキャラ「ホーリー大輔」が目を覚ました')}
+function tapD(){if(HDFX)return;if(T-DTP.t>2.5)DTP.n=0;DTP.n++;DTP.t=T;if(DTP.n<10){sfx('cl');return}DTP.n=0;if(HDU||!anyClr()){sfx('cl');return}HDU=1;hdSeen();try{localStorage.removeItem('cardtower_hdg')}catch(e){}sfx('hd');shk=10;HDFX={t0:T}}
+// 解放の演出（Ver2.25 ユーザー指定）：暗い寝室のベッドで寝ているホーリー大輔が、勢いよく起き上がる
+let HDFX=null;const hdGuide=()=>{try{return!HDU&&localStorage.getItem('cardtower_hdg')==='1'}catch(e){return false}};
+function drawHdFx(){const t=T-HDFX.t0,zs=SPR.hori_z1||SPR[CH[4].s],im=SPR.hori1||SPR[CH[4].s],sc=2,cx=320,fy=300;hit(0,0,640,360,()=>{if(t>3)HDFX=null});
+ // 部屋：暗い壁と床、窓の月明かり
+ ctx.fillStyle='rgba(6,8,16,'+Math.min(.96,t*4)+')';ctx.fillRect(0,0,640,360);const ra=Math.min(1,t*3);ctx.globalAlpha=ra;ctx.fillStyle='#141a2a';ctx.fillRect(0,fy,640,60);ctx.fillStyle='#1c2438';ctx.fillRect(0,fy,640,3);
+ ctx.fillStyle='#22304a';ctx.fillRect(470,70,90,80);ctx.fillStyle='#3a5a8a';ctx.fillRect(474,74,40,34);ctx.fillRect(518,74,38,34);ctx.fillRect(474,112,40,34);ctx.fillRect(518,112,38,34);const mg=ctx.createLinearGradient(470,150,330,fy);mg.addColorStop(0,'rgba(140,170,255,.18)');mg.addColorStop(1,'rgba(140,170,255,0)');ctx.fillStyle=mg;ctx.beginPath();ctx.moveTo(474,150);ctx.lineTo(556,150);ctx.lineTo(420,fy);ctx.lineTo(260,fy);ctx.fill();
+ // ベッド
+ const bx=cx-110,bw=220;ctx.fillStyle='#4a2e1a';ctx.fillRect(bx-8,fy-86,14,86);ctx.fillRect(bx+bw-6,fy-60,14,60);ctx.fillStyle='#5e3c22';ctx.fillRect(bx-8,fy-86,14,6);ctx.fillStyle='#3a2414';ctx.fillRect(bx,fy-30,bw,22);ctx.fillStyle='#e8e4dc';ctx.fillRect(bx+4,fy-42,bw-8,14);ctx.fillStyle='#f4f2ee';ctx.fillRect(bx+8,fy-56,44,16);
+ ctx.globalAlpha=1;
+ // 起き上がり：1.7秒まで寝ている、1.7〜2.05で跳ね起きる、そのあと床に着地
+ const up=t<1.7?0:Math.min(1,(t-1.7)/.35),e=1-Math.pow(1-up,3),ang=-Math.PI/2*(1-e),jump=up<1?Math.sin(up*Math.PI)*70:0,land=t>2.05&&t<2.3?Math.sin((t-2.05)/.25*Math.PI)*.06:0,sp=up<1?zs:im,w=sp.width*sc,h=sp.height*sc;
+ const zw=zs.width*sc,zh=zs.height*sc,px0=bx+30+zh,py0=fy-42-zw/2+34,px1=cx+20,py1=fy,px=px0+(px1-px0)*e,py=py0+(py1-py0)*e-jump;ctx.save();ctx.translate(Math.round(px),Math.round(py));ctx.rotate(ang);ctx.scale(1+land,1-land);ctx.globalAlpha=ra;ctx.drawImage(sp,Math.round(-w/2),Math.round(-h),Math.round(w),Math.round(h));ctx.restore();ctx.globalAlpha=1;
+ // 掛け布団：寝ている間は体にかかり、起き上がると吹き飛ぶ
+ {const fl=t<1.7?0:Math.min(1.4,(t-1.7)*2.2),fx=px0-zh*.42+fl*170,fy2=py0+4-Math.sin(Math.min(1,fl)*Math.PI)*90+fl*30;ctx.save();ctx.translate(fx,fy2);ctx.rotate(fl*1.6);ctx.globalAlpha=ra*(t>2.6?Math.max(0,1-(t-2.6)*2):1);ctx.fillStyle='#2e6a5a';ctx.fillRect(-64,-12,128,26);ctx.fillStyle='#3e8a72';ctx.fillRect(-64,-12,128,6);ctx.fillStyle='#5aff7a';for(let k=0;k<5;k++)ctx.fillRect(-54+k*26,2,8,4);ctx.restore();ctx.globalAlpha=1}
+ // 寝息の z と、目覚めの気配（緑の脈）
+ if(t<1.7){for(let k=0;k<3;k++){const ph=(t*.8+k/3)%1;ctx.globalAlpha=ra*(1-ph);txt('z',bx+40+ph*30+k*6,py0-zw/2-10-ph*50,'#c8d8ff','left',12+k*4)}ctx.globalAlpha=1;
+  if(t>.9){const pu=Math.max(0,Math.sin((t-.9)*9));ctx.fillStyle='rgba(90,255,122,'+(.12*pu)+')';ctx.fillRect(0,0,640,360)}}
+ // 跳ね起きた瞬間：閃光・揺れ・集中線・「！」
+ if(t>1.7&&t<1.95){ctx.fillStyle='rgba(220,255,225,'+(1-(t-1.7)/.25)*.85+')';ctx.fillRect(0,0,640,360)}
+ if(t>1.7&&t<1.76)shk=Math.max(shk,14);if(t>2.05&&t<2.1)shk=Math.max(shk,8);
+ if(t>1.75&&t<2.6){ctx.globalAlpha=Math.max(0,1-(t-1.75)/.85);ctx.strokeStyle='#e8ffe8';ctx.lineWidth=2;for(let k=0;k<20;k++){const a=k/20*6.283+.13,r1=150,r2=330;ctx.beginPath();ctx.moveTo(px+Math.cos(a)*r1,py-60+Math.sin(a)*r1*.7);ctx.lineTo(px+Math.cos(a)*r2,py-60+Math.sin(a)*r2*.7);ctx.stroke()}ctx.globalAlpha=1}
+ if(t>2.05&&t<2.6){const by2=py-h+20+Math.sin(Math.min(1,(t-2.05)*6)*Math.PI)*-6;ctx.globalAlpha=Math.min(1,(2.6-t)*4);txt('！',px+w/2+10,by2,'#ffe14a','center',26);ctx.globalAlpha=1}
+ if(t>2.05&&t<2.6)for(let k=0;k<10;k++){const u=(t-2.05)/.55,dx=(k-4.5)*10*u*1.4;ctx.globalAlpha=1-u;ctx.fillStyle='#8a7a6a';ctx.fillRect(Math.round(px+dx),Math.round(fy-4-Math.abs(Math.sin(k))*10*u),4,3)}ctx.globalAlpha=1;
+ if(t>2.3){const a=Math.min(1,(t-2.3)/.4);ctx.globalAlpha=a;txt('隠しキャラ 解放',cx,52,'#c8ffd0','center',14);txt('ホーリー大輔',cx,86,'#5aff7a','center',30);txt('眠らない男が、目を覚ました',cx,110,'#cfe8d4','center',12);ctx.globalAlpha=1}
+ if(t>3){ctx.globalAlpha=.5+.4*Math.sin(t*4);txt('キャラ選択に加わった　（タップで閉じる）',cx,346,'#ffffff','center',11);ctx.globalAlpha=1}}
 let SEL=0,SELT=0;const selGo=d=>{const n=NCH();SEL=(SEL+d+n)%n;SELT=T;sfx('cl')};
 // アセンション（難易度）：原作と違い最初から0〜10を自由に選べる。数字以下の効果がすべて重なる
 const ASCD=['','エリートが多く出現する','通常の敵のHP+10%','エリートのHP+15%・筋力+1','ボスのHP+10%','休憩の回復量が最大HPの25%に減る','最大HP-5で開始する','すべての敵の筋力+1','呪いを1枚持って開始する','ポーション枠が2つに減る','ボスの筋力+2・ショップの値段+20%'];
@@ -3249,11 +3277,11 @@ function drawTitle(){const v=TV,d=TVD[v],P0=tPre(v),F=Math.floor;ctx.drawImage(P
  ctx.globalAlpha=1;
  // タイトル文字
  const TT=(s,x,y,cols)=>{ctx.font='34px '+TF;ctx.textAlign='left';ctx.fillStyle='#000';ctx.fillText(s,x+4,y+4);ctx.fillStyle=d.sh;ctx.fillText(s,x+2,y+2);const g=ctx.createLinearGradient(0,y-32,0,y);g.addColorStop(0,cols[0]);g.addColorStop(1,cols[1]);ctx.fillStyle=g;ctx.fillText(s,x,y)};
- TT('CARD',36,94,d.c1);TT('TRAIL',36,142,d.c2);if(S==='title'){ctx.font='34px '+TF;const w0=ctx.measureText('CAR').width,w1=ctx.measureText('D').width;hit(36+w0-4,56,w1+8,44,tapD);hit(32,104,ctx.measureText('T').width+8,44,tapT)}ctx.fillStyle=d.line;ctx.fillRect(36,158,204,2);ctx.fillRect(36,162,120,1);
+ TT('CARD',36,94,d.c1);TT('TRAIL',36,142,d.c2);if(S==='title'){ctx.font='34px '+TF;const w0=ctx.measureText('CAR').width,w1=ctx.measureText('D').width;if(hdGuide()&&!A2H&&!CFR&&!HDFX){const pu=.5+.5*Math.sin(T*4),gx=36+w0+w1/2,gy=78;const gg=ctx.createRadialGradient(gx,gy,2,gx,gy,34);gg.addColorStop(0,'rgba(90,255,122,'+(.45*pu)+')');gg.addColorStop(1,'rgba(90,255,122,0)');ctx.fillStyle=gg;ctx.fillRect(gx-36,gy-36,72,72);ctx.globalAlpha=.55+.45*pu;txt('…D が呼んでいる。10回たたけ',36+w0+w1+14,82,'#5aff7a','left',11);ctx.globalAlpha=1}hit(36+w0-4,56,w1+8,44,tapD);hit(32,104,ctx.measureText('T').width+8,44,tapT)}ctx.fillStyle=d.line;ctx.fillRect(36,158,204,2);ctx.fillRect(36,162,120,1);
  if(S==='splash'){const a=.55+.45*Math.sin(T*3.2);ctx.globalAlpha=a;ctx.font='12px '+TF;ctx.textAlign='left';ctx.fillStyle='#000';ctx.fillText('TAP TO START',38,210);ctx.fillStyle='#fff';ctx.fillText('TAP TO START',36,208);ctx.globalAlpha=1;txt('画面をタップすると音楽が流れます',36,236,d.dim,'left',11);hit(0,0,640,360,startGame);return}
  const it=HS?[['続きから',()=>{sfx('cl');CFR=1}],['最初から',()=>{sfx('pk');go('select')}],['マルチプレイ',mpMenu],['カード一覧',openLib],['ランキング',openRank],['遊び方',()=>{sfx('cl');openHelp(0)}]]:[['開始',()=>{sfx('pk');go('select')}],['マルチプレイ',mpMenu],['ランキング',openRank],['カード一覧',openLib],['遊び方',()=>{sfx('cl');openHelp(0)}]];
  it.forEach((m,i)=>{const y=196+i*30;if(!i){txt('▶',42+Math.sin(T*6)*2,y,d.cur,'left',12);txt(m[0],62,y,'#fff','left',16)}else txt(m[0],62,y,d.dim,'left',14);hit(30,y-20,200,28,m[1])});if(S==='title'&&rjInfo())btn(430,282,196,34,'マルチに再接続',mpRejoin,'#2a5a6a',14);if(S==='title'){const nm=pName(),l='名前：'+(nm||'未設定')+'　変更';ctx.globalAlpha=.75;txt(l,10,20,'#ffffff','left',10);ctx.globalAlpha=1;ctx.font='10px DotGothic16,sans-serif';hit(4,4,ctx.measureText(l).width+12,24,()=>askName(()=>{S='title'},{back:'title'}))}
- txt('Ver '+GVER,632,352,d.dim,'right',10);if(CFR&&HS&&S==='title')drawCfr();else CFR=0;if(A2H&&S==='title')drawA2h()}
+ txt('Ver '+GVER,632,352,d.dim,'right',10);if(CFR&&HS&&S==='title')drawCfr();else CFR=0;if(A2H&&S==='title')drawA2h();if(HDFX){if(S==='title')drawHdFx();else HDFX=null}}
 // Ver2.22 続きからの確認（ユーザー指定：タイトル下の記録の行をやめ、押した時にその記録を見せて確かめる）
 let CFR=0;function drawCfr(){const q=HS.P,c=CH[q.cls]||CH[0],im=SPR[c.s];hit(0,0,640,360,()=>{});ctx.fillStyle='rgba(5,4,12,.8)';ctx.fillRect(0,0,640,360);const x=150,y=62,w=340,h=236;ctx.fillStyle='#14102a';ctx.fillRect(x,y,w,h);ctx.fillStyle=c.col||'#8a82b8';ctx.fillRect(x,y,w,3);
  txt('この記録の続きから始めますか？',320,y+28,'#ffd23f','center',15);if(im){const sc=Math.min(1.4,90/im.height,96/im.width);ctx.drawImage(im,Math.round(x+66-im.width*sc/2),Math.round(y+150-im.height*sc),Math.round(im.width*sc),Math.round(im.height*sc))}
@@ -3527,7 +3555,7 @@ function drawRank(){ttlBg(.66);if(!RK)RK={k:'dmg',docs:[],st:''};txt('ランキ�
  txt(RK.st||(L.length+'人の記録'),20,88,'#a8a0c8','left',10);const mi=L.findIndex(q=>q.id===me);txt(mi>=0?'あなた：'+(mi+1)+'位　'+fm(L[mi].v):'あなたの記録はまだない',620,88,'#7ec8ff','right',11);
  ctx.save();ctx.beginPath();ctx.rect(0,top-2,640,360-top);ctx.clip();
  L.forEach((q,i)=>{const y=top+i*rh-scr;if(y<top-rh||y>360)return;const mine=q.id===me;ctx.fillStyle=mine?'rgba(90,140,220,.35)':i%2?'rgba(20,16,40,.6)':'rgba(30,24,56,.6)';ctx.fillRect(20,y,600,rh-2);
-  const col=i===0?'#ffd23f':i===1?'#d8dce8':i===2?'#e0a060':'#cfc8ee';txt((i+1)+'',52,y+15,col,'right',i<3?14:12);txt(q.nm,68,y+15,mine?'#fff':'#e8e4ff','left',12);txt(CH[q.c].n,300,y+15,CH[q.c].col||'#a8a0c8','left',11);if(q.a)txt('A'+q.a,420,y+15,'#ff8a8a','left',11);txt(fm(q.v),612,y+15,col,'right',13)});
+  const col=i===0?'#ffd23f':i===1?'#d8dce8':i===2?'#e0a060':'#cfc8ee';txt((i+1)+'',52,y+15,col,'right',i<3?14:12);txt(q.nm,68,y+15,mine?'#fff':'#e8e4ff','left',12);txt(q.c===4&&!HDU?'？？？':CH[q.c].n,300,y+15,q.c===4&&!HDU?'#8a82b8':CH[q.c].col||'#a8a0c8','left',11);if(q.a)txt('A'+q.a,420,y+15,'#ff8a8a','left',11);txt(fm(q.v),612,y+15,col,'right',13)});
  ctx.restore();if(!L.length)txt('まだ記録がない。ひとりで遊ぶと記録が残る',320,200,'#8a82b8','center',12)}
 // Ver2.20 名前は最初に1回決め、タイトル左上でいつでも変えられる。マルチは決めた名前をそのまま使う
 function askName(then,o){MPN={then,back:o&&o.back,first:o&&o.first};S='mpn';sfx('cl');const ni=nmInput();ni.value=pName();setTimeout(()=>{try{ni.focus()}catch(e){}},50)}
