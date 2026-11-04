@@ -181,7 +181,7 @@
 3-2. **バージョン `GVER`（タイトル画面の右下に小さく表示）を公開のたびに1つ上げる**（例 1.49→1.50。ユーザー指定）。返答で新しいバージョン番号を毎回伝える。
 4. ~~SendUserFile で index.html を送る~~ → 送らない（ユーザー指定で変更：変更後はアーティファクトだけ送る）。
 5. git にコミットする。
-6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19、Ver2.23 が index20。Ver2.26 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
+6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19、Ver2.23 が index20、Ver2.26 が index21。Ver2.30 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
 7. **変更のたびに、作業版とメモを GitHub の `dev/` にも保存する**（ユーザー同意・Ver2.24から）：`dev/index.html`・`dev/CLAUDE.md`（先頭に置き場所の説明あり）・`dev/tests/` を最新にして push。公開中の直下 `index.html` は「アプデして」の時だけ変える。
 
 ## 動作確認
@@ -376,3 +376,9 @@ Playwright（chromium）入りの環境なら、ページを開いて `page.eval
   - BGM `b1s`＝`b1sStep()`（`TR.b1s`、`bsp` .14）。通常戦闘・エリート・ボスすべてこの曲（ユーザー指定）。`go()` で `bt&&A1S()` なら b1s。
     - 中身：ニ短調、16小節×16刻み。低い持続音（ずらした2本の鋸歯波＋正弦）とオルガン、後半は合唱。くぐもったガラスの分散和音（三角波、こだま付き）、重い太鼓、ティンパニ、水滴（高い短い音）、4小節ごとの鐘、後半は低い笛の旋律 `B1SM`。
   - 見本の作成は scratchpad の act1/（背景 sunk3.js、敵 sunkE4/E5.js、曲 b1s.js、書き出し bgmrender.js）。
+- Ver2.30 沈没都市の調整（ユーザー指定）。
+  - 大海蛇 `SD.userp` をネッシー型の案E（岩背型）に変えた：苔・藤壺・崩れた石柱を背負い、汚れた巨体（泥や苔の染み、垂れた筋）に長い首。顔は元の大海蛇の顔（ユーザーが気に入っている）を0.8倍にして、藤壺・苔・よだれを少し足した（`UOHEAD`）。62x50 の単位で描いていて、ボスなので高さ172の上限で縮む。
+  - BGM `b1sStep` を案C に差し替えた：オルゴールのような寂しい旋律（`B1MB` の分散、後半は `B1SM` の旋律）、低い持続音、心臓の鼓動のような二連の太鼓。`bsp` .15。
+    - 前の曲は「音が小さい」「ドラムがプツプツする」と言われた。原因は、立ち上がりが急な `mkick`・ノイズ・短い水滴の音。そのため、なめらかに立ち上がる `uKick`/`uTom`/`uNote`（直線の立ち上がり・ノイズ無し）を使う。
+    - 音の大きさ（RMS）は 0.023 で、2層の曲 0.017 より少し大きい。
+    - 見本の作成は scratchpad の act1/b1sv.js・bgmrender2.js（案A・B・C）。
