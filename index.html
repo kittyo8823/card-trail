@@ -17,7 +17,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.18';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.19';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -3364,8 +3364,8 @@ function openHelp(t){snapBg();HELP={tab:t,back:S};S='help';scr=0}
 // ===== カード一覧：キャラ別タブ → レア度ごとに見出しを付けて全種類を並べる =====
 let LIB={k:0,r:9,u:0};
 const LIBR=[[-1,'初期カード'],[0,'コモン'],[1,'アンコモン'],[2,'レア'],[-2,'特殊']],LIBC=[[3,'状態異常'],[4,'呪い']];
-function libTabs(){const t=CHV().map(i=>[i,CH[i].n,CH[i].col]);t.push([5,'無色','#a8a8b8'],[7,'協力','#7dff9a'],[6,'状態異常・呪い','#9a6aaa']);return t}
-function libSecs(){const k=LIB.k,cs=C.map((c,i)=>[c,i]),sec=k===6?LIBC.map(([t,n])=>[t,n,cs.filter(a=>a[0].t===t).map(a=>a[1])]):LIBR.map(([r,n])=>[r,n,cs.filter(a=>a[0].t<3&&a[0].k!==8&&(a[0].k||0)===k&&a[0].r===r).map(a=>a[1])]);return sec.filter(x=>x[2].length)}
+function libTabs(){const t=CHV().map(i=>[i,CH[i].n,CH[i].col]);t.push([5,'無色','#a8a8b8'],[7,'協力','#7dff9a'],[99,'状態異常・呪い','#9a6aaa']);return t}
+function libSecs(){const k=LIB.k,cs=C.map((c,i)=>[c,i]),sec=k===99?LIBC.map(([t,n])=>[t,n,cs.filter(a=>a[0].t===t).map(a=>a[1])]):LIBR.map(([r,n])=>[r,n,cs.filter(a=>a[0].t<3&&a[0].k!==8&&(a[0].k||0)===k&&a[0].r===r).map(a=>a[1])]);return sec.filter(x=>x[2].length)}
 function openLib(){LIB={k:0,r:9,u:0};scr=0;S='lib';sfx('cl')}
 function drawLib(){ctx.drawImage(BGM,0,0);const tabs=libTabs();if(!tabs.some(t=>t[0]===LIB.k))LIB.k=0;const all=libSecs();if(LIB.r!==9&&!all.some(x=>x[0]===LIB.r))LIB.r=9;const secs=LIB.r===9?all:all.filter(x=>x[0]===LIB.r);
  // 中身（見出し＋6列）
