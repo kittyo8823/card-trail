@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.26';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.27';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -1105,12 +1105,14 @@ for(const[x,y,s]of[[1,9,1],[1,28,-1],[39,9,1],[39,28,-1]])t([[x,y],[x+(x<20?3:-3
 sh();
 l(20,5.2,20,23.8,'#3a0a10',.6);
 for(let k=0;k<9;k++){const y=10+k*1.7;l(5,y-.2-k*.02,17.4,y-2.1,'#6a5a4a',.35)}
-for(let a=0;a<6.28;a+=.16)q(28.6+Math.cos(a)*5,15+Math.sin(a)*5.4,'#a87ae8');for(let a=0;a<6.28;a+=.3)q(28.6+Math.cos(a)*3,15+Math.sin(a)*3.2,'#c9a0ff');
-t([[28.6,11],[31.6,17],[25.6,17]],'#c9a0ff');t([[28.6,12.6],[30.4,16.2],[26.8,16.2]],'#cbbd90');q(28.6,14.8,'#e84aa8');
+if(!window.GRNC){for(let a=0;a<6.28;a+=.16)q(28.6+Math.cos(a)*5,15+Math.sin(a)*5.4,'#a87ae8');for(let a=0;a<6.28;a+=.3)q(28.6+Math.cos(a)*3,15+Math.sin(a)*3.2,'#c9a0ff');
+t([[28.6,11],[31.6,17],[25.6,17]],'#c9a0ff');t([[28.6,12.6],[30.4,16.2],[26.8,16.2]],'#cbbd90');q(28.6,14.8,'#e84aa8')}
 for(const x of[4,36])for(let k=0;k<4;k++)r(x+(k%2?.3:0),28.4+k*.4,.8,.4,'#8a8fa0')}];
 // 敵は右向きで描いてあるので、左右反転して自分（左）の方を向かせる
 const NOFL=/^(pl|si|sm|oji|grim|hori.*|skunk|qcube|eye|demon|.*_wp)$/,flipC=c=>{const o=MKC(c.width,c.height),x=o.getContext('2d');x.translate(c.width,0);x.scale(-1,1);x.drawImage(c,0,0);return o};
 for(const k in SD){const d=SD[k],im=paint(d[0],d[1],d[3],d[2]);SPR[k]=NOFL.test(k)?im:flipC(im)}
+// Ver2.27 戦闘の魔導書は魔法陣を抜いた絵（grim_n）にし、魔法陣は drawGrim が光らせて回す（ユーザー指定）
+window.GRNC=1;SPR.grim_n=paint(SD.grim[0],SD.grim[1],SD.grim[3],SD.grim[2]);window.GRNC=0;
 // ボスの部位：n 名前・pv 軸（元の単位）・z 'b' 胴の後ろ／'f' 前・pa 親の部位・w 溜め [角度,dx,dy]・s 振り抜き・i 待機の揺れ [幅,速さ]・sp 回り続ける速さ
 // 角度は右向きの元絵での時計回り（負で前に持ち上がる）
 const EPT={
@@ -2930,9 +2932,15 @@ function drawFly(){const b=B;b.fly=b.fly.filter(f=>T-f.t0<FD[f.k]);for(const f o
  else if(f.k==='pw'){const q=ez(Math.min(1,p/.35)),cx=lp(sx,320,q),cy=lp(sy,140,q)-Math.max(0,p-.35)*120,a=p<.5?1:1-(p-.5)/.5;const g=ctx.createRadialGradient(cx,cy,4,cx,cy,70);g.addColorStop(0,'rgba(176,124,255,'+(.5*a)+')');g.addColorStop(1,'rgba(176,124,255,0)');ctx.fillStyle=g;ctx.fillRect(cx-70,cy-70,140,140);cardAt(f.o,cx,cy,lp(1,1.2,Math.max(0,p-.35)/.65),0,Math.max(0,a))}
  else if(f.k==='ex'){const q=ez(Math.min(1,p/.3)),cx=lp(sx,320,q),cy=lp(sy,140,q),r=Math.max(0,(p-.3)/.7),ln=cy+55-r*110;ctx.save();ctx.beginPath();ctx.rect(cx-50,cy-60,100,ln-(cy-60));ctx.clip();cardAt(f.o,cx,cy,1,0,1);ctx.restore();if(r>0)for(let k=0;k<18;k++){const h=(k*37%18)/18,up=((T*3+k*.37)%1)*18;ctx.globalAlpha=1-up/18;sq(cx-42+h*84,ln-up,k%4?4:6,k%3?'#ff8c2e':'#ffd23f')}ctx.globalAlpha=1}}
  ctx.globalAlpha=1}
+// 魔法陣：外の点の輪（ゆっくり右回り）・内の輪（左回り）・三角（ゆっくり回る）・中心の宝石。淡い紫の光が脈打ち、魔法を使うと強く光る
+function grimCircle(cx,cy,u,gl){const a=T*.45,pu=.5+.5*Math.sin(T*2.2),g=ctx.createRadialGradient(cx,cy,2,cx,cy,u*8);g.addColorStop(0,'rgba(201,160,255,'+(.22+.12*pu+gl*.4)+')');g.addColorStop(1,'rgba(201,160,255,0)');ctx.globalCompositeOperation='lighter';ctx.fillStyle=g;ctx.fillRect(cx-u*8,cy-u*8,u*16,u*16);ctx.globalCompositeOperation='source-over';
+ const dot=(x,y,c,z)=>{ctx.fillStyle=c;ctx.fillRect(Math.round(x-z/2),Math.round(y-z/2),z,z)},sy=1.08;for(let k=0;k<40;k++){const t=a+k/40*6.283;if(k%5===4)continue;dot(cx+Math.cos(t)*u*5,cy+Math.sin(t)*u*5*sy,k%10<1?'#e8d8ff':'#a87ae8',3)}
+ for(let k=0;k<20;k++){const t=-a*1.6+k/20*6.283;dot(cx+Math.cos(t)*u*3,cy+Math.sin(t)*u*3*sy,'#c9a0ff',2)}
+ ctx.save();ctx.translate(cx,cy);ctx.rotate(a*.7);ctx.strokeStyle='#c9a0ff';ctx.lineWidth=2;ctx.beginPath();for(let k=0;k<3;k++){const t=k/3*6.283-1.571;ctx.lineTo(Math.cos(t)*u*3.6,Math.sin(t)*u*3.6)}ctx.closePath();ctx.stroke();ctx.rotate(Math.PI/3);ctx.globalAlpha=.55;ctx.beginPath();for(let k=0;k<3;k++){const t=k/3*6.283-1.571;ctx.lineTo(Math.cos(t)*u*3.6,Math.sin(t)*u*3.6)}ctx.closePath();ctx.stroke();ctx.restore();ctx.globalAlpha=1;
+ dot(cx,cy,'#e84aa8',4);ctx.globalAlpha=.5+.5*pu;dot(cx,cy,'#ffd0f0',2);ctx.globalAlpha=1}
 function drawGrim(b,ox){const im=SPR.grim,bx=ox==null?47:ox,by=Math.round(64+Math.sin(T*1.6)*3),gl=Math.max(0,1-(T-b.bkt)/.7);
 const g=ctx.createRadialGradient(bx+62,by+46,6,bx+62,by+46,80);g.addColorStop(0,'rgba(168,122,232,'+(.18+gl*.4)+')');g.addColorStop(1,'rgba(168,122,232,0)');ctx.fillStyle=g;ctx.fillRect(bx-20,by-30,164,150);
-ctx.drawImage(im,bx,by);b.ch.forEach((q,i)=>{const x=bx+8+i*38,y=by+22;ctx.fillStyle='#08060f';ctx.fillRect(x-1,y-1,34,18);ctx.fillStyle='#e8dcb8';ctx.fillRect(x,y,32,16);ctx.fillStyle=SPC(q.c);ctx.fillRect(x,y,4,16);txt(q.c.n.slice(0,2),x+18,y+12,'#3a2a1a','center',9);pc(x+32,y,6,'#14101e');txt(String(q.n),x+32,y+4,'#ffd23f','center',9)})}
+ctx.drawImage(SPR.grim_n||im,bx,by);grimCircle(bx+im.width*28.6/40,by+im.height*15/30,im.width/40,gl);b.ch.forEach((q,i)=>{const x=bx+8+i*38,y=by+22;ctx.fillStyle='#08060f';ctx.fillRect(x-1,y-1,34,18);ctx.fillStyle='#e8dcb8';ctx.fillRect(x,y,32,16);ctx.fillStyle=SPC(q.c);ctx.fillRect(x,y,4,16);txt(q.c.n.slice(0,2),x+18,y+12,'#3a2a1a','center',9);pc(x+32,y,6,'#14101e');txt(String(q.n),x+32,y+4,'#ffd23f','center',9)})}
 function drawBattle(){const b=B;ER=[];CR=[];hit(0,24,640,206,()=>{b.sel=-1});ctx.drawImage(BGB,0,0);bgAnim();
 ctx.save();if(shk>0)ctx.translate((Math.random()-.5)*shk*2,(Math.random()-.5)*shk*2);
 const lg=b.lg>0?Math.sin(b.lg/.25*3.14)*(b.lgA!=null?b.lgA:30):0,sh=b.sh>0&&b.sh<=.3?(Math.random()-.5)*8:0;
