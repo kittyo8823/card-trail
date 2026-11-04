@@ -181,7 +181,7 @@
 3-2. **バージョン `GVER`（タイトル画面の右下に小さく表示）を公開のたびに1つ上げる**（例 1.49→1.50。ユーザー指定）。返答で新しいバージョン番号を毎回伝える。
 4. ~~SendUserFile で index.html を送る~~ → 送らない（ユーザー指定で変更：変更後はアーティファクトだけ送る）。
 5. git にコミットする。
-6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19。Ver2.23 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
+6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19、Ver2.23 が index20。Ver2.26 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
 7. **変更のたびに、作業版とメモを GitHub の `dev/` にも保存する**（ユーザー同意・Ver2.24から）：`dev/index.html`・`dev/CLAUDE.md`（先頭に置き場所の説明あり）・`dev/tests/` を最新にして push。公開中の直下 `index.html` は「アプデして」の時だけ変える。
 
 ## 動作確認
@@ -358,3 +358,4 @@ Playwright（chromium）入りの環境なら、ページを開いて `page.eval
     - 2.05秒：床に着地して、土ぼこりと「！」。
     - 2.3秒：「隠しキャラ 解放／ホーリー大輔／眠らない男が、目を覚ました」。
     - 3秒から：タップで閉じる。
+- Ver2.26 解放演出の掛け布団を描き直した（ユーザー指摘：緑の棒に見える→平らな板では布団感がない）。寝ている間は体の絵を出さず、枕の上に頭だけ（`hori_z1` の頭の部分 (22,6,32,32) を横に倒して2倍）を描く。首から下は、肩・腰・膝の山がある、ふくらんだ青い水玉の布団（白い襟・縫い目。手前はベッドの縁から垂れる。寝息で少し上下する）で覆う。跳ね起きると体の絵に切り替わり、布団は波打ちながら回って飛んでいく。
