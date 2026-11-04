@@ -2,6 +2,8 @@
 <html lang="ja"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Card Trail</title>
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Card Trail"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#0d0a1c">
+<link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="icon-192.png"><link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&display=swap">
 <style>
 :root{--bg:#0d0a1c;--ink:#f6f2ff;box-sizing:border-box;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
@@ -17,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.22';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.23';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -3249,7 +3251,7 @@ function drawTitle(){const v=TV,d=TVD[v],P0=tPre(v),F=Math.floor;ctx.drawImage(P
  if(S==='splash'){const a=.55+.45*Math.sin(T*3.2);ctx.globalAlpha=a;ctx.font='12px '+TF;ctx.textAlign='left';ctx.fillStyle='#000';ctx.fillText('TAP TO START',38,210);ctx.fillStyle='#fff';ctx.fillText('TAP TO START',36,208);ctx.globalAlpha=1;txt('画面をタップすると音楽が流れます',36,236,d.dim,'left',11);hit(0,0,640,360,startGame);return}
  const it=HS?[['続きから',()=>{sfx('cl');CFR=1}],['最初から',()=>{sfx('pk');go('select')}],['マルチプレイ',mpMenu],['カード一覧',openLib],['ランキング',openRank],['遊び方',()=>{sfx('cl');openHelp(0)}]]:[['開始',()=>{sfx('pk');go('select')}],['マルチプレイ',mpMenu],['ランキング',openRank],['カード一覧',openLib],['遊び方',()=>{sfx('cl');openHelp(0)}]];
  it.forEach((m,i)=>{const y=196+i*30;if(!i){txt('▶',42+Math.sin(T*6)*2,y,d.cur,'left',12);txt(m[0],62,y,'#fff','left',16)}else txt(m[0],62,y,d.dim,'left',14);hit(30,y-20,200,28,m[1])});if(S==='title'&&rjInfo())btn(430,282,196,34,'マルチに再接続',mpRejoin,'#2a5a6a',14);if(S==='title'){const nm=pName(),l='名前：'+(nm||'未設定')+'　変更';ctx.globalAlpha=.75;txt(l,10,20,'#ffffff','left',10);ctx.globalAlpha=1;ctx.font='10px DotGothic16,sans-serif';hit(4,4,ctx.measureText(l).width+12,24,()=>askName(()=>{S='title'},{back:'title'}))}
- txt('Ver '+GVER,632,352,d.dim,'right',10);if(CFR&&HS&&S==='title')drawCfr();else CFR=0}
+ txt('Ver '+GVER,632,352,d.dim,'right',10);if(CFR&&HS&&S==='title')drawCfr();else CFR=0;if(A2H&&S==='title')drawA2h()}
 // Ver2.22 続きからの確認（ユーザー指定：タイトル下の記録の行をやめ、押した時にその記録を見せて確かめる）
 let CFR=0;function drawCfr(){const q=HS.P,c=CH[q.cls]||CH[0],im=SPR[c.s];hit(0,0,640,360,()=>{});ctx.fillStyle='rgba(5,4,12,.8)';ctx.fillRect(0,0,640,360);const x=150,y=62,w=340,h=236;ctx.fillStyle='#14102a';ctx.fillRect(x,y,w,h);ctx.fillStyle=c.col||'#8a82b8';ctx.fillRect(x,y,w,3);
  txt('この記録の続きから始めますか？',320,y+28,'#ffd23f','center',15);if(im){const sc=Math.min(1.4,90/im.height,96/im.width);ctx.drawImage(im,Math.round(x+66-im.width*sc/2),Math.round(y+150-im.height*sc),Math.round(im.width*sc),Math.round(im.height*sc))}
@@ -3358,10 +3360,10 @@ function mapBtn(x,y){ctx.fillStyle='#3a3068';ctx.fillRect(x,y,32,24);ctx.fillSty
 function openMapV(){if(!MP||!CUR)return;MV={back:S};S='mapv';MSC=Math.max(0,Math.min(MSW-624,MX(Math.max(-1,CUR.f))-200));sfx('cl')}
 function closeMapV(){if(S==='mapv')S=MV?MV.back:'map';MV=null;sfx('cl')}
 function drawMapV(){drawMap();btns=[];ctx.fillStyle='rgba(20,14,30,.92)';ctx.fillRect(170,66,300,22);txt('第'+P.act+'層の地図（見るだけ）',320,82,'#ffe680','center',13);btn(542,3,92,24,'✕ 閉じる',closeMapV,'#7a2a3a',13)}
-function drawPause(){btns=[];ENI=[];ENTIP=null;const mp=MPON();ctx.fillStyle='rgba(6,4,16,.82)';ctx.fillRect(0,0,640,360);const x=200,y=78,w=240,h=210;ctx.fillStyle='#16132e';ctx.fillRect(x,y,w,h);ctx.fillStyle='#c8a050';ctx.fillRect(x,y,w,2);ctx.fillRect(x,y+h-2,w,2);ctx.fillRect(x,y,2,h);ctx.fillRect(x+w-2,y,2,h);
+function drawPause(){btns=[];ENI=[];ENTIP=null;const mp=MPON(),fs=fsOK()&&!PZ.c;ctx.fillStyle='rgba(6,4,16,.82)';ctx.fillRect(0,0,640,360);const x=200,y=fs?62:78,w=240,h=fs?244:210;ctx.fillStyle='#16132e';ctx.fillRect(x,y,w,h);ctx.fillStyle='#c8a050';ctx.fillRect(x,y,w,2);ctx.fillRect(x,y+h-2,w,2);ctx.fillRect(x,y,2,h);ctx.fillRect(x+w-2,y,2,h);
  if(!PZ.c){txt('一時停止',320,y+32,'#ffe680','center',18);if(mp)txt('マルチでは時間は止まらない',320,y+50,'#ff9a9a','center',10);
   btn(x+30,y+64,180,32,'再開する',()=>{PZ=null;sfx('cl')},'#2a5a3a',14);btn(x+30,y+104,180,32,'遊び方・説明',()=>{PZ=null;openHelp(0)},'#3a3068',14);
-  if(!mp)btn(x+30,y+142,180,26,'中断してタイトルへ',()=>{PZ=null;suspendRun()},'#4a4a2a',13);btn(x+30,y+(mp?152:174),180,mp?32:26,mp?'部屋から抜ける':'このランを諦める',()=>{PZ.c=1;sfx('cl')},'#7a2a3a',mp?14:13)}
+  if(!mp)btn(x+30,y+142,180,26,'中断してタイトルへ',()=>{PZ=null;suspendRun()},'#4a4a2a',13);btn(x+30,y+(mp?152:174),180,mp?32:26,mp?'部屋から抜ける':'このランを諦める',()=>{PZ.c=1;sfx('cl')},'#7a2a3a',mp?14:13);if(fs)btn(x+30,y+208,180,26,fsEl()?'全画面をやめる':'全画面にする',()=>{if(fsEl())fsOff();else fsOn();sfx('cl')},'#2a4a6a',13)}
  else{txt(mp?'部屋から抜けるか？':'このランを諦めるか？',320,y+40,'#ff9a9a','center',16);txt(mp?'このランには戻れない。仲間は続けられる。':'記録は敗北として残る。中断データは消える。',320,y+66,'#cfc8ee','center',11);
   btn(x+20,y+120,96,34,mp?'抜ける':'諦める',()=>{PZ=null;if(mp){mpLeave();go('title')}else{P.gaveUp=1;P.killer=null;go('over')}},'#a02a3a',14);btn(x+124,y+120,96,34,'やめる',()=>{PZ.c=0;sfx('cl')},'#3a3068',14)}}
 // 中断：今の状態（地図なら最新、それ以外は部屋に入る前の保存）を残してタイトルへ。ホーリー大輔の残り時間はここで止める
@@ -3753,7 +3755,16 @@ addEventListener('pointerup',e=>{LP=null;if(dg){drag=null;dropCard();return}if(!
 if(!hb){let bd=10;for(const b of btns){const dx=Math.max(b.x-d.x,0,d.x-b.x-b.w),dy=Math.max(b.y-d.y,0,d.y-b.y-b.h),dd=Math.hypot(dx,dy);if(dd<bd){bd=dd;hb=b}}}if(hb)hb.f()});
 addEventListener('pointercancel',()=>{drag=null;dg=null});
 function loop(now){const dt=Math.min((now-last)/1000,.05);last=now;if(BG)BG.gain.value=muted?0:.2;mpTick();mpCatch();if(!(PZ&&!MPON())&&performance.now()>=HSU)update(dt);nmPlace();ctx.setTransform(K,0,0,K,0,0);ctx.imageSmoothingEnabled=false;draw();requestAnimationFrame(loop)}
-function startGame(){if(S!=='splash')return;initAudio();S='title';bgm('t');sfx('pk');if(!pName())askName(()=>{S='title'},{first:1})}
+// Ver2.23 全画面（ユーザー指定）：ブラウザは操作なしの全画面を許さないので、最初のタップで頼む。iPhone はゲームの全画面ができないので、ホーム画面への追加を1回だけ案内する
+const IPH=/iPhone|iPod/.test(navigator.userAgent),STAND=!!(navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||(window.matchMedia&&matchMedia('(display-mode: fullscreen)').matches)),INFR=(()=>{try{return window.top!==window}catch(e){return true}})();
+const fsEl=()=>document.fullscreenElement||document.webkitFullscreenElement,fsOK=()=>!IPH&&!STAND&&!!(document.fullscreenEnabled||document.webkitFullscreenEnabled);
+function fsOn(){if(!fsOK()||fsEl())return;const d=document.documentElement,f=d.requestFullscreen||d.webkitRequestFullscreen;try{const r=f.call(d,{navigationUI:'hide'});if(r&&r.then)r.then(()=>{try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})}catch(e){}}).catch(()=>{})}catch(e){}}
+function fsOff(){const f=document.exitFullscreen||document.webkitExitFullscreen;try{if(fsEl()&&f){const r=f.call(document);if(r&&r.catch)r.catch(()=>{})}}catch(e){}}
+let A2H=0;function a2hNeed(){if(!IPH||STAND||INFR)return 0;try{return!localStorage.getItem('cardtower_a2h')}catch(e){return 0}}
+function drawA2h(){hit(0,0,640,360,()=>{});ctx.fillStyle='rgba(5,4,12,.82)';ctx.fillRect(0,0,640,360);const x=130,y=70,w=380,h=220;ctx.fillStyle='#14102a';ctx.fillRect(x,y,w,h);ctx.fillStyle='#7ec8ff';ctx.fillRect(x,y,w,3);
+ txt('全画面で遊ぶには',320,y+32,'#ffd23f','center',16);['iPhone では、ブラウザのままでは全画面にできない。','ホーム画面に追加すると、アプリのように全画面で遊べる。','','1. 下（または上）の共有ボタン（□に↑）を押す','2.「ホーム画面に追加」を選ぶ','3. ホーム画面の「Card Trail」から開く'].forEach((l,i)=>txt(l,x+24,y+62+i*19,i<2?'#cfc8ee':'#ffffff','left',12));
+ btn(x+w/2-70,y+h-46,140,32,'わかった',()=>{A2H=0;try{localStorage.setItem('cardtower_a2h','1')}catch(e){}sfx('cl')},'#2a5a3a',14)}
+function startGame(){if(S!=='splash')return;fsOn();A2H=a2hNeed();initAudio();S='title';bgm('t');sfx('pk');if(!pName())askName(()=>{S='title'},{first:1})}
 try{AC=new(window.AudioContext||window.webkitAudioContext)();MG=AC.createGain();MG.gain.value=vg();MG.connect(AC.destination);const ok=()=>{if(AC.state==='running'&&S==='splash'){S='title';bgm('t')}};AC.resume().then(ok).catch(()=>{});setTimeout(ok,300)}catch(e){}
 requestAnimationFrame(loop);
 </script></body></html>
