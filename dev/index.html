@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.35';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.36';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -1655,7 +1655,7 @@ function bgMeadow(){const c=MKC(640,360),x=c.getContext('2d'),rn=bgRng(21),F=v=>
  for(let i=0;i<24;i++){const fx=F(rn()*640),fy=F(110+rn()*130),fg=x.createRadialGradient(fx,fy,0,fx,fy,6);fg.addColorStop(0,'rgba(232,255,122,.45)');fg.addColorStop(1,'rgba(232,255,122,0)');x.fillStyle=fg;x.fillRect(fx-6,fy-6,12,12);x.fillStyle='#f4ffb0';x.fillRect(fx,fy,2,2)}
  bgVig(x,.45);return c}
 // 第2層：地下の石造りの広間
-function bgDungeon(){const c=MKC(640,360),x=c.getContext('2d'),rn=bgRng(9),F=v=>Math.floor(v/2)*2;
+function bgDungeon(v){v=v||0;const c=MKC(640,360),x=c.getContext('2d'),rn=bgRng(9),F=v=>Math.floor(v/2)*2;
  x.fillStyle='#120f1c';x.fillRect(0,0,640,360);
  for(let row=0;row*14<210;row++){const y=row*14,off=row%2?16:0;for(let bx=-off;bx<640;bx+=32){const v=rn();x.fillStyle='#0c0a14';x.fillRect(bx,y,32,14);x.fillStyle=v<.33?'#2c2638':v<.66?'#28223a':'#322b42';x.fillRect(bx+2,y+2,28,10);
   x.fillStyle='rgba(255,255,255,.07)';x.fillRect(bx+2,y+2,28,2);x.fillStyle='rgba(0,0,0,.3)';x.fillRect(bx+2,y+10,28,2);x.fillRect(bx+28,y+2,2,10);
@@ -1669,11 +1669,21 @@ function bgDungeon(){const c=MKC(640,360),x=c.getContext('2d'),rn=bgRng(9),F=v=>
  // 柱
  for(const px of[70,570]){x.fillStyle='#1c1828';x.fillRect(px-24,30,48,180);const cg=x.createLinearGradient(px-22,0,px+22,0);cg.addColorStop(0,'#2a2438');cg.addColorStop(.35,'#4a4260');cg.addColorStop(1,'#1e1a2a');x.fillStyle=cg;x.fillRect(px-22,30,44,180);
   x.fillStyle='rgba(0,0,0,.25)';for(let k=-14;k<=14;k+=8)x.fillRect(px+k,36,2,168);x.fillStyle='#4a4260';x.fillRect(px-28,22,56,10);x.fillRect(px-28,200,56,10);x.fillStyle='#5e5676';x.fillRect(px-28,22,56,2);x.fillRect(px-28,200,56,2)}
- // 旗
- for(const bx of[176,464]){x.fillStyle='#3a3040';x.fillRect(bx-24,26,48,4);x.fillStyle='#5a1428';x.beginPath();x.moveTo(bx-20,30);x.lineTo(bx+20,30);x.lineTo(bx+20,112);x.lineTo(bx+12,104);x.lineTo(bx+4,116);x.lineTo(bx-4,104);x.lineTo(bx-12,114);x.lineTo(bx-20,106);x.fill();
+ // 旗（Ver2.36：v=1,2 は旗の代わりに置き物）
+ for(const bx of(v===1||v===2?[]:v===3?[464]:[176,464])){x.fillStyle='#3a3040';x.fillRect(bx-24,26,48,4);x.fillStyle='#5a1428';x.beginPath();x.moveTo(bx-20,30);x.lineTo(bx+20,30);x.lineTo(bx+20,112);x.lineTo(bx+12,104);x.lineTo(bx+4,116);x.lineTo(bx-4,104);x.lineTo(bx-12,114);x.lineTo(bx-20,106);x.fill();
   x.fillStyle='#3e0c1c';x.fillRect(bx+14,30,6,78);x.fillStyle='#c89a28';x.beginPath();x.moveTo(bx,46);x.lineTo(bx+10,60);x.lineTo(bx,76);x.lineTo(bx-10,60);x.fill();x.fillStyle='#5a1428';x.beginPath();x.moveTo(bx,54);x.lineTo(bx+4,60);x.lineTo(bx,68);x.lineTo(bx-4,60);x.fill()}
+ // Ver2.36 置き物 v=1：鉄格子の窓と鎖につながれた骨／v=2：骨を納めた壁の棚（地下墓地）／v=3：崩れた壁の穴の奥に洞窟／v=4：樽と木箱、上へ続く階段
+ if(v===1){for(const bx of[176,464]){x.fillStyle='#0c0a14';x.fillRect(bx-22,40,44,56);x.beginPath();x.arc(bx,40,22,Math.PI,0);x.fill();x.fillStyle='#05040a';x.fillRect(bx-18,42,36,52);x.beginPath();x.arc(bx,42,18,Math.PI,0);x.fill();const lg=x.createLinearGradient(0,26,0,96);lg.addColorStop(0,'rgba(140,150,200,.18)');lg.addColorStop(1,'rgba(140,150,200,0)');x.fillStyle=lg;x.fillRect(bx-18,26,36,70);x.fillStyle='#4a4458';for(let k=-12;k<=12;k+=8)x.fillRect(bx+k,24,4,72);x.fillRect(bx-18,60,36,3)}
+  const sx=226;for(const hx of[sx-12,sx+16]){for(let y=60;y<104;y+=6){x.fillStyle=(y/6)%2?'#3a3646':'#5a566a';x.fillRect(hx,y,2,6)}}x.fillStyle='#bcb4a0';x.fillRect(sx-2,98,18,14);x.fillStyle='#0c0a10';x.fillRect(sx+1,102,4,4);x.fillRect(sx+8,102,4,4);x.fillStyle='#a8a090';x.fillRect(sx+4,112,6,30);for(let k=0;k<4;k++)x.fillRect(sx-2,116+k*6,18,2);x.fillRect(sx-12,104,12,2);x.fillRect(sx+14,104,12,2);x.fillRect(sx,142,4,26);x.fillRect(sx+10,142,4,26)}
+ if(v===2){for(const ox of[112,392])for(let r=0;r<4;r++)for(let k=0;k<3;k++){const nx=ox+k*46,ny=36+r*40;x.fillStyle='#0c0a14';x.fillRect(nx-2,ny-2,40,30);x.fillStyle='#07060c';x.fillRect(nx,ny,36,26);x.fillStyle='#4a4458';x.fillRect(nx-2,ny+26,40,2);if((r*3+k+ox)%4){x.fillStyle='#c8c0ac';x.fillRect(nx+12,ny+12,12,10);x.fillRect(nx+14,ny+22,8,2);x.fillStyle='#0c0a10';x.fillRect(nx+14,ny+15,3,3);x.fillRect(nx+19,ny+15,3,3);x.fillStyle='#a8a090';x.fillRect(nx+4,ny+22,10,2)}}}
+ if(v===3){const hx=160,hy=70;x.fillStyle='#07050c';x.beginPath();x.moveTo(hx-60,208);x.lineTo(hx-66,150);x.lineTo(hx-40,96);x.lineTo(hx-6,hy);x.lineTo(hx+36,90);x.lineTo(hx+60,140);x.lineTo(hx+56,208);x.fill();const cg=x.createRadialGradient(hx,170,4,hx,170,80);cg.addColorStop(0,'rgba(150,80,220,.25)');cg.addColorStop(1,'rgba(150,80,220,0)');x.fillStyle=cg;x.fillRect(hx-70,80,140,130);
+  x.fillStyle='#16121e';for(let k=0;k<7;k++){const sx=hx-44+k*14;x.beginPath();x.moveTo(sx-5,hy+16+((k*5)%9));x.lineTo(sx+5,hy+16+((k*5)%9));x.lineTo(sx,hy+40+((k*11)%22));x.fill()}x.fillStyle='#2c2638';for(let k=0;k<14;k++)x.fillRect(F(hx-60+((k*37)%120)),F(hy+((k*53)%130)),8,6);
+  x.fillStyle='#28223a';x.beginPath();x.moveTo(hx-80,212);x.lineTo(hx-50,190);x.lineTo(hx-10,196);x.lineTo(hx+30,184);x.lineTo(hx+70,198);x.lineTo(hx+90,212);x.fill();x.fillStyle='#3a3448';for(let k=0;k<8;k++)x.fillRect(F(hx-60+k*18),F(194+((k*7)%10)),10,6)}
+ if(v===4){x.fillStyle='#2a1e18';for(let k=0;k<9;k++){const sx=470+k*16,sy=208-k*18;x.fillRect(sx,sy,24,4);x.fillStyle='#3e2c22';x.fillRect(sx,sy,24,2);x.fillStyle='#2a1e18'}x.fillRect(470,120,4,90);
+  for(const[bx,by]of[[110,180],[136,184],[122,156]]){x.fillStyle='#3a2a1e';x.fillRect(bx,by,22,26);x.fillStyle='#2a1e16';x.fillRect(bx,by+6,22,2);x.fillRect(bx,by+18,22,2);x.fillStyle='#4a3628';x.fillRect(bx+2,by,2,26)}
+  for(const[bx,by,w]of[[200,186,26],[224,194,18],[204,170,18]]){x.fillStyle='#3a2c20';x.fillRect(bx,by,w,w);x.fillStyle='#2a1e16';x.fillRect(bx+2,by+2,w-4,2);x.fillRect(bx+2,by+w-4,w-4,2);x.fillRect(bx+2,by+2,2,w-4);x.fillStyle='#4e3a2a';x.fillRect(bx,by,w,2)}}
  // 鎖
- for(const cx of[250,390]){for(let y=0;y<70;y+=6){x.fillStyle=(y/6)%2?'#3a3646':'#5a566a';x.fillRect(cx,y,4,6)}}
+ for(const cx of(v===4?[250]:[250,390])){for(let y=0;y<70;y+=6){x.fillStyle=(y/6)%2?'#3a3646':'#5a566a';x.fillRect(cx,y,4,6)}}
  // 松明
  for(const tx of[124,516]){const gl=x.createRadialGradient(tx,92,4,tx,92,90);gl.addColorStop(0,'rgba(255,170,70,.45)');gl.addColorStop(1,'rgba(255,170,70,0)');x.fillStyle=gl;x.fillRect(tx-90,2,180,180);
   x.fillStyle='#2a2430';x.fillRect(tx-6,100,12,4);x.fillRect(tx-2,104,4,12);x.fillStyle='#ff5a1e';x.beginPath();x.moveTo(tx-6,100);x.lineTo(tx,80);x.lineTo(tx+6,100);x.fill();x.fillStyle='#ffb02e';x.beginPath();x.moveTo(tx-4,100);x.lineTo(tx,86);x.lineTo(tx+4,100);x.fill();x.fillStyle='#fff3b0';x.fillRect(tx-2,94,4,6)}
@@ -1684,11 +1694,17 @@ function bgDungeon(){const c=MKC(640,360),x=c.getContext('2d'),rn=bgRng(9),F=v=>
  x.fillStyle='#d8d0bc';x.fillRect(92,236,8,6);x.fillRect(90,240,12,2);x.fillStyle='#0c0a10';x.fillRect(94,238,2,2);x.fillRect(98,238,2,2);x.fillStyle='#c8c0ac';x.fillRect(106,242,14,2);x.fillRect(560,250,16,2);x.fillRect(566,246,2,8);
  bgVig(x,.55);return c}
 // 第3層：機神の神殿（2px単位で描き直し）
-function bgTemple(){const c=MKC(640,360),x=c.getContext('2d'),rn=bgRng(77),F=v=>Math.floor(v/2)*2;
+function bgTemple(v){v=v||0;const c=MKC(640,360),x=c.getContext('2d'),rn=bgRng(77),F=v=>Math.floor(v/2)*2;
  const g=x.createLinearGradient(0,0,0,208);g.addColorStop(0,'#03091a');g.addColorStop(1,'#0c2c40');x.fillStyle=g;x.fillRect(0,0,640,360);
  for(let i=0;i<90;i++){x.fillStyle=rn()<.3?'#c8faff':'#2f6f86';x.fillRect(F(rn()*640),F(rn()*150),2,2)}
  const bg2=x.createLinearGradient(310,0,330,0);bg2.addColorStop(0,'rgba(95,246,255,0)');bg2.addColorStop(.5,'rgba(95,246,255,.3)');bg2.addColorStop(1,'rgba(95,246,255,0)');x.fillStyle=bg2;x.fillRect(296,0,48,100);
  for(let k=0;k<120;k++){const an=k/120*6.283;x.fillStyle=k%10?'rgba(95,246,255,.55)':'#ffd23f';x.fillRect(F(320+Math.cos(an)*124),F(96+Math.sin(an)*44),2,2)}
+ // Ver2.36 置き物 v=1：段の後ろの巨大な歯車／v=2：宙に浮く石板／v=3：天井から垂れる太い線（ケーブル）／v=4：倒れた柱と壊れた機械の残骸
+ if(v===1){const gx=320,gy=150,R1=150,R2=128;x.fillStyle='#071626';x.beginPath();x.arc(gx,gy,R1,Math.PI,0);x.fill();for(let k=0;k<24;k++){const a=Math.PI+k/24*Math.PI;x.save();x.translate(gx+Math.cos(a)*R1,gy+Math.sin(a)*R1);x.rotate(a);x.fillRect(0,-8,14,16);x.restore()}x.fillStyle='#03091a';x.beginPath();x.arc(gx,gy,R2-24,Math.PI,0);x.fill();
+  x.strokeStyle='rgba(95,246,255,.35)';x.lineWidth=2;x.beginPath();x.arc(gx,gy,R2,Math.PI,0);x.stroke();for(let k=0;k<6;k++){const a=Math.PI+(k+.5)/6*Math.PI;x.fillStyle='#071626';x.save();x.translate(gx,gy);x.rotate(a);x.fillRect(0,-5,R2-20,10);x.restore()}}
+ if(v===2)for(const[mx,my,w,h,t]of[[190,60,22,56,-.12],[248,30,16,40,.1],[440,44,24,62,.14],[398,24,14,34,-.08],[520,120,16,40,.05],[110,130,14,36,-.1]]){x.save();x.translate(mx,my);x.rotate(t);x.fillStyle='#081a2a';x.fillRect(-w/2,-h/2,w,h);x.fillStyle='#14324a';x.fillRect(-w/2,-h/2,2,h);x.fillStyle='rgba(95,246,255,.6)';for(let k=0;k<3;k++)x.fillRect(-w/2+4,-h/2+8+k*h/4,w-8,2);x.fillStyle='rgba(255,79,216,.6)';x.fillRect(-2,h/2-8,4,4);x.restore();x.fillStyle='rgba(95,246,255,.12)';x.fillRect(F(mx-w/2),F(my+h/2+10),w,2)}
+ if(v===3){for(const[x0,x1,sag,c1]of[[0,250,70,'#061220'],[160,420,50,'#081828'],[390,640,80,'#061220'],[60,300,110,'#0a1c2c'],[340,600,100,'#0a1c2c']]){x.strokeStyle=c1;x.lineWidth=8;x.beginPath();x.moveTo(x0,0);x.quadraticCurveTo((x0+x1)/2,sag*2,x1,0);x.stroke();x.strokeStyle='rgba(95,246,255,.25)';x.lineWidth=2;x.beginPath();x.moveTo(x0,-2);x.quadraticCurveTo((x0+x1)/2,sag*2-4,x1,-2);x.stroke();x.fillStyle='#ff4fd8';x.fillRect(F((x0+x1)/2)-2,F(sag)-2,4,4)}
+  for(const hx of[200,446]){x.fillStyle='#061220';x.fillRect(hx,0,6,120);x.fillStyle='#0e2436';x.fillRect(hx-6,120,18,12);x.fillStyle='#5ff6ff';x.fillRect(hx,132,6,2)}}
  for(let s=0;s<6;s++){const w=320-s*46,y=208-s*18,l=320-w/2;x.fillStyle=s%2?'#0e2436':'#0a1c2c';x.fillRect(l,y-18,w,18);x.fillStyle='rgba(95,246,255,.6)';x.fillRect(l,y-18,w,2);x.fillStyle='rgba(0,0,0,.3)';x.fillRect(l,y-2,w,2);
   for(let i=l+8;i<l+w-8;i+=24){x.fillStyle='rgba(255,79,216,.55)';x.fillRect(i,y-10,6,2);x.fillStyle='rgba(95,246,255,.18)';x.fillRect(i+10,y-14,2,10)}}
  x.fillStyle='#02060e';x.beginPath();x.moveTo(300,208);x.lineTo(300,160);x.lineTo(320,144);x.lineTo(340,160);x.lineTo(340,208);x.fill();x.strokeStyle='#5ff6ff';x.lineWidth=2;x.beginPath();x.moveTo(298,208);x.lineTo(298,159);x.lineTo(320,142);x.lineTo(342,159);x.lineTo(342,208);x.stroke();
@@ -1696,6 +1712,8 @@ function bgTemple(){const c=MKC(640,360),x=c.getContext('2d'),rn=bgRng(77),F=v=>
  for(const cx of[40,124,516,600]){const top=cx<80||cx>560?40:70;const cg=x.createLinearGradient(cx-14,0,cx+14,0);cg.addColorStop(0,'#10283a');cg.addColorStop(.4,'#244a62');cg.addColorStop(1,'#0c2030');x.fillStyle=cg;x.fillRect(cx-14,top,28,208-top);
   x.fillStyle='rgba(0,0,0,.3)';for(let k=-8;k<=8;k+=8)x.fillRect(cx+k-1,top+8,2,190-top);x.fillStyle='#b8d8e8';x.fillRect(cx-18,top-8,36,8);x.fillRect(cx-18,200,36,8);x.fillStyle='#e8f6ff';x.fillRect(cx-18,top-8,36,2);
   x.fillStyle='#5ff6ff';x.fillRect(cx-1,top+6,2,186-top);x.fillStyle='#ff4fd8';for(let y=top+16;y<196;y+=30){x.fillRect(cx-4,y,8,2);x.fillRect(cx-2,y-2,4,6)}}
+ if(v===4){x.fillStyle='#0c2030';x.save();x.translate(150,204);x.rotate(-.12);x.fillRect(0,-14,130,16);x.fillStyle='#244a62';x.fillRect(0,-14,130,4);x.fillStyle='#5ff6ff';x.fillRect(4,-8,120,2);x.fillStyle='#b8d8e8';x.fillRect(122,-18,12,24);x.restore();
+  for(const[dx,dy,w,h]of[[440,190,30,18],[470,196,20,12],[492,184,26,24],[420,200,16,8]]){x.fillStyle='#0a1c2c';x.fillRect(dx,dy,w,h);x.fillStyle='#14324a';x.fillRect(dx,dy,w,2);x.fillStyle='#ff4fd8';x.fillRect(dx+4,dy+6,2,2)}x.fillStyle='#0e2436';x.beginPath();x.arc(506,182,12,Math.PI,0);x.fill();x.fillStyle='#5ff6ff';x.fillRect(500,176,4,2);x.fillRect(510,176,4,2)}
  x.fillStyle='#0a1826';x.fillRect(0,208,640,152);x.fillStyle='#5ff6ff';x.fillRect(0,208,640,2);
  x.globalAlpha=.18;for(const cx of[40,124,516,600]){x.fillStyle='#5ff6ff';x.fillRect(cx-1,212,2,60);x.fillStyle='#244a62';x.fillRect(cx-14,212,28,40)}x.fillStyle='#ff4fd8';x.fillRect(306,212,28,30);x.globalAlpha=1;
  x.fillStyle='rgba(95,246,255,.2)';for(let y=214,dy=4;y<360;dy*=1.35,y+=dy)x.fillRect(0,F(y),640,2);for(let i=-12;i<=12;i++){const x0=320+i*28,x1=320+i*110;for(let yy=210;yy<360;yy+=2)x.fillRect(F(x0+(x1-x0)*(yy-210)/150),yy,2,2)}
@@ -1711,7 +1729,46 @@ const fog=(x,y,h,c,a)=>{const g=x.createLinearGradient(0,y,0,y+h);g.addColorStop
 const stars=(x,rn,n,cs)=>{for(let i=0;i<n;i++){x.fillStyle=cs[i%cs.length];x.fillRect(F(rn()*640),F(rn()*150),2,2)}};
 const ground=(x,rn,c0,c1,c2,blades,top)=>{const gr=x.createLinearGradient(0,208,0,360);gr.addColorStop(0,c0);gr.addColorStop(.2,c1);gr.addColorStop(1,c2);x.fillStyle=gr;x.fillRect(0,208,640,152);x.fillStyle=top;x.fillRect(0,208,640,2);
  for(let i=0;i<700;i++){const gx=F(rn()*640),gy=F(212+Math.pow(rn(),1.4)*148),h=F(2+rn()*6*(gy-200)/90)+2;x.fillStyle=blades[i%blades.length];x.beginPath();x.moveTo(gx,gy);x.lineTo(gx+(rn()-.5)*4,gy-h);x.lineTo(gx+2,gy);x.fill()}};
-function bf(){const c=MKC(640,360),x=c.getContext('2d'),rn=bgRng(47);
+const Rc=(x,a,b,w,h,c)=>{x.fillStyle=c;x.fillRect(F(a),F(b),Math.max(2,F(w)),Math.max(2,F(h)))};
+const poly=(x,c,pts)=>{x.fillStyle=c;x.beginPath();pts.forEach((p,i)=>x[i?'lineTo':'moveTo'](p[0],p[1]));x.fill()};
+// Ver2.36 戦闘ごとに変わる置き物（v=1 墓地／2 礼拝堂／3 石の遺跡／4 丘の上の塔／5 打ち捨てられた小屋）。遠景（奥の木の霧の前）
+const FAR='#12222a',FARH='#22383e',MID='#061012',MIDH='#16282a',WIN='rgba(150,220,200,.35)';
+const far=[
+ // 墓地：奥の木のあいだに霧に沈む門
+ x=>{Rc(x,286,150,6,60,FAR);Rc(x,348,150,6,60,FAR);poly(x,FAR,[[284,150],[289,142],[294,150]]);poly(x,FAR,[[346,150],[351,142],[356,150]]);x.strokeStyle=FAR;x.lineWidth=2;x.beginPath();x.moveTo(292,160);x.quadraticCurveTo(320,138,348,160);x.stroke();for(let i=0;i<7;i++)Rc(x,296+i*8,160-Math.sin((i+.5)/7*Math.PI)*12,2,50,FAR)},
+ // 礼拝堂：尖塔と崩れた屋根
+ x=>{const b=150;Rc(x,b,120,70,90,FAR);poly(x,FAR,[[b-4,122],[b+35,92],[b+74,122]]);poly(x,'#0a161a',[[b+40,98],[b+60,112],[b+50,122],[b+42,112]]);Rc(x,b+6,70,20,60,FAR);poly(x,FAR,[[b+4,70],[b+16,30],[b+28,70]]);Rc(x,b+15,22,2,10,FAR);Rc(x,b+11,26,10,2,FAR);
+  Rc(x,b+12,84,8,12,'#040a0b');x.fillStyle=WIN;x.fillRect(b+14,86,4,8);Rc(x,b+30,140,10,18,'#040a0b');Rc(x,b+50,140,10,18,'#040a0b');Rc(x,b,120,2,90,FARH);Rc(x,b+6,70,2,60,FARH);for(let k=1;k<6;k++)Rc(x,b,120+k*15,70,1,'#0c181c');Rc(x,b+28,166,14,44,'#040a0b');x.fillStyle='#040a0b';x.beginPath();x.arc(b+35,166,7,Math.PI,0);x.fill()},
+ // 石の遺跡：遠くの崩れた柱の列
+ x=>{for(const[px,h,br]of[[380,70,0],[420,84,0],[460,56,1],[500,78,0],[540,40,1]]){Rc(x,px,210-h,14,h,FAR);Rc(x,px-3,210-h-4,20,4,FAR);Rc(x,px,210-h,2,h,FARH);if(br)poly(x,FAR,[[px,210-h],[px+6,210-h-8],[px+14,210-h]])}Rc(x,377,124,64,8,FAR);Rc(x,497,128,30,6,FAR)},
+ // 遠くの塔：丘の上の古い見張り塔
+ x=>{poly(x,'#0c1719',[[60,210],[160,168],[260,176],[340,210]]);const t=170;Rc(x,t,60,34,120,FAR);for(let k=0;k<4;k++)Rc(x,t-4+k*12,52,8,10,FAR);Rc(x,t-4,60,42,4,FAR);Rc(x,t,60,2,120,FARH);Rc(x,t+12,80,6,10,'#040a0b');x.fillStyle=WIN;x.fillRect(t+14,82,2,6);Rc(x,t+20,120,6,10,'#040a0b');poly(x,'#0a1517',[[t+34,90],[t+44,100],[t+34,110]]);poly(x,'#0c1618',[[t+26,60],[t+34,52],[t+34,70]])},
+ // 小屋：遠くには何もなし（手前に置く）
+ x=>{}];
+// 中景（奥の木より前、手前の木より後ろ）
+const mid=[
+ x=>{// 墓地：墓標・十字架・鉄柵
+  for(const[gx,s,cr]of[[110,1,0],[140,.8,1],[178,1.1,0],[214,.9,1],[420,1,1],[452,.9,0],[492,1.2,0],[530,.8,1],[566,1,0]]){if(cr){Rc(x,gx-2*s,210-22*s,4*s,22*s,MID);Rc(x,gx-8*s,210-16*s,16*s,4*s,MID)}else{Rc(x,gx-6*s,210-14*s,12*s,14*s,MID);x.fillStyle=MID;x.beginPath();x.arc(gx,210-14*s,6*s,Math.PI,0);x.fill();Rc(x,gx-6*s,210-14*s,2,12*s,MIDH)}}
+  for(let i=0;i<14;i++){const fx=240+i*12;Rc(x,fx,186,2,24,MID);poly(x,MID,[[fx-2,186],[fx+1,180],[fx+4,186]])}Rc(x,240,192,160,2,MID);Rc(x,240,202,160,2,MID)},
+ x=>{// 礼拝堂：手前に崩れた塀
+  Rc(x,60,178,120,32,MID);for(let i=0;i<8;i++)Rc(x,60+i*16,174-((i*7)%10),12,6,MID);Rc(x,60,178,120,2,MIDH);Rc(x,96,190,14,20,'#030809')},
+ x=>{// 石の遺跡：手前の大きな崩れたアーチ
+  const ax=150;Rc(x,ax,110,22,100,MID);Rc(x,ax+90,140,22,70,MID);x.strokeStyle=MID;x.lineWidth=14;x.beginPath();x.arc(ax+56,124,45,Math.PI,Math.PI*1.62);x.stroke();Rc(x,ax,110,2,100,MIDH);Rc(x,ax+90,140,2,70,MIDH);for(let k=1;k<6;k++){Rc(x,ax,110+k*16,22,2,'#020607')}
+  poly(x,MID,[[ax+86,210],[ax+96,196],[ax+120,200],[ax+130,210]]);poly(x,MID,[[ax+20,210],[ax+30,200],[ax+44,210]])},
+ x=>{// 遠くの塔：手前に古い道標
+  Rc(x,460,170,4,40,MID);poly(x,MID,[[464,172],[492,172],[498,177],[492,182],[464,182]]);poly(x,MID,[[460,186],[436,186],[430,191],[436,196],[460,196]])},
+ x=>{// 小屋：傾いた小屋・井戸・壊れた荷車
+  const hx=430;poly(x,MID,[[hx-6,160],[hx+40,128],[hx+92,156],[hx+88,162],[hx+40,134],[hx-2,164]]);Rc(x,hx,156,84,54,MID);Rc(x,hx,156,2,54,MIDH);Rc(x,hx+12,176,14,12,'#030809');x.fillStyle=WIN;x.fillRect(hx+16,178,4,8);Rc(x,hx+52,174,16,36,'#030809');for(let k=0;k<5;k++)Rc(x,hx+4+k*16,156+((k*5)%3)*2,2,54,'rgba(0,0,0,.35)');Rc(x,hx+60,120,8,20,MID);
+  Rc(x,180,186,30,24,MID);Rc(x,176,184,38,4,MID);Rc(x,182,160,2,26,MID);Rc(x,206,160,2,26,MID);Rc(x,180,158,30,4,MID);Rc(x,194,162,2,12,MID);Rc(x,180,186,2,24,MIDH);
+  Rc(x,280,196,56,8,MID);x.strokeStyle=MID;x.lineWidth=3;x.beginPath();x.arc(290,206,8,0,7);x.stroke();Rc(x,336,198,24,2,MID)}];
+// 地面の小物（キャラの後ろ、手前には置かない）
+const gnd=[
+ x=>{for(const[gx,gy]of[[40,222],[600,224]]){Rc(x,gx,gy-12,10,12,'#0a1414');Rc(x,gx,gy-12,2,10,'#1a2c2c')}},
+ x=>{},
+ x=>{for(const[gx,gy,w]of[[30,222,20],[590,220,26],[250,216,12]]){Rc(x,gx,gy-6,w,6,'#0c1818');Rc(x,gx,gy-6,w,2,'#1e3434')}},
+ x=>{},
+ x=>{Rc(x,560,212,24,8,'#0a1414');Rc(x,560,212,24,2,'#1a2c2c')}];
+function bf(v){v=v||0;const w=v-1;const c=MKC(640,360),x=c.getContext('2d'),rn=bgRng(47);
  const g=x.createLinearGradient(0,0,0,210);g.addColorStop(0,'#03040a');g.addColorStop(.6,'#0a1418');g.addColorStop(1,'#14262a');x.fillStyle=g;x.fillRect(0,0,640,360);
  stars(x,rn,40,['#3a4a50','#5a6a70']);
  for(let i=0;i<7;i++){const cx=F(rn()*640),cy=F(30+rn()*80),w=F(110+rn()*160);x.fillStyle='rgba(4,8,10,.85)';x.fillRect(cx,cy,w,8);x.fillRect(cx+20,cy-4,F(w*.6),4)}
@@ -1719,19 +1776,23 @@ function bf(){const c=MKC(640,360),x=c.getContext('2d'),rn=bgRng(47);
  fog(x,120,90,'90,160,140',.16);
  for(let k=0;k<26;k++){const tx=F(rn()*660-10),s=.5+rn()*.4;tree(x,rn,tx,206,60*s,-1.57+(rn()-.5)*.15,8*s,4,'#0c1618')}
  fog(x,150,70,'90,170,150',.22);
+ if(v){x.save();if(v===2){x.translate(150,210);x.scale(1.5,1.5);x.translate(-150,-210)}if(v===4){x.translate(190,210);x.scale(1.25,1.25);x.translate(-190,-210)}far[w](x);x.restore();fog(x,100,110,'90,170,150',.1);{const r4=bgRng(77+w);for(let k=0;k<8;k++){const tx=F(r4()*640),s=.55+r4()*.3;tree(x,r4,tx,208,60*s,-1.57+(r4()-.5)*.15,8*s,4,'#0a1416')}}mid[w](x)}
  for(let k=0;k<16;k++){const tx=F(rn()*660-10),s=.75+rn()*.5;tree(x,rn,tx,214,62*s,-1.57+(rn()-.5)*.2,12*s,5,'#030607')}
  ground(x,rn,'#16262a','#0f1c1e','#040808',['#1c3030','#122224','#28403c','#0c1616'],'#2a4440');
+ if(v)gnd[w](x);
  fog(x,190,50,'110,190,170',.28);
  for(let i=0;i<24;i++){const fx=F(rn()*640),fy=F(222+rn()*80);x.fillStyle='#0a1414';x.fillRect(fx,fy,8,2);x.fillStyle='#1e3634';x.fillRect(fx+2,fy-2,4,2)}
  return c}
 return bf})();
 // 沈没都市の戦闘背景（参考画像の構図：地下に沈んだ神殿の柱廊、中央の大アーチの奥から光、上から光の筋。キャラが立つのは濡れた石畳の床、水は奥の門と柱の根元だけ）
-function bgSunk(){const c=MKC(640,360),x=c.getContext('2d');x.imageSmoothingEnabled=false;const mkR=sd=>{let s=sd;return()=>(s=(s*16807)%2147483647)/2147483647},P2=v=>Math.round(v/2)*2,R=(x,a,b,w,h,c)=>{x.fillStyle=c;x.fillRect(P2(a),P2(b),Math.max(2,P2(w)),Math.max(2,P2(h)))},grad=(x,y0,y1,cs)=>{const g=x.createLinearGradient(0,y0,0,y1);cs.forEach((c,i)=>g.addColorStop(i/(cs.length-1),c));return g},glow=(x,cx,cy,rx,ry,c)=>{x.save();x.translate(cx,cy);x.scale(1,ry/rx);const g=x.createRadialGradient(0,0,1,0,0,rx);g.addColorStop(0,c);g.addColorStop(1,'rgba(0,0,0,0)');x.globalCompositeOperation='lighter';x.fillStyle=g;x.fillRect(-rx,-rx,rx*2,rx*2);x.restore();x.globalCompositeOperation='source-over'};
+function bgSunk(v){v=v||0;const c=MKC(640,360),x=c.getContext('2d');x.imageSmoothingEnabled=false;const mkR=sd=>{let s=sd;return()=>(s=(s*16807)%2147483647)/2147483647},P2=v=>Math.round(v/2)*2,R=(x,a,b,w,h,c)=>{x.fillStyle=c;x.fillRect(P2(a),P2(b),Math.max(2,P2(w)),Math.max(2,P2(h)))},grad=(x,y0,y1,cs)=>{const g=x.createLinearGradient(0,y0,0,y1);cs.forEach((c,i)=>g.addColorStop(i/(cs.length-1),c));return g},glow=(x,cx,cy,rx,ry,c)=>{x.save();x.translate(cx,cy);x.scale(1,ry/rx);const g=x.createRadialGradient(0,0,1,0,0,rx);g.addColorStop(0,c);g.addColorStop(1,'rgba(0,0,0,0)');x.globalCompositeOperation='lighter';x.fillStyle=g;x.fillRect(-rx,-rx,rx*2,rx*2);x.restore();x.globalCompositeOperation='source-over'};
 const r=mkR(5),C0='#020809',C1='#061416',C2='#0b2224',C3='#12363a',C4='#1e5a5c',C5='#3a9a96',C6='#8ae8dc';
  // 奥の空間：中央ほど明るい
  x.fillStyle=C1;x.fillRect(0,0,640,208);glow(x,320,120,320,170,'rgba(40,150,150,.7)');glow(x,320,110,130,130,'rgba(110,230,215,.45)');
  // 奥の街の影（尖塔）
  for(let i=0;i<14;i++){const bx=230+i*13+(r()*6),bh=30+r()*50;R(x,bx,190-bh,8+r()*6,bh,'rgba(10,40,44,.85)');if(r()<.5){x.fillStyle='rgba(10,40,44,.85)';x.beginPath();x.moveTo(bx-2,190-bh);x.lineTo(bx+5,190-bh-14);x.lineTo(bx+12,190-bh);x.fill()}}
+ // Ver2.36 置き物 v=2：門の奥に沈んだ大きな船の影
+ if(v===2){x.fillStyle='rgba(6,30,34,.92)';x.beginPath();x.moveTo(262,176);x.lineTo(286,150);x.lineTo(372,140);x.lineTo(392,118);x.lineTo(386,170);x.lineTo(350,186);x.lineTo(276,188);x.fill();R(x,312,88,4,58,'rgba(6,30,34,.92)');R(x,346,72,4,70,'rgba(6,30,34,.92)');R(x,300,100,30,2,'rgba(6,30,34,.92)');R(x,334,86,32,2,'rgba(6,30,34,.92)');x.strokeStyle='rgba(6,30,34,.8)';x.lineWidth=2;x.beginPath();x.moveTo(314,90);x.lineTo(286,150);x.moveTo(348,74);x.lineTo(388,122);x.stroke();for(let k=0;k<4;k++)R(x,296+k*18,162,6,4,'rgba(2,14,16,.9)')}
  // 光の筋
  x.globalCompositeOperation='lighter';for(const[lx,lw,a]of[[300,10,.22],[316,6,.3],[330,12,.2],[344,6,.18],[286,6,.14],[360,8,.12]]){const g=x.createLinearGradient(0,0,0,200);g.addColorStop(0,'rgba(170,255,240,'+a+')');g.addColorStop(1,'rgba(120,230,220,0)');x.fillStyle=g;x.beginPath();x.moveTo(lx,0);x.lineTo(lx+lw,0);x.lineTo(lx+lw+(lx-320)*.3,200);x.lineTo(lx+(lx-320)*.3,200);x.fill()}x.globalCompositeOperation='source-over';
  // 左右の奥へ続く柱廊（遠い順に）
@@ -1750,6 +1811,13 @@ const r=mkR(5),C0='#020809',C1='#061416',C2='#0b2224',C3='#12363a',C4='#1e5a5c',
  // 奥の水：門と柱の根元が沈む浅い水路（y=176〜206）。背景だけが映る
  const wy=178;x.save();x.beginPath();x.rect(0,wy,640,30);x.clip();x.fillStyle=grad(x,wy,208,['#1e7a76','#0e4446']);x.fillRect(0,wy,640,30);x.globalAlpha=.4;x.translate(0,wy*2);x.scale(1,-1);x.drawImage(x.canvas,0,wy-40,640,40,0,wy-40,640,40);x.restore();
  glow(x,320,wy+6,200,14,'rgba(110,240,225,.45)');for(let y=wy+2;y<206;y+=3)for(let i=0;i<6;i++)R(x,180+r()*280,y,6+r()*18,2,'rgba(170,255,240,'+(.3-(y-wy)*.008)+')');
+ // Ver2.36 置き物 v=1：倒れた柱と顔のない像／v=3：天井から下がる鎖とかご、床に落ちた鐘／v=4：巨大な生き物のあばら骨
+ if(v===1){x.fillStyle=C2;x.beginPath();x.moveTo(110,206);x.lineTo(118,190);x.lineTo(236,176);x.lineTo(240,192);x.fill();R(x,118,188,118,2,C4);for(let k=0;k<5;k++)R(x,132+k*22,184-k*2,2,14,C1);R(x,232,172,14,24,C3);R(x,232,172,2,24,C5);
+  x.save();x.translate(476,208);x.scale(1.4,1.4);x.translate(-476,-208);const sx=476;R(x,sx-14,196,28,12,C2);R(x,sx-14,196,28,2,C4);x.fillStyle=C2;x.beginPath();x.moveTo(sx-12,196);x.lineTo(sx-10,140);x.quadraticCurveTo(sx,116,sx+10,140);x.lineTo(sx+12,196);x.fill();x.fillStyle=C0;x.beginPath();x.ellipse(sx,142,6,9,0,0,7);x.fill();R(x,sx-10,140,2,56,C4);R(x,sx-4,162,8,30,C1);x.restore()}
+ if(v===3){for(const[cx,L]of[[196,96],[214,70],[430,60],[452,110]])for(let y=8;y<L;y+=6)R(x,cx,y,4,6,(y/6)%2?C1:C3);const gx=452;R(x,gx-14,110,30,4,C3);R(x,gx-14,140,30,4,C3);for(let k=0;k<5;k++)R(x,gx-14+k*7,112,2,30,C2);R(x,gx-14,110,30,2,C5);
+  x.fillStyle=C2;x.beginPath();x.moveTo(150,208);x.quadraticCurveTo(154,176,176,172);x.quadraticCurveTo(198,176,202,208);x.fill();R(x,152,204,52,4,C3);R(x,174,168,4,6,C3);R(x,160,180,2,24,C4)}
+ if(v===4){for(let k=0;k<6;k++){const bx=180+k*56,h=96-Math.abs(k-2.5)*14,dir=k<3?1:-1;x.strokeStyle=C1;x.lineWidth=8;x.beginPath();x.moveTo(bx,210);x.quadraticCurveTo(bx-dir*30,210-h,320+(k-2.5)*8,214-h*1.2);x.stroke();x.strokeStyle=C4;x.lineWidth=2;x.beginPath();x.moveTo(bx+3,210);x.quadraticCurveTo(bx-dir*30+3,210-h,320+(k-2.5)*8+2,214-h*1.2);x.stroke()}
+  for(let k=0;k<9;k++)R(x,296+k*6-((k*3)%5),88+(k%2)*2,6,8,C2)}
  // 手前の足場：濡れた大きな石畳の床（神殿の床）。奥の縁は水に面した段
  x.fillStyle=grad(x,206,360,['#173638','#0e2224','#071214','#030809']);x.fillRect(0,206,640,154);
  R(x,0,204,640,4,'#2e6e6c');R(x,0,208,640,2,'#071214');
@@ -1802,6 +1870,10 @@ const BGBV=bgVoid();
 const BGB3=bgTemple(),BGM3=(()=>{const c=document.createElement('canvas');c.width=640;c.height=360;const x=c.getContext('2d');const g=x.createLinearGradient(0,0,0,360);g.addColorStop(0,'#0a2a3c');g.addColorStop(1,'#030a16');x.fillStyle=g;x.fillRect(0,0,640,360);let sd=5;const rn=()=>(sd=(sd*16807)%2147483647)/2147483647;
 x.fillStyle='rgba(95,246,255,.07)';for(let i=0;i<640;i+=32)x.fillRect(i,0,1,360);for(let j=0;j<360;j+=32)x.fillRect(0,j,640,1);
 for(let i=0;i<90;i++){x.fillStyle=rn()<.5?'#2f8aa0':'#9af6ff';x.fillRect(Math.floor(rn()*160)*4,Math.floor(rn()*90)*4,4,4)}return c})();
+// Ver2.36 戦闘の背景は、層ごとに置き物の違う版を戦闘ごとに選ぶ（色・雰囲気は同じ）。ak は bgAnim 用の層の印
+BGB1.ak=1;BGB1S.ak='s';BGB2.ak=2;BGB3.ak=3;const BGVC={},BGVN={1:5,s:4,2:4,3:4};
+function bgVar(k,v){if(!v)return k==='s'?BGB1S:[0,BGB1,BGB2,BGB3][k];const id=k+'_'+v;if(!BGVC[id]){const c=k==='s'?bgSunk(v):k===1?bgForest(v):k===2?bgDungeon(v):bgTemple(v);c.ak=k;BGVC[id]=c}return BGVC[id]}
+function bgPick(kind){const a=Math.max(1,Math.min(3,P.act||1)),k=a===1&&P.v1==='s'?'s':a;if(kind===2)return bgVar(k,0);const n=BGVN[k],h=Math.abs((a*131+(CUR?CUR.f:0)*37+(CUR?CUR.j:0)*11+(P.path?P.path.length:0)*7)*2654435761|0);return bgVar(k,h%(n+1))}
 /* ===== データ ===== */
 const C=[
 {n:'斬撃',t:0,c:1,r:-1,a:6},{n:'防御',t:1,c:1,r:-1,b:5},{n:'強打',t:0,c:2,r:-1,a:8,vu:2},
@@ -2202,7 +2274,7 @@ for(const k of MUTE1)for(const n of Object.keys(SPR))if(n===k||n===k+'_z'||n.sta
 // 飛ぶ雑魚：本当に宙に浮かせ、種類ごとに凝った飛び方（eMot の flyIdle）。h 浮く高さ・tr 残像
 const FLYP={ulens:{h:22,k:'drone'},bat:{h:30,k:'bat'},gargoyle:{h:20,k:'garg'},wisp:{h:26,k:'wisp',tr:1},drone:{h:24,k:'drone'},seraph:{h:18,k:'ser'},mothF:{h:22,k:'moth'},mothF2:{h:22,k:'moth'}};for(const k in FLYP)if(E[k])E[k].fly=FLYP[k].h;
 
-function fight(ks,kind){if(MPON()&&!(MPB&&MPB.init)&&!ks.includes('eye'))return mpFight(ks,kind);PS={orb:[],osl:3,foc:0,nwd:0,mig:0,sdc:0,lop:0,stm:0,shr:0,cai:0,eld:0,bcg:0,clwBk:0,forge:0,fnp:0,hlD:0,dsDr:0,fgT:0,fgAt:0,grA:0,dmP:0,strL:0,z0D:0,clwT:0,slyA:0,dbT:0,z0E:0,atKi:0,str:0,weak:0,vuln:0,poison:0,met:0,dem:0,rage:0,barr:0,comb:0,brut:0,tmp:0,dex:0,thn:0,nox:0,ibl:0,aft:0,cut:0,ki:0,cnt:0,kig:0,iai:0,zan:0,dd:0,mana:0,mgt:0,chs:0,pg:0,echo:0,arc:0,rgn:0,itg:0,sls:0,blkd:0,egy:0,psn:0,hpb:0,bers:0,udy:0,ftw:0,a3e:0,svb:0,dsd:0,pmul:0,fz:0,kdr:0,ct2:0,ksd:0,vamp:0,kfst:0,slot:0,chb:0,rech:0,chD:0,msd:0,stb:0,ms2:0,msf:0,qyp:0,gw:0,shvd:0,zt:0,mirT:0};
+function fight(ks,kind){if(MPON()&&!(MPB&&MPB.init)&&!ks.includes('eye'))return mpFight(ks,kind);if(BGB!==BGBV)BGB=bgPick(kind);PS={orb:[],osl:3,foc:0,nwd:0,mig:0,sdc:0,lop:0,stm:0,shr:0,cai:0,eld:0,bcg:0,clwBk:0,forge:0,fnp:0,hlD:0,dsDr:0,fgT:0,fgAt:0,grA:0,dmP:0,strL:0,z0D:0,clwT:0,slyA:0,dbT:0,z0E:0,atKi:0,str:0,weak:0,vuln:0,poison:0,met:0,dem:0,rage:0,barr:0,comb:0,brut:0,tmp:0,dex:0,thn:0,nox:0,ibl:0,aft:0,cut:0,ki:0,cnt:0,kig:0,iai:0,zan:0,dd:0,mana:0,mgt:0,chs:0,pg:0,echo:0,arc:0,rgn:0,itg:0,sls:0,blkd:0,egy:0,psn:0,hpb:0,bers:0,udy:0,ftw:0,a3e:0,svb:0,dsd:0,pmul:0,fz:0,kdr:0,ct2:0,ksd:0,vamp:0,kfst:0,slot:0,chb:0,rech:0,chD:0,msd:0,stb:0,ms2:0,msf:0,qyp:0,gw:0,shvd:0,zt:0,mirT:0};
 B={en:MPB&&MPB.sen?MPB.sen:ks.map(k=>{const d=E[k],hp=Math.round((d.hp[0]+RI(d.hp[1]-d.hp[0]+1))*(MPB?mpHpM(MPB.np):1)*(d.el===1?(Aa(3)?1.15:1):d.el===2?(Aa(4)?1.1:1):d.mn?1:1.75*(Aa(2)?1.1:1)*(P.act===3?1.25:1)));return{k,n:d.n,hp,mh:hp,i:0,str:0,weak:0,vuln:0,poison:0,blk:0,mv:d.mv,el:d.el||0,enr:d.en,sl:d.sl||0,sb:d.sb||0,seal:d.seal||0,lim:d.lim||0,tf:d.tf||0,fly:d.fly||0,thr:d.thr||0,ph:d.ph||0,spl:d.spl||0,inv:d.inv||0,mn:d.mn||0,ld:d.ld||0,pr:d.pr||0,pt:d.pt||0,rv:d.rv||0,pst:d.pst||0,cap:d.cap?Math.round(d.cap*(MPB?mpHpM(MPB.np):1)):0,lost:0,dsp:d.dsp||0,dmp:d.dmp||0,hex:d.hex||0,rit:d.rit||0,avg:d.avg||0,fl:0,sh:0,lg:0,dead:0,it:d.mv[0]}}),
 hand:[],dr:shuf(P.deck.map(o=>({...o}))),dis:[],ex:[],me:3,blk:0,turn:0,ph:'p',sel:-1,kind,boss:kind===2,bi:null,tut:kind===0&&!MPON()&&!tutDone()?{s:0,t0:T}:null,atks:0,vt:0,et:0,ei:0,lg:0,sh:0,dsc:0,bn:null,pl:0,fa:0,ch:[],g1:0,bkt:-9,fly:[],nd:0,lt:0};
 {B.dr=pfTop(B.dr);const isI=o=>C[o.i].inn||o.en==='royal',inn=B.dr.filter(isI);B.dr=B.dr.filter(o=>!isI(o)).concat(inn)}if(has('philo'))for(const e of B.en)e.str+=1;if(has('seye')){for(let k=0;k<2;k++)B.dr.push({i:CI('目眩'),u:0});shuf(B.dr)}if(has('mpain')){for(let k=0;k<2;k++)B.dr.push({i:CI('負傷'),u:0});shuf(B.dr)}if(has('dumb'))PS.str+=1;if(has('ring'))PS.str+=2;if(has('anchor'))B.blk=10;if(has('sya'))PS.ki+=2;if(P.cls===2&&!P.hintK){P.hintK=1;say('気と居合の説明は「？説明」→「坪内丸」を参照')}if(P.cls===3&&!P.hintM){P.hintM=1;say('詠唱と魔力の説明は「？説明」→「名無し」を参照')}if(has('lens'))PS.mana+=2;B.lch=0;if(has('ddisk'))PS.foc+=1;if(has('rcap'))PS.osl+=3;if(has('ccore'))oChan('L');if(has('svir'))oChan('D');if(has('nbat'))oChan('P');if(P.cls===6&&!P.hintN){P.hintN=1;say('小クラゲの説明は「？説明」→「ネブラ」を参照')}if(has('dice'))PS.str+=RI(3);
@@ -2531,10 +2603,10 @@ function eDeath(e,i){const im=SPR[e.k];if(!im)return;if(T<e.dT){const q=ePos(i);
  else{ctx.drawImage(im,Math.round(X-w/2+t*220),Y-h)}
  if(t<.15){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=(1-t/.15)*.7;if(st==='fall'||st==='splat')ctx.drawImage(im,st==='fall'?-w*.8:-w/2,-h);else ctx.drawImage(im,Math.round(X-w/2),Y-h)}ctx.restore()}
 // 戦闘背景の動き：草原は草が揺れて蛍が飛ぶ／地下は松明の炎がゆらめく／神殿は光の筋と光の粒（ユーザー指定）
-function bgAnim(){if(typeof BGB1S!=='undefined'&&BGB===BGB1S){ctx.globalCompositeOperation='lighter';for(const[k,lx,lw]of[[0,300,10],[1,316,6],[2,330,12],[3,344,6]]){const a2=.03+.035*(.5+.5*Math.sin(T*1.1+k*1.7)),g=ctx.createLinearGradient(0,0,0,200);g.addColorStop(0,'rgba(170,255,240,'+a2+')');g.addColorStop(1,'rgba(120,230,220,0)');ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(lx,0);ctx.lineTo(lx+lw,0);ctx.lineTo(lx+lw+(lx-320)*.3,200);ctx.lineTo(lx+(lx-320)*.3,200);ctx.fill()}
+function bgAnim(){if(BGB&&BGB.ak==='s'){ctx.globalCompositeOperation='lighter';for(const[k,lx,lw]of[[0,300,10],[1,316,6],[2,330,12],[3,344,6]]){const a2=.03+.035*(.5+.5*Math.sin(T*1.1+k*1.7)),g=ctx.createLinearGradient(0,0,0,200);g.addColorStop(0,'rgba(170,255,240,'+a2+')');g.addColorStop(1,'rgba(120,230,220,0)');ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(lx,0);ctx.lineTo(lx+lw,0);ctx.lineTo(lx+lw+(lx-320)*.3,200);ctx.lineTo(lx+(lx-320)*.3,200);ctx.fill()}
   for(let k=0;k<22;k++){const x=190+((k*53+T*14)%260),y=180+((k*7)%24),a2=.35*Math.abs(Math.sin(T*2.6+k*1.3));ctx.fillStyle='rgba(190,255,240,'+a2+')';ctx.fillRect(Math.round(x),Math.round(y),k%3?2:4,2)}
   for(let k=0;k<14;k++){const q=(T*.04+k/14)%1,x=200+((k*97)%240)+Math.sin(T*.5+k)*6,y=200-q*200;ctx.fillStyle='rgba(170,255,240,'+(Math.sin(q*3.14)*.35)+')';ctx.fillRect(Math.round(x),Math.round(y),2,2)}ctx.globalCompositeOperation='source-over';return}
- const a=BGB===BGB1?1:BGB===BGB2?2:BGB===BGB3?3:0;
+ const a=BGB&&typeof BGB.ak==='number'?BGB.ak:0;
  if(a===1){for(let k=0;k<3;k++){const y=150+k*26,sp=6+k*4,ox=(T*sp+k*211)%960-320,g=ctx.createLinearGradient(0,y-14,0,y+14);g.addColorStop(0,'rgba(110,190,170,0)');g.addColorStop(.5,'rgba(110,190,170,'+(.07+.03*k)+')');g.addColorStop(1,'rgba(110,190,170,0)');ctx.fillStyle=g;for(let j=0;j<3;j++){const x0=ox+j*320;ctx.fillRect(Math.round(x0),y-14,220,28)}}
   for(let k=0;k<7;k++){const ex=64+((k*157)%540),ey=150+((k*67)%46),ph=(T*.21+k*.37)%1,on=ph<.82&&!(ph>.4&&ph<.43);if(!on)continue;const a2=Math.min(1,ph*5,(0.82-ph)*8),cc=k%3?'#ff3b3b':'#e8ff6a';ctx.globalAlpha=a2*.18;ctx.fillStyle=cc;ctx.fillRect(ex-2,ey-2,12,6);ctx.globalAlpha=a2;ctx.fillRect(ex,ey,2,2);ctx.fillRect(ex+6,ey,2,2)}ctx.globalAlpha=1;
   for(let k=0;k<6;k++){const q=(T*.05+k/6)%1,x=(k*131+q*90)%640,y=200-q*90+Math.sin(T+k)*4;ctx.globalAlpha=Math.sin(q*3.14)*.35;pc(x,y,2,'#9ad8c0')}ctx.globalAlpha=1}
