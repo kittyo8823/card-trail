@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.37';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.38';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2745,17 +2745,42 @@ function drawLPV(){if(!LPV)return;btns=[];ENI=[];const o=LPV.o,c=cd(o),a=Math.mi
 // 日本語の折り返し（句読点で行が始まらないようにする）
 const wrapJ=(t,n)=>{const l=[];let i=0;while(i<t.length){let j=Math.min(t.length,i+n);while(j<t.length&&'、。）」'.includes(t[j]))j++;l.push(t.slice(i,j));i=j}return l};
 const tutDone=()=>{try{return localStorage.getItem('cardtower_tut')==='1'}catch(e){return true}},tutEnd=()=>{try{localStorage.setItem('cardtower_tut','1')}catch(e){}if(B)B.tut=null};
-const TUTS=[['攻撃のカードを、敵の上までドラッグして離すと攻撃する。','atk'],['防御などのスキルのカードは、画面の上の方へドラッグして離すと使える。ブロックは次の敵の攻撃を防ぐ。','skl'],['敵の頭上の印は、次の行動の予告。「攻7」なら7ダメージの攻撃が来る。',null],['左下の丸がエナジー。カードを使うと減る。使い切ったら「ターン終了」を押す。','end'],['カードを長押しすると、詳しい説明が見られる。遊び方は右上の「ポーズ」からも見られる。',null]];
-function tutEv(ev){const u=B&&B.tut;if(!u||QT)return;const st=TUTS[u.s];if(st&&st[1]===ev){u.s++;u.t0=T;if(u.s>=TUTS.length)tutEnd()}}
-function drawTut(b){const u=b.tut;if(!u||b.ph==='V'||b.ph==='L')return;const st=TUTS[u.s];if(!st){tutEnd();return}const a=Math.min(1,(T-u.t0)/.25);ctx.globalAlpha=a;
- const x=150,y=34,w=380,ls=wrapJ(st[0],22);const h=Math.max(52,22+ls.length*15);ctx.fillStyle='rgba(10,8,28,.93)';ctx.fillRect(x,y,w,h);ctx.fillStyle='#ffd23f';ctx.fillRect(x,y,w,2);ctx.fillRect(x,y+h-2,w,2);
- txt('遊び方　'+(u.s+1)+'/'+TUTS.length,x+10,y+16,'#ffd23f','left',11);ls.forEach((t,j)=>txt(t,x+10,y+32+j*15,'#ffffff','left',12));
- btn(x+w-82,y+6,76,20,u.s===TUTS.length-1?'わかった':'次へ',()=>{u.s++;u.t0=T;if(u.s>=TUTS.length)tutEnd();sfx('cl')},'#2a5a3a',11);btn(x+w-82,y+30,76,18,'説明を閉じる',()=>{tutEnd();sfx('cl')},'#5a2a3a',10);
- // 矢印で場所を示す
- const bob=Math.sin(T*6)*4,arw=(tx,ty,dn)=>{ctx.fillStyle='#ffd23f';ctx.beginPath();if(dn){ctx.moveTo(tx-9,ty-14+bob);ctx.lineTo(tx+9,ty-14+bob);ctx.lineTo(tx,ty+bob)}else{ctx.moveTo(tx-9,ty+14-bob);ctx.lineTo(tx+9,ty+14-bob);ctx.lineTo(tx,ty-bob)}ctx.fill()};
- if(u.s===0||u.s===1){const want=u.s===0?0:1,r=CR.find(r=>{const o=b.hand[r.i];return o&&cd(o).t===want});if(r){arw(r.x+42,r.y-6,1);if(u.s===0){const e=alive()[0];if(e){const q=ePos(b.en.indexOf(e)),k=(T*.8)%1;ctx.globalAlpha=a*(1-k);ctx.fillStyle='#ffd23f';sq(r.x+42+(q.x-r.x-42)*k,r.y+(q.y-50-r.y)*k,6,'#ffd23f');ctx.globalAlpha=a}}else{const k=(T*.8)%1;ctx.globalAlpha=a*(1-k);sq(r.x+42,r.y-(120*k),6,'#7ec8ff');ctx.globalAlpha=a}}}
- else if(u.s===2){const e=alive()[0];if(e){const q=ePos(b.en.indexOf(e)),h2=SPR[e.k]?SPR[e.k].height:60;arw(q.x+30,q.y-h2-12,1)}}
- else if(u.s===3){arw(34,222,1);arw(606,258,1)}ctx.globalAlpha=1}
+// Ver2.38 最初の戦闘の遊び方を、実際の戦闘画面を使った案内にした（ユーザー指定：本家のように画面の一部を照らして説明）。
+// 前半（blk:1）は画面を暗くして1か所ずつ照らし、どこを押しても次へ。後半は実際にカードを使わせる（ev の行動で次へ進む）
+const TUTS=[
+ {t:'敵。全部倒せば戦闘に勝つ。',r:b=>{const e=alive()[0];if(!e)return[];const q=ePos(b.en.indexOf(e)),im=SPR[e.k],fy=e.fly||0;return[{x:q.x-im.width/2-6,y:q.y-fy-im.height-6,w:im.width+12,h:im.height+fy+34}]},blk:1},
+ {t:'自分のHP。0になると負け。戦闘が終わっても自然には回復しない。',r:()=>[{x:56,y:96,w:104,h:126}],blk:1},
+ {t:'エナジー。毎ターン3に戻る。カードを使うと、カードの左上の数字の分だけ減る。',r:()=>[{x:10,y:222,w:48,h:48}],blk:1},
+ {t:'手札。ターンの初めに5枚引く。使わなかったカードは、ターンの終わりに捨札へ行く。',r:b=>{if(!CR.length)return[{x:88,y:252,w:470,h:108}];const x0=Math.min(...CR.map(r=>r.x)),x1=Math.max(...CR.map(r=>r.x+r.w));return[{x:x0-4,y:252,w:x1-x0+8,h:108}]},blk:1},
+ {t:'敵の頭上の印は、次の行動の予告。「攻6」なら6ダメージの攻撃が来る。印を押すと詳しい説明が出る。',r:b=>{const e=alive()[0];if(!e)return[];const q=ePos(b.en.indexOf(e)),im=SPR[e.k],fy=e.fly||0;return[{x:q.x-34,y:q.y-fy-im.height-32,w:68,h:26}]},blk:1},
+ {t:'山札（左下）からカードを引き、使ったカードは捨札（右下）へ行く。山札が無くなると、捨札を混ぜて山札に戻す。',r:()=>[{x:0,y:332,w:70,h:28},{x:568,y:332,w:72,h:28}],blk:1},
+ {t:'エナジーを使い切ったら「ターン終了」を押す。すると敵が行動する。',r:()=>[{x:574,y:260,w:64,h:56}],blk:1},
+ {t:'試しに、攻撃のカード（赤い枠）を敵の上までドラッグして離す。',r:b=>{const o=[];const c=CR.find(r=>{const h=b.hand[r.i];return h&&cd(h).t===0});if(c)o.push({x:c.x-3,y:c.y-3,w:c.w+6,h:112});const e=alive()[0];if(e){const q=ePos(b.en.indexOf(e)),im=SPR[e.k],fy=e.fly||0;o.push({x:q.x-im.width/2-6,y:q.y-fy-im.height-6,w:im.width+12,h:im.height+fy+12})}return o},ev:'atk'},
+ {t:'次に、防御のカード（青い枠）を画面の上の方へドラッグして離す。ブロックは、次の敵の攻撃を防ぐ。',r:b=>{const c=CR.find(r=>{const h=b.hand[r.i];return h&&cd(h).t===1});return c?[{x:c.x-3,y:c.y-3,w:c.w+6,h:112}]:[]},ev:'skl'},
+ {t:'「ターン終了」を押す。',r:()=>[{x:574,y:260,w:64,h:56}],ev:'end'},
+ {t:'カードを長押しすると、詳しい説明が見られる。遊び方は右上の「ポーズ」からも見られる。',r:()=>[],blk:1}];
+const tutBlk=()=>{const u=B&&B.tut;return!!(u&&TUTS[u.s]&&TUTS[u.s].blk&&!(B.bn&&B.bn.t>0))};
+function tutEv(ev){const u=B&&B.tut;if(!u||QT)return;const st=TUTS[u.s];if(st&&st.ev===ev){u.s++;u.t0=T;if(u.s>=TUTS.length)tutEnd()}}
+function drawTut(b){const u=b.tut;if(!u||b.ph==='V'||b.ph==='L'||(b.bn&&b.bn.t>0))return;const st=TUTS[u.s];if(!st){tutEnd();return}
+ if(b.ph!=='p'&&st.ev!=='end')return;
+ const a=Math.min(1,(T-u.t0)/.3),rs=st.r(b)||[],nx=()=>{u.s++;u.t0=T;if(u.s>=TUTS.length)tutEnd();sfx('cl')};
+ // 暗幕：照らす場所だけ穴をあける
+ ctx.save();ctx.globalAlpha=a;ctx.fillStyle='rgba(4,2,12,'+(st.blk?.72:.5)+')';ctx.beginPath();ctx.rect(0,0,640,360);for(const r of rs)ctx.rect(r.x+r.w,r.y,-r.w,r.h);ctx.fill('evenodd');
+ const pl=.5+.5*Math.sin(T*5);for(const r of rs){ctx.strokeStyle='rgba(255,210,63,'+(.55+.45*pl)+')';ctx.lineWidth=2;ctx.strokeRect(r.x,r.y,r.w,r.h);ctx.strokeStyle='rgba(255,210,63,'+(.25*pl)+')';ctx.lineWidth=6;ctx.strokeRect(r.x-3,r.y-3,r.w+6,r.h+6)}
+ // 説明の枠：照らす場所と重ならない側に置き、矢印でつなぐ
+ const r0=rs[0],w=300,ls=wrapJ(st.t,22),h=30+ls.length*15;let bx=320-w/2,by=150-h/2;
+ if(r0){const cy=r0.y+r0.h/2,cx=r0.x+r0.w/2;by=cy>190?Math.max(30,r0.y-h-28):Math.min(330-h,r0.y+r0.h+24);if(r0.h>150)by=cy>190?30:250;bx=Math.max(8,Math.min(632-w,cx-w/2));if(rs.length>1&&st.ev==='atk'){by=40;bx=150}}
+ ctx.fillStyle='rgba(12,10,30,.96)';ctx.fillRect(bx,by,w,h);ctx.fillStyle='#ffd23f';ctx.fillRect(bx,by,w,2);ctx.fillRect(bx,by+h-2,w,2);ctx.fillRect(bx,by,2,h);ctx.fillRect(bx+w-2,by,2,h);
+ txt('遊び方　'+(u.s+1)+'/'+TUTS.length,bx+10,by+16,'#ffd23f','left',11);ls.forEach((t,j)=>txt(t,bx+10,by+33+j*15,'#ffffff','left',12));
+ if(r0&&!(rs.length>1&&st.ev==='atk')){const cx=r0.x+r0.w/2,up=r0.y>by,ay=up?by+h+4:by-4,ty=up?r0.y-6:r0.y+r0.h+6,bo=Math.sin(T*6)*3,ax=Math.max(bx+16,Math.min(bx+w-16,cx));ctx.strokeStyle='#ffd23f';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(cx,ty+(up?-6:6)+bo*(up?-1:1));ctx.stroke();ctx.fillStyle='#ffd23f';ctx.beginPath();const tt=ty+bo*(up?-1:1);if(up){ctx.moveTo(cx-6,tt-8);ctx.lineTo(cx+6,tt-8);ctx.lineTo(cx,tt)}else{ctx.moveTo(cx-6,tt+8);ctx.lineTo(cx+6,tt+8);ctx.lineTo(cx,tt)}ctx.fill()}
+ // 攻撃の手順：カードから敵へ流れる矢印
+ if(st.ev==='atk'&&rs.length>1){const A=rs[0],E=rs[1],k=(T*.8)%1,sx=A.x+A.w/2,sy=A.y,ex=E.x+E.w/2,ey=E.y+E.h/2;ctx.strokeStyle='rgba(255,210,63,.5)';ctx.setLineDash([6,6]);ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(sx,sy);ctx.quadraticCurveTo((sx+ex)/2,Math.min(sy,ey)-60,ex,ey);ctx.stroke();ctx.setLineDash([]);const px=(1-k)*(1-k)*sx+2*(1-k)*k*(sx+ex)/2+k*k*ex,py=(1-k)*(1-k)*sy+2*(1-k)*k*(Math.min(sy,ey)-60)+k*k*ey;ctx.fillStyle='#ffd23f';ctx.beginPath();ctx.arc(px,py,4,0,7);ctx.fill()}
+ if(st.ev==='skl'&&r0){const k=(T*.8)%1,sx=r0.x+r0.w/2,sy=r0.y-6;ctx.fillStyle='rgba(255,210,63,'+(1-k)+')';ctx.beginPath();ctx.moveTo(sx-8,sy-k*90+8);ctx.lineTo(sx+8,sy-k*90+8);ctx.lineTo(sx,sy-k*90-4);ctx.fill()}
+ ctx.restore();
+ // 前半は画面のどこを押しても次へ。ボタンは上に重ねる
+ if(st.blk&&a>=1)hit(0,0,640,360,nx);
+ txt(st.blk?'画面を押して次へ':'',bx+w-10,by+16,'#a8a0d8','right',10);
+ btn(bx+w-84,by+h+4,84,18,'説明を閉じる',()=>{tutEnd();sfx('cl')},'#5a2a3a',10);if(!st.blk)btn(bx+w-172,by+h+4,84,18,'次へ',nx,'#2a5a3a',10)}
 function hitP(e,d,dl){if(e&&!QT){const st=eSty(e);fxs('eh',110,166,{d:.4,dl:dl||0,s:st,ex:{ex:ePos(B.en.indexOf(e)).x-20,ey:150}});setTimeout(()=>sfx('e'+st),(dl||0)*1000)}let a=d;if(PS.itg&&a>1)a=1;if(PS.fz&&!B.fzu&&a>0){a=0;B.fzu=1;nmb(110,140,'無効','#e8ecff')}const a0=a;if(B.blk>=a){B.blk-=a;a=0}else{a-=B.blk;B.blk=0}if(e&&a>0&&PS.sdc)for(let k=0;k<PS.sdc;k++)oChan('L');if(a0-a>0&&!QT)fxs('dm',a>0?132:110,a>0?132:150,{v:a0-a,bl:1,dl:dl||0,d:.8});if(a>0&&has('torii')&&a<=5)a=1;
 fxs('sl',110,175,{c:'#ff6a6a',dl:dl||0});if(a>0){B.sh=.3+(dl||0);if(e)P.killer=e.n;hurtP(a,dl);if(e&&e.pst&&P.hp>0){B.dis.push({i:CI('負傷'),u:0});nmb(110,96,'負傷+1','#c8c8d8')}if(PS.mirT&&e&&!e.dead)hitE(e,a,.1,0,0)}else{sfx('bk');0}
 if(has('thorn')&&e&&!e.dead)hitE(e,3,0,0,0);if(PS.thn&&e&&!e.dead)hitE(e,PS.thn,.1,0,0);if(PS.cnt&&e&&!e.dead)hitE(e,PS.cnt*(PS.ct2?2:1),.1,0,0);if(PS.zan)PS.ki=(PS.ki+PS.zan);if(PS.zt&&e)PS.ki=(PS.ki+1)}
@@ -4209,7 +4234,7 @@ if(needT(c)){let ti=-1;for(const r of ER)if(d.x>=r.x-14&&d.x<=r.x+r.w+14&&d.y>=r
 if(ti<0&&alive().length===1)ti=B.en.indexOf(alive()[0]);
 if(ti<0){say('敵の上で離して使用');B.sel=-1;o.sk=T;return}play(d.i,ti)}else play(d.i,0);if(B&&B.hand[d.i]===o&&!o.pend){o.sk=T;sfx('no')}}
 cv.addEventListener('pointerdown',e=>{initAudio();const p=pos(e);LP={x:p.x,y:p.y,t:performance.now(),m:0};if(LPV){LPV=null;drag=null;dg=null;LP=null;sfx('cl');return}drag={...p,sc:scr,ms:MSC,m:0};dg=null;
-if(!PZ&&S==='battle'&&B&&B.ph==='p'&&!B.vt&&!PM)for(let k=CR.length-1;k>=0;k--){const r=CR[k];if(p.x>=r.x&&p.x<=r.x+r.w&&p.y>=r.y&&p.y<=r.y+106){dg={i:r.i,x:p.x,y:p.y,sx:p.x,sy:p.y,mv:0};break}}});
+if(!PZ&&S==='battle'&&B&&B.ph==='p'&&!B.vt&&!PM&&!tutBlk())for(let k=CR.length-1;k>=0;k--){const r=CR[k];if(p.x>=r.x&&p.x<=r.x+r.w&&p.y>=r.y&&p.y<=r.y+106){dg={i:r.i,x:p.x,y:p.y,sx:p.x,sy:p.y,mv:0};break}}});
 cv.addEventListener('pointermove',e=>{const p0=pos(e);if(LP&&Math.hypot(p0.x-LP.x,p0.y-LP.y)>8)LP.m=1;if(!drag||PZ)return;const p=pos(e);
 if(dg){dg.vx=(dg.vx||0)*.55+(p.x-dg.x)*.45;dg.x=p.x;dg.y=p.y;if(!dg.mv&&Math.hypot(p.x-dg.sx,p.y-dg.sy)>10){dg.mv=1;B.sel=dg.i;sfx('cl')}return}
 if(Math.abs(p.y-drag.y)>8&&(S==='pick'||S==='help'||S==='lib'||S==='rank'))drag.m=1;if((S==='pick'||S==='help'||S==='lib'||S==='rank')&&drag.m)scr=drag.sc-(p.y-drag.y);if(S==='mapv'&&Math.abs(p.x-drag.x)>8){drag.m=1;MSC=Math.max(0,Math.min(MSW-624,drag.ms-(p.x-drag.x)))}
