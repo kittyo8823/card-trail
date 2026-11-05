@@ -181,7 +181,7 @@
 3-2. **バージョン `GVER`（タイトル画面の右下に小さく表示）を公開のたびに1つ上げる**（例 1.49→1.50。ユーザー指定）。返答で新しいバージョン番号を毎回伝える。
 4. ~~SendUserFile で index.html を送る~~ → 送らない（ユーザー指定で変更：変更後はアーティファクトだけ送る）。
 5. git にコミットする。
-6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19、Ver2.23 が index20、Ver2.26 が index21、Ver2.30 が index22、Ver2.32 が index23、Ver2.36 が index24。Ver2.37 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
+6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19、Ver2.23 が index20、Ver2.26 が index21、Ver2.30 が index22、Ver2.32 が index23、Ver2.36 が index24、Ver2.37 が index25。Ver2.39 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
 7. **変更のたびに、作業版とメモを GitHub の `dev/` にも保存する**（ユーザー同意・Ver2.24から）：`dev/index.html`・`dev/CLAUDE.md`（先頭に置き場所の説明あり）・`dev/tests/` を最新にして push。公開中の直下 `index.html` は「アプデして」の時だけ変える。
 
 ## 動作確認
@@ -429,3 +429,7 @@ Playwright（chromium）入りの環境なら、ページを開いて `page.eval
   - 順番：敵 → 自分のHP → エナジー → 手札 → 敵の行動の予告 → 山札と捨札 → ターン終了 →（ここから実際に操作）攻撃 → 防御 → ターン終了 → 長押しとポーズの案内。
   - 暗幕は evenodd で穴をあける。照らす枠は金色で点滅。説明の枠は照らす場所と重ならない側に置き、矢印でつなぐ。攻撃の段はカードから敵へ点線の矢印、防御の段は上へ昇る矢印。
   - 「説明を閉じる」でいつでも終われる（`tutEnd`、localStorage `cardtower_tut`）。戦闘開始の帯（`B.bn`）が出ている間は出さない。
+- Ver2.39 マルチの画面（部屋を作る・入る `drawMpMenu`／部屋番号の入力 `drawMpJoin`／待機所 `drawMpLobby`）を、焚き火の野営地にした（ユーザー採用の案A）。
+  - 背景 `MPCB()`（星空・天の川・遠くの塔・黒い森・左右の天幕・丸太・石で囲った焚き火。初回に描いてとっておく）＋ `mpFire()`（揺れる炎と火の粉、毎フレーム）。`mpBg(dim)` で両方を描いて暗くする。表札は `mpPlate`。
+  - 待機所：仲間は焚き火を囲んで立つ（4つの立ち位置）。名前とキャラは木の表札。自分の頭上に「あなた」の矢印。空きはうっすらした人影。部屋番号は上の表札、接続状態は1行。キャラ選び・アセンション・出発は下の帯。
+  - 休憩所の `campFire(cx,by)` とは別の関数（名前がぶつからないよう `mpFire`）。
