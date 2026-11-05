@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.42';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.43';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -3404,7 +3404,7 @@ return(nd,ns)=>{const[a,b]=O.orb;for(const[f,cx]of[[a,36],[b,604]]){ctx.save();c
 const EGC=[['#ff6a4a','#a01a1a','255,110,70'],['#7aff6a','#1a7a2a','120,255,110'],['#8aa8ff','#2a3a9a','140,170,255'],['#d8a0ff','#5a2a9a','210,160,255'],['#9affb0','#2a8a5a','150,255,180'],['#6ad8ff','#1a5a9a','110,210,255']];
 // 形：辺の数（0は丸）と回し方。並びは ユウキング 四角／坂井 三角／坪内丸 ひし形／名無し 五角形／ホーリー大輔 丸／ネブラ 六角形（P.cls 6 は 5 番目）
 const EGS=[[4,Math.PI/4,1.32],[3,-Math.PI/2,1.3],[4,0,1.2],[5,-Math.PI/2,1.08],[0,0,1],[6,0,1.04]];
-function egPath(cx,cy,r,cl){const[n,rot,k]=EGS[cl]||EGS[4];ctx.beginPath();if(!n){ctx.arc(cx,cy,r,0,Math.PI*2);return}const rr=r*k,oy=n===3?r*.18:0;for(let i=0;i<n;i++){const a=rot+i/n*Math.PI*2;ctx[i?'lineTo':'moveTo'](cx+Math.cos(a)*rr,cy+oy+Math.sin(a)*rr)}ctx.closePath()}
+function egPath(cx,cy,r,cl){const[n,rot,k]=EGS[5];ctx.beginPath();if(!n){ctx.arc(cx,cy,r,0,Math.PI*2);return}const rr=r*k,oy=n===3?r*.18:0;for(let i=0;i<n;i++){const a=rot+i/n*Math.PI*2;ctx[i?'lineTo':'moveTo'](cx+Math.cos(a)*rr,cy+oy+Math.sin(a)*rr)}ctx.closePath()}
 function energyGem(cx,cy,cl,me,mx){const z=me<=0,[c1,c2,gl]=EGC[cl]||EGC[0],r=21,f=mx?Math.min(1,me/mx):0;
  if(!z){const g=ctx.createRadialGradient(cx,cy,2,cx,cy,44);g.addColorStop(0,'rgba('+gl+','+(.26+.08*Math.sin(T*3))+')');g.addColorStop(1,'rgba('+gl+',0)');ctx.fillStyle=g;ctx.fillRect(cx-44,cy-44,88,88)}
  // 枠（外の暗い縁→金→内側の暗い地）
