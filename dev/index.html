@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.36';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.37';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -1225,18 +1225,68 @@ const UOHEAD=(t,q,l,ox,oy,S)=>{const X=a=>ox+(a-26)*S,Y=b=>oy+(b-4)*S,P=a=>a.map
  t(P([[26,4],[28,-1],[31,3.6]]),'#3a5a58');t(P([[29,3.4],[32,-2],[34,3]]),'#3a5a58');t(P([[32,3],[36,-1],[37,2.6]]),'#3a5a58');q(X(37),Y(5.6),'#d8e0a0');
  for(const[a,b]of[[29,8],[31,6]]){t(P([[a-1,b+.8],[a,b-1],[a+1,b+.8]]),'#8a8a80');q(X(a),Y(b),'#2a2a26')}for(const[a,b]of[[33,5],[40,7],[35,8]])q(X(a),Y(b),'#3a4a34');l(X(39),Y(12.4),X(38.6),Y(15),'#9ab8a8',.2)};
 const UDIRT=(q,l,pts)=>{for(const[a,b,c]of pts)q(a,b,c||'#2e3a30')};
-SD.userp=[62,50,3,({r,p,q,l,t,sh,pt})=>{
- const B='#2e4844',B2='#3e5654',B3='#4e6662',BL='#768478';
- pt('lb',()=>t([[8,42],[2,49],[10,50],[14,43]],'#26403c'));
- t([[2,42],[6,28],[16,20],[30,18],[40,24],[44,36],[40,46],[8,46]],B2);t([[6,28],[16,20],[30,18],[30,21],[16,23],[7,31]],B3);t([[8,42],[40,42],[40,46],[8,46]],BL);
- for(const[a,b,s]of[[12,22,3],[18,18,3.6],[25,17,3],[31,19,2.6],[36,23,2.4]]){t([[a-s,b+s*.6],[a,b-s],[a+s,b+s*.6]],'#5a5e58');t([[a-s*.4,b],[a,b-s*.5],[a+s*.4,b]],'#2a2c28')}
- t([[20,16],[23,16],[23,6],[20,6]],'#6a6e66');t([[19,6],[24,6],[24.4,4.6],[18.6,4.6]],'#7a7e76');l(21.4,8,21,15,'#3a3c38',.3);for(let k=0;k<3;k++)l(20.4+k,6,20+k,10+k,'#3a4434',.3);
- UDIRT(q,l,[[10,32],[14,36],[22,30],[28,34],[34,28],[18,40,'#4a3a2e'],[30,40,'#4a3a2e'],[38,34]]);for(let k=0;k<5;k++)l(10+k*6,26,9+k*6,34+((k*3)%3),'#34402e',.35);
- pt('lf',()=>t([[14,42],[10,50],[18,50],[20,43]],B));pt('af',()=>t([[34,40],[36,49],[42,48],[39,39]],B));
- t([[36,32],[39,22],[42,14],[45,9],[48,8],[48,13],[46,18],[43,26],[41,34]],B2);t([[39,22],[42,14],[45,9],[46,10.4],[43.4,15.4],[40.6,23]],B3);for(let k=0;k<4;k++)l(38+k*1.8,31-k*5.4,41.6+k*1.6,31.4-k*5.2,'#28403c',.45);t([[38.8,31],[41.8,21],[44,22],[41.4,32]],BL);for(const[a,b]of[[42,18],[44,12]])q(a,b,'#3a4a34');
- pt('hd',()=>UOHEAD(t,q,l,45,10,.8));
- sh()}];
+// Ver2.37 沈没都市のボスを作り直し（ユーザー採用の案B「裂けた腹」）：宙を泳ぐ大魚。腹が裂け、光る腸や管が垂れて漂う。ひれは根元から先へ波が流れる。
+// FISHD(type,ph) が ph（0〜1のループ）の絵を返す。戦闘では uFish が24枚を必要になった時に描いてとっておき、T で切り替える。SPR.userp は1枚目（アイコン・倒れる演出など用）
+const FISHD=(()=>{const TAU=Math.PI*2;
+const W=96,H=64;
+function geo(ph,type){const N=26,P=[];for(let i=0;i<=N;i++){const u=i/N,x=8+u*78;
+  const sw=Math.sin(TAU*ph-u*4.2)*2.2*(1-u)*(1-u),cy=32+sw;
+  let hh=u<.12?2.2+u*14:u<.8?3.6+11.5*Math.pow(Math.sin((u-.12)/.68*Math.PI*.5),.9):15.1-(u-.8)/.2*8;
+  if(type===2&&u<.5)hh*=.92;P.push({u,x,cy,top:cy-hh*.95,bot:cy+hh*1.08,hh})}return P}
+function fin(t,base,nrm,len,ph,c,c2,k,amp){// base: [[x,y]...], nrm: [nx,ny], len: array or number; 波が根元から先へ流れる
+ const n=base.length,O=[];for(let i=0;i<n;i++){const s=i/(n-1),L=(typeof len==='number'?len:len[i]),w=Math.sin(TAU*ph*1-s*k)*amp*L;O.push([base[i][0]+nrm[0]*L+(-nrm[1])*w*.3,base[i][1]+nrm[1]*L+nrm[0]*w*.3+w])}
+ for(let i=0;i<n-1;i++){t([base[i],base[i+1],O[i+1],O[i]],i%2?c:c2)}
+ return O}
+return function(type,ph){return({r,p,q,l,t,e,sh})=>{
+ const G=geo(ph,type),BODY=['#38504e','#2a3e40','#3c4c58'][type],B2=['#4a6462','#3a5052','#4e5e6a'][type],BEL=['#5e7472','#4a5e5e','#6a7680'][type],SKIN='#1e3438',BONE='#b8c4bc',FIN='rgba(0,0,0,0)';
+ const at=u=>{const f=u*(G.length-1),i=Math.min(G.length-2,Math.floor(f)),a=f-i,A=G[i],B=G[i+1];return{x:A.x+(B.x-A.x)*a,cy:A.cy+(B.cy-A.cy)*a,top:A.top+(B.top-A.top)*a,bot:A.bot+(B.bot-A.bot)*a,hh:A.hh+(B.hh-A.hh)*a}};
+ const FC='#2c4446',FC2='#36504f',FCm='#506c6a';
+ // 尾びれ（大きく長く、二股のヴェール）
+ {const T=at(0),T1=at(.04),sway=Math.sin(TAU*ph-.6)*5;
+  for(const[dy,len]of[[-1,1],[1,1.15]]){const base=[];for(let k=0;k<6;k++)base.push([T.x+1-k*.2,T.cy+dy*k*.6]);const O=[];for(let k=0;k<6;k++){const s=k/5;O.push([T.x-14*len-s*4+Math.sin(TAU*ph-s*2)*2,T.cy+dy*(4+s*14*len)+sway*(.6+s*.6)])}for(let k=0;k<5;k++)t([base[k],base[k+1],O[k+1],O[k]],k%2?FC:FC2);for(let k=0;k<6;k++)l(T.x,T.cy,O[k][0],O[k][1],FCm,.35)}}
+ // 背びれ（背中に沿った長いうねる膜）
+ {const base=[],len=[];for(let k=0;k<=12;k++){const u=.18+k/12*.5,a=at(u);base.push([a.x,a.top+.6]);len.push(3+Math.sin(k/12*Math.PI)*6)}const O=fin(t,base,[0,-1],len,ph*2,FC,FC2,5,.35);for(let k=0;k<=12;k+=2)l(base[k][0],base[k][1],O[k][0],O[k][1],FCm,.35)}
+ // 腹びれ（下のヴェール）
+ {const base=[],len=[];for(let k=0;k<=8;k++){const u=.14+k/8*.28,a=at(u);base.push([a.x,a.bot-.6]);len.push(3+Math.sin(k/8*Math.PI)*7)}fin(t,base,[0,1],len,ph*2+.3,FC,FC2,4,.4)}
+ // 胴
+ if(type===2){// 後ろ半分は骨と膜
+  for(let i=0;i<G.length-1;i++){const A=G[i],B=G[i+1];if(A.u<.48){t([[A.x,A.top+2],[B.x,B.top+2],[B.x,B.bot-2],[A.x,A.bot-2]],'#1c2a30')}else{t([[A.x,A.top],[B.x+.4,B.top],[B.x+.4,B.bot],[A.x,A.bot]],BODY);t([[A.x,A.top],[B.x+.4,B.top],[B.x+.4,B.top+2.4],[A.x,A.top+2.4]],B2)}}
+ }else{for(let i=0;i<G.length-1;i++){const A=G[i],B=G[i+1];t([[A.x,A.top],[B.x+.4,B.top],[B.x+.4,B.bot],[A.x,A.bot]],BODY);t([[A.x,A.top],[B.x+.4,B.top],[B.x+.4,B.top+2.6],[A.x,A.top+2.6]],B2);t([[A.x,A.bot-3],[B.x+.4,B.bot-3],[B.x+.4,B.bot],[A.x,A.bot]],BEL)}}
+ // 透けた窓／裂け目の中：暗い体液の色
+ const U0=type===2?.06:.3,U1=type===2?.62:.74;
+ if(type===0){for(let i=0;i<G.length-1;i++){const A=G[i],B=G[i+1];if(A.u<U0||A.u>U1)continue;const m=Math.sin((A.u-U0)/(U1-U0)*Math.PI);t([[A.x,A.cy-A.hh*.55*m],[B.x+.4,B.cy-B.hh*.55*m],[B.x+.4,B.bot-1.6],[A.x,A.bot-1.6]],SKIN)}}
+ if(type===1){for(let i=0;i<G.length-1;i++){const A=G[i],B=G[i+1];if(A.u<U0||A.u>U1)continue;const m=Math.sin((A.u-U0)/(U1-U0)*Math.PI);t([[A.x,A.cy+A.hh*(.5-.55*m)],[B.x+.4,B.cy+B.hh*(.5-.55*m)],[B.x+.4,B.bot+.5],[A.x,A.bot+.5]],SKIN)}
+  // 裂け目の縁のめくれた皮
+  for(let k=0;k<9;k++){const u=U0+.03+k*(U1-U0-.06)/8,a=at(u);t([[a.x-1.2,a.bot],[a.x+1.2,a.bot],[a.x+.4,a.bot+2.4+((k*7)%3)]],BEL)}}
+ // 背骨と肋骨
+ {const s0=type===2?.0:U0,s1=type===2?.66:U1;let px=null;for(let k=0;k<=18;k++){const u=s0+k/18*(s1-s0),a=at(u),y=a.cy-a.hh*.12;if(px)l(px[0],px[1],a.x,y,BONE,.7);px=[a.x,y];if(k%2===0){const m=type===2?1:Math.sin((u-s0)/(s1-s0)*Math.PI);l(a.x,y,a.x-1.6,y+(a.bot-y)*.86*Math.max(.5,m),'#8a9890',.45);if(type===2)l(a.x,y,a.x-1.2,a.top+1,'#8a9890',.45)}}}
+ // 後ろ半分の膜（type 2）：骨のあいだの薄い膜
+ if(type===2)for(let i=0;i<G.length-1;i++){const A=G[i];if(A.u>.5)continue;if(i%2)t([[A.x,A.top+2],[A.x+1.4,A.top+2],[A.x+1.4,A.top+3.4],[A.x,A.top+3.4]],'#3a4a52')}
+ // 内臓：心臓（脈打つ）・浮き袋・腸のとぐろ・卵の粒
+ const hb=1+.18*Math.max(0,Math.sin(TAU*ph*2)),hc=at(type===2?.55:.62),bl=at(type===2?.38:.5),gt=at(type===2?.22:.4);
+ const ORG=type===1?{hy:hc.cy+hc.hh*.55}:{hy:hc.cy+hc.hh*.35};
+ e(hc.x,ORG.hy,3.4*hb,2.8*hb,'#a85a6a');e(hc.x+.4,ORG.hy-.4,2.2*hb,1.7*hb,'#d88a98');e(hc.x+1,ORG.hy-1,.9,.8,'#f8d0d8');l(hc.x-2,ORG.hy-2,hc.x-6,ORG.hy-5,'#a85a6a',.6);l(hc.x+2,ORG.hy-2,hc.x+5,ORG.hy-5,'#a85a6a',.6);
+ e(bl.x,bl.cy+bl.hh*.1,5.2,2.6,'#8ab8b4');e(bl.x-1,bl.cy+bl.hh*.1-.8,3,1.2,'#c8ece4');
+ for(let k=0;k<22;k++){const a=k/7*TAU*.5+ph*TAU,rr=1+k*.18;e(gt.x+Math.cos(a)*rr*1.3,gt.cy+gt.hh*.4+Math.sin(a)*rr*.7,.75,.75,k%2?'#c88a98':'#a86a7a')}
+ for(let k=0;k<9;k++){const a=at((type===2?.1:.33)+k*.025);e(a.x,a.cy+a.hh*(.6+((k*5)%3)*.08),.8,.8,'#e8e0a0')}
+ if(type===1){// 裂け目から垂れて漂う腸・管
+  for(let s=0;s<4;s++){const u=.38+s*.08,a=at(u);let px=a.x,py=a.bot-1;for(let k=1;k<=10;k++){const nx=a.x-k*.6+Math.sin(TAU*ph-k*.5+s)*2.2,ny=a.bot-1+k*1.7;l(px,py,nx,ny,s%2?'#c88a98':'#a8d8d0',.8);px=nx;py=ny}e(px,py,1,1,'#f0c0c8')}}
+ // 頭：小さく白い目が縦に3つ、針のような歯の並ぶ口
+ {const hd=at(.97),m=at(1);const my=hd.cy+2;t([[m.x+2,my-1],[m.x-6,my-.4],[m.x-6,my+1.6],[m.x+2,my+2.6]],'#0c1214');for(let k=0;k<5;k++){l(m.x-5+k*1.6,my-.8,m.x-4.6+k*1.6,my+.6,'#d8dcd0',.3);l(m.x-5+k*1.6,my+2.4,m.x-4.6+k*1.6,my+1.2,'#d8dcd0',.3)}
+  for(let k=0;k<3;k++){const ex=hd.x-4-k*2.4,ey=hd.cy-5+k*2.2;e(ex,ey,1.5,1.5,'#0c1214');e(ex,ey,1,1,'#e8f4ee')}
+  for(let k=0;k<4;k++){const u=.82+k*.03,a=at(u);l(a.x,a.cy-a.hh*.4,a.x-.6,a.cy+a.hh*.5,'#22323a',.4)}}
+ // 胸びれ（いちばん大きい、翼のようにゆっくり羽ばたく長いヴェール）
+ {const a=at(.7),flap=Math.sin(TAU*ph);const base=[];for(let k=0;k<5;k++)base.push([a.x-k*.6,a.cy+a.hh*.25+k*.8]);const O=[];for(let k=0;k<5;k++){const s=k/4;O.push([a.x-12-s*14+Math.sin(TAU*ph-s*2.4)*2,a.cy+6+s*6+flap*(8+s*4)+Math.sin(TAU*ph*2-s*3)*1.6])}
+  for(let k=0;k<4;k++)t([base[k],base[k+1],O[k+1],O[k]],k%2?'#3a5658':'#2e4a4c');for(let k=0;k<5;k++)l(base[k][0],base[k][1],O[k][0],O[k][1],'#6a8886',.35)}
+ sh()}}
+})();
+const UFS=2.9;SD.userp=[96,64,UFS,FISHD(1,0)];
 for(const k in SD){const d=SD[k],im=paint(d[0],d[1],d[3],d[2]);SPR[k]=NOFL.test(k)?im:flipC(im)}
+// 60枚で3秒一巡（なめらかに動かすため）。ページを開いた後、少しずつ裏で描いておく。まだ描けていない絵はその場で描く
+const UFN=60,UFF=[],uFmk=k=>UFF[k]||(UFF[k]=flipC(paint(96,64,FISHD(1,k/UFN),UFS))),uFish=uFmk;
+{let k=0;const st=()=>{if(k>=UFN)return;uFmk(k++);setTimeout(st,40)};setTimeout(st,1500)}
+// 大魚の内臓の光（心臓・浮き袋・腸の位置。絵の左上を原点に、1単位＝2.5px、縁の1マス分ずれる）
+function uGlow(x0,y0,ph){ctx.save();ctx.globalCompositeOperation='lighter';for(const[u,c,k]of[[.62,'240,140,160',1.2],[.5,'150,230,220',1],[.4,'240,160,190',.8]]){const X=x0+2+(96-(8+u*78))*UFS,Y=y0+2+36*UFS,pul=k*(.7+.3*Math.sin(Math.PI*4*ph)),R=11*k*UFS/3;const g=ctx.createRadialGradient(X,Y,1,X,Y,R*3);g.addColorStop(0,'rgba('+c+','+(.32*pul)+')');g.addColorStop(1,'rgba('+c+',0)');ctx.fillStyle=g;ctx.fillRect(X-R*3,Y-R*3,R*6,R*6)}ctx.restore()}
 // Ver2.27 戦闘の魔導書は魔法陣を抜いた絵（grim_n）にし、魔法陣は drawGrim が光らせて回す（ユーザー指定）
 window.GRNC=1;SPR.grim_n=paint(SD.grim[0],SD.grim[1],SD.grim[3],SD.grim[2]);window.GRNC=0;
 // ボスの部位：n 名前・pv 軸（元の単位）・z 'b' 胴の後ろ／'f' 前・pa 親の部位・w 溜め [角度,dx,dy]・s 振り抜き・i 待機の揺れ [幅,速さ]・sp 回り続ける速さ
@@ -2078,6 +2128,51 @@ function enBadge(x,y,k,v){const col=ENC[k][1];ctx.fillStyle='#08060f';ctx.fillRe
  const m=ctx.getTransform();ENI.push({x:(m.a*(x-11)+m.c*(y-11)+m.e)/K,y:(m.b*(x-11)+m.d*(y-11)+m.f)/K,w:22*m.a/K,h:22*m.d/K,k,v})}
 function drawEnTip(){if(!ENTIP)return;const tp=ENTIP.tip,E=tp?null:ENC[ENTIP.k],col=tp?tp.c:E[1],sub=tp?tp.s:'エンチャント',body=tp?tp.L:['【'+E[0]+'】'+E[2](ENTIP.v!=null?ENTIP.v:E[4])],w=tp?272:Math.min(250,Math.max(150,body[0].length*11+20)),L=body.flatMap(t=>wrap(t,Math.floor((w-16)/11))),h=L.length*15+30;let x=Math.max(6,Math.min(634-w,ENTIP.x+ENTIP.w/2-w/2)),y=ENTIP.y+ENTIP.h+4;if(y+h>354)y=Math.max(6,ENTIP.y-h-4);
  ctx.fillStyle='rgba(6,4,14,.94)';ctx.fillRect(x,y,w,h);ctx.fillStyle=col;ctx.fillRect(x,y,w,2);ctx.fillRect(x,y,2,h);if(!tp)ctx.drawImage(enIcon(ENTIP.k),x+8,y+7);else{ctx.fillStyle=col;ctx.fillRect(x+10,y+11,8,8)}txt(sub,x+28,y+18,tp?col:'#a8a0c8','left',tp?12:10);L.forEach((s2,i)=>txt(s2,x+8,y+36+i*15,s2[0]==='【'||s2[0]==='・'?'#f0ecff':'#c8c0e8','left',11))}
+// Ver2.37 細かいイラスト（ユーザー指定：枠はそのまま、絵だけ今の2倍の細かさで描いた一枚絵にする）。HART[名前]=(W,H)=>canvas。148x88 で描き、card0 が絵の欄の高さに合わせて中央を切り出し、半分の大きさで貼る
+const HART={},HAC={},hArt=n=>HART[n]?(HAC[n]||(HAC[n]=HART[n](148,88))):null;
+(()=>{const MK=MKC;
+const artScythe=(W,H)=>{const c=MK(W,H),x=c.getContext('2d');const px=(a,b,col)=>{x.fillStyle=col;x.fillRect(a|0,b|0,1,1)},R=(a,b,w,h,col)=>{x.fillStyle=col;x.fillRect(a|0,b|0,w|0,h|0)};
+ let sd=7;const rn=()=>(sd=(sd*16807)%2147483647)/2147483647;
+ // 空：上は黒、地平線近くは暗い赤。ディザで段を作る
+ const sky=['#0a0408','#140610','#200814','#300a18','#42101c','#58161e'];for(let y=0;y<H;y++){const u=y/(H*.78)*(sky.length-1),k=Math.min(sky.length-2,Math.floor(u)),f=u-k;for(let i=0;i<W;i++){const d=((i+y*2)%4)/4;px(i,y,sky[f>d?k+1:k])}}
+ // 月：大きく、薄い赤みの白。表面の影
+ const mx=W*.66,my=H*.36,mr=H*.27;for(let j=-mr;j<=mr;j++)for(let i=-mr;i<=mr;i++){const d=Math.hypot(i,j);if(d>mr)continue;const sh=(i+j*.6)/mr;let col=sh>.55?'#b88a86':sh>.1?'#e0c0b4':'#f2dccc';if(d>mr-1)col='#c89a90';px(mx+i,my+j,col)}
+ for(const[a,b,r]of[[-6,-4,4],[5,6,3],[-2,8,2],[8,-7,2.5]])for(let j=-r;j<=r;j++)for(let i=-r;i<=r;i++)if(i*i+j*j<=r*r)px(mx+a+i,my+b+j,(i+j>0)?'#c8a49c':'#a87c78');
+ {const g=x.createRadialGradient(mx,my,mr,mx,my,mr*2.2);g.addColorStop(0,'rgba(255,170,150,.22)');g.addColorStop(1,'rgba(255,170,150,0)');x.fillStyle=g;x.fillRect(0,0,W,H)}
+ // 雲の帯（月にかかる）
+ for(const[cy,cx0,cw]of[[my+mr*.35,mx-mr*1.6,mr*2.4],[my-mr*.55,mx-mr*.2,mr*1.8],[H*.18,4,W*.4]]){R(cx0+8,cy-2,cw*.5,1,'rgba(60,16,28,.6)');R(cx0+3,cy-1,cw*.8,1,'rgba(40,10,20,.8)');R(cx0,cy,cw,2,'rgba(26,8,16,.9)');R(cx0+5,cy+2,cw*.7,1,'rgba(18,4,8,.8)');R(cx0+12,cy+3,cw*.4,1,'rgba(18,4,8,.5)')}
+ // 遠くの丘と枯れ木
+ x.fillStyle='#16060c';x.beginPath();x.moveTo(0,H*.74);for(let i=0;i<=W;i+=4)x.lineTo(i,H*.72-Math.sin(i*.05)*3-Math.sin(i*.13)*1.5);x.lineTo(W,H);x.lineTo(0,H);x.fill();
+ const twig=(x0,y0,len,a,d)=>{const x1=x0+Math.cos(a)*len,y1=y0+Math.sin(a)*len;x.strokeStyle='#0c0306';x.lineWidth=Math.max(1,d*.7);x.beginPath();x.moveTo(x0,y0);x.lineTo(x1,y1);x.stroke();if(d>0){twig(x1,y1,len*.7,a-.5+rn()*.2,d-1);twig(x1,y1,len*.6,a+.5-rn()*.2,d-1)}};
+ twig(W*.12,H*.74,H*.16,-1.5,4);twig(W*.9,H*.72,H*.12,-1.7,3);
+ // 墓標の丘（手前）
+ x.fillStyle='#0a0306';x.beginPath();x.moveTo(0,H*.86);x.quadraticCurveTo(W*.3,H*.76,W*.6,H*.84);x.quadraticCurveTo(W*.8,H*.88,W,H*.82);x.lineTo(W,H);x.lineTo(0,H);x.fill();
+ for(const[gx,gh,cr]of[[W*.18,9,1],[W*.3,7,0],[W*.82,8,1],[W*.92,6,0]]){const gy=H*.83;if(cr){R(gx-1,gy-gh,2,gh,'#1c0a10');R(gx-3,gy-gh+2,6,2,'#1c0a10');px(gx-1,gy-gh,'#3a1a20')}else{R(gx-3,gy-gh,6,gh,'#1c0a10');R(gx-2,gy-gh-1,4,1,'#1c0a10');R(gx-3,gy-gh,1,gh,'#3a1a20')}}
+ for(let i=0;i<W;i+=2){const h=2+((i*7)%5);R(i,H-h-((i*3)%4),1,h,'#14060a')}
+ // 漂う魂（青白い火の玉が尾を引いて昇る）
+ for(const[sx,sy,s]of[[W*.22,H*.5,1],[W*.4,H*.3,.8],[W*.86,H*.55,.9],[W*.12,H*.25,.6]]){const g=x.createRadialGradient(sx,sy,0,sx,sy,6*s);g.addColorStop(0,'rgba(160,240,230,.5)');g.addColorStop(1,'rgba(160,240,230,0)');x.fillStyle=g;x.fillRect(sx-7*s,sy-7*s,14*s,14*s);
+  for(let k=0;k<7;k++)R(sx-1+Math.sin(k*.9)*1.5*s,sy+k*1.4*s,Math.max(1,(3-k*.4)*s),1,k<2?'#e8fff8':k<4?'#a8f0e4':'#4a9a94');R(sx-1,sy-1,2,2,'#ffffff')}
+ // 大鎌：太い柄が左下から右上へ。刃は三日月形で、月の前を大きく横切る
+ const hx0=W*.24,hy0=H*1.06,hx1=W*.64,hy1=H*.2;const hl=Math.hypot(hx1-hx0,hy1-hy0),ux=(hx1-hx0)/hl,uy=(hy1-hy0)/hl,nx=-uy,ny=ux;
+ for(let t=0;t<hl;t+=.5){const X=hx0+ux*t,Y=hy0+uy*t;const cs=['#120804','#2a180c','#4a2e18','#6a4426','#8a5a32','#3a2212'];for(let j=-2;j<=3;j++)px(X+nx*j,Y+ny*j,cs[j+2]);if(((t/5)|0)%4===0&&t%5<1)for(let j=-2;j<=3;j++)px(X+nx*j,Y+ny*j,'#1a0c06')}
+ {const t0=hl*.5,X=hx0+ux*t0,Y=hy0+uy*t0;for(let k=-4;k<5;k++)for(let j=-3;j<5;j++)px(X+ux*k+nx*j,Y+uy*k+ny*j,(k+j)%3?'#6a1420':'#8a2030');
+  for(let s2=0;s2<2;s2++)for(let k=0;k<20;k++){const fx=X+nx*4-k*1.3,fy=Y+ny*4+k*(.5+s2*.5)+Math.sin(k*.6+s2)*2.5;R(fx,fy,3-k*.1,2,k<8?'#8a2030':'#5a1018');px(fx,fy,'#b04050')}}
+ // 刃
+ const tipx=W*.06,tipy=H*.5;x.save();x.beginPath();x.moveTo(hx1+4,hy1-3);x.quadraticCurveTo(W*.3,-H*.12,tipx,tipy);x.quadraticCurveTo(W*.3,H*.1,hx1-2,hy1+9);x.closePath();x.clip();
+ const bg=x.createLinearGradient(0,0,0,H*.4);bg.addColorStop(0,'#e8f0f4');bg.addColorStop(.35,'#a8b4bc');bg.addColorStop(.7,'#6a7680');bg.addColorStop(1,'#3a444c');x.fillStyle=bg;x.fillRect(0,0,W,H);
+ for(let i=0;i<W;i+=3)for(let j=0;j<H;j+=5)if(((i*7+j*3)%11)===0)px(i,j,'rgba(255,255,255,.25)');x.restore();
+ // 背（外側の暗い縁）と刃先（内側の明るい縁）
+ const qp=(p0,p1,p2,n,f)=>{for(let i=0;i<=n;i++){const t=i/n,X=(1-t)*(1-t)*p0[0]+2*(1-t)*t*p1[0]+t*t*p2[0],Y=(1-t)*(1-t)*p0[1]+2*(1-t)*t*p1[1]+t*t*p2[1];f(X,Y,t)}};
+ qp([hx1+4,hy1-3],[W*.3,-H*.12],[tipx,tipy],300,(X,Y)=>{px(X,Y,'#20282e');px(X,Y+1,'#4a5660')});
+ qp([tipx,tipy],[W*.3,H*.1],[hx1-2,hy1+9],300,(X,Y,t)=>{px(X,Y,'#ffffff');px(X,Y-1,'#d8f0ff');if(t>.25&&t<.75&&((t*300)|0)%23===0){for(let k=1;k<4+((t*100)|0)%4;k++)px(X,Y+k,k<3?'#8a1018':'#c02028')}});
+ // 刃先のきらめき
+ {let X=0,Y=0;qp([tipx,tipy],[W*.3,H*.1],[hx1-2,hy1+9],1,()=>{});const t=.35;X=(1-t)*(1-t)*tipx+2*(1-t)*t*W*.3+t*t*(hx1-2);Y=(1-t)*(1-t)*tipy+2*(1-t)*t*H*.1+t*t*(hy1+9);for(let k=-6;k<=6;k++){const a=1-Math.abs(k)/7;px(X+k,Y,'rgba(255,255,255,'+a+')');px(X,Y+k,'rgba(255,255,255,'+a+')')}}
+ // 刃の付け根：頭蓋骨の飾り
+ {const X=hx1,Y=hy1+2;R(X-4,Y-3,9,7,'#c8c0b0');R(X-3,Y+4,7,2,'#a8a090');R(X-3,Y-1,2,2,'#1a0c08');R(X+1,Y-1,2,2,'#1a0c08');px(X,Y+2,'#3a2a20');R(X-4,Y-3,9,1,'#e8e0d0');for(let k=-2;k<3;k+=2)px(X+k,Y+5,'#3a2a20')}
+ // 周辺減光
+ {const g=x.createRadialGradient(W/2,H/2,H*.3,W/2,H/2,W*.75);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.55)');x.fillStyle=g;x.fillRect(0,0,W,H)}
+ return c};
+HART['命刈りの鎌']=artScythe})();
 function card(x,y,o,dim,gl,pv){card0(x,y,o,dim,gl,pv);if(o&&o.en&&ENC[o.en])enBadge(x+73,y+28,o.en,o.en==='sharp'||o.en==='nimble'?o.ev:null)}
 function card0(x,y,o,dim,gl,pv){{const m=ctx.getTransform();LPC.push({x:(m.a*x+m.c*y+m.e)/K,y:(m.b*x+m.d*y+m.f)/K,w:84*m.a/K,h:106*m.d/K,o})}const c=cd(o),rare=c.r===2,bk=c.t>=3,col=bk?(c.t===4?'#7a3a8a':'#5a5a66'):c.k===5?'#a8a8b8':TC[c.t],parts=dl(c,pv),ls=[],lc=[];parts.forEach((p,i)=>{for(const l of wrap(p,8)){ls.push(l);lc.push(parts.cl[i]||'#e8e4ff')}});const ah=AH(ls.length);
 if(rare&&gl){const a=.16+.07*Math.sin(T*3+x*.05);ctx.fillStyle='rgba(255,210,63,'+a+')';ctx.fillRect(x-9,y-9,102,124);ctx.fillStyle='rgba(255,226,120,'+(a+.08)+')';ctx.fillRect(x-5,y-5,94,116)}
@@ -2085,7 +2180,7 @@ ctx.fillStyle='#08060f';ctx.fillRect(x-2,y-2,88,110);ctx.fillStyle=rare?'#ffd23f
 ctx.fillStyle=rare?'#b8860b':bk?'#202028':'#2a2648';ctx.fillRect(x+5,y+4,74,14);ctx.fillStyle=rare?'#ffd23f':col;ctx.fillRect(x+5,y+4,74,1);ctx.fillRect(x+5,y+17,74,1);if(rare){ctx.fillRect(x+3,y+6,2,10);ctx.fillRect(x+79,y+6,2,10)}
 txt(c.n,x+48,y+15,c.u?'#7dff9a':rare?'#fff6c8':'#fff','center',nfs(c.n,60));
 const ax=x+5,ay=y+20,g=ctx.createLinearGradient(0,ay,0,ay+ah);g.addColorStop(0,TD[c.t]);g.addColorStop(1,'#08060f');ctx.fillStyle=g;ctx.fillRect(ax,ay,74,ah);const rg=ctx.createRadialGradient(ax+37,ay+ah/2,2,ax+37,ay+ah/2,44);rg.addColorStop(0,col+'55');rg.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=rg;ctx.fillRect(ax,ay,74,ah);
-const im=cArt(cArtKey(c));ctx.save();ctx.beginPath();ctx.rect(ax,ay,74,ah);ctx.clip();ctx.drawImage(im,Math.round(ax+37-im.width/2),Math.round(ay+ah/2-im.height/2));ctx.restore();ctx.strokeStyle=rare?'#ffd23f':'#08060f';ctx.lineWidth=1;ctx.strokeRect(ax+.5,ay+.5,73,ah-1);
+const ha=hArt(c.n.replace(/\+$/,''));if(ha){ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(ha,0,Math.round((88-ah*2)/2),148,ah*2,ax,ay,74,ah);ctx.restore()}else{const im=cArt(cArtKey(c));ctx.save();ctx.beginPath();ctx.rect(ax,ay,74,ah);ctx.clip();ctx.drawImage(im,Math.round(ax+37-im.width/2),Math.round(ay+ah/2-im.height/2));ctx.restore()}ctx.strokeStyle=rare?'#ffd23f':'#08060f';ctx.lineWidth=1;ctx.strokeRect(ax+.5,ay+.5,73,ah-1);
 txt(TL[c.t],x+42,ay+ah+9,bk?(c.t===4?'#c98ad8':'#a8a8b8'):col,'center',8);
 const sz=ls.length>=4?9:10;let yy=ay+ah+12+sz;ls.forEach((l,i)=>{if(yy<y+104){txt(l,x+42,yy,lc[i],'center',sz);yy+=sz+1}});
 cGem(x+6,y+6,c.un?'─':c.X?'X':String(c.c),rare,bk);
@@ -2135,7 +2230,7 @@ Object.assign(E,{
  ubell:{n:'沈鐘',hp:[20,24],mv:[{a:9},{b:8,vu:1},{a:5,h:2}]},
  udrown:{n:'海に呑まれた者',hp:[80,86],el:1,mv:[{a:6,h:3},{st:3,b:10},{a:18,sx:1},{a:9,wk:2}]},
  ugeel:{n:'鎧鱗の大ウツボ',hp:[88,94],el:1,mv:[{a:12},{a:5,h:3},{b:14,st:2},{a:24,sx:1}]},
- userp:{n:'都を沈めた大海蛇',hp:[196,196],el:2,mv:[{a:8,h:2},{b:18,st:3},{a:32,nm:'深淵の呑み込み',fc:'#5ac8c0'},{a:11,wk:2,vu:1}]},
+ userp:{n:'灯腸の大魚',hp:[196,196],el:2,fly:6,mv:[{a:8,h:2},{b:18,st:3},{a:32,nm:'深淵の呑み込み',fc:'#5ac8c0'},{a:11,wk:2,vu:1}]},
  ulight:{n:'沈んだ灯台',hp:[205,205],el:2,mv:[{a:6,h:3},{wk:2,vu:2,b:12},{a:28,nm:'灯光の薙ぎ',fc:'#d8ffe0'},{b:16,st:3}]}});
 const FIS=[[['ushell'],['ulens','ulens'],['ueel'],['uink'],['ushell','ulens']],[['udiver'],['uboat'],['ueel','uink'],['ucoral','ulens'],['ubell']],[['ubell','ulens'],['udiver','ushell'],['uboat','ucoral'],['uink','uink','ulens']]],ELS=['udrown','ugeel'];
 // 1層の場所：P.v1 が 's' なら沈没都市、それ以外は黒い森
@@ -3276,7 +3371,7 @@ hpBar(74,210,72,Math.min(P.mhp,vHP()),P.mhp,'#e8505b',b.blk,PS.poison);chips(sta
 {const bd=b.en.find(e=>!e.dead&&E[e.k]&&E[e.k].bd);if(bd){const im=SPR[E[bd.k].bd];ctx.drawImage(im,Math.round(455-im.width/2),Math.round(194-im.height+Math.sin(T*1.2)*1.5))}}
 b.en.forEach((e,i)=>{if(e.dead){if(e.dT!=null&&T-e.dT<.8)eDeath(e,i);if(e.dT!=null&&T<e.dT&&e.vq){const p0=ePos(i);hpBar(p0.x-32,p0.y+2,64,Math.min(e.mh,e.vq.reduce((s2,q)=>s2+(q.at>T?q.d:0),0)),e.mh,e.el?'#c9a0ff':'#e8505b',0,0,0);txt(e.n,p0.x,p0.y+22,'#cfc8ee','center',10)}return}const p0=ePos(i),p={x:p0.x,y:p0.y-(e.fly?Math.round(e.fly+(FLYP[e.k]?0:Math.sin(T*1.4)*4)):0)},im=SPR[e.sl>0&&SPR[e.k+'_z']?e.k+'_z':e.k],w=im.width,h=im.height,eo=eMot(e,i),off=(e.lg>0?-Math.sin(e.lg/.3*3.14)*30:0)+eo.x,s=e.sh>0&&T>=(e.flS||0)?(Math.random()-.5)*8:0;
 {ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(p0.x+(eo.x||0),p0.y,Math.min(70,w*.36)*(e.fly?.7:1),e.fly?3:5,0,0,6.29);ctx.fill()}ctx.globalAlpha=e.reb?.45+.1*Math.sin(T*8):e.fl>0&&T>=(e.flS||0)&&Math.floor(T*30)%2?.45:ePhOn(e,b.turn)?.4+.15*Math.sin(T*6):1;if(e.k==='eye'){const ga=ctx.globalAlpha;eyeTent(p.x,p.y-h/2,w,h);ctx.globalAlpha=ga}if(FLYP[e.k]&&FLYP[e.k].tr&&!e.dead){const th=e.th||(e.th=[]);th.push([p.x+off,p.y+eo.y]);if(th.length>9)th.shift();const ga=ctx.globalAlpha;[[0,.14],[4,.26]].forEach(([j,al])=>{const q=th[j];if(q){ctx.globalAlpha=ga*al;ctx.drawImage(im,Math.round(q[0]-w/2),Math.round(q[1]-h))}});ctx.globalAlpha=ga}
-if(!(b.sp&&b.sp.e===e)){ctx.save();ctx.translate(Math.round(p.x+off+s),Math.round(p.y+eo.y));ctx.rotate(eo.r);ctx.scale(eo.sx,eo.sy);const dE=()=>{if(e.k==='scales'&&im===SPR[e.k])scDraw(e,i,w,h);else if(EPT[e.k]&&im===SPR[e.k]){if(EPT[e.k][0].r){ctx.save();ctx.rotate(eo.ur*.7);dParts(e,i,w,h);ctx.restore()}else dParts(e,i,w,h)}else if(Math.abs(eo.ur)>.005){const sp=Math.round(h*.52),hw=Math.round(w/2);ctx.drawImage(im,0,sp,w,h-sp,-hw,-h+sp,w,h-sp);ctx.save();ctx.translate(0,-h+sp+2);ctx.rotate(eo.ur);ctx.drawImage(im,0,0,w,sp+3,-hw,-sp-2,w,sp+3);ctx.restore()}else ctx.drawImage(im,-Math.round(w/2),-h)};dE();if(eo.g>0){const ga=ctx.globalAlpha;ctx.globalCompositeOperation='lighter';ctx.globalAlpha=ga*eo.g;dE();ctx.globalCompositeOperation='source-over';ctx.globalAlpha=ga}ctx.restore()}flyFx(e,im,Math.round(p.x+off),Math.round(p.y+eo.y));ctx.globalAlpha=1;if(e.sl>0){for(let k=0;k<3;k++){const q=(T*.5+k/3)%1;ctx.globalAlpha=Math.sin(q*3.14);txt('z',p.x+(e.k==='behemoth'?-w*.3:w*.05)+q*14,p.y-h+10-q*24,'#c8d0ff','center',9+k*3)}ctx.globalAlpha=1}
+if(!(b.sp&&b.sp.e===e)){ctx.save();ctx.translate(Math.round(p.x+off+s),Math.round(p.y+eo.y));ctx.rotate(eo.r);ctx.scale(eo.sx,eo.sy);const dE=()=>{if(e.k==='userp'&&im===SPR[e.k]){const ph=(T/3)%1,fi=uFish(Math.floor(ph*UFN)%UFN);ctx.drawImage(fi,-Math.round(w/2),-h);uGlow(-Math.round(w/2),-h,ph)}else if(e.k==='scales'&&im===SPR[e.k])scDraw(e,i,w,h);else if(EPT[e.k]&&im===SPR[e.k]){if(EPT[e.k][0].r){ctx.save();ctx.rotate(eo.ur*.7);dParts(e,i,w,h);ctx.restore()}else dParts(e,i,w,h)}else if(Math.abs(eo.ur)>.005){const sp=Math.round(h*.52),hw=Math.round(w/2);ctx.drawImage(im,0,sp,w,h-sp,-hw,-h+sp,w,h-sp);ctx.save();ctx.translate(0,-h+sp+2);ctx.rotate(eo.ur);ctx.drawImage(im,0,0,w,sp+3,-hw,-sp-2,w,sp+3);ctx.restore()}else ctx.drawImage(im,-Math.round(w/2),-h)};dE();if(eo.g>0){const ga=ctx.globalAlpha;ctx.globalCompositeOperation='lighter';ctx.globalAlpha=ga*eo.g;dE();ctx.globalCompositeOperation='source-over';ctx.globalAlpha=ga}ctx.restore()}flyFx(e,im,Math.round(p.x+off),Math.round(p.y+eo.y));ctx.globalAlpha=1;if(e.sl>0){for(let k=0;k<3;k++){const q=(T*.5+k/3)%1;ctx.globalAlpha=Math.sin(q*3.14);txt('z',p.x+(e.k==='behemoth'?-w*.3:w*.05)+q*14,p.y-h+10-q*24,'#c8d0ff','center',9+k*3)}ctx.globalAlpha=1}
 hpBar(p.x-32,p0.y+2,64,Math.min(e.mh,e.hp+(e.vq?e.vq.reduce((s2,q)=>s2+(q.at>T?q.d:0),0):0)),e.mh,e.el?'#c9a0ff':'#e8505b',e.blk,e.poison*(PS&&PS.pmul?2:1),e.doom||0);txt((e.el===1?'【エリート】':e.el===2?'【ボス】':'')+e.n,p.x,p0.y+22,e.el===1?'#e0b0ff':'#cfc8ee','center',10);
 chips(stat(e,0),p.x,p0.y+24,'c',b.en.length>2?106:150);
 const m=e.it,t=[];if(m.nm)t.push(['必殺',Math.floor(T*4)%2?'#ff3b5c':'#ffd23f']);if(m.a)t.push(['攻'+calcP(e,m.a)+(m.h>1?'×'+m.h:''),'#ff6a6a']);if(m.b)t.push(['防'+m.b,'#7ec8ff']);if(m.st)t.push(['強+'+m.st,'#ffd23f']);if(m.wk||m.vu)t.push(['弱','#c9a0ff']);if(m.ab)t.push(['護'+m.ab,'#7ec8ff']);if(m.hl)t.push(['癒'+m.hl,'#7dff9a']);if(m.smn)t.push(['召','#5ff6ff']);if(m.dd)t.push(['鈍','#c8c8d8']);if(m.ps)t.push(['毒'+m.ps,'#7dff9a']);if(m.sc)t.push(['妨','#c8c8d8']);

@@ -181,7 +181,7 @@
 3-2. **バージョン `GVER`（タイトル画面の右下に小さく表示）を公開のたびに1つ上げる**（例 1.49→1.50。ユーザー指定）。返答で新しいバージョン番号を毎回伝える。
 4. ~~SendUserFile で index.html を送る~~ → 送らない（ユーザー指定で変更：変更後はアーティファクトだけ送る）。
 5. git にコミットする。
-6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19、Ver2.23 が index20、Ver2.26 が index21、Ver2.30 が index22、Ver2.32 が index23。Ver2.36 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
+6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19、Ver2.23 が index20、Ver2.26 が index21、Ver2.30 が index22、Ver2.32 が index23、Ver2.36 が index24。Ver2.37 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
 7. **変更のたびに、作業版とメモを GitHub の `dev/` にも保存する**（ユーザー同意・Ver2.24から）：`dev/index.html`・`dev/CLAUDE.md`（先頭に置き場所の説明あり）・`dev/tests/` を最新にして push。公開中の直下 `index.html` は「アプデして」の時だけ変える。
 
 ## 動作確認
@@ -416,3 +416,11 @@ Playwright（chromium）入りの環境なら、ページを開いて `page.eval
   - 沈没都市 `bgSunk(v)`：1 倒れた柱と顔のない像／2 門の奥に沈んだ船の影／3 天井から下がる鎖とかご、床に落ちた鐘／4 巨大な生き物のあばら骨。床の置き物は奥の水より手前、床より後ろに描く。
   - 2層 `bgDungeon(v)`：1 鉄格子の窓と鎖につながれた骨／2 骨を納めた壁の棚／3 崩れた壁の穴の奥の洞窟／4 樽と木箱、上へ続く階段。
   - 3層 `bgTemple(v)`：1 段の後ろの巨大な歯車／2 宙に浮く石板／3 天井から垂れる太い線／4 倒れた柱と壊れた機械。
+- Ver2.37 沈没都市のボスを、大海蛇から「灯腸の大魚」に変えた（名前はユーザー指定）（ユーザー採用の案B）。キーは `userp` のまま（技・アイコン・演出の設定はそのまま使う）。
+  - 宙を泳ぐ大魚。腹が裂けていて、光る腸や管が垂れて漂う。白い小さな目が縦に3つ、針のような歯。
+  - `FISHD(type,ph)` が絵の関数を返す（type 1 を使う。0 と 2 は見本の案 A・C の残り）。ひれは根元から先へ波が流れ、体も少しうねる。
+  - 戦闘中は 60枚で3秒一巡。ページを開いて1.5秒後から40msごとに1枚ずつ裏で描いておく（`uFmk`）。`uFish(k)` はまだ無い絵ならその場で描く。内臓の光は `uGlow`（'lighter' で重ねる）。`SPR.userp` は1枚目。
+  - `E.userp.fly=20`（宙に浮いて上下に揺れる）。旧 `SD.userp`（Ver2.30 のネッシー型）は上書きされて使われていない。
+- Ver2.37 カードの絵を細かくする仕組み（ユーザー指定：枠は今のまま、絵だけ今の2倍の細かさの一枚絵）。
+  - `HART[カード名]=(W,H)=>canvas`（148x88 で描く）。`card0` は、HART にある名前なら絵の欄の高さに合わせて中央を切り出し、半分の大きさで貼る。ない名前は今まで通り `cArt`。
+  - 今あるのは「命刈りの鎌」だけ（赤い夜空と月、墓の丘、昇る魂、血の付いた大鎌）。どのカードまで広げるかはユーザーの返事待ち（レアだけ、など）。
