@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.40';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.42';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2756,7 +2756,7 @@ const TUTS=[
  {t:'エナジー。毎ターン3に戻る。カードを使うと、カードの左上の数字の分だけ減る。',r:()=>[{x:10,y:222,w:48,h:48}],blk:1},
  {t:'手札。ターンの初めに5枚引く。使わなかったカードは、ターンの終わりに捨札へ行く。',r:b=>{if(!CR.length)return[{x:88,y:252,w:470,h:108}];const x0=Math.min(...CR.map(r=>r.x)),x1=Math.max(...CR.map(r=>r.x+r.w));return[{x:x0-4,y:252,w:x1-x0+8,h:108}]},blk:1},
  {t:'敵の頭上の印は、次の行動の予告。「攻6」なら6ダメージの攻撃が来る。印を押すと詳しい説明が出る。',r:b=>{const e=alive()[0];if(!e)return[];const q=ePos(b.en.indexOf(e)),im=SPR[e.k],fy=e.fly||0;return[{x:q.x-34,y:q.y-fy-im.height-32,w:68,h:26}]},blk:1},
- {t:'山札（左下）からカードを引き、使ったカードは捨札（右下）へ行く。山札が無くなると、捨札を混ぜて山札に戻す。',r:()=>[{x:0,y:332,w:70,h:28},{x:568,y:332,w:72,h:28}],blk:1},
+ {t:'山札（左下）からカードを引き、使ったカードは捨札（右下）へ行く。山札が無くなると、捨札を混ぜて山札に戻す。',r:()=>[{x:4,y:310,w:66,h:50},{x:570,y:310,w:66,h:50}],blk:1},
  {t:'エナジーを使い切ったら「ターン終了」を押す。すると敵が行動する。',r:()=>[{x:574,y:260,w:64,h:56}],blk:1},
  {t:'試しに、攻撃のカード（赤い枠）を敵の上までドラッグして離す。',r:b=>{const o=[];const c=CR.find(r=>{const h=b.hand[r.i];return h&&cd(h).t===0});if(c)o.push({x:c.x-3,y:c.y-3,w:c.w+6,h:112});const e=alive()[0];if(e){const q=ePos(b.en.indexOf(e)),im=SPR[e.k],fy=e.fly||0;o.push({x:q.x-im.width/2-6,y:q.y-fy-im.height-6,w:im.width+12,h:im.height+fy+12})}return o},ev:'atk'},
  {t:'次に、防御のカード（青い枠）を画面の上の方へドラッグして離す。ブロックは、次の敵の攻撃を防ぐ。',r:b=>{const c=CR.find(r=>{const h=b.hand[r.i];return h&&cd(h).t===1});return c?[{x:c.x-3,y:c.y-3,w:c.w+6,h:112}]:[]},ev:'skl'},
@@ -3366,7 +3366,7 @@ function drawEyeIn(){ctx.fillStyle='#050003';ctx.fillRect(0,0,640,360);ctx.globa
 function eyeGo(){sfx('ch');BGB=BGBV;fight(['eye'],2)}
 function sealMk(x,y){ctx.fillStyle='rgba(40,10,60,.35)';ctx.fillRect(x,y,84,106);for(let k=0;k<12;k++){sq(x+5+k*6.7,y+8+k*8,5,k%2?'#8a8fa0':'#c8ccd8');sq(x+79-k*6.7,y+8+k*8,5,k%2?'#8a8fa0':'#c8ccd8')}ctx.strokeStyle='#c9a0ff';ctx.lineWidth=2;ctx.strokeRect(x+37,y+40,10,8);ctx.fillStyle='#08060f';ctx.fillRect(x+33,y+46,18,16);ctx.fillStyle='#c9a0ff';ctx.fillRect(x+35,y+48,14,12);ctx.fillStyle='#08060f';ctx.fillRect(x+41,y+52,2,4)}
 // カードの動き（原作風）：引く＝山札から手札へ滑り込む／使う＝中央に出てから捨て札へ／パワー＝上へ消える／廃棄＝燃え尽きる／捨てる＝捨て札へ／山札の補充＝捨て札から裏向きで戻る
-const DP={x:24,y:336},DSP={x:612,y:336},FD={dis:.34,use:.62,pw:.6,ex:.6,sh:.45};
+const DP={x:36,y:336},DSP={x:604,y:336},FD={dis:.34,use:.62,pw:.6,ex:.6,sh:.45};
 function cFly(o,k,x,y,dl){if(!B)return;if(x==null){x=278;y=258}B.fly.push({o,k,x,y,t0:T+(dl||0)})}
 function cardAt(o,cx,cy,s,r,a,dim,pv){ctx.save();ctx.globalAlpha=a;ctx.translate(cx,cy);if(r)ctx.rotate(r);ctx.scale(s,s);if(o)card(-42,-53,o,dim,0,pv);else{ctx.fillStyle='#08060f';ctx.fillRect(-44,-55,88,110);ctx.fillStyle='#3a2e6a';ctx.fillRect(-42,-53,84,106);ctx.fillStyle='#241c48';ctx.fillRect(-36,-47,72,94);ctx.fillStyle='#c9a0ff';ctx.beginPath();ctx.moveTo(0,-18);ctx.lineTo(14,0);ctx.lineTo(0,18);ctx.lineTo(-14,0);ctx.fill()}ctx.restore()}
 const ez=p=>p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2,lp=(a,b,p)=>a+(b-a)*p;
@@ -3391,6 +3391,30 @@ function grimCircle(cx,cy,u,gl){const a=T*.45,pu=.5+.5*Math.sin(T*2.2),g=ctx.cre
 function drawGrim(b,ox){const im=SPR.grim,bx=ox==null?47:ox,by=Math.round(64+Math.sin(T*1.6)*3),gl=Math.max(0,1-(T-b.bkt)/.7);
 const g=ctx.createRadialGradient(bx+62,by+46,6,bx+62,by+46,80);g.addColorStop(0,'rgba(168,122,232,'+(.18+gl*.4)+')');g.addColorStop(1,'rgba(168,122,232,0)');ctx.fillStyle=g;ctx.fillRect(bx-20,by-30,164,150);
 ctx.drawImage(SPR.grim_n||im,bx,by);grimCircle(bx+im.width*28.6/40,by+im.height*15/30,im.width/40,gl);b.ch.forEach((q,i)=>{const x=bx+8+i*38,y=by+22;ctx.fillStyle='#08060f';ctx.fillRect(x-1,y-1,34,18);ctx.fillStyle='#e8dcb8';ctx.fillRect(x,y,32,16);ctx.fillStyle=SPC(q.c);ctx.fillRect(x,y,4,16);txt(q.c.n.slice(0,2),x+18,y+12,'#3a2a1a','center',9);pc(x+32,y,6,'#14101e');txt(String(q.n),x+32,y+4,'#ffd23f','center',9)})}
+// Ver2.41 山札（左下）と捨札（右下）を水晶玉の置き物にした（ユーザー採用）。山札は澄んだ青い玉の中でカードの影が回る、捨札はひびの入った暗い紫の玉で煙が渦巻く。枚数は横の丸い札。ターン終了の枠に重ならない大きさ（1.2倍、足元 y=358）
+const pileOrbs=(()=>{const P2=v=>Math.round(v/2)*2;
+const R=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(P2(x),P2(y),Math.max(2,P2(w)),Math.max(2,P2(h)))};
+const E=(cx,cy,rx,ry,c)=>{ctx.fillStyle=c;for(let j=-ry;j<ry;j+=2){const w=rx*Math.sqrt(1-((j+1)/ry)**2);ctx.fillRect(P2(cx-w),P2(cy+j),P2(w*2),2)}};
+const glow=(cx,cy,r,c)=>{const g=ctx.createRadialGradient(cx,cy,1,cx,cy,r);g.addColorStop(0,c);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(cx-r,cy-r,r*2,r*2)};
+const badge=(cx,cy,n,col)=>{ctx.fillStyle='#08060f';ctx.beginPath();ctx.arc(cx,cy,9,0,7);ctx.fill();ctx.fillStyle=col;ctx.beginPath();ctx.arc(cx,cy,8,0,7);ctx.fill();ctx.fillStyle='#1a1430';ctx.beginPath();ctx.arc(cx,cy,6.5,0,7);ctx.fill();txt(String(n),cx,cy+4,'#fff','center',10)};
+const O={orb:[(cx,by,T)=>{R(cx-12,by-6,24,6,'#5a4030');R(cx-14,by-2,28,2,'#3a2818');glow(cx,by-20,24,'rgba(120,200,255,'+(.18+.08*Math.sin(T*2))+')');E(cx,by-20,15,15,'#1a3a6a');E(cx,by-20,12,12,'#2a5a9a');for(let k=0;k<3;k++){const a=T*1.5+k*2.1;ctx.fillStyle='rgba(220,240,255,.7)';ctx.save();ctx.translate(cx+Math.cos(a)*6,by-20+Math.sin(a)*3);ctx.rotate(a);ctx.fillRect(-2,-3,4,6);ctx.restore()}R(cx-8,by-30,4,4,'rgba(255,255,255,.8)');R(cx-10,by-26,2,4,'rgba(255,255,255,.5)')},
+ (cx,by,T)=>{R(cx-12,by-6,24,6,'#4a3a3a');R(cx-14,by-2,28,2,'#2a2020');glow(cx,by-20,22,'rgba(170,90,220,'+(.14+.06*Math.sin(T*1.6))+')');E(cx,by-20,15,15,'#2a1438');E(cx,by-20,12,12,'#3a1a4a');for(let k=0;k<10;k++){const a=-T*1.2+k*.6,r=2+k*.9;R(cx+Math.cos(a)*r,by-20+Math.sin(a)*r*.6,2,2,'rgba(190,140,220,'+(.7-k*.06)+')')}ctx.strokeStyle='#c8a8e8';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx+4,by-34);ctx.lineTo(cx+1,by-26);ctx.lineTo(cx+5,by-22);ctx.lineTo(cx+2,by-16);ctx.stroke();R(cx-8,by-30,4,4,'rgba(255,255,255,.5)')}]};
+return(nd,ns)=>{const[a,b]=O.orb;for(const[f,cx]of[[a,36],[b,604]]){ctx.save();ctx.translate(cx,358);ctx.scale(1.2,1.2);ctx.translate(-cx,-358);f(cx,358,T);ctx.restore()}badge(58,326,nd,'#5ac8ff');badge(580,326,ns,'#ff8a5a')}})();
+// Ver2.42 エナジーの宝珠（ユーザー指定：キャラごとに形だけ変える〈四角・三角・ひし形・五角形・丸・六角形〉。中の液体の色もキャラの色、液面が残りエナジー。0になると全体が灰色、数字は赤。スレスパ2を参考）
+const EGC=[['#ff6a4a','#a01a1a','255,110,70'],['#7aff6a','#1a7a2a','120,255,110'],['#8aa8ff','#2a3a9a','140,170,255'],['#d8a0ff','#5a2a9a','210,160,255'],['#9affb0','#2a8a5a','150,255,180'],['#6ad8ff','#1a5a9a','110,210,255']];
+// 形：辺の数（0は丸）と回し方。並びは ユウキング 四角／坂井 三角／坪内丸 ひし形／名無し 五角形／ホーリー大輔 丸／ネブラ 六角形（P.cls 6 は 5 番目）
+const EGS=[[4,Math.PI/4,1.32],[3,-Math.PI/2,1.3],[4,0,1.2],[5,-Math.PI/2,1.08],[0,0,1],[6,0,1.04]];
+function egPath(cx,cy,r,cl){const[n,rot,k]=EGS[cl]||EGS[4];ctx.beginPath();if(!n){ctx.arc(cx,cy,r,0,Math.PI*2);return}const rr=r*k,oy=n===3?r*.18:0;for(let i=0;i<n;i++){const a=rot+i/n*Math.PI*2;ctx[i?'lineTo':'moveTo'](cx+Math.cos(a)*rr,cy+oy+Math.sin(a)*rr)}ctx.closePath()}
+function energyGem(cx,cy,cl,me,mx){const z=me<=0,[c1,c2,gl]=EGC[cl]||EGC[0],r=21,f=mx?Math.min(1,me/mx):0;
+ if(!z){const g=ctx.createRadialGradient(cx,cy,2,cx,cy,44);g.addColorStop(0,'rgba('+gl+','+(.26+.08*Math.sin(T*3))+')');g.addColorStop(1,'rgba('+gl+',0)');ctx.fillStyle=g;ctx.fillRect(cx-44,cy-44,88,88)}
+ // 枠（外の暗い縁→金→内側の暗い地）
+ egPath(cx,cy,r+5,cl);ctx.fillStyle='#08060f';ctx.fill();egPath(cx,cy,r+3,cl);ctx.fillStyle=z?'#6a6a72':'#c89a28';ctx.fill();egPath(cx,cy,r+1.5,cl);ctx.fillStyle=z?'#4a4a52':'#ffe9a0';ctx.fill();egPath(cx,cy,r,cl);ctx.fillStyle=z?'#22222a':'#0c0a18';ctx.fill();
+ // 液体：残りの割合まで。表面が波打ち、泡が昇る
+ if(!z){ctx.save();egPath(cx,cy,r,cl);ctx.clip();const top=cy+r-f*2*r;const g=ctx.createLinearGradient(0,top,0,cy+r);g.addColorStop(0,c1);g.addColorStop(1,c2);ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(cx-r*1.4,cy+r*1.4);for(let i=-r*1.4;i<=r*1.4;i+=2)ctx.lineTo(cx+i,top+Math.sin(T*3+i*.25)*1.6);ctx.lineTo(cx+r*1.4,cy+r*1.4);ctx.fill();
+  for(let k=0;k<4;k++){const q=(T*.5+k/4)%1;ctx.fillStyle='rgba(255,255,255,'+(.5*(1-q))+')';ctx.fillRect(Math.round(cx-10+k*6),Math.round(cy+r-q*(cy+r-top)),2,2)}ctx.restore()}
+ // つや
+ ctx.save();egPath(cx,cy,r,cl);ctx.clip();ctx.fillStyle='rgba(255,255,255,'+(z?.12:.4)+')';ctx.fillRect(cx-13,cy-15,6,4);ctx.fillRect(cx-15,cy-11,2,6);ctx.restore();
+ txt(me+'/'+mx,cx,cy+6,z?'#ff4a4a':'#fff','center',16)}
 function drawBattle(){const b=B;ER=[];CR=[];hit(0,24,640,206,()=>{b.sel=-1});ctx.drawImage(BGB,0,0);bgAnim();
 ctx.save();if(shk>0)ctx.translate((Math.random()-.5)*shk*2,(Math.random()-.5)*shk*2);
 const lg=b.lg>0?Math.sin(b.lg/.25*3.14)*(b.lgA!=null?b.lgA:30):0,sh=b.sh>0&&b.sh<=.3?(Math.random()-.5)*8:0;
@@ -3412,8 +3436,8 @@ else if(b.sp){const e=b.sp.e,p=Math.min(1,b.sp.t/1.3),q0=ePos(b.en.indexOf(e)),q
 ctx.fillStyle=bf.tn+(.6*p)+')';ctx.fillRect(-20,24,680,206);ctx.drawImage(im,Math.round(o.x+(Math.random()-.5)*p*6),Math.round(o.y));if(e.k==='maiden')mdFx(e,im,Math.round(q.x),Math.round(o.y+im.height));
 ctx.globalCompositeOperation='lighter';ctx.globalAlpha=(.2+.2*Math.sin(T*30))*p;ctx.drawImage(im,Math.round(o.x),Math.round(o.y));ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;bf.ch(o);ctx.globalAlpha=1;
 const ba=Math.min(1,(p-.1)/.15)*Math.min(1,(.85-p)/.15);if(ba>0){ctx.globalAlpha=ba;ctx.fillStyle='rgba(0,0,0,.78)';ctx.fillRect(-20,98,680,48);ctx.fillStyle=c;ctx.fillRect(-20,98,680,2);ctx.fillRect(-20,144,680,2);txt('―　'+e.it.nm+'　―',Math.round(320+(1-Math.min(1,(p-.1)/.15))*90),133,c,'center',28);ctx.globalAlpha=1}}
-pc(34,246,24,'#0d1030');{const me=MPB?mpME():b.me;pc(34,246,21,me>0?'#4aa8ff':'#3a3a5a');txt(me+'/'+MXE(),34,252,'#fff','center',16)}
-txt('山札'+b.dr.length,8,350,'#ffe14a','left',12);hit(0,332,70,28,()=>openPile('山札',b.dr,1));txt('捨札'+b.dis.length,632,350,'#ffe14a','right',12);hit(560,332,80,28,()=>openPile('捨て札',b.dis,0));
+{const me=MPB?mpME():b.me,cl=P.cls===6?5:Math.min(4,P.cls|0);energyGem(34,246,cl,me,MXE())}
+pileOrbs(b.dr.length,b.dis.length);hit(4,312,66,48,()=>openPile('山札',b.dr,1));hit(570,312,66,48,()=>openPile('捨て札',b.dis,0));
 if(b.ex.length){txt('廃棄'+b.ex.length,632,330,'#ff9a9a','right',11);hit(570,316,70,16,()=>openPile('廃棄札',b.ex,0))}
 if(MPB&&(b.dn||b.dnp||b.down)&&b.ph==='p'){txt(b.down?'戦闘不能':'味方を',606,284,'#9ad8ff','center',11);if(!b.down)txt('待っている',606,300,'#9ad8ff','center',11)}else if(b.ph==='p'&&!b.vt&&!b.dsc){box(578,264,56,48,'#7a2a3a');txt('ターン',606,284,'#fff','center',13);txt('終了',606,302,'#fff','center',13);hit(578,264,56,48,endTurn)};
 const dt=Math.min(.05,Math.max(0,T-(b.lt||T)));b.lt=T;if(MPB)for(const q of b.hand)if(q.pend>0&&T-q.pend>5)q.pend=0;if(b.dnp&&(b.dn||b.ph!=='p'||T-b.dnp>5))b.dnp=0;const HV=b.hand.map((o,i)=>[o,i]).filter(a=>!(a[0].pend>0)),n=HV.length,sp=Math.min(92,(500-84)/Math.max(1,n-1)),x0=320-((n-1)*sp+84)/2;

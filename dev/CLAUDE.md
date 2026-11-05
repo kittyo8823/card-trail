@@ -181,7 +181,7 @@
 3-2. **バージョン `GVER`（タイトル画面の右下に小さく表示）を公開のたびに1つ上げる**（例 1.49→1.50。ユーザー指定）。返答で新しいバージョン番号を毎回伝える。
 4. ~~SendUserFile で index.html を送る~~ → 送らない（ユーザー指定で変更：変更後はアーティファクトだけ送る）。
 5. git にコミットする。
-6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19、Ver2.23 が index20、Ver2.26 が index21、Ver2.30 が index22、Ver2.32 が index23、Ver2.36 が index24、Ver2.37 が index25。Ver2.39 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
+6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19、Ver2.23 が index20、Ver2.26 が index21、Ver2.30 が index22、Ver2.32 が index23、Ver2.36 が index24、Ver2.37 が index25、Ver2.39 が index26。Ver2.42 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
 7. **変更のたびに、作業版とメモを GitHub の `dev/` にも保存する**（ユーザー同意・Ver2.24から）：`dev/index.html`・`dev/CLAUDE.md`（先頭に置き場所の説明あり）・`dev/tests/` を最新にして push。公開中の直下 `index.html` は「アプデして」の時だけ変える。
 
 ## 動作確認
@@ -437,3 +437,10 @@ Playwright（chromium）入りの環境なら、ページを開いて `page.eval
   - `enter()` は `tt`（？なら qRoll の結果）で分ける。？から戦闘・ショップ・宝箱になった時は一言出す（say）。戦闘はその階の普通の敵、エリートは出ない。
   - 乱数は `R()`（マルチでは共通の種）なので全員同じ結果になる。
   - 長く回した時の割合はおよそ 戦闘27%・ショップ15%・宝箱12%・イベント46%（1回の冒険では ？ が少ないので、イベントが多めになる）。
+- Ver2.41 戦闘の山札（左下）と捨札（右下）を、文字から水晶玉の置き物にした（ユーザー採用。本・砂時計・ろうそく・巻物の案もあった）。`pileOrbs(山札の数,捨札の数)`。
+  - 山札：澄んだ青い玉の中でカードの影が回る。捨札：ひびの入った暗い紫の玉で煙が渦巻く。枚数は横の丸い札（山札は青、捨札はオレンジ）。
+  - ターン終了の枠（578,264〜312）に重ならないよう、1.2倍・足元 y=358 で描く（ユーザー指定）。押せる範囲は (4,312,66,48) と (570,312,66,48)。カードが飛んでいく先 `DP`/`DSP` と遊び方の照らす場所も合わせた。
+- Ver2.42 エナジーをキャラごとの形の宝珠にした（ユーザー指定：形の違いは四角・三角などの程度。0の時は全体が灰色で数字が赤。スレスパ2を参考）。`energyGem(cx,cy,形番号,今,最大)`。
+  - 形 `EGS`：ユウキング 四角／坂井 三角／坪内丸 ひし形／名無し 五角形／ホーリー大輔 丸／ネブラ 六角形（P.cls 6 → 5 番目）。色 `EGC` はキャラの色。
+  - 金の枠の中に液体。液面＝残りエナジーの割合（最大を超えたら満タン）。表面が波打ち、泡が昇り、まわりがその色で光る。
+  - 0の時：枠も中も灰色、光なし、数字は赤（#ff4a4a）。
