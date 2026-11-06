@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.45';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.46';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -1054,19 +1054,22 @@ pt('wf',()=>{l(9,14,3,9,'#5ff6ff')});pt('wb',()=>{l(22,14,28.6,9.4,'#4ad6e6')});
 e(17.4,16,5,5,'#0a1020');e(18.4,16,3.4,3.4,'#ff4fd8');e(19,16,1.6,1.6,'#fff');
 for(let k=0;k<28;k++){const an=k/28*6.283;p(15.5+Math.cos(an)*13,16+Math.sin(an)*3,'#ffd23f')}
 r(15,4,2,3,'#5ff6ff');p(15,30,'#5ff6ff')}];
-SD.deus=[40,42,3,({e,r,p,l,t,m,sh,pt})=>{
-pt('wr',()=>{t([[26,14],[37,8.6],[39.6,13.6],[36.6,15],[39,21],[34,21],[28,25]],'#b4bccc')});
-pt('ar',()=>{e(33,24,3.4,3.4,'#c4ccdc')});pt('ar',()=>{r(31,25,4.6,9,'#98a2b8')});pt('ar',()=>{r(30.6,33,5.6,3.4,'#e0b020')});r(23,32,5.4,10,'#7a86a0');r(22.4,40,7,2,'#404a64');
-pt('wl',()=>{t([[14,14],[2,8],[0,14],[4,15],[1,22],[6,22],[12,26]],'#c8d0e0')});
-t([[11,14],[29,14],[26,34],[14,34]],'#e8ecf6');t([[14.6,4],[26.6,4],[28,7],[27,15],[14.6,15]],'#d8e0f0');
-r(11,32,6,10,'#8a96b0');r(10,40,8,2,'#4a5470');pt('al',()=>{e(7,24,4,4,'#d8e0f0')});pt('al',()=>{r(4,25,5,10,'#aab4c8')});pt('al',()=>{r(3,34,7,4,'#ffd23f')});
-sh();
-pt('wl',()=>{l(13,15,3,10,'#5ff6ff')});pt('wl',()=>{l(13,19,3,20,'#5ff6ff')});pt('wr',()=>{l(27,16,37,10.6,'#4ad6e6')});pt('wr',()=>{l(28,20,36,20,'#4ad6e6')});
-for(let k=0;k<32;k++){const an=k/32*6.283;p(21+Math.cos(an)*10,8+Math.sin(an)*7,k%4?'#ffd23f':'#5ff6ff')}
-r(16.4,8,11,3,'#0a1020');r(18,9,3,1,'#ff4fd8');r(23.4,9,2.4,1,'#ff4fd8');
-e(21,22,4,4,'#0a1020');e(21,22,3,3,'#5ff6ff');e(21,22,1.4,1.4,'#fff');
-l(20.6,15,20.6,17,'#ffd23f');l(16,28,25,28,'#5ff6ff');l(17,31,24,31,'#5ff6ff');
-t([[15,4],[17,0],[19,4]],'#ffd23f');t([[22.6,4],[24.6,0],[26.6,4]],'#ffd23f');t([[18.4,4],[21,-1],[23.6,4]],'#ffd23f')}];
+// Ver2.46 機神デウス・マキナの体（武器なし。槍と大剣は deusW が別に描く）。斜め向き・両腕を広げてうつむく。右向きで描く
+SD.deus=[66,62,2.3,(()=>{const W1='#f0f4fa',W2='#d8e0f0',W3='#aab4c8',W4='#7a86a0',W5='#4a5470',CY='#5ff6ff',PK='#ff4fd8',GD='#ffd23f',DK='#0a1020';
+const body=(set)=>A=>{
+ A.t([[24,17],[10,20],[6,28],[10,27],[9,35],[15,31],[17,38],[22,30],[26,24]],W4);
+ A.l(23,15,16,17,W3,3.4);A.l(16,17,11,19,W3,3.4);A.e(10,20,2.2,2.2,W2);A.t([[8,18],[10,15.4],[11,18]],W2);
+ A.t([[36,17],[54,22],[60,32],[54,30],[56,42],[48,36],[46,46],[40,34],[34,26]],W3);A.t([[36,17],[54,22],[56,25],[38,22]],W2);
+ A.t([[25,14],[42,13],[39,22],[36,31],[29,31],[27,22]],W1);A.t([[25,14],[32,14],[31,31],[29,31],[27,22]],W2);
+ A.t([[28,30],[37,30],[38,37],[34,52],[31,52],[28,37]],W3);A.t([[31,51],[34,51],[32.6,58]],W5);
+ A.t([[22,12],[28,11],[29,16],[25,18],[22,16]],W2);A.t([[37,10],[46,11],[47,17],[44,19],[37,17]],W1);
+ A.sh();
+ A.e(34,21,3.4,3.4,DK);A.e(34,21,2.4,2.4,CY);A.e(34,21,1,1,'#fff');A.l(29,26,38,26,CY,.4);A.l(33,31,33,48,CY,.35);A.l(37,19,54,25,CY,.4);A.l(37,23,52,31,'#4ad6e6',.35);
+ A.l(44,13,52,16,W2,3.8);A.l(52,16,58,19,W2,3.8);A.e(60,20,2.6,2.6,W1);A.t([[59,17],[62,16],[62,19]],W1);
+ for(let k=0;k<32;k++){const an=k/32*6.283;A.p(34+Math.cos(an)*8,5+Math.sin(an)*5,k%4?GD:CY)}
+ A.t([[31,5],[38,5],[39.4,9],[38,14],[32,14],[30.4,9]],W1);A.r(33,10.6,5.4,1.4,DK);A.r(34,11,1.8,.6,PK);A.r(36.6,11,1.2,.6,PK);
+ set(A)};
+const f=body(()=>{});return A=>f({...A,t:(P,c)=>A.t(P.map(q=>[q[0]+2,q[1]+2]),c),r:(x,y,w,h,c)=>A.r(x+2,y+2,w,h,c),e:(x,y,rx,ry,c)=>A.e(x+2,y+2,rx,ry,c),l:(x1,y1,x2,y2,c,t)=>A.l(x1+2,y1+2,x2+2,y2+2,c,t),p:(x,y,c)=>A.p(x+2,y+2,c),q:(x,y,c)=>A.q(x+2,y+2,c),sh:A.sh})})()];
 SD.chronos=[40,42,3,({e,r,p,l,t,m,sh,pt})=>{
 pt('wr',()=>{t([[28,20],[39,13],[38,26],[28,30]],'#7a86a0')});
 pt('wl',()=>{t([[12,20],[0,12],[2,26],[12,30]],'#8a96b0')});
@@ -1336,7 +1339,6 @@ const EPT={
  protoA:[{n:'af',pv:[22,12],z:'b',w:[-1.8],s:[.25,1],i:[.05,2]},{n:'ab',pv:[10.5,11],z:'f',w:[.35],s:[-.45],i:[.05,2,1]},{n:'hd',pv:[18,9.5],z:'f',w:[-.15],s:[.15],i:[.04,2.4]}],
  protoB:[{n:'af',pv:[23,12.6],z:'b',w:[.3,-4,0],s:[-.12,9,0],i:[.03,1.4]},{n:'ab',pv:[7.6,10],z:'f',w:[-.25],s:[.2],i:[.03,1.4,1]},{n:'hd',pv:[18.4,10],z:'f',w:[-.1],s:[.1],i:[.02,1.1]}],
  protoC:[{n:'wb',pv:[25,15],z:'b',w:[-.4],s:[.25],i:[.08,1.8]},{n:'wf',pv:[15,15],z:'b',w:[.45],s:[-.25],i:[.1,1.8,.6]},{n:'al',pv:[12.6,16],z:'f',w:[.3],s:[-.3],i:[.05,1.5,1]},{n:'hd',pv:[20.5,13.6],z:'f',w:[-.12],s:[.12],i:[.02,1.2]},{n:'ar',pv:[26.6,16.6],z:'f',w:[-1.4,-1,-1],s:[.6,2,1],i:[.05,1.5]}],
- deus:[{n:'wr',pv:[27,17],z:'b',w:[-.3],s:[.15],i:[.06,1.4]},{n:'ar',pv:[33,23.6],z:'b',w:[-1.4],s:[-1.6,1],i:[.04,1.4]},{n:'wl',pv:[13,16],z:'b',w:[.35],s:[-.15],i:[.07,1.4,.6]},{n:'al',pv:[7,23.6],z:'f',w:[.5],s:[.2],i:[.04,1.4,1]}],
  bat:[{n:'wb',pv:[15.4,8.6],z:'b',w:[-.3],s:[.4],i:[-.5,16]},{n:'wf',pv:[10.6,8.6],z:'b',w:[.3],s:[-.4],i:[.5,16]}],
  gargoyle:[{n:'wb',pv:[17.6,10.8],z:'b',w:[-.3],s:[.3],i:[-.38,5.03,.4]},{n:'wf',pv:[12.4,12.4],z:'b',w:[.35],s:[-.35],i:[.42,5.03,.4]}],
  seraph:[{n:'wb',pv:[18.6,12.4],z:'b',w:[-.25],s:[.2],i:[-.14,2.2]},{n:'wf',pv:[10.6,12.4],z:'b',w:[.25],s:[-.2],i:[.16,2.2]}],
@@ -2893,7 +2895,7 @@ function xIt(e){return e.k==='maiden'?mdIt(e):e.k==='scales'?scIt(e):e.mv[e.i%e.
 function enemyAct(e){if(e.dead)return;if(e.nw){e.nw=0;return}if(e.reb){rvE(e);return}if(e.tb){e.blk=Math.max(0,e.blk-e.tb);e.tb=0}
 if(e.poison>0){let pd=e.poison*(PS.pmul?2:1);if(e.cap){pd=Math.min(pd,Math.max(0,e.cap-e.lost));e.lost+=pd}e.hp-=pd;{const q=ePos(B.en.indexOf(e));nmb(q.x,150,String(pd),'#7dff9a');fxs('pz',q.x,q.y-(SPR[e.k]?SPR[e.k].height/2:30),{d:1.1,s:1})}e.poison--;if(e.inv&&e.hp<1)e.hp=1;if(e.hp<=0){killE(e);return}}
 if(e.doom>0&&!e.inv&&e.hp<=e.doom){const q=ePos(B.en.indexOf(e));nmb(q.x,150,'破滅','#b07cff');fxs('rg',q.x,q.y-40,{d:.6,c:'#b07cff'});e.hp=0;killE(e);return}
-const m=e.it,p=ePos(B.en.indexOf(e));e.lg=0;{const ec=ECAT[e.k]||'hum';e.an={k:m.a?((m.h||1)>1?'mh':'at'):(m.st||m.ab||m.hl||m.smn)?'bf':m.b?'bk':'db',t0:T,h:m.h||1};if(m.a&&eSty(e)==='magic'&&!QT){const q=ePos(B.en.indexOf(e)),h=SPR[e.k]?SPR[e.k].height:60;for(let k=0;k<(m.h||1);k++)fxs('eo',q.x-20,q.y-h*.6,{d:EHT.magic-.04,dl:.02+k*.26,c:'#c9a0ff',ex:{tx:112,ty:170}})}else if(m.a&&EPJ[eSty(e)]&&!QT&&!eWb(e))epLaunch(e,ePos(B.en.indexOf(e)),m.h||1)}
+const m=e.it,p=ePos(B.en.indexOf(e));e.lg=0;{const ec=ECAT[e.k]||'hum';e.an={k:m.a?((m.h||1)>1?'mh':'at'):(m.st||m.ab||m.hl||m.smn)?'bf':m.b?'bk':'db',t0:T,h:m.h||1};if(e.k==='deus')e.an.dm=m.nm?'crash':m.a&&(m.h||1)>=5?'dance':m.a&&(m.h||1)>1?'throw':m.a?'crash':(m.st||m.b)?'cross':'orbit';if(m.a&&eSty(e)==='magic'&&!QT){const q=ePos(B.en.indexOf(e)),h=SPR[e.k]?SPR[e.k].height:60;for(let k=0;k<(m.h||1);k++)fxs('eo',q.x-20,q.y-h*.6,{d:EHT.magic-.04,dl:.02+k*.26,c:'#c9a0ff',ex:{tx:112,ty:170}})}else if(m.a&&EPJ[eSty(e)]&&!QT&&!eWb(e))epLaunch(e,ePos(B.en.indexOf(e)),m.h||1)}
 if(e.stn){e.stn=0;e.lg=0;pop(e,'行動不能','#c8c8d8');if(e.weak>0)e.weak--;if(e.vuln>0)e.vuln--;return}
 if(e.sl>0){e.lg=0;e.sl--;if(e.sb){e.blk+=e.sb;fxs('sh',p.x,p.y-30,{d:.4})}if(e.sl)pop(e,'Zzz','#c8d0ff');else{pop(e,'目覚めた','#ffd23f');e.i=0}if(e.weak>0)e.weak--;if(e.vuln>0)e.vuln--;return}
 if(m.b){e.blk+=m.b;fxs('sh',p.x,p.y-30,{d:.4});sfx('bk')}
@@ -2902,7 +2904,7 @@ if(m.hl){const al=alive().filter(x=>x!==e&&x.hp<x.mh);for(const x of al.length?a
 if(m.smn){if(!spawnE(m.smn)){e.blk+=12;pop(e,'ブロック+12','#7ec8ff')}sfx('bm')}
 const nat=m.a&&e.nat;if(nat){e.nat=0;pop(e,'攻撃無効','#c8c8d8')}const tk=MPB?PL.findIndex(q=>q.B&&!q.B.down&&!q.gone&&q.PS.tnt):-1;
 mpEach(()=>{if(m.wk){PS.weak+=m.wk;B.jw=1;nmb(110,118,'脆弱+'+m.wk,'#c9a0ff');sfx('ps')}if(m.sc){for(let k=0;k<m.sc[1];k++)B.dis.push({i:CI(m.sc[0]),u:0});nmb(110,96,m.sc[0]+'+'+m.sc[1],'#c8c8d8');sfx('ps')}if(m.ps){PS.poison+=m.ps;nmb(110,118,'毒+'+m.ps,'#7dff9a');fxs('pz',110,165,{d:.9});sfx('ps')}if(m.dd){B.ndr=(B.ndr||0)-m.dd;nmb(110,106,'次のドロー-'+m.dd,'#c8c8d8');sfx('ps')}
-if(m.a&&!nat)for(let k=0;k<(m.h||1);k++){hitP(e,calcP(e,m.a),eHitT(e)+k*.26);if(P.hp<=0||B.down)break}
+if(m.a&&!nat)for(let k=0;k<(m.h||1);k++){hitP(e,calcP(e,m.a),eHT2(e,k));if(P.hp<=0||B.down)break}
 if(m.vu&&P.hp>0){PS.vuln+=m.vu;B.jv=1;nmb(110,118,'弱体+'+m.vu,'#ff9a6a');sfx('ps')}},tk>=0?tk:null);if(!MPB&&P.hp<=0)return;if(B.ph==='L')return;
 // 筋力アップは攻撃のあと（予告の数字どおりのダメージにする）。儀式 rit は行動のたびに筋力が上がる
 if(e.rit&&!e.dead){e.str+=e.rit;pop(e,'儀式 筋力+'+e.rit,'#ff8c2e')}
@@ -3426,6 +3428,44 @@ function energyGem(cx,cy,cl,me,mx){const z=me<=0,[c1,c2,gl]=EGC[cl]||EGC[0],r=21
  // つや
  ctx.save();egPath(cx,cy,r,cl);ctx.clip();ctx.fillStyle='rgba(255,255,255,'+(z?.12:.4)+')';ctx.fillRect(cx-13,cy-15,6,4);ctx.fillRect(cx-15,cy-11,2,6);ctx.restore();
  txt(me+'/'+mx,cx,cy+6,z?'#ff4a4a':'#fff','center',16)}
+// Ver2.46 機神デウス・マキナを描き直し（ユーザー指定：両腕を広げてうつむく・斜め向き。槍と大剣を手から離して浮かせ、それで攻撃する）。
+// 体は SD.deus（武器なし）。槍と大剣は DSW の絵を deusW が毎フレーム描く（浮遊・技ごとの動き）。技と動き：
+//  13×3「投擲」：槍を投げて突き刺す→大剣が回転しながら飛んで斬る→槍を引き抜いて戻す（3回目）。大剣も弧を描いて戻る
+//  7×5「大剣の乱舞」：大剣が飛んでいき、相手のまわりを回りながら5回斬って戻る。槍は相手に穂先を向けて光る
+//  必殺「神罰の光」：溜めの間に両方が頭上へ昇り、下を向いて光る→同時に突き刺さる→戻る
+//  筋力+ブロック：槍と大剣が体の前で交差して守る。弱体化など：2つが体のまわりを1周する
+const DSWP=(()=>{const W1='#f0f4fa',W2='#d8e0f0',W3='#aab4c8',W4='#7a86a0',CY='#5ff6ff',GD='#ffd23f';
+ const spear=A=>{A.l(5,10,5,54,W3,1.3);A.l(5,10,5,54,'#e8fbff',.45);A.t([[2.6,10],[5,0],[7.4,10]],CY);A.t([[4,9],[5,3],[6,9]],'#e8fbff');A.t([[2.6,11],[7.4,11],[7.4,12.6],[2.6,12.6]],GD)};
+ const great=A=>{A.t([[5.6,12],[12.4,12],[12,42],[9,48],[6,42]],W2);A.t([[5.6,12],[9,12],[9,48],[6,42]],W1);A.l(9,14,9,42,CY,.6);A.t([[2,10],[16,10],[16,12.4],[2,12.4]],GD);A.t([[7.8,3],[10.2,3],[10.2,10],[7.8,10]],W4);A.e(9,2,1.8,1.8,CY)};
+ return{spear:[10,56,spear],great:[18,50,great]}})();
+const DSW={};function dswImg(k,sc){const id=k+sc;if(!DSW[id]){const d=DSWP[k];DSW[id]=paint(d[0],d[1],d[2],sc)}return DSW[id]}
+// 武器の状態（技の開始からの時間 t で決める）。返り値：[x, y, 角度, 光]。角度0で刃先が上
+function deusW(e,bx,by,w,h){const u=(w-4)/66,ox=bx-w/2+2,oy=by-h+2,a=e.an,t=a?T-a.t0:9,dm=a&&a.dm,sp=B&&B.sp&&B.sp.e===e;
+ const tgx=MPB?mpCX():112,tgy=162,bob=Math.sin(T*1.6)*3;
+ const R0={s:[ox-6*u,oy+16*u+bob,.15],g:[ox+61*u,oy+28*u-bob,-.12]};
+ const ez=x=>x<0?0:x>1?1:x*x*(3-2*x),lp=(p,q,k)=>[p[0]+(q[0]-p[0])*k,p[1]+(q[1]-p[1])*k],aim=(p)=>Math.atan2(tgy-p[1],tgx-p[0])+Math.PI/2;
+ const st=(k,tt)=>{const r=R0[k];let p=[r[0],r[1]],an=r[2],gl=.15;
+  if(sp){const q=Math.min(1,B.sp.t/1.1);p=lp(p,[bx+(k==='s'?-24:24),by-h-30],ez(q));an=an+(Math.PI-an)*ez(q);gl=.2+.5*q;return[p[0],p[1],an,gl]}
+  if(!dm||tt>2.2)return[p[0],p[1],an,gl];
+  const T0=[tgx+(k==='s'?6:-6),tgy];
+  if(dm==='throw'){if(k==='s'){if(tt<.25){const q=ez(tt/.25);p=[p[0]+10*q,p[1]-4*q];an=an+(aim(p)-an)*q;gl=.2+.4*q}else if(tt<.45){const q=(tt-.25)/.2;p=lp([r[0]+10,r[1]-4],T0,q*q);an=aim([r[0],r[1]]);gl=.7}else if(tt<.95){p=[T0[0]+Math.sin(tt*60)*(tt<.55?2:0),T0[1]];an=aim([r[0],r[1]]);gl=.4}else if(tt<1.35){const q=ez((tt-.95)/.4);p=lp(T0,[r[0],r[1]],q);an=aim([r[0],r[1]])*(1-q)+r[2]*q;gl=.5*(1-q)+.15}}
+   else{if(tt<.5){const q=ez((tt-.3)/.2);p=[p[0],p[1]-14*q];an=an+tt*6;gl=.15+.4*q}else if(tt<.75){const q=(tt-.5)/.25;p=lp([r[0],r[1]-14],T0,q);p[1]-=Math.sin(q*Math.PI)*30;an=tt*26;gl=.7}else if(tt<1.3){const q=ez((tt-.75)/.55);p=lp(T0,[r[0],r[1]],q);p[1]-=Math.sin(q*Math.PI)*50;an=tt*22*(1-q)+r[2]*q;gl=.6*(1-q)+.15}}}
+  if(dm==='dance'){if(k==='g'){if(tt<.4){const q=ez(tt/.4);p=lp(p,[tgx+30,tgy-20],q);an=tt*20;gl=.6}else if(tt<1.45){const n=(tt-.4)/.23,ph=n*Math.PI;p=[tgx+Math.cos(ph)*30,tgy-12+Math.sin(ph)*16];an=ph*2.4;gl=.7}else{const q=ez((tt-1.45)/.4);const s=[tgx+Math.cos(1.05/.23*Math.PI)*30,tgy-12];p=lp(s,[r[0],r[1]],q);an=tt*18*(1-q)+r[2]*q;gl=.6*(1-q)+.15}}
+   else{if(tt<1.6){const q=ez(Math.min(1,tt/.3));an=r[2]+(aim(p)-r[2])*q;gl=.2+.4*q*(.7+.3*Math.sin(tt*20))}else{const q=ez((tt-1.6)/.3);an=aim(p)*(1-q)+r[2]*q}}}
+  if(dm==='crash'){const top=[bx+(k==='s'?-24:24),by-h-30];if(tt<.35){const q=(tt/.35);p=lp(top,T0,q*q);an=Math.PI+(k==='s'?.1:-.1);gl=.8}else if(tt<.8){p=T0;an=Math.PI+(k==='s'?.1:-.1);gl=.5}else if(tt<1.3){const q=ez((tt-.8)/.5);p=lp(T0,[r[0],r[1]],q);an=Math.PI*(1-q)+r[2]*q;gl=.4*(1-q)+.15}}
+  if(dm==='cross'){const c=[bx-w*.18,by-h*.55];if(tt<.3){const q=ez(tt/.3);p=lp(p,c,q);an=an+((k==='s'?.7:-.7)-an)*q;gl=.2+.5*q}else if(tt<.75){p=c;an=k==='s'?.7:-.7;gl=.6+.2*Math.sin(tt*20)}else if(tt<1.05){const q=ez((tt-.75)/.3);p=lp(c,[r[0],r[1]],q);an=(k==='s'?.7:-.7)*(1-q)+r[2]*q;gl=.6*(1-q)+.15}}
+  if(dm==='orbit'&&tt<1){const ph=tt*Math.PI*2+(k==='s'?Math.PI:0),c=[bx,by-h*.5],q=Math.sin(Math.min(1,tt)*Math.PI);p=lp(p,[c[0]+Math.cos(ph)*w*.55,c[1]+Math.sin(ph)*h*.25],q);an=an+ph*q;gl=.2+.4*q}
+  return[p[0],p[1],an,gl]};
+ const sc=u,dr=(k,img,tt)=>{const[x,y,an,gl]=st(k,tt);ctx.save();ctx.translate(Math.round(x),Math.round(y));ctx.rotate(an);ctx.drawImage(img,-Math.round(img.width/2),-Math.round(img.height/2));ctx.restore();
+  if(gl>0){ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(x,y,2,x,y,img.height*.6);g.addColorStop(0,'rgba(95,246,255,'+(gl*.45)+')');g.addColorStop(1,'rgba(95,246,255,0)');ctx.fillStyle=g;ctx.fillRect(x-img.height*.6,y-img.height*.6,img.height*1.2,img.height*1.2);ctx.restore()}};
+ const si=dswImg('spear',sc*.8),gi=dswImg('great',sc*.8);
+ // 飛んでいる間は残像
+ const fly=dm&&t<1.9&&!sp;if(fly){ctx.globalAlpha=.25;dr('s',si,t-.05);dr('g',gi,t-.05);ctx.globalAlpha=1}
+ dr('g',gi,t);dr('s',si,t)}
+function deusAll(b){if(S!=='battle')return;b.en.forEach((e,i)=>{if(e.k!=='deus'||e.dead)return;const q=ePos(i),im=SPR.deus;deusW(e,q.x,q.y-(e.fly||0),im.width,im.height)})}
+// 技ごとの当たりの時間（見た目の遅れ）と、次の行動までの待ち
+const DHT={throw:[.45,.75,1],dance:[.45,.68,.91,1.14,1.37],crash:[.35]};
+function eHT2(e,k){const a=e.an;if(e.k==='deus'&&a&&DHT[a.dm])return DHT[a.dm][Math.min(k,DHT[a.dm].length-1)];return eHitT(e)+k*.26}
 function drawBattle(){const b=B;ER=[];CR=[];hit(0,24,640,206,()=>{b.sel=-1});ctx.drawImage(BGB,0,0);bgAnim();
 ctx.save();if(shk>0)ctx.translate((Math.random()-.5)*shk*2,(Math.random()-.5)*shk*2);
 const lg=b.lg>0?Math.sin(b.lg/.25*3.14)*(b.lgA!=null?b.lgA:30):0,sh=b.sh>0&&b.sh<=.3?(Math.random()-.5)*8:0;
@@ -3469,7 +3509,7 @@ for(const r of ER){const on=r.i===t,pu=on?Math.sin(T*10)*2:0,g=on?4-pu:8,L=on?12
 const tr=t>=0?ER.find(r=>r.i===t):null;if(tr)txt('攻撃',tr.x+tr.w/2,tr.y-26,'#ff6a5a','center',14)}
 else if(dg.y<236){ctx.strokeStyle='#ffe14a';ctx.lineWidth=3;ctx.strokeRect(10,28,620,196);txt('離して使用',320,104,'#ffe14a','center',18)}
 o.hx=dg.x-42;o.hy=dg.y-60;o.hs=1;dg.rt=(dg.rt||0)+(Math.max(-.28,Math.min(.28,(dg.vx||0)*.025))-(dg.rt||0))*.25;ctx.fillStyle='rgba(0,0,0,.3)';ctx.fillRect(Math.round(dg.x-38),Math.round(dg.y+50),76,6);cardAt(o,dg.x,dg.y-7,1.06,dg.rt,.95,0,pvw(o,ptg))}}
-if(b.bn&&b.bn.t>0&&!(b.bn.dl>0)){const p=1-b.bn.t/1.1,a=p<.15?p/.15:p>.75?(1-p)/.25:1,off=p<.15?(1-p/.15)*-260:0;ctx.globalAlpha=Math.max(0,Math.min(1,a));ctx.fillStyle=b.bn.bg;ctx.fillRect(0,96,640,52);ctx.fillStyle='#fff';ctx.fillRect(0,96,640,3);ctx.fillRect(0,145,640,3);txt(b.bn.s,320+off,134,'#fff','center',32);ctx.globalAlpha=1}drawTut(b)}
+if(b.bn&&b.bn.t>0&&!(b.bn.dl>0)){const p=1-b.bn.t/1.1,a=p<.15?p/.15:p>.75?(1-p)/.25:1,off=p<.15?(1-p/.15)*-260:0;ctx.globalAlpha=Math.max(0,Math.min(1,a));ctx.fillStyle=b.bn.bg;ctx.fillRect(0,96,640,52);ctx.fillStyle='#fff';ctx.fillRect(0,96,640,3);ctx.fillRect(0,145,640,3);txt(b.bn.s,320+off,134,'#fff','center',32);ctx.globalAlpha=1}deusAll(b);drawTut(b)}
 const MCW=72,MSW=1112,MX=f=>40+(f+1)*MCW;let MSC=0;
 function mpanel(k){const W=MSW,H=238,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');let sd=11+k;const rn=()=>(sd=(sd*16807)%2147483647)/2147483647,F=Math.floor;
 if(k===0){x.fillStyle='#d6be8e';x.fillRect(0,0,W,H);for(let i=0;i<1100;i++){x.fillStyle=['#c9ad78','#e2cfa4','#bfa06a'][i%3];x.fillRect(F(rn()*W/2)*2,F(rn()*H/2)*2,2,2)}
@@ -3982,7 +4022,7 @@ if(S==='battle'||(MPB&&MPB.on)){const b=B;if(MPB)for(const q of PL)if(q.B&&q.B!=
 // 詰み防止：敵が全滅しているのに勝利になっていない／手札が無いのに捨てる選択が残っている／ターン終了の途中で止まった
 if(b.ph==='p'&&!b.vt&&b.en&&b.en.length&&!alive().length)chk();if(b.dsc>0&&!b.hand.length)b.dsc=0;if(!MPB&&b.ph==='x'){b.xT=(b.xT||0)+dt;if(b.xT>2){b.xT=0;b.ph='p';endTurn()}}else b.xT=0;
 if(b.vt&&b.ph==='V'){b.vt+=dt;if(b.vt>1.6&&!mpPd()&&b.en.every(e=>!e.dead||e.dT==null||T>=e.dT+.9)){b.ph='D';if(MPB)mpEndBattle();endBattle()}}
-else if(b.ph==='e'){b.et-=dt;if(b.et<=0){const e=b.en[b.eo?b.eo[b.ei]:b.ei];if(!e){for(const x of b.en){x.lost=0;x.nw=0;if(!x.dead&&x.i>=0)x.it=xIt(x)}mpEach(()=>{if(PS.weak>0&&!B.jw)PS.weak--;if(PS.vuln>0&&!B.jv)PS.vuln--;B.jw=B.jv=0});newTurn()}else if(!e.dead&&!e.reb&&!e.stn&&!(e.sl>0)&&(e.it.nm||e.it.sx)&&!b.sp){b.sp={e,t:0,lt:!e.it.nm};b.et=e.it.nm?1.3:1.05;sfx('ch')}else{const sp=b.sp;b.sp=null;enemyAct(e);if(sp&&!e.dead){const q=ePos(b.en.indexOf(e)),im=SPR[e.k];const fy=e.fly||0,ex={cx:q.x,cy:q.y-fy-im.height/2,tx:q.x-im.width/2,ty:q.y-fy-im.height,w:im.width,h:im.height};if(sp.lt){fxs('ez',MPB?mpCX():110,166,{d:1.1,s:e.k,ex});shk=Math.max(shk,11);sfx('hv');sfx('bm')}else{fxs('bz',MPB?mpCX():110,166,{d:1.4,c:e.it.fc,s:e.k,ex});shk=16;sfx('bm')}}b.ei++;b.et=sp?(sp.lt?1:1.4):Math.max(.8,e.an&&e.an.k==='mh'?.45+.26*e.an.h:.8)}}}}}
+else if(b.ph==='e'){b.et-=dt;if(b.et<=0){const e=b.en[b.eo?b.eo[b.ei]:b.ei];if(!e){for(const x of b.en){x.lost=0;x.nw=0;if(!x.dead&&x.i>=0)x.it=xIt(x)}mpEach(()=>{if(PS.weak>0&&!B.jw)PS.weak--;if(PS.vuln>0&&!B.jv)PS.vuln--;B.jw=B.jv=0});newTurn()}else if(!e.dead&&!e.reb&&!e.stn&&!(e.sl>0)&&(e.it.nm||e.it.sx)&&!b.sp){b.sp={e,t:0,lt:!e.it.nm};b.et=e.it.nm?1.3:1.05;sfx('ch')}else{const sp=b.sp;b.sp=null;enemyAct(e);if(sp&&!e.dead){const q=ePos(b.en.indexOf(e)),im=SPR[e.k];const fy=e.fly||0,ex={cx:q.x,cy:q.y-fy-im.height/2,tx:q.x-im.width/2,ty:q.y-fy-im.height,w:im.width,h:im.height};if(sp.lt){fxs('ez',MPB?mpCX():110,166,{d:1.1,s:e.k,ex});shk=Math.max(shk,11);sfx('hv');sfx('bm')}else{fxs('bz',MPB?mpCX():110,166,{d:1.4,c:e.it.fc,s:e.k,ex});shk=16;sfx('bm')}}b.ei++;b.et=e.k==='deus'&&e.an&&DHT[e.an.dm]?Math.max(sp?1.4:.8,DHT[e.an.dm][DHT[e.an.dm].length-1]+.6):sp?(sp.lt?1:1.4):Math.max(.8,e.an&&e.an.k==='mh'?.45+.26*e.an.h:.8)}}}}}
 /* ===== マルチプレイ（協力・最大4人） ===== */
 // 方式：全員の画面が同じ戦闘を手元で計算する（ロックステップ）。戦闘中の操作はホストが通し番号を付けて全員に配り、全員が同じ順に適用する。
 // 戦闘の乱数は戦闘ごとの種から作る（RNG）。戦闘の外（ショップ・イベント・報酬）は各自の画面で処理し、終わったら自分の P を送る（sync）。
