@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.47';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.48';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2226,7 +2226,7 @@ const artScythe=(W,H)=>{const c=MK(W,H),x=c.getContext('2d');const px=(a,b,col)=
  return c};
 HART['命刈りの鎌']=artScythe})();
 function card(x,y,o,dim,gl,pv){card0(x,y,o,dim,gl,pv);if(o&&o.en&&ENC[o.en])enBadge(x+73,y+28,o.en,o.en==='sharp'||o.en==='nimble'?o.ev:null)}
-function card0(x,y,o,dim,gl,pv){{const m=ctx.getTransform();LPC.push({x:(m.a*x+m.c*y+m.e)/K,y:(m.b*x+m.d*y+m.f)/K,w:84*m.a/K,h:106*m.d/K,o})}const c=cd(o),rare=c.r===2,bk=c.t>=3,col=bk?(c.t===4?'#7a3a8a':'#5a5a66'):c.k===5?'#a8a8b8':TC[c.t],parts=dl(c,pv),ls=[],lc=[];parts.forEach((p,i)=>{for(const l of wrap(p,8)){ls.push(l);lc.push(parts.cl[i]||'#e8e4ff')}});const ah=AH(ls.length);
+function card0(x,y,o,dim,gl,pv){{const m=ctx.getTransform();LPC.push({x:(m.a*x+m.c*y+m.e)/K,y:(m.b*x+m.d*y+m.f)/K,w:84*m.a/K,h:106*m.d/K,o})}const c=cd(o),rare=c.r===2,bk=c.t>=3,col=bk?(c.t===4?'#7a3a8a':'#5a5a66'):c.k===5||c.r===-2?'#a8a8b8':TC[c.t],parts=dl(c,pv),ls=[],lc=[];parts.forEach((p,i)=>{for(const l of wrap(p,8)){ls.push(l);lc.push(parts.cl[i]||'#e8e4ff')}});const ah=AH(ls.length);
 if(rare&&gl){const a=.16+.07*Math.sin(T*3+x*.05);ctx.fillStyle='rgba(255,210,63,'+a+')';ctx.fillRect(x-9,y-9,102,124);ctx.fillStyle='rgba(255,226,120,'+(a+.08)+')';ctx.fillRect(x-5,y-5,94,116)}
 ctx.fillStyle='#08060f';ctx.fillRect(x-2,y-2,88,110);ctx.fillStyle=rare?'#ffd23f':col;ctx.fillRect(x,y,84,106);ctx.fillStyle=bk?'#0e0e12':'#16142a';ctx.fillRect(x+3,y+3,78,100);
 ctx.fillStyle=rare?'#b8860b':bk?'#202028':'#2a2648';ctx.fillRect(x+5,y+4,74,14);ctx.fillStyle=rare?'#ffd23f':col;ctx.fillRect(x+5,y+4,74,1);ctx.fillRect(x+5,y+17,74,1);if(rare){ctx.fillRect(x+3,y+6,2,10);ctx.fillRect(x+79,y+6,2,10)}
@@ -2397,7 +2397,7 @@ const par=(f,j)=>f?m[f-1].filter(n=>n&&n.cn.includes(j)):[];
  for(const b of bands)put(b);for(let k=0;k<12&&n<tgt;k++)put(pk(bands))}
 m.push([{t:6,cn:[],dx:0,dy:0}]);return m}
 function avail(){if(CUR.f===-1&&P.nw===0)return[];if(CUR.f===-1)return MP[0].map((n,j)=>n?j:-1).filter(j=>j>=0);if(CUR.f===LAST)return[];return MP[CUR.f][CUR.j].cn}
-function enter(j){if(MPON()&&!MPR.ap){if(!MPR.votes[LK]||MPR.votes[LK].j!==j||MPR.votes[LK].f!==CUR.f+1)mpVote(j);return}P.back=null;const f=CUR.f+1;CUR={f,j};(P.path=P.path||[]).push(f+','+j);const n=MP[f][j];P.floors=(P.act-1)*(LAST+1)+f+1;const tt=n.t===4?qRoll():n.t;if(n.t===4&&tt!==4)say(tt===0?'？の先に、敵が待ち構えていた':tt===2?'？の先に、行商人がいた':'？の先に、宝箱があった');
+function enter(j){if(MPON()&&!MPR.ap){if(!MPR.votes[LK]||MPR.votes[LK].j!==j||MPR.votes[LK].f!==CUR.f+1)mpVote(j);return}P.back=null;const f=CUR.f+1;CUR={f,j};(P.path=P.path||[]).push(f+','+j);const n=MP[f][j];P.floors=(P.act-1)*(LAST+1)+f+1;const tt=n.t===4?qRoll():n.t;
 if(tt===0)fight(pk([A1S()?FIS:FI,FI2,FI3][P.act-1][f<4?0:f<9?1:2]),0);else if(tt===1)fight([pk([A1S()?ELS:['nob','hound','colony','phrog'],['oni','necro','behemoth'],['magik','spek','judge']][P.act-1])],1);else if(tt===6)fight(bossG()[bossI()],2);
 else if(tt===2){shopGen();go('shop')}else if(tt===3)go('rest');else if(tt===4)evGen();else if(tt===5){const k=MPON()?mpChestPick():relicPick(),ck=has('ckey');EV={t:'宝箱',im:'chest',x:['古びた宝箱を見つけた。'].concat(ck?['呪いの鍵が疼く。開ければ呪いが1枚デッキに入る。']:[]),ch:[['開ける'+(ck?'（呪い1枚）':''),()=>{sfx('pk');if(ck)P.deck.push({i:randCurse(),u:0});if(k){gain(k);return'「'+RL[k][0]+'」を手に入れた。'+(ck?'呪いも1枚デッキに入った…':'')}return'中は空っぽだった…'+(ck?'呪いだけが残った…':'')}],['開けずに立ち去る',()=>'宝箱には手をつけなかった。']]};EV.ch=EV.ch.map(c=>[c[0],()=>{EV={t:'宝箱',im:'chest',x:[c[1]()],ch:[['次へ',()=>go('map')]]}}]);go('event')}}
 // Ver2.40 ？マスの中身（ユーザー指定：本家1作目と同じ仕組み）。戦闘10%・ショップ3%・宝箱2%から始め、残りはイベント。出た種類はその初めの確率に戻り、出なかった種類は戦闘+10%・ショップ+3%・宝箱+2%ずつ上がる。確率は P.qc に持つ（幕をまたいでも続く）。R() を使うのでマルチでも全員同じ結果
@@ -2455,7 +2455,7 @@ function xBon(c,o,tg,hl){return(c.exB&&B?B.ex.length*c.exB:0)+(c.psB&&tg?(tg.poi
 // ===== 追加カードの仕組み（スレスパ2を参考）=====
 function exPush(o){B.ex.push(o);B.exT=(B.exT||0)+1;if(PS.fnp){B.blk+=PS.fnp;fxs('sh',110,175,{d:.4})}}
 function hlInc(){if(!B)return;B.hlT=(B.hlT||0)+1;B.hlB=(B.hlB||0)+1;if(PS.hlD&&!B.vt)for(const e of alive())hitE(e,PS.hlD,.1,0,0)}
-function forge(n){PS.forge+=n;nmb(110,118,'刃+'+n,'#ffb02e');if(![...B.hand,...B.dr,...B.dis].some(q=>q.i===BLADE)){const q={i:BLADE,u:0};if(B.hand.length<10)B.hand.push(q);else B.dis.push(q)}}
+function forge(n,cur){PS.forge+=n;nmb(110,118,'刃+'+n,'#ffb02e');if(!(cur&&cur.i===BLADE)&&![...B.hand,...B.dr,...B.dis].some(q=>q.i===BLADE)){const q={i:BLADE,u:0};if(B.hand.length<10)B.hand.push(q);else B.dis.push(q)}}
 // ===== ネブラ：小クラゲ（オーブ）。PS.orb=[{t,v}]（0 が先頭＝次に放たれる・右端）、PS.osl 枠、PS.foc 集中。雷の対象は R() で選ぶ（マルチの同期）
 const OT={L:['雷','#ffe14a'],F:['氷','#7ee8ff'],D:['闇','#b06aff'],P:['プラズマ','#ff9a5a'],G:['ガラス','#f0f4ff']};
 function oPos(i,n){const a=n<=1?-1.2:-2.5+(n-1-i)/(n-1)*1.86,R=50+Math.max(0,n-4)*7;return[114+Math.cos(a)*R,112+Math.sin(a)*R*.8]}
@@ -2537,7 +2537,7 @@ function xEff(c,o,tg){nbEff(c,o,tg);const dm=(e,n)=>{if(!e||e.dead||n<=0)return;
  if(c.clw){B.clw=(B.clw||0)+c.clw;if(PS.clwBk){B.blk+=PS.clwBk;fxs('sh',110,175,{d:.4})}}
  if(c.cmbo&&!B.cmboP){B.cmboP=1;const l=B.hand.filter(q=>q!==o&&cd(q).clw&&!cd(q).un);for(const q of l){const j=B.hand.indexOf(q),al=alive();if(j<0||!al.length||B.vt)break;q.f0=1;play(j,tg&&!tg.dead?B.en.indexOf(tg):B.en.indexOf(al[0]));delete q.f0}B.cmboP=0}
  if(o.i===SHIV)B.shvN=(B.shvN||0)+1;
- if(c.t===0){if(PS.fgAt)forge(PS.fgAt);if(PS.atKi)PS.ki+=PS.atKi}
+ if(c.t===0){if(PS.fgAt)forge(PS.fgAt,o);if(PS.atKi)PS.ki+=PS.atKi}
  if(c.c===0&&!c.X){B.z0T=(B.z0T||0)+1;if(PS.z0D)for(const e of alive())hitE(e,PS.z0D,.1,0,0);if(PS.z0E){B.me+=1;nmb(34,225,'エナジー+1','#7ec8ff')}}}
 function dlX(c,p){if(c.mhpU)p.push('最大HP+'+c.mhpU);if(c.enl)p.push('このターン、手札のコストを全て1以下にする');const ON=t=>OT[t][0]+'クラゲ';if(c.ch){const m={};for(const t of c.ch)m[t]=(m[t]||0)+1;p.push(Object.keys(m).map(t=>ON(t)+'を'+m[t]+'匹').join('、')+'呼ぶ')}if(c.chX!=null)p.push('雷クラゲをX'+(c.chX?'+'+c.chX:'')+'匹呼ぶ');if(c.chR)p.push('ランダムな小クラゲを'+c.chR+'匹呼ぶ');if(c.chE)p.push('敵1体につき'+ON(c.chE)+'を1匹呼ぶ');if(c.ev)p.push('先頭の小クラゲを'+(c.ev>1?c.ev+'回':'')+'放つ');if(c.evX!=null)p.push('先頭の小クラゲをX'+(c.evX?'+'+c.evX:'')+'回放つ');if(c.rcO)p.push('先頭の小クラゲを放ち、同じ種類を呼ぶ');if(c.ao)p.push('小クラゲ1匹につき1回');if(c.dru)p.push('小クラゲの種類の数だけ引く');if(c.wkI)p.push('敵が攻撃予定なら脆弱+'+c.wkI);if(c.sdis)p.push('捨て札に'+c.sdis[0]+'を'+c.sdis[1]+'枚');if(c.focA)p.push('集中+'+c.focA);if(c.oslA)p.push('小クラゲの枠'+c.oslA);if(c.rth)p.push('このターン手札を全て保留');if(c.fis)p.push('小クラゲを全て消し、1匹につきエナジー+1と1枚引く');if(c.rbt)p.push('手札と捨て札を山札に混ぜ、'+c.rbt+'枚引く');if(c.ths)p.push('雷クラゲを呼んだ回数だけ、ランダムな敵に'+c.ths);if(c.bcg)p.push('毎ターン集中-'+c.bcg);if(c.rvO)p.push('小クラゲの並びを逆にする');if(c.bud)p.push('先頭の小クラゲと同じ種類・同じ蓄えの小クラゲを1匹呼ぶ');if(c.shf)p.push('全ての小クラゲの色を1つ進める');if(c.eat)p.push('一番新しい小クラゲを食べ、常時効果の'+c.eat+'倍のブロック');if(c.wkT)p.push('小クラゲの種類の数×'+c.wkT+'の脆弱');if(c.sum)p.push('全ての小クラゲの常時効果の合計×'+c.sum+'のダメージ');if(c.emp)p.push('敵全体に、空いている枠1つにつき'+c.emp+'ダメージ');if(c.res)p.push('同じ種類が隣り合う組ごとに、その2匹の常時効果が発動');if(c.exB)p.push('廃棄したカード1枚につき+'+c.exB);if(c.exR)p.push('手札をランダムに'+c.exR+'枚廃棄');if(c.exA)p.push('手札の攻撃以外を全て廃棄');if(c.exS)p.push('1枚につき筋力+'+c.exS);if(c.frt)p.push('このターン廃棄していればエナジー+'+c.frt);
  if(c.hlH)p.push('この戦闘でHPを失った回数だけ追加で攻撃');if(c.hlM)p.push('このターンHPを失っていれば'+c.hlM+'倍');if(c.vuM)p.push('弱体の敵には'+c.vuM+'倍');if(c.dbT)p.push('このターン攻撃のダメージ2倍');if(c.eHp)p.push('ターン終了時HP-'+c.eHp);
