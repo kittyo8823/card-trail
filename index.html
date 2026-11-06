@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.43';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.47';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -679,9 +679,50 @@ const VZ=(tf)=>[46,48,3,({r,p,q,l,t,e,sh,pt})=>{
   t([[18.6,5],[19.4,2.4],[21,4.6],[22.6,1.4],[24.2,4.6],[25.4,2.6],[26.4,5]],tf?'#ff6a2a':'#ffd23f');q(22.6,3.2,'#ff3b5c');
   if(tf){t([[23.4,6.4],[24.6,6.4],[24.6,8],[23.4,8]],'#ffd23f');l(20,6,21,8.6,'#ff6a2a',.3)}});
  l(1.4,47.4,34,47.4,K.tr,.4)}];
-SD.archdemon=VZ(0);
+// Ver2.47 夜の王ヴァルゼオスを、王座に座って剣の切っ先を地面につけて持つ姿にした（ユーザー指定。斜め向き）。真体（tf=1）も同じ形で色だけ変わる。部位：wb 奥の翼／wf 手前の翼／al 奥の腕（肘をつく）／hd 頭／ar 剣を持つ腕
+// 夜の王ヴァルゼオス：王座に座り、剣の切っ先を地面につけて持つ（右向き・斜め）。tf=1 は真体の色
+const VZS0=(tf)=>({r,p,q,l,t,e,sh,pt})=>{
+ const K=tf?{w1:'#2a0410',w2:'#3a0616',cp:'#160a1a',ln:'#5a0a14',ar:'#262230',ar2:'#322c3c',ar3:'#3e3848',sk:'#200c2a',fc:'#2e2238',fc2:'#3a2c46',tr:'#ff6a2a',th:'#1e1826',th2:'#2a2236',cu:'#3a0612',bl:'#1a1620',bll:'#ff6a2a'}:{w1:'#3a0a26',w2:'#4a0e30',cp:'#1e1030',ln:'#8a1428',ar:'#3a3448',ar2:'#4c465a',ar3:'#5e5870',sk:'#3a1a52',fc:'#4a3e5e',fc2:'#5a4e70',tr:'#d4a838',th:'#2e2840',th2:'#3c3452',cu:'#5a1428',bl:'#6a6e80',bll:'#ff3b5c'};
+ const limb=(pts,w,c)=>{for(let i=0;i<pts.length-1;i++)l(pts[i][0],pts[i][1],pts[i+1][0],pts[i+1][1],c,w);for(const o of pts)e(o[0]+w/2,o[1]+w/2,w*.55,w*.55,c)};
+ // 翼（王座の背の後ろから左右へ）
+ pt('wb',()=>{t([[24,14],[30,4],[38,0],[44,1],[41,5],[46,8],[41,10],[44,15],[39,14],[40,20],[35,17]],K.w1);l(24,14,38,0,'#1e0414',.45);l(30,4,44,8,'#1e0414',.3);l(30,4,43,15,'#1e0414',.3)});
+ pt('wf',()=>{t([[18,14],[12,4],[5,0],[0,1],[2,6],[0,11],[3.6,12],[1.6,18],[6,17],[5,23],[9,20],[11,25],[15,20]],K.w2);l(18,14,5,1,'#24061a',.55);for(const[a,b]of[[.6,11],[2,18],[5.4,23],[11,25]])l(11,6,a,b,'#24061a',.35)});
+ // 王座：高い背もたれ（尖った飾り）、座面、手前の肘掛け
+ t([[9,4],[12,0],[14,4],[17,1],[20,4],[23,0],[26,4],[26,40],[9,40]],K.th);t([[9,4],[12,0],[14,4],[14,40],[9,40]],K.th2);for(const y of[8,20,32])l(10,y,25,y,K.tr,.35);e(17.6,12,2,2,K.bll);
+ t([[10,31],[42,31],[44,36],[12,36]],K.th2);t([[10,31],[42,31],[42,32.4],[10,32.4]],K.tr);t([[12,36],[44,36],[44,51],[40,51],[40,40],[16,40],[16,51],[12,51]],K.th);
+ t([[13,28],[36,28],[38,31],[13,31]],K.cu);// 座面のクッション
+ // マント（座面から床へ垂れる）
+ t([[16,15],[26,15],[30,31],[34,46],[26,49],[18,47],[14,36]],K.cp);t([[16,15],[20,15],[18,47],[14,36]],K.ln);
+ // 奥の足・手前の足（座って膝を曲げる）
+ limb([[22,31],[33,33],[34,46]],3.4,'#2e2a3c');r(31,46,7,3,'#24202e');
+ sh();
+ limb([[25,30],[38,31],[40,47]],3.8,K.ar);r(37.4,47,8,3,'#1e1a26');r(36,30,4,4,K.ar3);
+ // 胴：少し背をもたせかける。広い肩→細い腰
+ t([[15,14],[32,13],[30,22],[27,30],[19,30],[17,22]],K.ar);t([[23,13.6],[32,13],[30,22],[27,30],[23.6,30]],K.ar2);
+ t([[12,11],[19,10],[20,15],[17,18],[12,17]],K.ar2);t([[28,10],[35,11],[35.6,16],[31,18],[27.6,14]],K.ar3);l(15,14,32,13,K.tr,.4);
+ e(24.6,20,2.2,2.2,K.bll);q(24,19.4,'#ffd0d8');t([[18,29],[28,29],[29,33],[17,33]],K.sk);l(18,29.4,28,29.4,K.tr,.35);
+ if(tf)for(const[a,b,c,d]of[[19,16,21,22],[21,22,19,28],[27,16,26,22],[30,34,34,44]])l(a,b,c,d,'#ff6a2a',.35);
+ // 奥の腕：肘掛け（王座の背の縁）に肘をつく
+ pt('al',()=>{limb([[15,15],[12,23],[16,28]],2.8,K.ar);r(14,26,4,3,K.ar3)});
+ // 頭：少しうつむいて見下ろす。角・冠・赤い目
+ pt('hd',()=>{const x=24,y=8;t([[x-4,y-4],[x+4,y-4.4],[x+5.4,y],[x+4.4,y+5],[x+1,y+7],[x-2.6,y+5],[x-4,y]],K.fc);t([[x+.6,y-4.2],[x+4,y-4.4],[x+5.4,y],[x+4.4,y+5],[x+1,y+7]],K.fc2);
+  t(tf?[[x-3,y-2],[x-8,y-5],[x-12,y-10],[x-14,y-12],[x-15,y-9],[x-12,y-5],[x-8,y-2],[x-4,y+1]]:[[x-3,y-2],[x-7,y-4],[x-11,y-8],[x-12,y-11],[x-14,y-10],[x-13,y-6],[x-10,y-3],[x-4,y+1]],'#e8dcc0');
+  t([[x+3.6,y-3],[x+6,y-6],[x+7.6,y-9],[x+9,y-8],[x+8,y-4],[x+5,y-1]],'#c8bca0');
+  t([[x-3.6,y-4],[x-3,y-7],[x-1.4,y-5],[x+.4,y-8.4],[x+2,y-5],[x+3.4,y-7.4],[x+4.4,y-4]],tf?'#ff6a2a':'#ffd23f');q(x+.4,y-6.4,'#ff3b5c');
+  r(x+.6,y+1.4,2.4,1,'#ff2a2a');r(x+3.8,y+1.4,1.4,1,'#ff2a2a');t([[x+.8,y+4],[x+4.6,y+3.6],[x+3.8,y+5],[x+1.2,y+5.2]],'#120a18')});
+ // 手前の腕と剣：剣は切っ先を地面につけて斜めに持つ
+ pt('ar',()=>{limb([[31,14],[37,21],[42,27]],3,K.ar2);r(41,25.6,4.4,3.6,K.ar3);
+  t([[43,28.6],[45,27.6],[52,50],[51,53],[49.6,50.4]],K.bl);l(44.4,29,50.6,50,K.bll,.35);t([[40.6,28.6],[46.4,25.4],[47.2,27],[41.4,30.2]],K.tr);t([[42,24.6],[43.4,24],[44.4,26.6],[43,27.2]],'#5a3a2a');e(42.4,23.6,1,1,K.tr);
+  if(tf)for(let k=0;k<5;k++)t([[45+k*1.4,31+k*4],[43.6+k*1.4,29.6+k*4],[45.6+k*1.4,29+k*4]],k%2?'#ff8c2e':'#ffd23f')});
+ l(9,51.6,52,51.6,K.tr,.35)};
+
+// 王座の高い背もたれ（体より上に突き出す）を先に描き、残りは 8 下げて描く
+const VZS=(tf)=>[56,62,2.6,A=>{const th=tf?'#1e1826':'#2e2840',th2=tf?'#2a2236':'#3c3452',tr=tf?'#ff6a2a':'#d4a838',gm=tf?'#ff6a2a':'#ff3b5c';
+ A.t([[6,10],[8,4],[10,8],[13,1],[16,6],[18,0],[20,6],[23,1],[26,8],[28,4],[30,10],[30,48],[6,48]],th);A.t([[6,10],[8,4],[10,8],[13,1],[14,48],[6,48]],th2);A.l(6,10,30,10,tr,.4);A.l(7,10,7,48,tr,.3);A.l(29,10,29,48,tr,.3);A.e(18,5,1.6,1.6,gm);
+ const D=8;VZS0(tf)({...A,t:(P,c)=>A.t(P.map(q=>[q[0],q[1]+D]),c),r:(x,y,w,h,c)=>A.r(x,y+D,w,h,c),e:(x,y,rx,ry,c)=>A.e(x,y+D,rx,ry,c),l:(x1,y1,x2,y2,c,t)=>A.l(x1,y1+D,x2,y2+D,c,t),p:(x,y,c)=>A.p(x,y+D,c),q:(x,y,c)=>A.q(x,y+D,c),sh:A.sh,pt:A.pt,m:A.m})}];
+SD.archdemon=VZS(0);
 // ----- 癖のある敵（第2層後半〜） -----
-SD.archdemon2=VZ(1);
+SD.archdemon2=VZS(1);
 const BEH=z=>({r,p,q,l,t,m,sh,pt})=>{
 t([[25,22],[20,22],[19.4,29.6],[25.6,29.6]],'#3e2418');t([[8,22],[3,22],[2.4,29.6],[8.6,29.6]],'#3e2418');
 pt('tl',()=>{t([[16,14],[6,10],[.4,13],[4,16],[8,15]],'#5a3a2e')});
@@ -1054,19 +1095,22 @@ pt('wf',()=>{l(9,14,3,9,'#5ff6ff')});pt('wb',()=>{l(22,14,28.6,9.4,'#4ad6e6')});
 e(17.4,16,5,5,'#0a1020');e(18.4,16,3.4,3.4,'#ff4fd8');e(19,16,1.6,1.6,'#fff');
 for(let k=0;k<28;k++){const an=k/28*6.283;p(15.5+Math.cos(an)*13,16+Math.sin(an)*3,'#ffd23f')}
 r(15,4,2,3,'#5ff6ff');p(15,30,'#5ff6ff')}];
-SD.deus=[40,42,3,({e,r,p,l,t,m,sh,pt})=>{
-pt('wr',()=>{t([[26,14],[37,8.6],[39.6,13.6],[36.6,15],[39,21],[34,21],[28,25]],'#b4bccc')});
-pt('ar',()=>{e(33,24,3.4,3.4,'#c4ccdc')});pt('ar',()=>{r(31,25,4.6,9,'#98a2b8')});pt('ar',()=>{r(30.6,33,5.6,3.4,'#e0b020')});r(23,32,5.4,10,'#7a86a0');r(22.4,40,7,2,'#404a64');
-pt('wl',()=>{t([[14,14],[2,8],[0,14],[4,15],[1,22],[6,22],[12,26]],'#c8d0e0')});
-t([[11,14],[29,14],[26,34],[14,34]],'#e8ecf6');t([[14.6,4],[26.6,4],[28,7],[27,15],[14.6,15]],'#d8e0f0');
-r(11,32,6,10,'#8a96b0');r(10,40,8,2,'#4a5470');pt('al',()=>{e(7,24,4,4,'#d8e0f0')});pt('al',()=>{r(4,25,5,10,'#aab4c8')});pt('al',()=>{r(3,34,7,4,'#ffd23f')});
-sh();
-pt('wl',()=>{l(13,15,3,10,'#5ff6ff')});pt('wl',()=>{l(13,19,3,20,'#5ff6ff')});pt('wr',()=>{l(27,16,37,10.6,'#4ad6e6')});pt('wr',()=>{l(28,20,36,20,'#4ad6e6')});
-for(let k=0;k<32;k++){const an=k/32*6.283;p(21+Math.cos(an)*10,8+Math.sin(an)*7,k%4?'#ffd23f':'#5ff6ff')}
-r(16.4,8,11,3,'#0a1020');r(18,9,3,1,'#ff4fd8');r(23.4,9,2.4,1,'#ff4fd8');
-e(21,22,4,4,'#0a1020');e(21,22,3,3,'#5ff6ff');e(21,22,1.4,1.4,'#fff');
-l(20.6,15,20.6,17,'#ffd23f');l(16,28,25,28,'#5ff6ff');l(17,31,24,31,'#5ff6ff');
-t([[15,4],[17,0],[19,4]],'#ffd23f');t([[22.6,4],[24.6,0],[26.6,4]],'#ffd23f');t([[18.4,4],[21,-1],[23.6,4]],'#ffd23f')}];
+// Ver2.46 機神デウス・マキナの体（武器なし。槍と大剣は deusW が別に描く）。斜め向き・両腕を広げてうつむく。右向きで描く
+SD.deus=[66,62,2.3,(()=>{const W1='#f0f4fa',W2='#d8e0f0',W3='#aab4c8',W4='#7a86a0',W5='#4a5470',CY='#5ff6ff',PK='#ff4fd8',GD='#ffd23f',DK='#0a1020';
+const body=(set)=>A=>{
+ A.t([[24,17],[10,20],[6,28],[10,27],[9,35],[15,31],[17,38],[22,30],[26,24]],W4);
+ A.l(23,15,16,17,W3,3.4);A.l(16,17,11,19,W3,3.4);A.e(10,20,2.2,2.2,W2);A.t([[8,18],[10,15.4],[11,18]],W2);
+ A.t([[36,17],[54,22],[60,32],[54,30],[56,42],[48,36],[46,46],[40,34],[34,26]],W3);A.t([[36,17],[54,22],[56,25],[38,22]],W2);
+ A.t([[25,14],[42,13],[39,22],[36,31],[29,31],[27,22]],W1);A.t([[25,14],[32,14],[31,31],[29,31],[27,22]],W2);
+ A.t([[28,30],[37,30],[38,37],[34,52],[31,52],[28,37]],W3);A.t([[31,51],[34,51],[32.6,58]],W5);
+ A.t([[22,12],[28,11],[29,16],[25,18],[22,16]],W2);A.t([[37,10],[46,11],[47,17],[44,19],[37,17]],W1);
+ A.sh();
+ A.e(34,21,3.4,3.4,DK);A.e(34,21,2.4,2.4,CY);A.e(34,21,1,1,'#fff');A.l(29,26,38,26,CY,.4);A.l(33,31,33,48,CY,.35);A.l(37,19,54,25,CY,.4);A.l(37,23,52,31,'#4ad6e6',.35);
+ A.l(44,13,52,16,W2,3.8);A.l(52,16,58,19,W2,3.8);A.e(60,20,2.6,2.6,W1);A.t([[59,17],[62,16],[62,19]],W1);
+ for(let k=0;k<32;k++){const an=k/32*6.283;A.p(34+Math.cos(an)*8,5+Math.sin(an)*5,k%4?GD:CY)}
+ A.t([[31,5],[38,5],[39.4,9],[38,14],[32,14],[30.4,9]],W1);A.r(33,10.6,5.4,1.4,DK);A.r(34,11,1.8,.6,PK);A.r(36.6,11,1.2,.6,PK);
+ set(A)};
+const f=body(()=>{});return A=>f({...A,t:(P,c)=>A.t(P.map(q=>[q[0]+2,q[1]+2]),c),r:(x,y,w,h,c)=>A.r(x+2,y+2,w,h,c),e:(x,y,rx,ry,c)=>A.e(x+2,y+2,rx,ry,c),l:(x1,y1,x2,y2,c,t)=>A.l(x1+2,y1+2,x2+2,y2+2,c,t),p:(x,y,c)=>A.p(x+2,y+2,c),q:(x,y,c)=>A.q(x+2,y+2,c),sh:A.sh})})()];
 SD.chronos=[40,42,3,({e,r,p,l,t,m,sh,pt})=>{
 pt('wr',()=>{t([[28,20],[39,13],[38,26],[28,30]],'#7a86a0')});
 pt('wl',()=>{t([[12,20],[0,12],[2,26],[12,30]],'#8a96b0')});
@@ -1328,15 +1372,14 @@ const EPT={
  dragon:[{n:'wb',pv:[22,16],z:'b',w:[-.4],s:[.25],i:[.1,2.2]},{n:'wf',pv:[17.6,17],z:'f',w:[.45],s:[-.25],i:[.12,2.2,.6]},{n:'hd',pv:[25,19.6],z:'f',w:[-.18,-1],s:[.16,1.5,1],i:[.03,1.3]},{n:'ar',pv:[17.6,21.6],z:'f',w:[-1.1,-1,-1.5],s:[.55,2.5,1],i:[.05,1.6]}],
  king:[{n:'af',pv:[31.5,15.5],z:'b',w:[-2.7,0,-1],s:[-.5,2,1],i:[.03,1.2]},{n:'ab',pv:[6.5,16],z:'f',w:[.35],s:[-.15],i:[.03,1.2,1]},{n:'hd',pv:[21,17],z:'f',w:[-.1],s:[.12,1,1],i:[.02,1]}],
  reaper:[{n:'sc',pv:[29.8,19],z:'b',pa:'ar',w:[-1],s:[1.2],i:[.04,1.4]},{n:'al',pv:[11.5,15],z:'f',w:[.25],s:[-.3],i:[.06,1.4,1]},{n:'ar',pv:[25.4,16],z:'f',w:[.45],s:[.35],i:[.05,1.4]}],
- archdemon:[{n:'wb',pv:[29,17],z:'b',w:[-.4],s:[.25],i:[.08,2]},{n:'wf',pv:[15.6,16.4],z:'f',w:[.45],s:[-.25],i:[.1,2,.6]},{n:'hd',pv:[22.6,15.4],z:'f',w:[-.14],s:[.14],i:[.03,1.2]},{n:'ar',pv:[28.6,18.2],z:'f',w:[-.7,-1,-1],s:[1.1,2,1],i:[.06,1.6]}],
- archdemon2:[{n:'wb',pv:[29,17],z:'b',w:[-.45],s:[.3],i:[.08,2]},{n:'wf',pv:[15.6,16.4],z:'f',w:[.5],s:[-.3],i:[.1,2,.6]},{n:'al',pv:[13,19.6],z:'f',w:[.4],s:[-.6,0,0],i:[.06,1.5,1]},{n:'hd',pv:[22.6,15.4],z:'f',w:[-.15],s:[.16],i:[.03,1.2]},{n:'ar',pv:[28.6,18.2],z:'f',w:[-.8,-1,-1],s:[1.2,2,1],i:[.06,1.6]}],
+ archdemon:[{n:'wb',pv:[24,22],z:'b',w:[-.4],s:[.25],i:[.08,2]},{n:'wf',pv:[18,22],z:'f',w:[.45],s:[-.25],i:[.1,2,.6]},{n:'al',pv:[15,23],z:'f',w:[.2],s:[-.2],i:[.03,1.5,1]},{n:'hd',pv:[24,22],z:'f',w:[-.14],s:[.14],i:[.03,1.2]},{n:'ar',pv:[31,22],z:'f',w:[-.7,-1,-1],s:[1.1,2,1],i:[.04,1.6]}],
+ archdemon2:[{n:'wb',pv:[24,22],z:'b',w:[-.45],s:[.3],i:[.08,2]},{n:'wf',pv:[18,22],z:'f',w:[.5],s:[-.3],i:[.1,2,.6]},{n:'al',pv:[15,23],z:'f',w:[.4],s:[-.6,0,0],i:[.06,1.5,1]},{n:'hd',pv:[24,22],z:'f',w:[-.15],s:[.16],i:[.03,1.2]},{n:'ar',pv:[31,22],z:'f',w:[-.8,-1,-1],s:[1.2,2,1],i:[.05,1.6]}],
  mothP:[{n:'wb',pv:[23,14],z:'b',w:[-.5],s:[.2],i:[.14,2.6]},{n:'wf',pv:[14,14],z:'b',w:[.55],s:[-.2],i:[.16,2.6,.5]},{n:'al',pv:[11,16],z:'f',w:[.8],s:[.3],i:[.05,1.4,1]},{n:'st',pv:[22.6,18],z:'f',w:[-.45,0,-1],s:[.2],i:[.04,1.4]}],
  gilL:[{n:'up',pv:[10,14],z:'b',w:[-.6],s:[.75],i:[.04,1.2]}],
  gilR:[{n:'up',pv:[10,14],z:'b',w:[-.3],s:[.14,-1.5],i:[.03,1.2]}],
  protoA:[{n:'af',pv:[22,12],z:'b',w:[-1.8],s:[.25,1],i:[.05,2]},{n:'ab',pv:[10.5,11],z:'f',w:[.35],s:[-.45],i:[.05,2,1]},{n:'hd',pv:[18,9.5],z:'f',w:[-.15],s:[.15],i:[.04,2.4]}],
  protoB:[{n:'af',pv:[23,12.6],z:'b',w:[.3,-4,0],s:[-.12,9,0],i:[.03,1.4]},{n:'ab',pv:[7.6,10],z:'f',w:[-.25],s:[.2],i:[.03,1.4,1]},{n:'hd',pv:[18.4,10],z:'f',w:[-.1],s:[.1],i:[.02,1.1]}],
  protoC:[{n:'wb',pv:[25,15],z:'b',w:[-.4],s:[.25],i:[.08,1.8]},{n:'wf',pv:[15,15],z:'b',w:[.45],s:[-.25],i:[.1,1.8,.6]},{n:'al',pv:[12.6,16],z:'f',w:[.3],s:[-.3],i:[.05,1.5,1]},{n:'hd',pv:[20.5,13.6],z:'f',w:[-.12],s:[.12],i:[.02,1.2]},{n:'ar',pv:[26.6,16.6],z:'f',w:[-1.4,-1,-1],s:[.6,2,1],i:[.05,1.5]}],
- deus:[{n:'wr',pv:[27,17],z:'b',w:[-.3],s:[.15],i:[.06,1.4]},{n:'ar',pv:[33,23.6],z:'b',w:[-1.4],s:[-1.6,1],i:[.04,1.4]},{n:'wl',pv:[13,16],z:'b',w:[.35],s:[-.15],i:[.07,1.4,.6]},{n:'al',pv:[7,23.6],z:'f',w:[.5],s:[.2],i:[.04,1.4,1]}],
  bat:[{n:'wb',pv:[15.4,8.6],z:'b',w:[-.3],s:[.4],i:[-.5,16]},{n:'wf',pv:[10.6,8.6],z:'b',w:[.3],s:[-.4],i:[.5,16]}],
  gargoyle:[{n:'wb',pv:[17.6,10.8],z:'b',w:[-.3],s:[.3],i:[-.38,5.03,.4]},{n:'wf',pv:[12.4,12.4],z:'b',w:[.35],s:[-.35],i:[.42,5.03,.4]}],
  seraph:[{n:'wb',pv:[18.6,12.4],z:'b',w:[-.25],s:[.2],i:[-.14,2.2]},{n:'wf',pv:[10.6,12.4],z:'b',w:[.25],s:[-.2],i:[.16,2.2]}],
@@ -1743,31 +1786,40 @@ function bgDungeon(v){v=v||0;const c=MKC(640,360),x=c.getContext('2d'),rn=bgRng(
  const fs=x.createLinearGradient(0,208,0,226);fs.addColorStop(0,'rgba(0,0,0,.55)');fs.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=fs;x.fillRect(0,208,640,18);
  x.fillStyle='#d8d0bc';x.fillRect(92,236,8,6);x.fillRect(90,240,12,2);x.fillStyle='#0c0a10';x.fillRect(94,238,2,2);x.fillRect(98,238,2,2);x.fillStyle='#c8c0ac';x.fillRect(106,242,14,2);x.fillRect(560,250,16,2);x.fillRect(566,246,2,8);
  bgVig(x,.55);return c}
-// 第3層：機神の神殿（2px単位で描き直し）
-function bgTemple(v){v=v||0;const c=MKC(640,360),x=c.getContext('2d'),rn=bgRng(77),F=v=>Math.floor(v/2)*2;
- const g=x.createLinearGradient(0,0,0,208);g.addColorStop(0,'#03091a');g.addColorStop(1,'#0c2c40');x.fillStyle=g;x.fillRect(0,0,640,360);
- for(let i=0;i<90;i++){x.fillStyle=rn()<.3?'#c8faff':'#2f6f86';x.fillRect(F(rn()*640),F(rn()*150),2,2)}
- const bg2=x.createLinearGradient(310,0,330,0);bg2.addColorStop(0,'rgba(95,246,255,0)');bg2.addColorStop(.5,'rgba(95,246,255,.3)');bg2.addColorStop(1,'rgba(95,246,255,0)');x.fillStyle=bg2;x.fillRect(296,0,48,100);
- for(let k=0;k<120;k++){const an=k/120*6.283;x.fillStyle=k%10?'rgba(95,246,255,.55)':'#ffd23f';x.fillRect(F(320+Math.cos(an)*124),F(96+Math.sin(an)*44),2,2)}
- // Ver2.36 置き物 v=1：段の後ろの巨大な歯車／v=2：宙に浮く石板／v=3：天井から垂れる太い線（ケーブル）／v=4：倒れた柱と壊れた機械の残骸
- if(v===1){const gx=320,gy=150,R1=150,R2=128;x.fillStyle='#071626';x.beginPath();x.arc(gx,gy,R1,Math.PI,0);x.fill();for(let k=0;k<24;k++){const a=Math.PI+k/24*Math.PI;x.save();x.translate(gx+Math.cos(a)*R1,gy+Math.sin(a)*R1);x.rotate(a);x.fillRect(0,-8,14,16);x.restore()}x.fillStyle='#03091a';x.beginPath();x.arc(gx,gy,R2-24,Math.PI,0);x.fill();
-  x.strokeStyle='rgba(95,246,255,.35)';x.lineWidth=2;x.beginPath();x.arc(gx,gy,R2,Math.PI,0);x.stroke();for(let k=0;k<6;k++){const a=Math.PI+(k+.5)/6*Math.PI;x.fillStyle='#071626';x.save();x.translate(gx,gy);x.rotate(a);x.fillRect(0,-5,R2-20,10);x.restore()}}
- if(v===2)for(const[mx,my,w,h,t]of[[190,60,22,56,-.12],[248,30,16,40,.1],[440,44,24,62,.14],[398,24,14,34,-.08],[520,120,16,40,.05],[110,130,14,36,-.1]]){x.save();x.translate(mx,my);x.rotate(t);x.fillStyle='#081a2a';x.fillRect(-w/2,-h/2,w,h);x.fillStyle='#14324a';x.fillRect(-w/2,-h/2,2,h);x.fillStyle='rgba(95,246,255,.6)';for(let k=0;k<3;k++)x.fillRect(-w/2+4,-h/2+8+k*h/4,w-8,2);x.fillStyle='rgba(255,79,216,.6)';x.fillRect(-2,h/2-8,4,4);x.restore();x.fillStyle='rgba(95,246,255,.12)';x.fillRect(F(mx-w/2),F(my+h/2+10),w,2)}
- if(v===3){for(const[x0,x1,sag,c1]of[[0,250,70,'#061220'],[160,420,50,'#081828'],[390,640,80,'#061220'],[60,300,110,'#0a1c2c'],[340,600,100,'#0a1c2c']]){x.strokeStyle=c1;x.lineWidth=8;x.beginPath();x.moveTo(x0,0);x.quadraticCurveTo((x0+x1)/2,sag*2,x1,0);x.stroke();x.strokeStyle='rgba(95,246,255,.25)';x.lineWidth=2;x.beginPath();x.moveTo(x0,-2);x.quadraticCurveTo((x0+x1)/2,sag*2-4,x1,-2);x.stroke();x.fillStyle='#ff4fd8';x.fillRect(F((x0+x1)/2)-2,F(sag)-2,4,4)}
-  for(const hx of[200,446]){x.fillStyle='#061220';x.fillRect(hx,0,6,120);x.fillStyle='#0e2436';x.fillRect(hx-6,120,18,12);x.fillStyle='#5ff6ff';x.fillRect(hx,132,6,2)}}
- for(let s=0;s<6;s++){const w=320-s*46,y=208-s*18,l=320-w/2;x.fillStyle=s%2?'#0e2436':'#0a1c2c';x.fillRect(l,y-18,w,18);x.fillStyle='rgba(95,246,255,.6)';x.fillRect(l,y-18,w,2);x.fillStyle='rgba(0,0,0,.3)';x.fillRect(l,y-2,w,2);
-  for(let i=l+8;i<l+w-8;i+=24){x.fillStyle='rgba(255,79,216,.55)';x.fillRect(i,y-10,6,2);x.fillStyle='rgba(95,246,255,.18)';x.fillRect(i+10,y-14,2,10)}}
- x.fillStyle='#02060e';x.beginPath();x.moveTo(300,208);x.lineTo(300,160);x.lineTo(320,144);x.lineTo(340,160);x.lineTo(340,208);x.fill();x.strokeStyle='#5ff6ff';x.lineWidth=2;x.beginPath();x.moveTo(298,208);x.lineTo(298,159);x.lineTo(320,142);x.lineTo(342,159);x.lineTo(342,208);x.stroke();
- for(let j=0;j<6;j++){x.fillStyle='rgba(255,79,216,'+(.1+j*.08)+')';x.beginPath();x.moveTo(320,152+j*5);x.lineTo(334-j*2,166+j*4);x.lineTo(334-j*2,206);x.lineTo(306+j*2,206);x.lineTo(306+j*2,166+j*4);x.fill()}x.fillStyle='#ffd8f6';x.fillRect(318,178,4,10);
- for(const cx of[40,124,516,600]){const top=cx<80||cx>560?40:70;const cg=x.createLinearGradient(cx-14,0,cx+14,0);cg.addColorStop(0,'#10283a');cg.addColorStop(.4,'#244a62');cg.addColorStop(1,'#0c2030');x.fillStyle=cg;x.fillRect(cx-14,top,28,208-top);
-  x.fillStyle='rgba(0,0,0,.3)';for(let k=-8;k<=8;k+=8)x.fillRect(cx+k-1,top+8,2,190-top);x.fillStyle='#b8d8e8';x.fillRect(cx-18,top-8,36,8);x.fillRect(cx-18,200,36,8);x.fillStyle='#e8f6ff';x.fillRect(cx-18,top-8,36,2);
-  x.fillStyle='#5ff6ff';x.fillRect(cx-1,top+6,2,186-top);x.fillStyle='#ff4fd8';for(let y=top+16;y<196;y+=30){x.fillRect(cx-4,y,8,2);x.fillRect(cx-2,y-2,4,6)}}
- if(v===4){x.fillStyle='#0c2030';x.save();x.translate(150,204);x.rotate(-.12);x.fillRect(0,-14,130,16);x.fillStyle='#244a62';x.fillRect(0,-14,130,4);x.fillStyle='#5ff6ff';x.fillRect(4,-8,120,2);x.fillStyle='#b8d8e8';x.fillRect(122,-18,12,24);x.restore();
-  for(const[dx,dy,w,h]of[[440,190,30,18],[470,196,20,12],[492,184,26,24],[420,200,16,8]]){x.fillStyle='#0a1c2c';x.fillRect(dx,dy,w,h);x.fillStyle='#14324a';x.fillRect(dx,dy,w,2);x.fillStyle='#ff4fd8';x.fillRect(dx+4,dy+6,2,2)}x.fillStyle='#0e2436';x.beginPath();x.arc(506,182,12,Math.PI,0);x.fill();x.fillStyle='#5ff6ff';x.fillRect(500,176,4,2);x.fillRect(510,176,4,2)}
- x.fillStyle='#0a1826';x.fillRect(0,208,640,152);x.fillStyle='#5ff6ff';x.fillRect(0,208,640,2);
- x.globalAlpha=.18;for(const cx of[40,124,516,600]){x.fillStyle='#5ff6ff';x.fillRect(cx-1,212,2,60);x.fillStyle='#244a62';x.fillRect(cx-14,212,28,40)}x.fillStyle='#ff4fd8';x.fillRect(306,212,28,30);x.globalAlpha=1;
+// 第3層の戦闘背景（Ver2.44 から近未来の街並み。下の bgTemple の説明を参照）
+// Ver2.44 3層の戦闘背景を、近未来の街並みに作り直した（ユーザー指定：段の神殿はやめる。地面は今のまま＝紺の床・青緑の地平線・遠近の格子）。
+// v=0（もとの背景・ボス戦・地図など）は「宙に浮く黒い球の街」（ユーザー採用）。v=1〜4 は戦闘ごとに変わる版：1 飛行船の行き交う密集した街／2 別の空につながる巨大な輪／3 空から垂れる逆さの尖塔／4 街から天へ伸びる光の柱
+function bgTemple(v){v=v||0;const c=MKC(640,360),x=c.getContext('2d'),F=v=>Math.floor(v/2)*2,r=bgRng(61+v*10);
+ const R=(a,b,w,h,cl)=>{x.fillStyle=cl;x.fillRect(F(a),F(b),Math.max(2,F(w)),Math.max(2,F(h)))};
+ const glow=(cx,cy,rr,cl,ry)=>{x.save();x.translate(cx,cy);x.scale(1,(ry||rr)/rr);const g=x.createRadialGradient(0,0,1,0,0,rr);g.addColorStop(0,cl);g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(-rr,-rr,rr*2,rr*2);x.restore()};
+ const CY='95,246,255',PK='255,79,216';
+ // 空
+ {const g=x.createLinearGradient(0,0,0,208);g.addColorStop(0,'#03091a');g.addColorStop(1,'#0c2c40');x.fillStyle=g;x.fillRect(0,0,640,360);for(let i=0;i<90;i++)R(r()*640,r()*150,2,2,r()<.3?'#c8faff':'#2f6f86')}
+ // 謎の建物（街より奥）
+ let skip=null;
+ if(v===0){const cx=330,cy=70,R0=56;glow(cx,cy,140,'rgba('+CY+',.14)');x.fillStyle='#02050c';x.beginPath();x.arc(cx,cy,R0,0,7);x.fill();x.strokeStyle='rgba('+CY+',.35)';x.lineWidth=2;x.beginPath();x.arc(cx,cy,R0,0,7);x.stroke();
+  x.strokeStyle='rgba(230,250,255,.85)';x.lineWidth=3;x.beginPath();x.ellipse(cx,cy,R0+18,10,-.2,0,7);x.stroke();for(let k=0;k<6;k++)R(cx-R0*.6+k*14,cy-12+((k*5)%9),6,2,'rgba('+PK+',.6)');
+  x.globalCompositeOperation='lighter';const lg=x.createLinearGradient(0,cy,0,208);lg.addColorStop(0,'rgba('+CY+',.3)');lg.addColorStop(1,'rgba('+CY+',.02)');x.fillStyle=lg;x.fillRect(cx-6,cy+R0,12,208-cy-R0);x.globalCompositeOperation='source-over'}
+ if(v===2){const cx=320,cy=128,R0=96;x.save();x.beginPath();x.arc(cx,cy,R0-10,0,7);x.clip();const ig=x.createRadialGradient(cx,cy,4,cx,cy,R0);ig.addColorStop(0,'#3a1040');ig.addColorStop(1,'#120626');x.fillStyle=ig;x.fillRect(cx-R0,cy-R0,R0*2,R0*2);for(let i=0;i<40;i++)R(cx-R0+r()*R0*2,cy-R0+r()*R0*2,2,2,r()<.5?'#ffb8f0':'#ffffff');glow(cx,cy,60,'rgba('+PK+',.35)');x.restore();
+  x.strokeStyle='#0c2034';x.lineWidth=18;x.beginPath();x.arc(cx,cy,R0-1,0,7);x.stroke();x.strokeStyle='rgba('+CY+',.7)';x.lineWidth=2;x.beginPath();x.arc(cx,cy,R0-9,0,7);x.stroke();x.beginPath();x.arc(cx,cy,R0+8,0,7);x.stroke();for(let k=0;k<12;k++){const a=k/12*6.28;R(cx+Math.cos(a)*R0-3,cy+Math.sin(a)*R0-3,6,6,k%3?'#5ff6ff':'#ff4fd8')}skip=[250,390]}
+ if(v===3){const P=[[250,0],[280,60],[295,110],[310,128],[320,150],[330,128],[345,110],[360,60],[410,0]];x.fillStyle='#061222';x.beginPath();P.forEach((p,i)=>x[i?'lineTo':'moveTo'](p[0],p[1]));x.fill();x.strokeStyle='rgba('+CY+',.5)';x.lineWidth=2;x.beginPath();P.forEach((p,i)=>x[i?'lineTo':'moveTo'](p[0],p[1]));x.stroke();
+  for(let k=0;k<6;k++)R(300+k*4,20+k*18,40-k*8,2,'rgba('+PK+',.55)');glow(320,150,40,'rgba('+PK+',.55)');R(318,146,4,6,'#ffd8f6');for(let k=0;k<6;k++){const a=k/6*6.28;R(320+Math.cos(a)*24,160+Math.sin(a)*8,4,4,'rgba('+CY+',.6)')}skip=[296,344]}
+ // 奥の低いビル
+ for(let i=0;i<44;i++){const w=8+r()*14,bx=i*15-6,top=160+r()*36;R(bx,top,w,208-top,'#081626');for(let y=top+4;y<204;y+=6)if(r()<.5)R(bx+2+r()*(w-4),y,2,2,'rgba('+CY+',.3)')}
+ // 中景の高層ビル（細長い／段々に細くなる／斜めの屋上）。縦の光の線と窓の明かり
+ const bld=(bx,top,w,col,kind)=>{R(bx,top,w,208-top,col);if(kind===1){R(bx+w*.2,top-30,w*.6,32,col);R(bx+w*.4,top-54,w*.2,26,col);R(bx+w/2-1,top-70,2,18,col);R(bx+w/2-2,top-72,4,2,'#ff4fd8')}
+  if(kind===2){x.fillStyle=col;x.beginPath();x.moveTo(bx,top);x.lineTo(bx+w,top-24);x.lineTo(bx+w,top+2);x.fill();R(bx,top,w,2,'rgba('+CY+',.5)')}
+  R(bx,top,2,208-top,'rgba('+CY+',.3)');R(bx+w-4,top,2,208-top,'rgba(0,0,0,.3)');if(r()<.6)R(bx+w/2-1,top+6,2,198-top,r()<.5?'rgba('+CY+',.55)':'rgba('+PK+',.5)');
+  for(let y=top+6;y<204;y+=5)for(let i=bx+4;i<bx+w-4;i+=5)if(r()<.28)R(i,y,2,2,r()<.8?'rgba('+CY+','+(.3+r()*.5)+')':'rgba('+PK+','+(.3+r()*.5)+')')};
+ const nB=v===1?22:16;for(let i=0;i<nB;i++){const w=20+r()*24,bx=i*(640/nB)-10+r()*10,top=(v===1?40:60)+r()*90;if(skip&&bx+w>skip[0]&&bx<skip[1])continue;bld(bx,top,w,i%2?'#0e2238':'#10263e',r()<.3?1:r()<.5?2:0)}
+ for(const[x0,x1,y]of[[40,180,120],[440,600,104],[150,260,150]].concat(v===1?[[260,420,90],[60,140,170]]:[])){if(skip&&x0<skip[1]&&x1>skip[0])continue;R(x0,y,x1-x0,4,'#14304a');R(x0,y,x1-x0,2,'rgba('+CY+',.45)')}
+ if(v===4){x.globalCompositeOperation='lighter';for(const[bx,w,a,cl]of[[90,8,.4,CY],[210,12,.45,PK],[330,16,.55,CY],[450,10,.45,PK],[560,8,.38,CY]]){const g=x.createLinearGradient(0,0,0,208);g.addColorStop(0,'rgba('+cl+',0)');g.addColorStop(1,'rgba('+cl+','+a+')');x.fillStyle=g;x.fillRect(bx-w/2,0,w,208);glow(bx,30,30,'rgba('+cl+',.25)')}x.globalCompositeOperation='source-over'}
+ // 飛行船（v=1）：細長い船体に窓の光
+ if(v===1)for(const[sx,sy,L]of[[120,50,90],[430,34,120],[300,80,60]]){x.fillStyle='#0a1a2c';x.beginPath();x.ellipse(sx,sy,L/2,L/9,0,0,7);x.fill();x.strokeStyle='rgba('+CY+',.5)';x.lineWidth=1;x.beginPath();x.ellipse(sx,sy,L/2,L/9,0,0,7);x.stroke();for(let k=0;k<6;k++)R(sx-L/3+k*L/9,sy,2,2,'rgba(255,210,63,.8)');R(sx-L/2-6,sy-2,6,4,'rgba('+PK+',.7)')}
+ // 地面（今のまま）＋奥の景色がうっすら映る
+ x.save();x.globalAlpha=.18;x.translate(0,416);x.scale(1,-1);x.drawImage(c,0,140,640,68,0,140,640,68);x.restore();
+ x.fillStyle='rgba(10,24,38,.84)';x.fillRect(0,208,640,152);x.fillStyle='#5ff6ff';x.fillRect(0,208,640,2);
  x.fillStyle='rgba(95,246,255,.2)';for(let y=214,dy=4;y<360;dy*=1.35,y+=dy)x.fillRect(0,F(y),640,2);for(let i=-12;i<=12;i++){const x0=320+i*28,x1=320+i*110;for(let yy=210;yy<360;yy+=2)x.fillRect(F(x0+(x1-x0)*(yy-210)/150),yy,2,2)}
- for(let i=0;i<16;i++){const fx=F(rn()*640),fy=F(40+rn()*130);x.fillStyle='rgba(95,246,255,.15)';x.fillRect(fx-4,fy-4,10,10);x.fillStyle=i%3?'#5ff6ff':'#ff4fd8';x.beginPath();x.moveTo(fx+1,fy-3);x.lineTo(fx+5,fy+1);x.lineTo(fx+1,fy+5);x.lineTo(fx-3,fy+1);x.fill()}
  bgVig(x,.4);return c}
 // 1層の戦闘背景（Ver1.98、ユーザーが案B「黒い森の縁」を採用）：黒い枯れ木の森・雲にかかる細い三日月・冷たい緑の霧。光る目と流れる霧は bgAnim で動かす
 const bgForest=(()=>{const F=v=>Math.floor(v/2)*2;
@@ -1923,7 +1975,7 @@ for(let i=0;i<90;i++){x.fillStyle=rn()<.5?'#2f8aa0':'#9af6ff';x.fillRect(Math.fl
 // Ver2.36 戦闘の背景は、層ごとに置き物の違う版を戦闘ごとに選ぶ（色・雰囲気は同じ）。ak は bgAnim 用の層の印
 BGB1.ak=1;BGB1S.ak='s';BGB2.ak=2;BGB3.ak=3;const BGVC={},BGVN={1:5,s:4,2:4,3:4};
 function bgVar(k,v){if(!v)return k==='s'?BGB1S:[0,BGB1,BGB2,BGB3][k];const id=k+'_'+v;if(!BGVC[id]){const c=k==='s'?bgSunk(v):k===1?bgForest(v):k===2?bgDungeon(v):bgTemple(v);c.ak=k;BGVC[id]=c}return BGVC[id]}
-function bgPick(kind){const a=Math.max(1,Math.min(3,P.act||1)),k=a===1&&P.v1==='s'?'s':a;if(kind===2)return bgVar(k,0);const n=BGVN[k],h=Math.abs((a*131+(CUR?CUR.f:0)*37+(CUR?CUR.j:0)*11+(P.path?P.path.length:0)*7)*2654435761|0);return bgVar(k,h%(n+1))}
+function bgPick(kind){const a=Math.max(1,Math.min(3,P.act||1)),k=a===1&&P.v1==='s'?'s':a;if(kind===2)return bgVar(k,k===3?2:0);const h=Math.abs((a*131+(CUR?CUR.f:0)*37+(CUR?CUR.j:0)*11+(P.path?P.path.length:0)*7)*2654435761|0);if(k===3){const L=[0,1,3,4];return bgVar(3,L[h%L.length])}const n=BGVN[k];return bgVar(k,h%(n+1))}
 /* ===== データ ===== */
 const C=[
 {n:'斬撃',t:0,c:1,r:-1,a:6},{n:'防御',t:1,c:1,r:-1,b:5},{n:'強打',t:0,c:2,r:-1,a:8,vu:2},
@@ -2590,7 +2642,7 @@ function plDraw(k,x,y){const b=SPR[k+'_b'],W=WPN[k],pa=B&&B.pa;if(!b){ctx.drawIm
  if(on&&A.tr){const dt=.035/d;if(Math.abs(ang(t)-ang(Math.max(0,t-dt)))>.12)for(let j=A.tr;j>=1;j--){ctx.globalAlpha=ga*.1*(A.tr-j+1)/A.tr*2.2;dr(ang(Math.max(0,t-j*dt)))}ctx.globalAlpha=ga}
  dr(wa);ctx.restore()}
 // 敵の動き：見た目の分類 ECAT（hum 人型・beast 獣・cast 術師・heavy 重い・blob 不定形・fly 飛ぶ）ごとに、攻撃・多段・強化・防御・妨害の動きを変える
-const ECAT={};for(const[c,l]of[['beast','hound spider bonedog serpent phrog dragon wrig'],['cast','scales ghost mage necro priest oracle judge silencer sentry mothP archdemon archdemon2 chronos deus phase reaper magik spek imp'],['stat','maiden'],['heavy','golem colossus behemoth king cube dormant gilL gilR protoA protoB protoC colony splitter ogre armor'],['blob','slime ooze shard'],['fly','bat wisp drone seraph gargoyle mothF mothF2']])for(const k of l.split(' '))ECAT[k]=c;
+const ECAT={};for(const[c,l]of[['beast','hound spider bonedog serpent phrog dragon wrig'],['cast','scales ghost mage necro priest oracle judge silencer sentry mothP chronos deus phase reaper magik spek imp'],['stat','maiden'],['heavy','archdemon archdemon2 golem colossus behemoth king cube dormant gilL gilR protoA protoB protoC colony splitter ogre armor'],['blob','slime ooze shard'],['fly','bat wisp drone seraph gargoyle mothF mothF2']])for(const k of l.split(' '))ECAT[k]=c;
 for(const[k,c]of[['ushell','beast'],['ueel','beast'],['uboat','heavy'],['ulens','cast'],['udiver','heavy'],['ucoral','blob'],['uink','blob'],['ubell','heavy'],['udrown','hum'],['ugeel','beast'],['userp','beast'],['ulight','stat']])ECAT[k]=c;
 const ECT={hum:.2,beast:.26,cast:.26,heavy:.3,blob:.27,fly:.25};
 // 敵の技の種類（ユーザー指定：体ごと突っ込むのは四足の獣と不定形だけ。他は上半身で斬る・引っ掻く・噛む・殴る・鞭打つ・突く・魔法・光線）
@@ -2711,8 +2763,10 @@ function bgAnim(){if(BGB&&BGB.ak==='s'){ctx.globalCompositeOperation='lighter';f
  else if(a===2){for(const tx of[124,516]){const f=Math.sin(T*13+tx)*.5+Math.sin(T*7.3+tx*.3)*.5,g=ctx.createRadialGradient(tx,92,4,tx,92,100);g.addColorStop(0,'rgba(255,170,70,'+(.12+.08*f)+')');g.addColorStop(1,'rgba(255,170,70,0)');ctx.fillStyle=g;ctx.fillRect(tx-100,0,200,200);
    const h=18+f*3;ctx.fillStyle='#ff5a1e';ctx.beginPath();ctx.moveTo(tx-6,100);ctx.lineTo(tx+f*2,100-h);ctx.lineTo(tx+6,100);ctx.fill();ctx.fillStyle='#ffb02e';ctx.beginPath();ctx.moveTo(tx-4,100);ctx.lineTo(tx+f*1.5,100-h*.7);ctx.lineTo(tx+4,100);ctx.fill();ctx.fillStyle='#fff3b0';ctx.fillRect(tx-2,94,4,6);
    for(let k=0;k<3;k++){const u=(T*.9+k/3)%1;ctx.globalAlpha=1-u;sq(tx+Math.sin(T*4+k)*3,98-h-u*26,2,'#ffb02e')}ctx.globalAlpha=1}}
- else if(a===3){for(let k=0;k<3;k++){const x=120+k*200,al=.06+.05*Math.sin(T*.8+k*2);ctx.globalAlpha=al;ctx.fillStyle='#9af6ff';ctx.beginPath();ctx.moveTo(x-14,24);ctx.lineTo(x+14,24);ctx.lineTo(x+46,208);ctx.lineTo(x-6,208);ctx.fill()}
-  for(let k=0;k<16;k++){const u=(T*.08+k*.0625)%1,x=(k*41+Math.sin(T*.7+k)*12)%640,y=208-u*180;ctx.globalAlpha=Math.sin(u*Math.PI)*.7;sq(x,y,k%3?2:3,k%2?'#5ff6ff':'#ffffff')}ctx.globalAlpha=1}}
+ else if(a===3){// 3層の街：空を飛ぶ光が横切り、黒い球の光の帯がゆっくり明滅する
+  for(let k=0;k<10;k++){const u=(T*(.03+k%3*.012)+k*.1)%1,dir=k%2?1:-1,x=dir>0?u*700-30:670-u*700,y=72+((k*37)%90);ctx.globalAlpha=.8;ctx.fillStyle=k%3?'#5ff6ff':'#ff4fd8';ctx.fillRect(Math.round(x),y,4,2);ctx.globalAlpha=.25;ctx.fillRect(Math.round(x-dir*10),y,10,2)}
+  if(BGB===BGB3){ctx.globalAlpha=.25+.2*Math.sin(T*1.5);ctx.strokeStyle='#e6faff';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(330,70,74,10,-.2,0,7);ctx.stroke()}
+  for(let k=0;k<8;k++){const ph=(T*.7+k*1.3)%3;if(ph<1){ctx.globalAlpha=Math.sin(ph*Math.PI)*.8;ctx.fillStyle=k%2?'#5ff6ff':'#ff4fd8';ctx.fillRect(40+((k*83)%560),110+((k*29)%90),2,2)}}ctx.globalAlpha=1}}
 // ボスの登場：上下に黒い帯、名前の帯、ボスは右から滑り込む（約2秒。操作は止めない）
 function drawBossIntro(b){if(b.bi==null)return;const t=T-b.bi;if(t>2.1||t<0)return;const bar=t<.3?t/.3:t>1.8?1-(t-1.8)/.3:1,bh=Math.round(34*Math.max(0,bar));ctx.fillStyle='#000';ctx.fillRect(0,24,640,bh);ctx.fillRect(0,232-bh,640,bh);
  const bs=b.en.filter(e=>!e.dead&&e.el===2&&!e.pt);if(!bs.length)return;const nm=bs.map(e=>e.n).join('・'),na=t<.35?0:t<.6?(t-.35)/.25:t>1.75?Math.max(0,1-(t-1.75)/.3):1;
@@ -2882,7 +2936,7 @@ function xIt(e){return e.k==='maiden'?mdIt(e):e.k==='scales'?scIt(e):e.mv[e.i%e.
 function enemyAct(e){if(e.dead)return;if(e.nw){e.nw=0;return}if(e.reb){rvE(e);return}if(e.tb){e.blk=Math.max(0,e.blk-e.tb);e.tb=0}
 if(e.poison>0){let pd=e.poison*(PS.pmul?2:1);if(e.cap){pd=Math.min(pd,Math.max(0,e.cap-e.lost));e.lost+=pd}e.hp-=pd;{const q=ePos(B.en.indexOf(e));nmb(q.x,150,String(pd),'#7dff9a');fxs('pz',q.x,q.y-(SPR[e.k]?SPR[e.k].height/2:30),{d:1.1,s:1})}e.poison--;if(e.inv&&e.hp<1)e.hp=1;if(e.hp<=0){killE(e);return}}
 if(e.doom>0&&!e.inv&&e.hp<=e.doom){const q=ePos(B.en.indexOf(e));nmb(q.x,150,'破滅','#b07cff');fxs('rg',q.x,q.y-40,{d:.6,c:'#b07cff'});e.hp=0;killE(e);return}
-const m=e.it,p=ePos(B.en.indexOf(e));e.lg=0;{const ec=ECAT[e.k]||'hum';e.an={k:m.a?((m.h||1)>1?'mh':'at'):(m.st||m.ab||m.hl||m.smn)?'bf':m.b?'bk':'db',t0:T,h:m.h||1};if(m.a&&eSty(e)==='magic'&&!QT){const q=ePos(B.en.indexOf(e)),h=SPR[e.k]?SPR[e.k].height:60;for(let k=0;k<(m.h||1);k++)fxs('eo',q.x-20,q.y-h*.6,{d:EHT.magic-.04,dl:.02+k*.26,c:'#c9a0ff',ex:{tx:112,ty:170}})}else if(m.a&&EPJ[eSty(e)]&&!QT&&!eWb(e))epLaunch(e,ePos(B.en.indexOf(e)),m.h||1)}
+const m=e.it,p=ePos(B.en.indexOf(e));e.lg=0;{const ec=ECAT[e.k]||'hum';e.an={k:m.a?((m.h||1)>1?'mh':'at'):(m.st||m.ab||m.hl||m.smn)?'bf':m.b?'bk':'db',t0:T,h:m.h||1};if(e.k==='deus')e.an.dm=m.nm?'crash':m.a&&(m.h||1)>=5?'dance':m.a&&(m.h||1)>1?'throw':m.a?'crash':(m.st||m.b)?'cross':'orbit';if(m.a&&eSty(e)==='magic'&&!QT){const q=ePos(B.en.indexOf(e)),h=SPR[e.k]?SPR[e.k].height:60;for(let k=0;k<(m.h||1);k++)fxs('eo',q.x-20,q.y-h*.6,{d:EHT.magic-.04,dl:.02+k*.26,c:'#c9a0ff',ex:{tx:112,ty:170}})}else if(m.a&&EPJ[eSty(e)]&&!QT&&!eWb(e))epLaunch(e,ePos(B.en.indexOf(e)),m.h||1)}
 if(e.stn){e.stn=0;e.lg=0;pop(e,'行動不能','#c8c8d8');if(e.weak>0)e.weak--;if(e.vuln>0)e.vuln--;return}
 if(e.sl>0){e.lg=0;e.sl--;if(e.sb){e.blk+=e.sb;fxs('sh',p.x,p.y-30,{d:.4})}if(e.sl)pop(e,'Zzz','#c8d0ff');else{pop(e,'目覚めた','#ffd23f');e.i=0}if(e.weak>0)e.weak--;if(e.vuln>0)e.vuln--;return}
 if(m.b){e.blk+=m.b;fxs('sh',p.x,p.y-30,{d:.4});sfx('bk')}
@@ -2891,7 +2945,7 @@ if(m.hl){const al=alive().filter(x=>x!==e&&x.hp<x.mh);for(const x of al.length?a
 if(m.smn){if(!spawnE(m.smn)){e.blk+=12;pop(e,'ブロック+12','#7ec8ff')}sfx('bm')}
 const nat=m.a&&e.nat;if(nat){e.nat=0;pop(e,'攻撃無効','#c8c8d8')}const tk=MPB?PL.findIndex(q=>q.B&&!q.B.down&&!q.gone&&q.PS.tnt):-1;
 mpEach(()=>{if(m.wk){PS.weak+=m.wk;B.jw=1;nmb(110,118,'脆弱+'+m.wk,'#c9a0ff');sfx('ps')}if(m.sc){for(let k=0;k<m.sc[1];k++)B.dis.push({i:CI(m.sc[0]),u:0});nmb(110,96,m.sc[0]+'+'+m.sc[1],'#c8c8d8');sfx('ps')}if(m.ps){PS.poison+=m.ps;nmb(110,118,'毒+'+m.ps,'#7dff9a');fxs('pz',110,165,{d:.9});sfx('ps')}if(m.dd){B.ndr=(B.ndr||0)-m.dd;nmb(110,106,'次のドロー-'+m.dd,'#c8c8d8');sfx('ps')}
-if(m.a&&!nat)for(let k=0;k<(m.h||1);k++){hitP(e,calcP(e,m.a),eHitT(e)+k*.26);if(P.hp<=0||B.down)break}
+if(m.a&&!nat)for(let k=0;k<(m.h||1);k++){hitP(e,calcP(e,m.a),eHT2(e,k));if(P.hp<=0||B.down)break}
 if(m.vu&&P.hp>0){PS.vuln+=m.vu;B.jv=1;nmb(110,118,'弱体+'+m.vu,'#ff9a6a');sfx('ps')}},tk>=0?tk:null);if(!MPB&&P.hp<=0)return;if(B.ph==='L')return;
 // 筋力アップは攻撃のあと（予告の数字どおりのダメージにする）。儀式 rit は行動のたびに筋力が上がる
 if(e.rit&&!e.dead){e.str+=e.rit;pop(e,'儀式 筋力+'+e.rit,'#ff8c2e')}
@@ -3415,6 +3469,44 @@ function energyGem(cx,cy,cl,me,mx){const z=me<=0,[c1,c2,gl]=EGC[cl]||EGC[0],r=21
  // つや
  ctx.save();egPath(cx,cy,r,cl);ctx.clip();ctx.fillStyle='rgba(255,255,255,'+(z?.12:.4)+')';ctx.fillRect(cx-13,cy-15,6,4);ctx.fillRect(cx-15,cy-11,2,6);ctx.restore();
  txt(me+'/'+mx,cx,cy+6,z?'#ff4a4a':'#fff','center',16)}
+// Ver2.46 機神デウス・マキナを描き直し（ユーザー指定：両腕を広げてうつむく・斜め向き。槍と大剣を手から離して浮かせ、それで攻撃する）。
+// 体は SD.deus（武器なし）。槍と大剣は DSW の絵を deusW が毎フレーム描く（浮遊・技ごとの動き）。技と動き：
+//  13×3「投擲」：槍を投げて突き刺す→大剣が回転しながら飛んで斬る→槍を引き抜いて戻す（3回目）。大剣も弧を描いて戻る
+//  7×5「大剣の乱舞」：大剣が飛んでいき、相手のまわりを回りながら5回斬って戻る。槍は相手に穂先を向けて光る
+//  必殺「神罰の光」：溜めの間に両方が頭上へ昇り、下を向いて光る→同時に突き刺さる→戻る
+//  筋力+ブロック：槍と大剣が体の前で交差して守る。弱体化など：2つが体のまわりを1周する
+const DSWP=(()=>{const W1='#f0f4fa',W2='#d8e0f0',W3='#aab4c8',W4='#7a86a0',CY='#5ff6ff',GD='#ffd23f';
+ const spear=A=>{A.l(5,10,5,54,W3,1.3);A.l(5,10,5,54,'#e8fbff',.45);A.t([[2.6,10],[5,0],[7.4,10]],CY);A.t([[4,9],[5,3],[6,9]],'#e8fbff');A.t([[2.6,11],[7.4,11],[7.4,12.6],[2.6,12.6]],GD)};
+ const great=A=>{A.t([[5.6,12],[12.4,12],[12,42],[9,48],[6,42]],W2);A.t([[5.6,12],[9,12],[9,48],[6,42]],W1);A.l(9,14,9,42,CY,.6);A.t([[2,10],[16,10],[16,12.4],[2,12.4]],GD);A.t([[7.8,3],[10.2,3],[10.2,10],[7.8,10]],W4);A.e(9,2,1.8,1.8,CY)};
+ return{spear:[10,56,spear],great:[18,50,great]}})();
+const DSW={};function dswImg(k,sc){const id=k+sc;if(!DSW[id]){const d=DSWP[k];DSW[id]=paint(d[0],d[1],d[2],sc)}return DSW[id]}
+// 武器の状態（技の開始からの時間 t で決める）。返り値：[x, y, 角度, 光]。角度0で刃先が上
+function deusW(e,bx,by,w,h){const u=(w-4)/66,ox=bx-w/2+2,oy=by-h+2,a=e.an,t=a?T-a.t0:9,dm=a&&a.dm,sp=B&&B.sp&&B.sp.e===e;
+ const tgx=MPB?mpCX():112,tgy=162,bob=Math.sin(T*1.6)*3;
+ const R0={s:[ox-6*u,oy+16*u+bob,.15],g:[ox+61*u,oy+28*u-bob,-.12]};
+ const ez=x=>x<0?0:x>1?1:x*x*(3-2*x),lp=(p,q,k)=>[p[0]+(q[0]-p[0])*k,p[1]+(q[1]-p[1])*k],aim=(p)=>Math.atan2(tgy-p[1],tgx-p[0])+Math.PI/2;
+ const st=(k,tt)=>{const r=R0[k];let p=[r[0],r[1]],an=r[2],gl=.15;
+  if(sp){const q=Math.min(1,B.sp.t/1.1);p=lp(p,[bx+(k==='s'?-24:24),by-h-30],ez(q));an=an+(Math.PI-an)*ez(q);gl=.2+.5*q;return[p[0],p[1],an,gl]}
+  if(!dm||tt>2.2)return[p[0],p[1],an,gl];
+  const T0=[tgx+(k==='s'?6:-6),tgy];
+  if(dm==='throw'){if(k==='s'){if(tt<.25){const q=ez(tt/.25);p=[p[0]+10*q,p[1]-4*q];an=an+(aim(p)-an)*q;gl=.2+.4*q}else if(tt<.45){const q=(tt-.25)/.2;p=lp([r[0]+10,r[1]-4],T0,q*q);an=aim([r[0],r[1]]);gl=.7}else if(tt<.95){p=[T0[0]+Math.sin(tt*60)*(tt<.55?2:0),T0[1]];an=aim([r[0],r[1]]);gl=.4}else if(tt<1.35){const q=ez((tt-.95)/.4);p=lp(T0,[r[0],r[1]],q);an=aim([r[0],r[1]])*(1-q)+r[2]*q;gl=.5*(1-q)+.15}}
+   else{if(tt<.5){const q=ez((tt-.3)/.2);p=[p[0],p[1]-14*q];an=an+tt*6;gl=.15+.4*q}else if(tt<.75){const q=(tt-.5)/.25;p=lp([r[0],r[1]-14],T0,q);p[1]-=Math.sin(q*Math.PI)*30;an=tt*26;gl=.7}else if(tt<1.3){const q=ez((tt-.75)/.55);p=lp(T0,[r[0],r[1]],q);p[1]-=Math.sin(q*Math.PI)*50;an=tt*22*(1-q)+r[2]*q;gl=.6*(1-q)+.15}}}
+  if(dm==='dance'){if(k==='g'){if(tt<.4){const q=ez(tt/.4);p=lp(p,[tgx+30,tgy-20],q);an=tt*20;gl=.6}else if(tt<1.45){const n=(tt-.4)/.23,ph=n*Math.PI;p=[tgx+Math.cos(ph)*30,tgy-12+Math.sin(ph)*16];an=ph*2.4;gl=.7}else{const q=ez((tt-1.45)/.4);const s=[tgx+Math.cos(1.05/.23*Math.PI)*30,tgy-12];p=lp(s,[r[0],r[1]],q);an=tt*18*(1-q)+r[2]*q;gl=.6*(1-q)+.15}}
+   else{if(tt<1.6){const q=ez(Math.min(1,tt/.3));an=r[2]+(aim(p)-r[2])*q;gl=.2+.4*q*(.7+.3*Math.sin(tt*20))}else{const q=ez((tt-1.6)/.3);an=aim(p)*(1-q)+r[2]*q}}}
+  if(dm==='crash'){const top=[bx+(k==='s'?-24:24),by-h-30];if(tt<.35){const q=(tt/.35);p=lp(top,T0,q*q);an=Math.PI+(k==='s'?.1:-.1);gl=.8}else if(tt<.8){p=T0;an=Math.PI+(k==='s'?.1:-.1);gl=.5}else if(tt<1.3){const q=ez((tt-.8)/.5);p=lp(T0,[r[0],r[1]],q);an=Math.PI*(1-q)+r[2]*q;gl=.4*(1-q)+.15}}
+  if(dm==='cross'){const c=[bx-w*.18,by-h*.55];if(tt<.3){const q=ez(tt/.3);p=lp(p,c,q);an=an+((k==='s'?.7:-.7)-an)*q;gl=.2+.5*q}else if(tt<.75){p=c;an=k==='s'?.7:-.7;gl=.6+.2*Math.sin(tt*20)}else if(tt<1.05){const q=ez((tt-.75)/.3);p=lp(c,[r[0],r[1]],q);an=(k==='s'?.7:-.7)*(1-q)+r[2]*q;gl=.6*(1-q)+.15}}
+  if(dm==='orbit'&&tt<1){const ph=tt*Math.PI*2+(k==='s'?Math.PI:0),c=[bx,by-h*.5],q=Math.sin(Math.min(1,tt)*Math.PI);p=lp(p,[c[0]+Math.cos(ph)*w*.55,c[1]+Math.sin(ph)*h*.25],q);an=an+ph*q;gl=.2+.4*q}
+  return[p[0],p[1],an,gl]};
+ const sc=u,dr=(k,img,tt)=>{const[x,y,an,gl]=st(k,tt);ctx.save();ctx.translate(Math.round(x),Math.round(y));ctx.rotate(an);ctx.drawImage(img,-Math.round(img.width/2),-Math.round(img.height/2));ctx.restore();
+  if(gl>0){ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(x,y,2,x,y,img.height*.6);g.addColorStop(0,'rgba(95,246,255,'+(gl*.45)+')');g.addColorStop(1,'rgba(95,246,255,0)');ctx.fillStyle=g;ctx.fillRect(x-img.height*.6,y-img.height*.6,img.height*1.2,img.height*1.2);ctx.restore()}};
+ const si=dswImg('spear',sc*.8),gi=dswImg('great',sc*.8);
+ // 飛んでいる間は残像
+ const fly=dm&&t<1.9&&!sp;if(fly){ctx.globalAlpha=.25;dr('s',si,t-.05);dr('g',gi,t-.05);ctx.globalAlpha=1}
+ dr('g',gi,t);dr('s',si,t)}
+function deusAll(b){if(S!=='battle')return;b.en.forEach((e,i)=>{if(e.k!=='deus'||e.dead)return;const q=ePos(i),im=SPR.deus;deusW(e,q.x,q.y-(e.fly||0),im.width,im.height)})}
+// 技ごとの当たりの時間（見た目の遅れ）と、次の行動までの待ち
+const DHT={throw:[.45,.75,1],dance:[.45,.68,.91,1.14,1.37],crash:[.35]};
+function eHT2(e,k){const a=e.an;if(e.k==='deus'&&a&&DHT[a.dm])return DHT[a.dm][Math.min(k,DHT[a.dm].length-1)];return eHitT(e)+k*.26}
 function drawBattle(){const b=B;ER=[];CR=[];hit(0,24,640,206,()=>{b.sel=-1});ctx.drawImage(BGB,0,0);bgAnim();
 ctx.save();if(shk>0)ctx.translate((Math.random()-.5)*shk*2,(Math.random()-.5)*shk*2);
 const lg=b.lg>0?Math.sin(b.lg/.25*3.14)*(b.lgA!=null?b.lgA:30):0,sh=b.sh>0&&b.sh<=.3?(Math.random()-.5)*8:0;
@@ -3458,7 +3550,7 @@ for(const r of ER){const on=r.i===t,pu=on?Math.sin(T*10)*2:0,g=on?4-pu:8,L=on?12
 const tr=t>=0?ER.find(r=>r.i===t):null;if(tr)txt('攻撃',tr.x+tr.w/2,tr.y-26,'#ff6a5a','center',14)}
 else if(dg.y<236){ctx.strokeStyle='#ffe14a';ctx.lineWidth=3;ctx.strokeRect(10,28,620,196);txt('離して使用',320,104,'#ffe14a','center',18)}
 o.hx=dg.x-42;o.hy=dg.y-60;o.hs=1;dg.rt=(dg.rt||0)+(Math.max(-.28,Math.min(.28,(dg.vx||0)*.025))-(dg.rt||0))*.25;ctx.fillStyle='rgba(0,0,0,.3)';ctx.fillRect(Math.round(dg.x-38),Math.round(dg.y+50),76,6);cardAt(o,dg.x,dg.y-7,1.06,dg.rt,.95,0,pvw(o,ptg))}}
-if(b.bn&&b.bn.t>0&&!(b.bn.dl>0)){const p=1-b.bn.t/1.1,a=p<.15?p/.15:p>.75?(1-p)/.25:1,off=p<.15?(1-p/.15)*-260:0;ctx.globalAlpha=Math.max(0,Math.min(1,a));ctx.fillStyle=b.bn.bg;ctx.fillRect(0,96,640,52);ctx.fillStyle='#fff';ctx.fillRect(0,96,640,3);ctx.fillRect(0,145,640,3);txt(b.bn.s,320+off,134,'#fff','center',32);ctx.globalAlpha=1}drawTut(b)}
+if(b.bn&&b.bn.t>0&&!(b.bn.dl>0)){const p=1-b.bn.t/1.1,a=p<.15?p/.15:p>.75?(1-p)/.25:1,off=p<.15?(1-p/.15)*-260:0;ctx.globalAlpha=Math.max(0,Math.min(1,a));ctx.fillStyle=b.bn.bg;ctx.fillRect(0,96,640,52);ctx.fillStyle='#fff';ctx.fillRect(0,96,640,3);ctx.fillRect(0,145,640,3);txt(b.bn.s,320+off,134,'#fff','center',32);ctx.globalAlpha=1}deusAll(b);drawTut(b)}
 const MCW=72,MSW=1112,MX=f=>40+(f+1)*MCW;let MSC=0;
 function mpanel(k){const W=MSW,H=238,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');let sd=11+k;const rn=()=>(sd=(sd*16807)%2147483647)/2147483647,F=Math.floor;
 if(k===0){x.fillStyle='#d6be8e';x.fillRect(0,0,W,H);for(let i=0;i<1100;i++){x.fillStyle=['#c9ad78','#e2cfa4','#bfa06a'][i%3];x.fillRect(F(rn()*W/2)*2,F(rn()*H/2)*2,2,2)}
@@ -3971,7 +4063,7 @@ if(S==='battle'||(MPB&&MPB.on)){const b=B;if(MPB)for(const q of PL)if(q.B&&q.B!=
 // 詰み防止：敵が全滅しているのに勝利になっていない／手札が無いのに捨てる選択が残っている／ターン終了の途中で止まった
 if(b.ph==='p'&&!b.vt&&b.en&&b.en.length&&!alive().length)chk();if(b.dsc>0&&!b.hand.length)b.dsc=0;if(!MPB&&b.ph==='x'){b.xT=(b.xT||0)+dt;if(b.xT>2){b.xT=0;b.ph='p';endTurn()}}else b.xT=0;
 if(b.vt&&b.ph==='V'){b.vt+=dt;if(b.vt>1.6&&!mpPd()&&b.en.every(e=>!e.dead||e.dT==null||T>=e.dT+.9)){b.ph='D';if(MPB)mpEndBattle();endBattle()}}
-else if(b.ph==='e'){b.et-=dt;if(b.et<=0){const e=b.en[b.eo?b.eo[b.ei]:b.ei];if(!e){for(const x of b.en){x.lost=0;x.nw=0;if(!x.dead&&x.i>=0)x.it=xIt(x)}mpEach(()=>{if(PS.weak>0&&!B.jw)PS.weak--;if(PS.vuln>0&&!B.jv)PS.vuln--;B.jw=B.jv=0});newTurn()}else if(!e.dead&&!e.reb&&!e.stn&&!(e.sl>0)&&(e.it.nm||e.it.sx)&&!b.sp){b.sp={e,t:0,lt:!e.it.nm};b.et=e.it.nm?1.3:1.05;sfx('ch')}else{const sp=b.sp;b.sp=null;enemyAct(e);if(sp&&!e.dead){const q=ePos(b.en.indexOf(e)),im=SPR[e.k];const fy=e.fly||0,ex={cx:q.x,cy:q.y-fy-im.height/2,tx:q.x-im.width/2,ty:q.y-fy-im.height,w:im.width,h:im.height};if(sp.lt){fxs('ez',MPB?mpCX():110,166,{d:1.1,s:e.k,ex});shk=Math.max(shk,11);sfx('hv');sfx('bm')}else{fxs('bz',MPB?mpCX():110,166,{d:1.4,c:e.it.fc,s:e.k,ex});shk=16;sfx('bm')}}b.ei++;b.et=sp?(sp.lt?1:1.4):Math.max(.8,e.an&&e.an.k==='mh'?.45+.26*e.an.h:.8)}}}}}
+else if(b.ph==='e'){b.et-=dt;if(b.et<=0){const e=b.en[b.eo?b.eo[b.ei]:b.ei];if(!e){for(const x of b.en){x.lost=0;x.nw=0;if(!x.dead&&x.i>=0)x.it=xIt(x)}mpEach(()=>{if(PS.weak>0&&!B.jw)PS.weak--;if(PS.vuln>0&&!B.jv)PS.vuln--;B.jw=B.jv=0});newTurn()}else if(!e.dead&&!e.reb&&!e.stn&&!(e.sl>0)&&(e.it.nm||e.it.sx)&&!b.sp){b.sp={e,t:0,lt:!e.it.nm};b.et=e.it.nm?1.3:1.05;sfx('ch')}else{const sp=b.sp;b.sp=null;enemyAct(e);if(sp&&!e.dead){const q=ePos(b.en.indexOf(e)),im=SPR[e.k];const fy=e.fly||0,ex={cx:q.x,cy:q.y-fy-im.height/2,tx:q.x-im.width/2,ty:q.y-fy-im.height,w:im.width,h:im.height};if(sp.lt){fxs('ez',MPB?mpCX():110,166,{d:1.1,s:e.k,ex});shk=Math.max(shk,11);sfx('hv');sfx('bm')}else{fxs('bz',MPB?mpCX():110,166,{d:1.4,c:e.it.fc,s:e.k,ex});shk=16;sfx('bm')}}b.ei++;b.et=e.k==='deus'&&e.an&&DHT[e.an.dm]?Math.max(sp?1.4:.8,DHT[e.an.dm][DHT[e.an.dm].length-1]+.6):sp?(sp.lt?1:1.4):Math.max(.8,e.an&&e.an.k==='mh'?.45+.26*e.an.h:.8)}}}}}
 /* ===== マルチプレイ（協力・最大4人） ===== */
 // 方式：全員の画面が同じ戦闘を手元で計算する（ロックステップ）。戦闘中の操作はホストが通し番号を付けて全員に配り、全員が同じ順に適用する。
 // 戦闘の乱数は戦闘ごとの種から作る（RNG）。戦闘の外（ショップ・イベント・報酬）は各自の画面で処理し、終わったら自分の P を送る（sync）。
