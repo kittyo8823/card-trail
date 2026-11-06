@@ -181,7 +181,7 @@
 3-2. **バージョン `GVER`（タイトル画面の右下に小さく表示）を公開のたびに1つ上げる**（例 1.49→1.50。ユーザー指定）。返答で新しいバージョン番号を毎回伝える。
 4. ~~SendUserFile で index.html を送る~~ → 送らない（ユーザー指定で変更：変更後はアーティファクトだけ送る）。
 5. git にコミットする。
-6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19、Ver2.23 が index20、Ver2.26 が index21、Ver2.30 が index22、Ver2.32 が index23、Ver2.36 が index24、Ver2.37 が index25、Ver2.39 が index26、Ver2.42 が index27、Ver2.43 が index28。Ver2.47 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
+6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19、Ver2.23 が index20、Ver2.26 が index21、Ver2.30 が index22、Ver2.32 が index23、Ver2.36 が index24、Ver2.37 が index25、Ver2.39 が index26、Ver2.42 が index27、Ver2.43 が index28、Ver2.47 が index29。Ver2.49 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
 7. **変更のたびに、作業版とメモを GitHub の `dev/` にも保存する**（ユーザー同意・Ver2.24から）：`dev/index.html`・`dev/CLAUDE.md`（先頭に置き場所の説明あり）・`dev/tests/` を最新にして push。公開中の直下 `index.html` は「アプデして」の時だけ変える。
 
 ## 動作確認
@@ -465,3 +465,8 @@ Playwright（chromium）入りの環境なら、ページを開いて `page.eval
   - ？マスで戦闘・ショップ・宝箱になった時の「？の先に〜」の一言を出さないようにした。
   - 「鍛造の構え」を使った後に「鍛えし刃」で攻撃すると、刃が2枚に増えていた。原因は、刃を使っている最中は手札・山札・捨札のどこにも刃がないため、`forge()` が新しい刃を作っていたこと。`forge(n,cur)` に今使っているカードを渡し、それが刃なら作らないようにした。
   - 「鍛えし刃」「小ナイフ」など、戦闘中に作られる特殊カード（r:-2）の枠を、無色カードと同じ灰色にした（`card0` の col）。
+- Ver2.49 泉の乙女像（1層ボス）を強くした（ユーザー指定）。
+  - HP 190→230。技：8×2／ブロック14＋弱体1／12／6＋脆弱1＋毒3／必殺「清めの奔流」15（他のボスの必殺より控えめ。水位が溜まらなくても必殺が見られるように）。
+  - 水位：0から始まり敵のターンごとに+1、`WLMX`=5 になると「大瀑布」＝即死（ブロックを0にしてから 9999 ダメージ。予告は「即死」）。1ターンに30ダメージ与えるごとに1下がる（前は20）。下がると予告もすぐ変わる。
+  - 水の見た目の勢い（mdFx）は水位/5 を前の4段階に合わせて計算。
+- Ver2.49 敵の行動予告の文字の色を濃くした（`tok(...,ol=1)` が `ITC` で色を置き換える。ユーザー指定：ボスの大きさは今まで通り、予告は頭の上のまま、縁取りはなし）。ボスを縮める案・横に出す案・黒い縁取りは試したがやめた。
