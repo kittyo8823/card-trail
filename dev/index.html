@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.51';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.52';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2282,8 +2282,8 @@ Object.assign(E,{
  ubell:{n:'沈鐘',hp:[20,24],mv:[{a:9},{b:8,vu:1},{a:5,h:2}]},
  udrown:{n:'海に呑まれた者',hp:[80,86],el:1,mv:[{a:6,h:3},{st:3,b:10},{a:18,sx:1},{a:9,wk:2}]},
  ugeel:{n:'鎧鱗の大ウツボ',hp:[88,94],el:1,mv:[{a:12},{a:5,h:3},{b:14,st:2},{a:24,sx:1}]},
- userp:{n:'灯腸の大魚',hp:[196,196],el:2,fly:6,mv:[{a:8,h:2},{b:18,st:3},{a:32,nm:'深淵の呑み込み',fc:'#5ac8c0'},{a:11,wk:2,vu:1}]},
- ulight:{n:'沈んだ灯台',hp:[205,205],el:2,mv:[{a:6,h:3},{wk:2,vu:2,b:12},{a:28,nm:'灯光の薙ぎ',fc:'#d8ffe0'},{b:16,st:3}]}});
+ userp:{n:'灯腸の大魚',hp:[196,196],el:2,fly:6,mv:[{a:6,h:2},{b:14,st:2},{a:26,nm:'深淵の呑み込み',fc:'#5ac8c0'},{a:9,vu:1}]},
+ ulight:{n:'沈んだ灯台',hp:[205,205],el:2,mv:[{a:5,h:3},{vu:2,b:10},{a:22,nm:'灯光の薙ぎ',fc:'#d8ffe0'},{b:13,st:2}]}});
 const FIS=[[['ushell'],['ulens','ulens'],['ueel'],['uink'],['ushell','ulens']],[['udiver'],['uboat'],['ueel','uink'],['ucoral','ulens'],['ubell']],[['ubell','ulens'],['udiver','ushell'],['uboat','ucoral'],['uink','uink','ulens']]],ELS=['udrown','ugeel'];
 // 1層の場所：P.v1 が 's' なら沈没都市、それ以外は黒い森
 const A1S=()=>!!(P&&P.act===1&&P.v1==='s'),bgbFor=a=>a===1&&P&&P.v1==='s'?BGB1S:[BGB1,BGB2,BGB3][a-1];

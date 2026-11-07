@@ -181,7 +181,7 @@
 3-2. **バージョン `GVER`（タイトル画面の右下に小さく表示）を公開のたびに1つ上げる**（例 1.49→1.50。ユーザー指定）。返答で新しいバージョン番号を毎回伝える。
 4. ~~SendUserFile で index.html を送る~~ → 送らない（ユーザー指定で変更：変更後はアーティファクトだけ送る）。
 5. git にコミットする。
-6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19、Ver2.23 が index20、Ver2.26 が index21、Ver2.30 が index22、Ver2.32 が index23、Ver2.36 が index24、Ver2.37 が index25、Ver2.39 が index26、Ver2.42 が index27、Ver2.43 が index28、Ver2.47 が index29。Ver2.49 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
+6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19、Ver2.23 が index20、Ver2.26 が index21、Ver2.30 が index22、Ver2.32 が index23、Ver2.36 が index24、Ver2.37 が index25、Ver2.39 が index26、Ver2.42 が index27、Ver2.43 が index28、Ver2.47 が index29、Ver2.52 が index30。Ver2.52 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
 7. **変更のたびに、作業版とメモを GitHub の `dev/` にも保存する**（ユーザー同意・Ver2.24から）：`dev/index.html`・`dev/CLAUDE.md`（先頭に置き場所の説明あり）・`dev/tests/` を最新にして push。公開中の直下 `index.html` は「アプデして」の時だけ変える。
 
 ## 動作確認
@@ -472,9 +472,9 @@ Playwright（chromium）入りの環境なら、ページを開いて `page.eval
 - Ver2.49 敵の行動予告の文字の色を濃くした（`tok(...,ol=1)` が `ITC` で色を置き換える。ユーザー指定：ボスの大きさは今まで通り、予告は頭の上のまま、縁取りはなし）。ボスを縮める案・横に出す案・黒い縁取りは試したがやめた。
 - Ver2.50 ネブラのレリック「伸びる触手」（insr）を、2ターンごと→4ターンごとに小クラゲの枠+1 にした（ユーザー指定）。`nbTurn` の `B.turn%4===0`。
 - Ver2.51 泉の乙女像の水位を下げる量を、1ターン30ダメージごと→25ダメージごとに1下げるにした（ユーザー指定）。`wlv` と状態の説明文。
+- Ver2.52 沈没都市のボス2体を弱くした（ユーザー指定：HPはそのまま、攻撃・ブロック・筋力を0.8倍、弱体を与える技から弱体を消す）。沈んだ灯台：5×3／ブロック10＋脆弱2／灯光の薙ぎ22／ブロック13＋筋力2。灯腸の大魚：6×2／ブロック14＋筋力2／深淵の呑み込み26／9＋脆弱1。
 
 ## やりたいことリスト（ユーザーが後でやる予定。終わったら消す）
 - カードを長押しして出る詳しい情報の画面で、強化後の姿も見られるようにする。
 - 機神デウス・マキナの5回攻撃（ユーザーの体感で18×5）が序盤のターンに出るのは強すぎる。せめて12×5くらいに。（メモ上の dance は 7×5 なので、筋力などで上がった後の数字かもしれない。作業時に確かめる）
-- 沈没都市のボス2体（沈んだ灯台 ulight・灯腸の大魚 userp）の攻撃・ブロック・筋力だけ0.8倍にする（HPはそのまま、弱体・脆弱の数もそのまま）。目安：灯台 5×3／ブロック10／灯光の薙ぎ22／ブロック13・筋力+2、大魚 6×2／ブロック14・筋力+2／深淵の呑み込み26／9。
 - マルチの画面（焚き火の野営地）の焚き火の炎 `mpFire()` にドット絵らしさがないので、ドット絵の感じに直す。
