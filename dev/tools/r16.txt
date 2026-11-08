@@ -238,20 +238,20 @@ oRRrrrrrrrrrrrxo
 
 [fang] M=#ffffff
 ................
-..oooooooooooo..
-.ommmmmmmmmmmlo.
-.oMmmmmmmmmmmlo.
-..olllllllllNo..
-..oml.oml..ml...
-..omlo.oml.oml..
-..omlo.omlo.ml..
-...oml.omlo.oml.
-...oml..ml..oml.
-...omlo.omlomlo.
-....mlo..mlomlo.
-....omo..oml.mo.
-.....o...omo.o..
-..........o.....
+.oooooo..oooooo.
+.omMMlo..omMMlo.
+.omMmlo..omMmlo.
+.ommmlo..ommmlo.
+.ommmlo..ommmlo.
+..ommlo...ommlo.
+..ommlo...ommlo.
+..omlo....omlo..
+...omlo....omlo.
+...omlo....omlo.
+....olo.....olo.
+....oro.....oro.
+.....o.......o..
+.....r.......r..
 ................
 
 [frog]
