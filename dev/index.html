@@ -348,22 +348,25 @@ pt('af',()=>{t([[23.6,14.6],[27,14.6],[29,20.2],[25.6,21]],ML);t([[26.2,19.4],[2
 sh();
 pt('hd',()=>{t(H([[8.6,4.4],[17.2,4.6],[16.6,6.4],[9,6.4]]),'#0e0e18');p(18.3,9,'#ffd23f');q(22.9,9.2,'#ffd23f');q(23.3,9.2,'#ffd23f');l(20.5,5.8,20.7,8.2,'#eef2fa',.4);l(20.7,10.6,20.5,13.2,'#8a92a4',.4)});
 t([[19.5,14],[21.1,16.1],[19.5,18.6],[17.9,16.1]],'#c0392b');q(19.5,15,'#ff8a8a')}];
-SD.si=[38,40,3,({r,p,q,l,t,e,sh,pt})=>{const SK='#d8c8b0',CL='#4f8068',CD='#3b6350',CF='#62947c',BL='#9adce6',hk=P=>P.map(a=>[a[0]+9.5,a[1]+5.2]);if(PMODE!==2){
-t([[16,12.6],[25.6,13.6],[30.4,24],[31.4,37.8],[.6,37.8],[2.6,35],[7.4,27],[11,20]],CL);t([[11,19.6],[16.4,19.6],[12.6,37.8],[.6,37.8],[2.6,35],[7.4,27]],CD);
-t([[20.4,17],[27.6,18.6],[30.6,29.6],[27,37.8],[17.6,37.8],[19.6,27]],CF);
-// 外套のひだ（明るい山・暗い谷）と、光の当たらない右側の影
-t([[15.8,21.4],[17.8,21.8],[16.6,37.8],[13.6,37.8]],'#33594a');t([[5.6,30],[7.2,29],[4.4,37.8],[2.4,37.8]],'#2b4d3c');
-t([[20.8,23],[23.2,23.4],[22.8,37.8],[19.4,37.8]],'#72a48b');t([[28.2,21.6],[30.4,24],[31.4,37.8],[28.4,37.8]],'#38604c');t([[12.6,14.4],[22.6,12.8],[27.8,17.4],[14.4,20.4]],CL);t([[15,18.4],[26.4,17.6],[25.4,20.2],[16.2,21.2]],'#2b4d3c');
-pt('ab',()=>{t([[9.8,26.8],[10.8,27.2],[6.8,32],[6.4,31.6]],BL);e(10.6,26.6,1.4,1.2,SK)});
-pt('sc',()=>t([[17.6,16],[9.6,19.8],[11,21.2],[18.4,17.6]],'#8a2433'));
-pt('hd',()=>{t(hk([[10,-.6],[17,4.4],[18,7],[16.4,11],[5.8,11],[4.6,6]]),'#5a8a72');t(hk([[10,-.6],[6,1.6],[4.6,6]]),'#4c7c64')});
-t([[17.4,15.4],[26.4,15.6],[25.4,18],[18.2,17.8]],'#8a2433');e(29.6,37.6,2.4,1,SK);
-pt('af',()=>t([[24.2,19.4],[28.4,20.2],[29.4,23.8],[25,23.6]],CF));
-sh();
-pt('hd',()=>{t(hk([[9.6,5],[16.6,5.2],[16,9.6],[10.2,9.6]]),'#081210');l(20.2,12,21.8,12.6,'#7dff9a',.5);l(23.8,12.4,24.8,12.2,'#7dff9a',.4)});
-
-pt('af',()=>e(28.8,22.6,1.5,1.3,SK))}
-if(PMODE!==1){t([[29.6,21.6],[30.6,22.6],[36.4,17.2],[36,16.6]],BL);l(29,21,30.8,23.4,'#d4a838',.6)}}];
+// Ver2.58 坂井（ユーザー採用）：前が開いた外套（左右の垂れ布は部位 cp・cf で肩を軸にゆっくり揺れる）・肩を覆う布・包帯の手足・中央に垂れる灰色の布・両手に波打つ短剣。顔は暗いフードと光る目
+SD.si=[38,40,3,({r,p,q,l,t,e,sh,pt})=>{const CL='#4f8068',CD='#3b6350',CI='#2b4a3c',BD='#cbbfa4',BS='#9a8a6c',SKN='#6a4630',BL='#9adce6',hk=P=>P.map(a=>[a[0]+9.5,a[1]+5.2]);
+  if(PMODE!==2){
+  pt('cp',()=>{t([[12.6,13.4],[19.4,13],[18.4,24],[17.4,34.6],[12,36.8],[6,35.6],[4.6,33],[8.4,24]],CL);t([[16.8,14],[19.4,13.4],[18.4,24],[17.4,34.4],[15.8,34.6],[16.6,24]],CI);t([[9.4,24],[11.4,24.4],[9,35.8],[6.6,35.4]],CD)});
+  t([[15.4,22.6],[18.4,23],[14.6,30],[11.6,29.4]],BD);t([[11.4,29],[14.6,29.8],[12.8,36],[9.4,35.8]],BD);t([[8.2,35.4],[13,35.6],[13.4,38.2],[7.2,38.2]],BD);
+  t([[20.6,23],[23.6,22.6],[26.4,29.4],[23.4,30.2]],BD);t([[23.2,29.6],[26.4,29],[28.6,35.6],[25.6,36.2]],BD);t([[25,35.4],[29.6,35.4],[31.6,38.2],[24.6,38.2]],BD);
+  t([[15,15],[22.4,15],[22.6,22.8],[15.4,22.8]],SKN);
+  t([[15.8,22],[21,22],[21.8,38],[16.6,38.4],[15.2,30]],'#8c9894');
+  pt('ab',()=>{t([[13.2,15],[16,14.8],[13.6,19.8],[10.8,19.2]],BD);t([[10.8,18.6],[13.2,18.2],[17.6,20.2],[16.6,21.8]],BD);e(17,21,1.4,1.2,SKN);t([[16.2,20.6],[16.8,21.8],[12.4,23],[9.8,24.6],[7.2,24.8],[9.6,23],[12.2,21.8]],BL);l(16.2,19.8,17.2,22.4,'#2a4a50',.7)});
+  pt('cf',()=>{t([[20.6,13.6],[27,14.2],[29.6,22],[30.2,30],[28.6,34.6],[24.4,35.2],[22.4,33.4],[21.6,24]],CL);t([[20.6,14.6],[22.8,14.8],[22.8,33.2],[21.6,32.6]],CI);t([[26.4,22],[27.8,22.2],[28.4,34.4],[26.6,34.8]],CD)});
+  pt('hd',()=>{t([[12.4,13.4],[25.6,13.2],[27.6,17.4],[24.6,20.2],[19,21],[14.6,20.4],[11.6,17]],CL);t([[15,18.6],[24.4,18.2],[24.2,20.2],[19,21],[15.2,20.4]],CD);t(hk([[10,-.6],[17,4.4],[18,7],[16.4,11],[5.8,11],[4.6,6]]),'#5a8a72');t(hk([[10,-.6],[6,1.6],[4.6,6]]),'#4c7c64');t([[15.8,14.6],[24.2,14.6],[23.4,16.6],[16.4,16.6]],'#8a2433')});
+  pt('af',()=>{t([[22.8,15],[25.4,15],[28.2,18.4],[26.6,20]],BD);t([[26.4,18.4],[28.6,19.6],[31.6,16.6],[30.2,15]],BD)});
+  sh();
+  pt('hd',()=>{t(hk([[9.6,5],[16.6,5.2],[16,9.6],[10.2,9.6]]),'#081210');l(20.2,12,21.8,12.6,'#7dff9a',.5);l(23.8,12.4,24.8,12.2,'#7dff9a',.4)});
+  for(const[a,b,c,d]of[[11.8,31.4,14.6,32],[10.6,33.6,13.6,34],[12.6,25.6,16.4,26.4],[23.4,31.6,26.8,31],[24.4,33.8,27.6,33.2],[21.4,25.4,24.4,25],[8.6,36.8,13.2,36.8],[25.6,36.8,30.6,36.8]])l(a,b,c,d,BS,.4);
+  l(16.6,16.4,22,20.6,BD,.6);l(15.6,19.4,20.6,22.4,BD,.6);l(18.6,23,19.4,38,'#6e7a76',.4);
+  pt('ab',()=>{l(11.6,17.2,14.6,16.8,BS,.4);l(13.4,19.6,15.4,20.8,BS,.4)});
+  pt('af',()=>{l(24,16.6,26,17.6,BS,.4);l(28,18.6,29.8,17.2,BS,.4);e(31,15.8,1.5,1.3,SKN)})}
+  if(PMODE!==1){t([[31.8,14.6],[32.6,15.8],[34.6,15.2],[36.4,14.6],[37.8,13.2],[36,13.4],[34.4,14]],BL);l(31.4,14,32.4,16.6,'#2a4a50',.7)}}];
 SD.sm=[38,40,3,({r,p,q,l,t,e,sh,pt})=>{if(PMODE===2)return;const SK='#efc6a0',hs=P=>P.map(a=>[a[0]+7,a[1]+4]);
 t([[14.2,21.6],[24,21.6],[27.6,30],[31.2,37.6],[6.8,37.6],[10.6,30]],'#323a62');t([[14.2,21.6],[17,21.6],[12.8,37.6],[6.8,37.6],[10.6,30]],'#29304f');e(12.4,37.9,2.2,.9,'#e8e8f0');e(26,37.9,2.2,.9,'#e8e8f0');
 pt('ab',()=>t([[12.8,14],[15.8,14],[16.8,20.6],[11.8,21.4]],'#981f1c'));
@@ -1409,20 +1412,17 @@ function dParts(e,i,w,h){const L=EPT[e.k],d=SD[e.k],u=d[2],hw=Math.round(w/2),M=
  for(const q of L)if(q.z==='b')dp(q);ctx.drawImage(SPR[e.k+'_pb'],-hw,-h);for(const q of L)if(q.z==='f')dp(q)}
 // 攻撃の動き用：武器だけ別の絵にして、手元を軸に回す（WPN の pv は手の位置＝元の単位）。ra があれば攻撃の間だけ構えの角度 rest から ra へ持ち上げる（Ver2.55 ユウキングの下段の構え）
 // Ver2.56 体の中心（元の単位）。戦闘で体の中心がHPバーの中心（x=110）に来るように置く
-const PCX={pl:19.5,si:19.5,sm:19,hori1:19,hori2:19,hori3:19};
-const WPN={pl:{pv:[18.4,22.8],wp:'pl_wp',g:[3,21.8],rest:-2.36,ra:.1},si:{pv:[28.8,22.6]},sm:{pv:[22.4,20.8],wp:'sm_wp',g:[3,22.7],rest:.85,as:.72},oji:{pv:[17.6,13]},hori1:{pv:[28.4,16.4]},hori2:{pv:[28.4,16.4]},hori3:{pv:[28.4,16.4]}};for(const k in WPN){const d=SD[k];PMODE=1;SPR[k+'_b']=paint(d[0],d[1],d[3],d[2]);PMODE=2;SPR[k+'_w']=paint(d[0],d[1],d[3],d[2]);PMODE=0;WPN[k].u=SPR[k].width/d[0];const W=WPN[k];if(W.wp){const ws=SPR[W.wp],wd=SD[W.wp];W.wu=ws.width/wd[0];SPR[k]=wpComp(SPR[k+'_b'],W)}}
+const PCX={pl:19.5,si:19,sm:19,hori1:19,hori2:19,hori3:19};
+const WPN={pl:{pv:[18.4,22.8],wp:'pl_wp',g:[3,21.8],rest:-2.36,ra:.1},si:{pv:[31,15.8],as:.55},sm:{pv:[22.4,20.8],wp:'sm_wp',g:[3,22.7],rest:.85,as:.72},oji:{pv:[17.6,13]},hori1:{pv:[28.4,16.4]},hori2:{pv:[28.4,16.4]},hori3:{pv:[28.4,16.4]}};for(const k in WPN){const d=SD[k];PMODE=1;SPR[k+'_b']=paint(d[0],d[1],d[3],d[2]);PMODE=2;SPR[k+'_w']=paint(d[0],d[1],d[3],d[2]);PMODE=0;WPN[k].u=SPR[k].width/d[0];const W=WPN[k];if(W.wp){const ws=SPR[W.wp],wd=SD[W.wp];W.wu=ws.width/wd[0];SPR[k]=wpComp(SPR[k+'_b'],W)}}
 // Ver2.01 自キャラの四肢（部位 PRIG）。体の絵 _b とは別に部位ごとの絵 _q<名前> を作り、plDraw が部位ごとに回して描く
-const HRG=[{n:'lb',pv:[16.6,24.8],z:'b'},{n:'ab',pv:[14.2,16],z:'b'},{n:'lf',pv:[21.6,24.8],z:'f'},{n:'hd',pv:[18.6,14.6],z:'f'},{n:'af',pv:[23.8,16],z:'f'}],PRIG={pl:[{n:'cp',pv:[18,13],z:'b'},{n:'lb',pv:[16.8,25.6],z:'b'},{n:'lf',pv:[22,25.6],z:'f'},{n:'ab',pv:[13.8,13.8],z:'f'},{n:'hd',pv:[19.6,13.4],z:'f'},{n:'af',pv:[25.2,15],z:'f'}],
- si:[{n:'ab',pv:[10.6,26.6],z:'f'},{n:'sc',pv:[17.8,16.6],z:'f'},{n:'hd',pv:[20,15.4],z:'f'},{n:'af',pv:[25,19.6],z:'f'}],
+const HRG=[{n:'lb',pv:[16.6,24.8],z:'b'},{n:'ab',pv:[14.2,16],z:'b'},{n:'lf',pv:[21.6,24.8],z:'f'},{n:'hd',pv:[18.6,14.6],z:'f'},{n:'af',pv:[23.8,16],z:'f'}],PRIG={pl:[{n:'cp',pv:[18,13],z:'b'},{n:'lb',pv:[16.8,25.6],z:'b'},{n:'lf',pv:[22,25.6],z:'f'},{n:'ab',pv:[13.8,13.8],z:'f'},{n:'hd',pv:[19.6,13.4],z:'f'},{n:'af',pv:[25.2,15],z:'f'}], 
+ si:[{n:'cp',pv:[16,13.4],z:'b'},{n:'ab',pv:[14.6,15],z:'f'},{n:'cf',pv:[23,14],z:'f'},{n:'hd',pv:[20,15],z:'f'},{n:'af',pv:[24,15.2],z:'f'}],
  sm:[{n:'ab',pv:[14.2,14.4],z:'b'},{n:'sc',pv:[14.4,8.6],z:'f'},{n:'hd',pv:[19.6,14],z:'f'},{n:'af',pv:[24.4,14.6],z:'f'}],oji:[{n:'hd',pv:[11.6,9.2],z:'f'},{n:'af',pv:[15.6,11.6],z:'f'}],hori1:HRG,hori2:HRG,hori3:HRG};
 for(const k in PRIG){const d=SD[k];PMODE=1;PPART='body';SPR[k+'_qb']=paint(d[0],d[1],d[3],d[2]);for(const q of PRIG[k]){PPART=q.n;SPR[k+'_q'+q.n]=paint(d[0],d[1],d[3],d[2])}PPART=null;PMODE=0}
 function plRig(k,wa,on,pa,hr){const L=PRIG[k],W=WPN[k],u=W.u,ph=T,br=Math.sin(ph*2.2),sw=Math.min(1,Math.abs(wa)/1.6),R={};
- for(const q of L){let a=0,dy=0;const n=q.n;if(n==='hd'){a=.04*Math.sin(ph*1.3)+wa*.07;dy=.3*br}else if(n==='af'){a=.06*Math.sin(ph*1.6)+.03*br+wa*(W.as||1)*.42}else if(n==='ab'){a=-.06*Math.sin(ph*1.6+.6)-.03*br-wa*.18}else if(n==='cp'){a=.05*Math.sin(ph*1.7)+.12*sw}else if(n==='sc'){a=.12*Math.sin(ph*2.1)+.25*sw}else if(n==='lf'){a=.025*Math.sin(ph*1.1)-.2*sw}else if(n==='lb'){a=-.025*Math.sin(ph*1.1)+.12*sw}
+ for(const q of L){let a=0,dy=0;const n=q.n;if(n==='hd'){a=.04*Math.sin(ph*1.3)+wa*.07;dy=.3*br}else if(n==='af'){a=.06*Math.sin(ph*1.6)+.03*br+wa*(W.as||1)*.42}else if(n==='ab'){a=-.06*Math.sin(ph*1.6+.6)-.03*br-wa*.18}else if(n==='cp'){a=.05*Math.sin(ph*1.7)+.12*sw}else if(n==='cf'){a=.04*Math.sin(ph*1.4+1.2)+.025*Math.sin(ph*2.9)+.07*sw}else if(n==='sc'){a=.12*Math.sin(ph*2.1)+.25*sw}else if(n==='lf'){a=.025*Math.sin(ph*1.1)-.2*sw}else if(n==='lb'){a=-.025*Math.sin(ph*1.1)+.12*sw}
   if(on&&pa.k==='gd'&&n==='ab'){a-=.7*Math.sin(Math.min(1,(T-pa.t0)/(pa.d||.5))*Math.PI)}if(hr>0){if(n==='hd')a-=.2*hr;else if(n==='af')a+=.25*hr;else if(n==='ab')a-=.25*hr;else if(n==='cp')a-=.15*hr}R[n]=[a,dy]}return R}
 function plParts(k,R,g){g=g||ctx;const L=PRIG[k],u=WPN[k].u,dp=q=>{const v=R[q.n],X=q.pv[0]*u,Y=q.pv[1]*u;g.save();g.translate(X,Y+v[1]);g.rotate(v[0]);g.translate(-X,-Y);g.drawImage(SPR[k+'_q'+q.n],0,0);g.restore()};for(const q of L)if(q.z==='b')dp(q);g.drawImage(SPR[k+'_qb'],0,0);for(const q of L)if(q.z==='f')dp(q)}
-// Ver2.58 坂井の外套が風に揺れる（ユーザー指定）：絵を2画素ずつの横の帯に分け、下ほど大きく左右にずらす。波は上から下へ流れる。上の4割（フード・肩）は動かない
-let WVC=null;const clW=(y,h)=>{const f=Math.max(0,(y-h*.4)/(h*.6));return Math.round(f*f*(-1.2+3*Math.sin(T*2.6-y*.06)))};
-function clWave(src,x,y,sc,g){g=g||ctx;sc=sc||1;const w=src.width,h=src.height;for(let j=0;j<h;j+=2)g.drawImage(src,0,j,w,2,x+clW(j,h)*sc,y+j*sc,w*sc,2*sc)}
 // 名無しの合成絵（選択画面・結果画面用）：魔導書の手前に老人
 SPR.nnPlace=0;
 // ネブラの絵（参考画像：ガラスの傘＋光る核＋レンズ付きの機械の輪＋半透明のリボン状の触手）。傘・縁・機械の輪を別々に描き、nebPaint で重ねる（傘は半透明）
@@ -2737,7 +2737,7 @@ function plDraw(k,x,y){const b=SPR[k+'_b'],W=WPN[k],pa=B&&B.pa;if(!b){ctx.drawIm
  let bx=g('bx',0)*(on&&pa.k==='otk'?pa.D||0:1),by=g('by',0),br=g('br',0),bs=g('bs',1),wx=g('wx',0),gl=g('gl',0);const ang=tt=>on||tt<1?(pa.k==='fl'?flAng(tt,pa):A.w?kf(tt,A.w):0):0,wa=on?ang(t):0;
  const hr=B&&B.hr?T-B.hr:9;if(hr>=0&&hr<.28){const q=1-hr/.28;bx-=7*q;br-=.07*q}
  if(on&&pa.k==='otk'&&((t>.1&&t<.24)||(t>.8&&t<.97))){const g0=ctx.globalAlpha;ctx.globalCompositeOperation='lighter';for(let j=6;j>=1;j--){const tt=Math.max(0,t-j*.012);ctx.globalAlpha=g0*.08*(7-j);ctx.drawImage(b,Math.round(x+kf(tt,A.bx)*(pa.D||0)),Math.round(y+kf(tt,A.by)))}ctx.globalCompositeOperation='source-over';ctx.globalAlpha=g0}
- ctx.save();ctx.translate(Math.round(x+b.width/2+bx),Math.round(y+b.height+by));ctx.rotate(br);ctx.scale(1+(1-bs)*.6,bs);ctx.translate(-b.width/2,-b.height);const RG=PRIG[k]?plRig(k,wa,on,pa,hr>=0&&hr<.28?1-hr/.28:0):null,dB=()=>{if(RG&&k==='si'){if(!WVC||WVC.width!==b.width||WVC.height!==b.height)WVC=MKC(b.width,b.height);const g=WVC.getContext('2d');g.clearRect(0,0,b.width,b.height);plParts(k,RG,g);clWave(WVC,0,0)}else if(RG)plParts(k,RG);else ctx.drawImage(b,0,0)};dB();
+ ctx.save();ctx.translate(Math.round(x+b.width/2+bx),Math.round(y+b.height+by));ctx.rotate(br);ctx.scale(1+(1-bs)*.6,bs);ctx.translate(-b.width/2,-b.height);const RG=PRIG[k]?plRig(k,wa,on,pa,hr>=0&&hr<.28?1-hr/.28:0):null,dB=()=>{if(RG)plParts(k,RG);else ctx.drawImage(b,0,0)};dB();
  if(gl>0){const ga=ctx.globalAlpha;ctx.globalCompositeOperation='lighter';ctx.globalAlpha=ga*gl;dB();ctx.globalCompositeOperation='source-over';ctx.globalAlpha=ga}
  let HX=W.pv[0]*W.u,HY=W.pv[1]*W.u;if(RG){const S=PRIG[k].find(q=>q.n==='af'),sx=S.pv[0]*W.u,sy=S.pv[1]*W.u,A=RG.af[0],c=Math.cos(A),s2=Math.sin(A),dx0=HX-sx,dy0=HY-sy;HX=sx+dx0*c-dy0*s2;HY=sy+dx0*s2+dy0*c+RG.af[1]}
  const ga=ctx.globalAlpha,dr=a=>{ctx.save();ctx.translate(HX+wx,HY);ctx.rotate(a*(W.as||1)+(W.ra!=null&&on?W.rest+(W.ra-W.rest)*Math.max(0,Math.min(1,t/.15,(1-t)/.2)):(W.rest||0)));if(W.wp)ctx.drawImage(SPR[W.wp],-W.g[0]*W.wu,-W.g[1]*W.wu);else ctx.drawImage(SPR[k+'_w'],-W.pv[0]*W.u,-W.pv[1]*W.u);ctx.restore()};
@@ -4003,7 +4003,7 @@ const g=ctx.createRadialGradient(190,200,10,190,200,270);g.addColorStop(0,col+'6
 ctx.fillStyle='rgba(255,255,255,.05)';ctx.beginPath();ctx.moveTo(150,0);ctx.lineTo(230,0);ctx.lineTo(320,300);ctx.lineTo(60,300);ctx.fill();
 for(let k=0;k<16;k++){const t=(T*.15+hs(k))%1;ctx.globalAlpha=.6*Math.sin(t*3.14);sq(70+hs(k+3)*240,300-t*260,k%3?2:3,c.lt||'#fff')}ctx.globalAlpha=1;
 ctx.fillStyle='#000';ctx.globalAlpha=.5;ctx.beginPath();ctx.ellipse(190,298,90,14,0,0,6.3);ctx.fill();ctx.globalAlpha=a;
-const SK2=1.5,sx=Math.round(Math.min(190-(im.bw||im.width)*SK2/2-(im.ox||0)*SK2,372-im.width*SK2)+(1-a)*40),sy=Math.round(300-(im.fy||im.height)*SK2+Math.sin(T*2)*2);ctx.save();ctx.beginPath();ctx.rect(0,0,352,360);ctx.clip();if(c.s==='neb'){ctx.translate(sx+60,sy+156);ctx.scale(SK2,SK2);nebPaint(ctx,0,0,T,{})}else if(c.s==='si')clWave(im,sx,sy,SK2);else ctx.drawImage(im,sx,sy,im.width*SK2,im.height*SK2);ctx.restore();ctx.globalAlpha=1;
+const SK2=1.5,sx=Math.round(Math.min(190-(im.bw||im.width)*SK2/2-(im.ox||0)*SK2,372-im.width*SK2)+(1-a)*40),sy=Math.round(300-(im.fy||im.height)*SK2+Math.sin(T*2)*2);ctx.save();ctx.beginPath();ctx.rect(0,0,352,360);ctx.clip();if(c.s==='neb'){ctx.translate(sx+60,sy+156);ctx.scale(SK2,SK2);nebPaint(ctx,0,0,T,{})}else ctx.drawImage(im,sx,sy,im.width*SK2,im.height*SK2);ctx.restore();ctx.globalAlpha=1;
 if(N>1){const pu=Math.sin(T*5)*3;txt('◀',38-pu,190,c.lt,'center',26);txt('▶',342+pu,190,c.lt,'center',26);hit(14,150,50,80,()=>selGo(-1));hit(316,150,50,80,()=>selGo(1))}
 ctx.globalAlpha=a;txt('CHARACTER　'+(SEL+1)+' / '+N,372,56,col,'left',11);txt(c.n,372,88,'#fff','left',c.n.length>8?24:28);ctx.fillStyle=col;ctx.fillRect(372,98,248,2);
 txt('HP '+c.hp,372,120,'#ff9a9a','left',15);txt(c.key,446,120,'#d8d0f0','left',11);
