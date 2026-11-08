@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.66';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.67';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -3936,12 +3936,26 @@ function drawReward(){rwBg();topbar();const pot=RW.pot&&!has('sozu'),hasL=RW.g||
   ctx.fillStyle='rgba(0,0,0,.45)';ctx.beginPath();ctx.ellipse(x+42,252,46,6,0,0,6.3);ctx.fill();card(x,y,o,0,1);if(!RW.ct)hit(x,y,84,106,()=>{P.deck.push(o);RW.ct=1;sfx('pk');after()})});
  btn(cx-50,270,100,28,RW.ct?'戻る':'スキップ',after,'#3a3068',13);if(has('drift')&&!RW.ct&&!RW.rr&&RW.cards.length)btn(cx+58,270,120,28,'流木：引き直す',()=>{RW.rr=1;const n=RW.cards.length;RW.cards=(RW.boss||n===3&&RW.title&&RW.title.includes('レア')?rare3():pick3(()=>cardPick(RW.el))).slice(0,n);sfx('cl')},'#5a4a2a',12)}
 
-function drawShop(){rwBg();topbar();
+// Ver2.67 ショップの商品の下に敷く絨毯（ユーザー指定）。深い紅の地に、暗い縁の帯と金の菱形、細い格子、中央の淡い菱形の紋、四すみの金具、上下の房。一度描いてとっておく
+let RUG=null;function shopRug(){if(RUG)return RUG;const W=604,H=252,c=MKC(W,H),g=c.getContext('2d'),R=(x,y,w,h,col)=>{g.fillStyle=col;g.fillRect(x,y,w,h)};
+ for(let x=4;x<W-4;x+=4){R(x,0,2,6,'#d8c8a0');R(x,H-6,2,6,'#d8c8a0');R(x,5,2,1,'#a8946a');R(x,H-6,2,1,'#a8946a')}
+ const T0=6,B0=H-6;R(0,T0,W,B0-T0,'#2e0a16');R(2,T0+2,W-4,B0-T0-4,'#3a0e1c');
+ for(let x=14;x<W-10;x+=16)for(const y of[T0+7,B0-8]){R(x,y-2,2,1,'#c8a050');R(x-1,y-1,4,1,'#c8a050');R(x,y,2,1,'#c8a050')}
+ for(let y=T0+18;y<B0-14;y+=16)for(const x of[7,W-9]){R(x,y-2,2,1,'#c8a050');R(x-1,y-1,4,1,'#c8a050');R(x,y,2,1,'#c8a050')}
+ R(12,T0+12,W-24,1,'#c8a050');R(12,B0-13,W-24,1,'#c8a050');R(12,T0+12,1,B0-T0-24,'#c8a050');R(W-13,T0+12,1,B0-T0-24,'#c8a050');
+ R(13,T0+13,W-26,B0-T0-26,'#6a1e2e');R(18,T0+18,W-36,B0-T0-36,'#561828');
+ for(let x=20;x<W-20;x+=6){R(x,T0+15,2,1,'#8a3a40');R(x,B0-16,2,1,'#8a3a40')}
+ g.save();g.beginPath();g.rect(18,T0+18,W-36,B0-T0-36);g.clip();g.fillStyle='#5f1d2d';for(let k=-H;k<W;k+=18)for(let y=0;y<H;y+=2){R(k+y,y,1,2,'#5f1d2d');R(k+H-y,y,1,2,'#5f1d2d')}g.restore();
+ const cx=W/2,cy=(T0+B0)/2;for(let i=0;i<3;i++){const rx=150-i*34,ry=70-i*16;g.strokeStyle=i===1?'rgba(200,160,80,.45)':'rgba(200,160,80,.22)';g.lineWidth=1;g.beginPath();g.moveTo(cx,cy-ry);g.lineTo(cx+rx,cy);g.lineTo(cx,cy+ry);g.lineTo(cx-rx,cy);g.closePath();g.stroke()}
+ R(cx-3,cy-1,6,2,'rgba(200,160,80,.5)');R(cx-1,cy-3,2,6,'rgba(200,160,80,.5)');
+ for(const[x,y,sx,sy]of[[14,T0+14,1,1],[W-15,T0+14,-1,1],[14,B0-15,1,-1],[W-15,B0-15,-1,-1]]){for(let k=0;k<10;k++){R(x+sx*k-(sx<0?1:0),y,1,1,'#e6c060');R(x,y+sy*k-(sy<0?1:0),1,1,'#e6c060')}R(x+sx*3-(sx<0?1:0),y+sy*3-(sy<0?1:0),2,2,'#e6c060')}
+ return RUG=c}
+function drawShop(){rwBg();topbar();ctx.save();ctx.globalAlpha=.93;ctx.drawImage(shopRug(),18,50);ctx.restore();
 SH.c.forEach((a,i)=>{const x=30+i*118;if(i===4)txt('無色',x+42,58,'#c8c8d8','center',10);if(a.s){txt('売り切れ',x+42,112,'#8a82b8','center',13);return}card(x,62,a.o,P.gold<a.p,1);txt(a.p+'G',x+42,184,P.gold>=a.p?'#ffd23f':'#ff7a7a','center',14);
 hit(x,62,84,128,()=>{if(P.gold<a.p){sfx('no');say('ゴールドが足りない。');return}P.gold-=a.p;P.deck.push({...a.o});a.s=1;sfx('pk')})});
 SH.r.forEach((a,i)=>{const x=60+i*180;if(a.s)return;ctx.drawImage(rIcon(a.k),x,200,36,36);txt(RL[a.k][0],x+44,214,'#fff','left',12);txt(RL[a.k][1],x+44,230,'#cfc8ee','left',10);txt(a.p+'G',x+44,246,P.gold>=a.p?'#ffd23f':'#ff7a7a','left',13);
 hit(x,200,160,48,()=>{if(P.gold<a.p){sfx('no');say('ゴールドが足りない。');return}P.gold-=a.p;gain(a.k);a.s=1;sfx('pk')})});
-SH.pt.forEach((a,i)=>{const x=60+i*180;if(a.s)return;box(x,254,36,36,'#2c3566');ctx.drawImage(potIcon(a.k),x+2,256,32,32);txt(POT[a.k][0],x+44,268,'#fff','left',12);txt(POT[a.k][1],x+44,282,'#cfc8ee','left',10);txt(a.p+'G',x+44,296,P.gold>=a.p?'#ffd23f':'#ff7a7a','left',13);hit(x,254,160,42,()=>{if(P.gold<a.p){sfx('no');say('ゴールドが足りない。');return}if(!givePot(a.k))return;P.gold-=a.p;a.s=1})});
+SH.pt.forEach((a,i)=>{const x=60+i*180;if(a.s)return;ctx.drawImage(potIcon(a.k),x,254,36,36);txt(POT[a.k][0],x+44,268,'#fff','left',12);txt(POT[a.k][1],x+44,282,'#cfc8ee','left',10);txt(a.p+'G',x+44,296,P.gold>=a.p?'#ffd23f':'#ff7a7a','left',13);hit(x,254,160,42,()=>{if(P.gold<a.p){sfx('no');say('ゴールドが足りない。');return}if(!givePot(a.k))return;P.gold-=a.p;a.s=1})});
 if(!SH.rmd)btn(420,262,190,32,'カードを消す '+SH.rm+'G',()=>{if(P.gold<SH.rm){sfx('no');say('ゴールドが足りない。');return}openPick('消すカードを選択',P.deck.map((_,i)=>i),i=>{P.gold-=SH.rm;P.deck.splice(i,1);SH.rmd=1;sfx('pk');go('shop')},1)},'#3a3068',13);
 btn(270,310,100,30,'立ち去る',()=>go('map'),'#7a2a3a',14)}
 function drawPick(){drawSnap();const l=PICK.list,mx=Math.max(0,Math.ceil(l.length/6)*116-250);scr=Math.max(0,Math.min(mx,scr));
