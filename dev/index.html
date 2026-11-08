@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.59';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.60';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -1413,7 +1413,9 @@ function dParts(e,i,w,h){const L=EPT[e.k],d=SD[e.k],u=d[2],hw=Math.round(w/2),M=
 // 攻撃の動き用：武器だけ別の絵にして、手元を軸に回す（WPN の pv は手の位置＝元の単位）。ra があれば攻撃の間だけ構えの角度 rest から ra へ持ち上げる（Ver2.55 ユウキングの下段の構え）
 // Ver2.56 体の中心（元の単位）。戦闘で体の中心がHPバーの中心（x=110）に来るように置く
 const PCX={pl:19.5,si:19,sm:19,hori1:19,hori2:19,hori3:19};
-const WPN={pl:{pv:[18.4,22.8],wp:'pl_wp',g:[3,21.8],rest:-2.36,ra:.1},si:{pv:[31,15.8],as:.55},sm:{pv:[22.4,20.8],wp:'sm_wp',g:[3,22.7],rest:.85,as:.72},oji:{pv:[17.6,13]},hori1:{pv:[28.4,16.4]},hori2:{pv:[28.4,16.4]},hori3:{pv:[28.4,16.4]}};for(const k in WPN){const d=SD[k];PMODE=1;SPR[k+'_b']=paint(d[0],d[1],d[3],d[2]);PMODE=2;SPR[k+'_w']=paint(d[0],d[1],d[3],d[2]);PMODE=0;WPN[k].u=SPR[k].width/d[0];const W=WPN[k];if(W.wp){const ws=SPR[W.wp],wd=SD[W.wp];W.wu=ws.width/wd[0];SPR[k]=wpComp(SPR[k+'_b'],W)}}
+// Ver2.60 ユウキングの斬撃は横に軽く薙ぎ払う（ユーザー指定：ワイパーのようだった）。下段の構えのまま、剣先が腰の高さで前へ弧を描いて戻る。ng の付いた武器だけ、この角度 NGW を使い、剣を立てる ra は使わない
+const NGK={sw1:1,sw2:1,hv:1,aoe:1},NGW=[[0,0],[.2,.3],[.45,-2.3],[.62,-2.5],[.85,-.9],[1,0]];
+const WPN={pl:{pv:[18.4,22.8],wp:'pl_wp',g:[3,21.8],rest:-2.36,ra:.1,ng:1},si:{pv:[31,15.8],as:.55},sm:{pv:[22.4,20.8],wp:'sm_wp',g:[3,22.7],rest:.85,as:.72},oji:{pv:[17.6,13]},hori1:{pv:[28.4,16.4]},hori2:{pv:[28.4,16.4]},hori3:{pv:[28.4,16.4]}};for(const k in WPN){const d=SD[k];PMODE=1;SPR[k+'_b']=paint(d[0],d[1],d[3],d[2]);PMODE=2;SPR[k+'_w']=paint(d[0],d[1],d[3],d[2]);PMODE=0;WPN[k].u=SPR[k].width/d[0];const W=WPN[k];if(W.wp){const ws=SPR[W.wp],wd=SD[W.wp];W.wu=ws.width/wd[0];SPR[k]=wpComp(SPR[k+'_b'],W)}}
 // Ver2.01 自キャラの四肢（部位 PRIG）。体の絵 _b とは別に部位ごとの絵 _q<名前> を作り、plDraw が部位ごとに回して描く
 const HRG=[{n:'lb',pv:[16.6,24.8],z:'b'},{n:'ab',pv:[14.2,16],z:'b'},{n:'lf',pv:[21.6,24.8],z:'f'},{n:'hd',pv:[18.6,14.6],z:'f'},{n:'af',pv:[23.8,16],z:'f'}],PRIG={pl:[{n:'cp',pv:[18,13],z:'b'},{n:'lb',pv:[16.8,25.6],z:'b'},{n:'lf',pv:[22,25.6],z:'f'},{n:'ab',pv:[13.8,13.8],z:'f'},{n:'hd',pv:[19.6,13.4],z:'f'},{n:'af',pv:[25.2,15],z:'f'}], 
  si:[{n:'cp',pv:[16,13.4],z:'b'},{n:'ab',pv:[12.2,17],z:'f'},{n:'cf',pv:[23,14],z:'f'},{n:'hd',pv:[20,15],z:'f'},{n:'af',pv:[24,15.2],z:'f'}],
@@ -2734,13 +2736,13 @@ function plEv(pa,t,A){if(!A.ev)return;for(const[at,ev]of A.ev)if(t>=at&&!pa.ev[e
  else if(ev==='iai'&&pa.tx)fxs('is',pa.tx,pa.ty,{d:.42});else if(/^os[123]$/.test(ev)&&pa.tx){fxs('osl',pa.tx,pa.ty,{d:.2,s:[-.9,2.3,0][+ev[2]-1]});sfx('spk');shk=Math.max(shk,4)}else if(ev==='ofin'&&pa.tx){fxs('osl',pa.tx,pa.ty,{d:.34,s:-1.1,v:1});fxs('is',pa.tx,pa.ty,{d:.5})}else if(ev==='aura')fxs('sp2',110,170,{d:.7,c:'#4aa8ff'})}}
 function plDraw(k,x,y){const b=SPR[k+'_b'],W=WPN[k],pa=B&&B.pa;if(!b){ctx.drawImage(SPR[k],x,y);return}
  const A=pa&&PA2[pa.k],d=pa&&(pa.d||A&&A.d),t=A?(T-pa.t0)/d:1,on=A&&t>=0&&t<1,g=(n,dv)=>on&&A[n]?kf(t,A[n]):dv;if(on)plEv(pa,t,A);
- let bx=g('bx',0)*(on&&pa.k==='otk'?pa.D||0:1),by=g('by',0),br=g('br',0),bs=g('bs',1),wx=g('wx',0),gl=g('gl',0);const ang=tt=>on||tt<1?(pa.k==='fl'?flAng(tt,pa):A.w?kf(tt,A.w):0):0,wa=on?ang(t):0;
+ let bx=g('bx',0)*(on&&pa.k==='otk'?pa.D||0:1),by=g('by',0),br=g('br',0),bs=g('bs',1),wx=g('wx',0),gl=g('gl',0);const ng=W.ng&&on&&NGK[pa.k],ang=tt=>on||tt<1?(ng?kf(tt,NGW):pa.k==='fl'?flAng(tt,pa):A.w?kf(tt,A.w):0):0,wa=on?ang(t):0;
  const hr=B&&B.hr?T-B.hr:9;if(hr>=0&&hr<.28){const q=1-hr/.28;bx-=7*q;br-=.07*q}
  if(on&&pa.k==='otk'&&((t>.1&&t<.24)||(t>.8&&t<.97))){const g0=ctx.globalAlpha;ctx.globalCompositeOperation='lighter';for(let j=6;j>=1;j--){const tt=Math.max(0,t-j*.012);ctx.globalAlpha=g0*.08*(7-j);ctx.drawImage(b,Math.round(x+kf(tt,A.bx)*(pa.D||0)),Math.round(y+kf(tt,A.by)))}ctx.globalCompositeOperation='source-over';ctx.globalAlpha=g0}
  ctx.save();ctx.translate(Math.round(x+b.width/2+bx),Math.round(y+b.height+by));ctx.rotate(br);ctx.scale(1+(1-bs)*.6,bs);ctx.translate(-b.width/2,-b.height);const RG=PRIG[k]?plRig(k,wa,on,pa,hr>=0&&hr<.28?1-hr/.28:0):null,dB=()=>{if(RG)plParts(k,RG);else ctx.drawImage(b,0,0)};dB();
  if(gl>0){const ga=ctx.globalAlpha;ctx.globalCompositeOperation='lighter';ctx.globalAlpha=ga*gl;dB();ctx.globalCompositeOperation='source-over';ctx.globalAlpha=ga}
  let HX=W.pv[0]*W.u,HY=W.pv[1]*W.u;if(RG){const S=PRIG[k].find(q=>q.n==='af'),sx=S.pv[0]*W.u,sy=S.pv[1]*W.u,A=RG.af[0],c=Math.cos(A),s2=Math.sin(A),dx0=HX-sx,dy0=HY-sy;HX=sx+dx0*c-dy0*s2;HY=sy+dx0*s2+dy0*c+RG.af[1]}
- const ga=ctx.globalAlpha,dr=a=>{ctx.save();ctx.translate(HX+wx,HY);ctx.rotate(a*(W.as||1)+(W.ra!=null&&on?W.rest+(W.ra-W.rest)*Math.max(0,Math.min(1,t/.15,(1-t)/.2)):(W.rest||0)));if(W.wp)ctx.drawImage(SPR[W.wp],-W.g[0]*W.wu,-W.g[1]*W.wu);else ctx.drawImage(SPR[k+'_w'],-W.pv[0]*W.u,-W.pv[1]*W.u);ctx.restore()};
+ const ga=ctx.globalAlpha,dr=a=>{ctx.save();ctx.translate(HX+wx,HY);ctx.rotate(a*(W.as||1)+(W.ra!=null&&on&&!ng?W.rest+(W.ra-W.rest)*Math.max(0,Math.min(1,t/.15,(1-t)/.2)):(W.rest||0)));if(W.wp)ctx.drawImage(SPR[W.wp],-W.g[0]*W.wu,-W.g[1]*W.wu);else ctx.drawImage(SPR[k+'_w'],-W.pv[0]*W.u,-W.pv[1]*W.u);ctx.restore()};
  if(on&&A.tr){const dt=.035/d;if(Math.abs(ang(t)-ang(Math.max(0,t-dt)))>.12)for(let j=A.tr;j>=1;j--){ctx.globalAlpha=ga*.1*(A.tr-j+1)/A.tr*2.2;dr(ang(Math.max(0,t-j*dt)))}ctx.globalAlpha=ga}
  dr(wa);ctx.restore()}
 // 敵の動き：見た目の分類 ECAT（hum 人型・beast 獣・cast 術師・heavy 重い・blob 不定形・fly 飛ぶ）ごとに、攻撃・多段・強化・防御・妨害の動きを変える
