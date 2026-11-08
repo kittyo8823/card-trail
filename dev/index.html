@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.67';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.68';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -3950,19 +3950,38 @@ let RUG=null;function shopRug(){if(RUG)return RUG;const W=604,H=252,c=MKC(W,H),g
  R(cx-3,cy-1,6,2,'rgba(200,160,80,.5)');R(cx-1,cy-3,2,6,'rgba(200,160,80,.5)');
  for(const[x,y,sx,sy]of[[14,T0+14,1,1],[W-15,T0+14,-1,1],[14,B0-15,1,-1],[W-15,B0-15,-1,-1]]){for(let k=0;k<10;k++){R(x+sx*k-(sx<0?1:0),y,1,1,'#e6c060');R(x,y+sy*k-(sy<0?1:0),1,1,'#e6c060')}R(x+sx*3-(sx<0?1:0),y+sy*3-(sy<0?1:0),2,2,'#e6c060')}
  return RUG=c}
+// Ver2.68 ショップのカードの除去：裏向きのカードの下から炎が上がる絵（ユーザー指定：ボタンがチープ）
+function rmIcon(x,y){const R=(a,b,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(x+a,y+b,w,h)};
+ ctx.fillStyle='rgba(255,120,40,'+(.18+.06*Math.sin(T*5))+')';ctx.beginPath();ctx.ellipse(x+19,y+40,22,12,0,0,6.3);ctx.fill();
+ R(4,2,32,42,'#08060f');R(5,3,30,40,'#5a4a9a');R(6,4,28,38,'#3a2e6a');R(8,6,24,34,'#241c48');R(8,6,24,1,'#c8a050');R(8,39,24,1,'#c8a050');R(8,6,1,34,'#c8a050');R(31,6,1,34,'#c8a050');
+ R(19,13,2,2,'#c9a0ff');R(17,15,6,2,'#c9a0ff');R(15,17,10,4,'#c9a0ff');R(17,21,6,2,'#c9a0ff');R(19,23,2,2,'#c9a0ff');R(19,17,2,4,'#fff');
+ R(6,30,28,12,'#2a1a10');R(6,28,28,2,'#4a2a14');
+ R(2,44,36,2,'#c83a14');for(let i=0;i<6;i++){const cx=5+i*6,h=Math.round(9+6*Math.abs(Math.sin(T*6+i*1.9))+(i%2?0:3));for(let j=0;j<h;j++){const w=Math.max(1,Math.round(4.5*(1-j/h)))*2-1+(j<2?2:0);R(cx-(w>>1),45-j,w,1,j<h*.3?'#ffe27a':j<h*.65?'#ff8a2a':'#d8401a')}}
+ for(let i=0;i<4;i++){const k=(T*.8+i*.27)%1;R(8+((i*11+Math.floor(T*.8+i*.27)*7)%24),30-k*30,1,1,'rgba(255,200,90,'+(1-k)+')')}}
 function drawShop(){rwBg();topbar();ctx.save();ctx.globalAlpha=.93;ctx.drawImage(shopRug(),18,50);ctx.restore();
 SH.c.forEach((a,i)=>{const x=30+i*118;if(i===4)txt('無色',x+42,58,'#c8c8d8','center',10);if(a.s){txt('売り切れ',x+42,112,'#8a82b8','center',13);return}card(x,62,a.o,P.gold<a.p,1);txt(a.p+'G',x+42,184,P.gold>=a.p?'#ffd23f':'#ff7a7a','center',14);
 hit(x,62,84,128,()=>{if(P.gold<a.p){sfx('no');say('ゴールドが足りない。');return}P.gold-=a.p;P.deck.push({...a.o});a.s=1;sfx('pk')})});
 SH.r.forEach((a,i)=>{const x=60+i*180;if(a.s)return;ctx.drawImage(rIcon(a.k),x,200,36,36);txt(RL[a.k][0],x+44,214,'#fff','left',12);txt(RL[a.k][1],x+44,230,'#cfc8ee','left',10);txt(a.p+'G',x+44,246,P.gold>=a.p?'#ffd23f':'#ff7a7a','left',13);
 hit(x,200,160,48,()=>{if(P.gold<a.p){sfx('no');say('ゴールドが足りない。');return}P.gold-=a.p;gain(a.k);a.s=1;sfx('pk')})});
 SH.pt.forEach((a,i)=>{const x=60+i*180;if(a.s)return;ctx.drawImage(potIcon(a.k),x,254,36,36);txt(POT[a.k][0],x+44,268,'#fff','left',12);txt(POT[a.k][1],x+44,282,'#cfc8ee','left',10);txt(a.p+'G',x+44,296,P.gold>=a.p?'#ffd23f':'#ff7a7a','left',13);hit(x,254,160,42,()=>{if(P.gold<a.p){sfx('no');say('ゴールドが足りない。');return}if(!givePot(a.k))return;P.gold-=a.p;a.s=1})});
-if(!SH.rmd)btn(420,262,190,32,'カードを消す '+SH.rm+'G',()=>{if(P.gold<SH.rm){sfx('no');say('ゴールドが足りない。');return}openPick('消すカードを選択',P.deck.map((_,i)=>i),i=>{P.gold-=SH.rm;P.deck.splice(i,1);SH.rmd=1;sfx('pk');go('shop')},1)},'#3a3068',13);
+if(!SH.rmd){const x=424,y=206;rmIcon(x,y);txt('カードの除去',x+48,220,'#fff','left',12);txt('デッキから1枚消す',x+48,236,'#cfc8ee','left',10);txt(SH.rm+'G',x+48,252,P.gold>=SH.rm?'#ffd23f':'#ff7a7a','left',13);
+hit(x,y,180,56,()=>{if(P.gold<SH.rm){sfx('no');say('ゴールドが足りない。');return}openPick('消すカードを選択',P.deck.map((_,i)=>i),i=>{P.gold-=SH.rm;P.deck.splice(i,1);SH.rmd=1;sfx('pk');go('shop')},1)})}
 btn(270,310,100,30,'立ち去る',()=>go('map'),'#7a2a3a',14)}
 function drawPick(){drawSnap();const l=PICK.list,mx=Math.max(0,Math.ceil(l.length/6)*116-250);scr=Math.max(0,Math.min(mx,scr));
 l.forEach((di,r)=>{const x=22+(r%6)*100,y=48+Math.floor(r/6)*116-scr;if(y>-110&&y<360){card(x,y,(PICK.cards||P.deck)[di],0);if(PICK.cb&&PICK.sel==null)hit(x,y,84,106,()=>{if(PICK.cf){PICK.sel=di;sfx('cl');return}const cb=PICK.cb;PICK=null;cb(di)})}});
 ctx.fillStyle='rgba(13,10,28,.92)';ctx.fillRect(0,0,640,40);txt(PICK.title,12,26,'#ffd23f','left',16);btn(560,8,70,26,'戻る',()=>{const b=PICK.back;PICK=null;S=b},'#7a2a3a',13);
- if(PICK&&PICK.sel!=null){const di=PICK.sel,o=(PICK.cards||P.deck)[di];hit(0,0,640,360,()=>{});ctx.fillStyle='rgba(5,4,12,.82)';ctx.fillRect(0,0,640,360);txt('このカードを消しますか？',320,40,'#ffd23f','center',16);txt('消したカードは元に戻せない',320,60,'#cfc8ee','center',11);cardAt(o,320,170,1.6,0,1);
-  btn(196,286,120,40,'消す',()=>{const cb=PICK.cb;PICK=null;sfx('cl');cb(di)},'#8a2a3a',15);btn(324,286,120,40,'やめる',()=>{PICK.sel=null;sfx('cl')},'#2c3566',15)}}
+ if(PICK&&PICK.sel!=null){const di=PICK.sel,o=(PICK.cards||P.deck)[di];hit(0,0,640,360,()=>{});ctx.fillStyle='rgba(5,4,12,.82)';ctx.fillRect(0,0,640,360);if(PICK.bt!=null){ctx.fillStyle='rgba(5,4,12,.6)';ctx.fillRect(0,0,640,360);burnCard(o,(T-PICK.bt)/.9);if(T-PICK.bt>1.1){const cb=PICK.cb;PICK=null;cb(di)}return}
+  txt('このカードを消しますか？',320,40,'#ffd23f','center',16);txt('消したカードは元に戻せない',320,60,'#cfc8ee','center',11);cardAt(o,320,170,1.6,0,1);
+  btn(196,286,120,40,'消す',()=>{PICK.bt=T;sfx('efire');shk=4},'#8a2a3a',15);btn(324,286,120,40,'やめる',()=>{PICK.sel=null;sfx('cl')},'#2c3566',15)}}
+// Ver2.68 消すカードが下から燃えて消える（p:0→1）
+function burnCard(o,p){const L=253,Tp=85,W=134,H=170,e=Tp+H-Math.min(1,p)*(H+14),jg=x=>Math.sin(x*.21)*5+Math.sin(x*.07+2)*4;
+ ctx.save();ctx.beginPath();ctx.moveTo(L-2,Tp-2);for(let x=0;x<=W+4;x+=4)ctx.lineTo(L-2+x,e+jg(x));ctx.lineTo(L+W+2,Tp-2);ctx.closePath();ctx.clip();cardAt(o,320,170,1.6,0,1);
+ const g=ctx.createLinearGradient(0,e-26,0,e+8);g.addColorStop(0,'rgba(20,8,4,0)');g.addColorStop(.7,'rgba(30,10,4,.9)');g.addColorStop(1,'#120604');ctx.fillStyle=g;ctx.fillRect(L-2,e-26,W+4,40);ctx.restore();
+ if(p<1){for(let x=0;x<=W;x+=2){const y=e+jg(x+2)-1;ctx.fillStyle='#ff6a1a';ctx.fillRect(L+x,y-2,2,4);ctx.fillStyle='#ffd84a';ctx.fillRect(L+x,y-1,2,2)}
+  for(let x=3;x<W;x+=7){const b=e+jg(x)-1,h=(6+9*Math.abs(Math.sin(T*9+x*.9)))*Math.min(1,(1-p)*4);for(let j=0;j<h;j+=2){const w=Math.max(1,Math.round(5*(1-j/h)))*2-1;ctx.fillStyle=j<h*.35?'#ffd84a':j<h*.7?'#ff8a2a':'#c83a14';ctx.fillRect(L+x-(w>>1),b-j-2,w,2)}}}
+ ctx.fillStyle='rgba(255,140,40,'+(.25*Math.max(0,1-p))+')';ctx.beginPath();ctx.ellipse(320,e,90,22,0,0,6.3);ctx.fill();
+ for(let i=0;i<46;i++){const s=(i*0.618)%1,st=s*.95,k=(p-st)/.5;if(k<0||k>1)continue;const x0=L+((i*37)%W),y0=Tp+H-st*H,x=x0+Math.sin(i+k*6)*8,y=y0-k*60;ctx.fillStyle=k<.5?'#ffd84a':'rgba(255,110,30,'+(1-k)*1.6+')';ctx.fillRect(x|0,y|0,2,2)}
+ txt('カードは灰になった。',320,300,'rgba(255,210,150,'+Math.min(1,Math.max(0,(p-.6)*3))+')','center',14)}
 // ===== タイトル画面（4種類からランダム。直前と同じものは出さない）=====
 const TF='"Press Start 2P",monospace',tpath=t=>[60+t*470+Math.sin(t*8)*14,346-t*104-Math.sin(t*5)*8];
 const TVD=[
