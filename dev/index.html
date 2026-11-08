@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.56';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.57';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -370,7 +370,7 @@ pt('hd',()=>{t(hs([[8,3.4],[14.8,3.4],[15.6,6],[16.6,7.6],[15.2,8.2],[14.4,9.6],
  t(hs([[7.2,1.4],[14.8,1.4],[15.6,4.2],[13.4,3.8],[10.6,4.4],[8.4,4.4],[7.6,7.4],[6.6,5.2]]),'#181826');t(hs([[7.4,1.6],[9.4,1.2],[8.4,-.8],[6,-.2]]),'#181826');r(14.2,8.2,8.4,.9,'#e8e8f0')});
 pt('af',()=>{t([[15,18],[17.6,17.4],[21.6,19.4],[20.6,21.4]],'#7e1816');t([[22.6,13.6],[26.4,14.4],[29.2,20.4],[27.2,22.8],[24.2,21.8]],'#c23a32');t([[26.4,19.8],[28.6,21.2],[24,22.8],[22.6,21.2]],SK)});
 sh();
-pt('hd',()=>{t(hs([[10.6,6.4],[12.8,6.9],[12.6,7.8],[10.8,7.4]]),'#181826');q(19,10.9,'#ffffff');t(hs([[14.2,6.6],[15.4,6.6],[15.3,7.6],[14.3,7.6]]),'#181826');q(21.8,10.8,'#ffffff');l(17.2,9.8,19.8,10.1,'#181826',.4);l(21,10,22.4,9.8,'#181826',.4);l(20.4,13,21.6,12.8,'#a0705a',.3)});
+pt('hd',()=>{t(hs([[10.8,6.5],[12.6,6.6],[12.5,7.7],[10.9,7.6]]),'#181826');q(18.6,10.8,'#ffffff');t(hs([[14,6.6],[15.8,6.5],[15.7,7.6],[14.1,7.7]]),'#181826');q(21.8,10.8,'#ffffff');l(17.6,9.9,19.6,10,'#181826',.4);l(21,10,22.9,9.9,'#181826',.4);l(20.4,13,21.6,12.8,'#a0705a',.3)});
 l(14,21.5,24,21.5,'#d4a838',.4);l(18.4,23,17,37.2,'#1e2340',.4);l(21.4,23,22,37.2,'#1e2340',.4);l(24.4,23,27.6,37.2,'#1e2340',.4);r(7.2,36.8,23.6,.8,'#1e2340')}];
 SD.demon=[24,28,3,({r,p,q,l,t,m,sh})=>{
 m(()=>t([[10,12],[2,3],[0,9],[1.6,13],[0,18],[3.4,17],[5,21],[10,19]],'#3e1660'));
@@ -1405,6 +1405,8 @@ function dParts(e,i,w,h){const L=EPT[e.k],d=SD[e.k],u=d[2],hw=Math.round(w/2),M=
  const dp=q=>{ctx.save();tf(q);ctx.drawImage(SPR[e.k+'_p'+q.n],-hw,-h);ctx.restore()};
  for(const q of L)if(q.z==='b')dp(q);ctx.drawImage(SPR[e.k+'_pb'],-hw,-h);for(const q of L)if(q.z==='f')dp(q)}
 // 攻撃の動き用：武器だけ別の絵にして、手元を軸に回す（WPN の pv は手の位置＝元の単位）。ra があれば攻撃の間だけ構えの角度 rest から ra へ持ち上げる（Ver2.55 ユウキングの下段の構え）
+// Ver2.56 体の中心（元の単位）。戦闘で体の中心がHPバーの中心（x=110）に来るように置く
+const PCX={pl:19.5,si:19.5,sm:19,hori1:19,hori2:19,hori3:19};
 const WPN={pl:{pv:[18.4,22.8],wp:'pl_wp',g:[3,21.8],rest:-2.36,ra:.1},si:{pv:[28.8,22.6]},sm:{pv:[22.4,20.8],wp:'sm_wp',g:[3,22.7],rest:.85,as:.72},oji:{pv:[17.6,13]},hori1:{pv:[28.4,16.4]},hori2:{pv:[28.4,16.4]},hori3:{pv:[28.4,16.4]}};for(const k in WPN){const d=SD[k];PMODE=1;SPR[k+'_b']=paint(d[0],d[1],d[3],d[2]);PMODE=2;SPR[k+'_w']=paint(d[0],d[1],d[3],d[2]);PMODE=0;WPN[k].u=SPR[k].width/d[0];const W=WPN[k];if(W.wp){const ws=SPR[W.wp],wd=SD[W.wp];W.wu=ws.width/wd[0];SPR[k]=wpComp(SPR[k+'_b'],W)}}
 // Ver2.01 自キャラの四肢（部位 PRIG）。体の絵 _b とは別に部位ごとの絵 _q<名前> を作り、plDraw が部位ごとに回して描く
 const HRG=[{n:'lb',pv:[16.6,24.8],z:'b'},{n:'ab',pv:[14.2,16],z:'b'},{n:'lf',pv:[21.6,24.8],z:'f'},{n:'hd',pv:[18.6,14.6],z:'f'},{n:'af',pv:[23.8,16],z:'f'}],PRIG={pl:[{n:'cp',pv:[18,13],z:'b'},{n:'lb',pv:[16.8,25.6],z:'b'},{n:'lf',pv:[22,25.6],z:'f'},{n:'ab',pv:[13.8,13.8],z:'f'},{n:'hd',pv:[19.6,13.4],z:'f'},{n:'af',pv:[25.2,15],z:'f'}],
@@ -3607,7 +3609,7 @@ function eHT2(e,k){const a=e.an;if(e.k==='deus'&&a&&DHT[a.dm])return DHT[a.dm][M
 function drawBattle(){const b=B;ER=[];CR=[];hit(0,24,640,206,()=>{b.sel=-1});ctx.drawImage(BGB,0,0);bgAnim();
 ctx.save();if(shk>0)ctx.translate((Math.random()-.5)*shk*2,(Math.random()-.5)*shk*2);
 const lg=b.lg>0?Math.sin(b.lg/.25*3.14)*(b.lgA!=null?b.lgA:30):0,sh=b.sh>0&&b.sh<=.3?(Math.random()-.5)*8:0;
-if(MPB)mpDrawPlayers(b);else{if(P.cls===3)drawGrim(b);const pim=P.cls===3?SPR.oji:P.cls===4?SPR[(b.ms?'hori_z':'hori')+P.act]:SPR[CH[P.cls].s];ctx.globalAlpha=b.sh>0&&b.sh<=.3&&Math.floor(T*30)%2?.5:1;{const wk=plKey(),bim=wk&&!b.ms?SPR[wk+'_b']:pim,by=Math.round(Math.sin(T*1.8)),px=Math.round(74+lg+sh),py=208-bim.height+(b.ms?0:by);if(P.cls===6)nebDraw(px+pim.width/2,208,b);else if(wk&&!b.ms)plDraw(wk,px,py);else ctx.drawImage(pim,px,py)}ctx.globalAlpha=1;if(b.ms){for(let k=0;k<3;k++){const q=(T*.5+k/3)%1;ctx.globalAlpha=Math.sin(q*3.14);txt('Z',118+q*18,208-pim.height+6-q*30,'#c8d0ff','center',10+k*4)}ctx.globalAlpha=1}
+if(MPB)mpDrawPlayers(b);else{if(P.cls===3)drawGrim(b);const pim=P.cls===3?SPR.oji:P.cls===4?SPR[(b.ms?'hori_z':'hori')+P.act]:SPR[CH[P.cls].s];ctx.globalAlpha=b.sh>0&&b.sh<=.3&&Math.floor(T*30)%2?.5:1;{const wk=plKey(),bim=wk&&!b.ms?SPR[wk+'_b']:pim,by=Math.round(Math.sin(T*1.8)),px=Math.round(74+lg+sh-(PCX[wk]!=null?PCX[wk]*3+2-36:0)),py=208-bim.height+(b.ms?0:by);if(P.cls===6)nebDraw(px+pim.width/2,208,b);else if(wk&&!b.ms)plDraw(wk,px,py);else ctx.drawImage(pim,px,py)}ctx.globalAlpha=1;if(b.ms){for(let k=0;k<3;k++){const q=(T*.5+k/3)%1;ctx.globalAlpha=Math.sin(q*3.14);txt('Z',118+q*18,208-pim.height+6-q*30,'#c8d0ff','center',10+k*4)}ctx.globalAlpha=1}
 hpBar(74,210,72,Math.min(P.mhp,vHP()),P.mhp,'#e8505b',b.blk,PS.poison);chips(stat(PS,1),64,224,'l',204);}
 {const bd=b.en.find(e=>!e.dead&&E[e.k]&&E[e.k].bd);if(bd){const im=SPR[E[bd.k].bd];ctx.drawImage(im,Math.round(455-im.width/2),Math.round(194-im.height+Math.sin(T*1.2)*1.5))}}
 b.en.forEach((e,i)=>{if(e.dead){if(e.dT!=null&&T-e.dT<.8)eDeath(e,i);if(e.dT!=null&&T<e.dT&&e.vq){const p0=ePos(i);hpBar(p0.x-32,p0.y+2,64,Math.min(e.mh,e.vq.reduce((s2,q)=>s2+(q.at>T?q.d:0),0)),e.mh,e.el?'#c9a0ff':'#e8505b',0,0,0);txt(e.n,p0.x,p0.y+22,'#cfc8ee','center',10)}return}const p0=ePos(i),p={x:p0.x,y:p0.y-(e.fly?Math.round(e.fly+(FLYP[e.k]?0:Math.sin(T*1.4)*4)):0)},im=SPR[e.sl>0&&SPR[e.k+'_z']?e.k+'_z':e.k],w=im.width,h=im.height,eo=eMot(e,i),off=(e.lg>0?-Math.sin(e.lg/.3*3.14)*30:0)+eo.x,s=e.sh>0&&T>=(e.flS||0)?(Math.random()-.5)*8:0;
