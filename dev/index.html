@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.52';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.53';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2253,7 +2253,7 @@ reaper:{n:'死神ネヴァル',hp:[190,190],el:2,mv:[{a:7,h:3},{st:3,b:16},{a:26
 drone:{n:'守護ドローン',hp:[38,44],mv:[{a:7,h:2},{ab:9,a:5},{vu:2,a:8}]},sentry:{n:'光輪の番兵',hp:[58,64],mv:[{a:16},{b:14},{a:10,dd:1}]},cube:{n:'審判のキューブ',hp:[50,56],rit:2,mv:[{b:10},{a:15},{a:5,h:3}]},
 seraph:{n:'機械天使',hp:[46,52],avg:3,mv:[{a:5,h:3},{wk:2,vu:2},{a:18}]},priest:{n:'電脳神官',hp:[42,48],mv:[{smn:'drone'},{a:14},{hl:12,wk:1}]},serpent:{n:'光の大蛇',hp:[54,60],mv:[{a:9,sc:['粘液',2]},{a:21},{b:12,st:2}]},
 colossus:{n:'神殿の巨像',hp:[130,140],el:1,mv:[{b:20,st:3},{a:24,sx:1},{a:9,h:3},{wk:2,vu:2,a:12}]},oracle:{n:'預言機オラクル',hp:[112,120],el:1,en:1,mv:[{vu:3,wk:2,sc:['目眩',2]},{a:8,h:3},{st:3,b:14},{a:28,sx:1}]},
-deus:{n:'機神デウス・マキナ',hp:[300,300],el:2,mv:[{a:13,h:3},{st:5,b:25},{a:38,nm:'神罰の光',fc:'#5ff6ff'},{wk:3,vu:3,ps:8,sc:['負傷',2]},{a:7,h:5}]},mothP:{n:'月蛾の司祭モルナ',hp:[150,150],el:2,ld:1,mv:[{st:2,b:8},{a:7,wk:1},{a:7,vu:1},{a:4,h:4,nm:'月蝕の鱗粉',fc:'#c9a0ff'}]},mothF:{n:'鱗粉の信徒',hp:[42,44],mn:1,mv:[{a:5},{a:2,h:2},{st:2}]},mothF2:{n:'鱗粉の信徒',hp:[42,44],mn:1,mv:[{st:2},{a:5},{a:2,h:2}]},
+deus:{n:'機神デウス・マキナ',hp:[300,300],el:2,mv:[{a:13,h:3},{st:5,b:25},{a:38,nm:'神罰の光',fc:'#5ff6ff'},{wk:3,vu:3,ps:8,sc:['負傷',2]},{a:3,h:5}]},mothP:{n:'月蛾の司祭モルナ',hp:[150,150],el:2,ld:1,mv:[{st:2,b:8},{a:7,wk:1},{a:7,vu:1},{a:4,h:4,nm:'月蝕の鱗粉',fc:'#c9a0ff'}]},mothF:{n:'鱗粉の信徒',hp:[42,44],mn:1,mv:[{a:5},{a:2,h:2},{st:2}]},mothF2:{n:'鱗粉の信徒',hp:[42,44],mn:1,mv:[{st:2},{a:5},{a:2,h:2}]},
 gilL:{n:'圧殺の腕',hp:[120,120],el:2,pr:1,bd:'gilB',mv:[{a:8,vu:1},{a:12},{a:6,h:2},{b:18,lb:'固定'}]},gilR:{n:'砲撃の腕',hp:[105,105],el:2,pr:1,pt:1,bd:'gilB',mv:[{a:6,h:2},{b:8,lb:'装填'},{a:26,nm:'断罪の砲火',fc:'#ff8c2e'},{lb:'冷却'}]},
 protoA:{n:'試作機神・骨格',hp:[90,90],el:2,en:1,rv:'protoB',mv:[{a:9},{a:5,h:2},{st:2,b:10},{a:16,nm:'起動衝撃',fc:'#ff4a4a'}]},protoB:{n:'試作機神・装甲',hp:[140,140],el:2,pst:1,rv:'protoC',mv:[{a:4,h:3},{a:14},{b:15,st:2},{a:6,h:3,nm:'駆動槍',fc:'#5ff6ff'}]},protoC:{n:'試作機神・完全体',hp:[180,180],el:2,ph:1,mv:[{a:20},{a:7,h:3},{st:3,b:12},{a:38,nm:'創世の光',fc:'#fff6b0'}]},
 maiden:{n:'泉の乙女像',hp:[230,230],el:2,mv:[{a:8,h:2},{b:14,wk:1},{a:12},{a:6,vu:1,ps:3},{a:15,nm:'清めの奔流',fc:'#7ee8ff'}]},scales:{n:'永劫の天秤',hp:[290,290],el:2,fly:22,mv:[{a:20,sc2:['r','b'],sd:0}]},chronos:{n:'時の機神クロノス',hp:[280,280],el:2,mv:[{a:12,h:3},{b:28,st:4},{a:34,nm:'時の終焉',fc:'#ffd23f'},{wk:3,vu:3,a:14,sc:['火傷',2]}]},
@@ -2309,7 +2309,7 @@ function say(s){if(QT||(MPB&&CK!==LK))return;tip={s,t:3}}
 const SK='cardtower_save';let HS=(()=>{try{return JSON.parse(localStorage.getItem(SK))}catch(e){return null}})();
 function saveRun(){const d={v:1,P:{...P,sc:null},MP,CUR};try{const j=JSON.stringify(d);localStorage.setItem(SK,j);HS=JSON.parse(j)}catch(e){}}
 function clearSave(){try{localStorage.removeItem(SK)}catch(e){}HS=null}
-function loadRun(){const d=HS;if(!d)return;P=JSON.parse(JSON.stringify(d.P));if(P.hzr!=null){P.hz=Date.now()+P.hzr;P.hzr=null}MP=d.MP;CUR=d.CUR;BGM=[BGM1,BGM2,BGM3][P.act-1];BGB=bgbFor(P.act);go(CUR.f===LAST?(P.act<3?'act':'map'):'map')}
+function loadRun(){const d=HS;if(!d)return;P=JSON.parse(JSON.stringify(d.P));if(P.hzr!=null){P.hz=Date.now()+P.hzr;P.hzr=null}MP=d.MP;fixL();CUR=d.CUR;BGM=[BGM1,BGM2,BGM3][P.act-1];BGB=bgbFor(P.act);go(CUR.f===LAST?(P.act<3?'act':'map'):'map')}
 // クリアの記録（キャラごとに、クリアしたアセンションの番号。localStorage cardtower_clr）。第3層ボス撃破・勝利画面で記録し、キャラ選択の難易度バーで金色に光らせる
 function clrAll(){try{return JSON.parse(localStorage.getItem('cardtower_clr')||'{}')||{}}catch(e){return{}}}
 function clrGet(c){const a=clrAll()[c];return new Set(Array.isArray(a)?a:[])}
@@ -2374,9 +2374,10 @@ const Aa=n=>!!P&&(P.asc||0)>=n;
 function ascMap(m){if(!Aa(1))return m;const l=[];for(let f=5;f<LAST-1;f++)m[f].forEach(n=>{if(n&&n.t===0)l.push(n)});shuf(l).slice(0,3).forEach(n=>n.t=1);return m}
 function mkP(cl){const c=CH[cl];P={cls:cl,hp:c.hp,mhp:c.hp,gold:99,deck:c.dk.map(i=>({i,u:0})),relics:[c.rel],floors:0,act:1,path:[],nw:0,pot:[],ps:3,kills:0,elites:0,bosses:0,mx:0,perf:0,ge:0,asc:ASC};if(cl===4&&!MPR)P.hz=Date.now()+3600000;if(Aa(6)){P.mhp-=5;P.hp=P.mhp}if(Aa(8))P.deck.push({i:randCurse(),u:0});if(Aa(9))P.ps=2;return P}
 function newRun(cl){cl=cl||0;BGM=BGM1;mkP(cl);P.v1=Math.random()<.5?'s':'f';BGB=bgbFor(1);MP=ascMap(genMap());CUR={f:-1,j:0};neowGen();go('map')}
-const LAST=13;
+// Ver2.53 1層15マス＋ボス（本家1作目と同じ）。古いセーブ・届いた地図は MP.length-1 に合わせる（fixL）
+let LAST=15;const fixL=()=>{if(MP&&MP.length>1)LAST=MP.length-1};
 const MR=5;
-function genMap(){const m=[];for(let f=0;f<LAST;f++)m.push(Array(MR).fill(null));
+function genMap(){LAST=15;const m=[];for(let f=0;f<LAST;f++)m.push(Array(MR).fill(null));
 const nd=(f,j)=>m[f][j]||(m[f][j]={t:0,cn:[],dx:0,dy:Math.round((R()-.5)*10)}),
 cross=(f,j,nj)=>nj!==j&&m[f][nj]&&m[f][nj].cn.includes(j);
 const st=shuf([0,1,2,3,4]).slice(0,2+RI(2));for(let k=0;k<6;k++){let j=k<st.length?st[k]:pk(st);
@@ -2384,15 +2385,15 @@ const st=shuf([0,1,2,3,4]).slice(0,2+RI(2));for(let k=0;k<6;k++){let j=k<st.leng
  nd(LAST-1,j).cn=[0]}
 const par=(f,j)=>f?m[f-1].filter(n=>n&&n.cn.includes(j)):[];
 // 部屋の種類（Ver2.14 本家と同じ方式。ユーザー指定）：1階は戦闘・7階は宝箱・ボス前は休憩所。残りのマス数に割合を掛けて個数を先に決め（ショップ5%・休憩所12%・？22%・残りは戦闘。エリートは下で3〜5）、袋を混ぜて、マスも混ぜた順に配る（階の順に配ると前半に？が偏った）。同じ道で店・休憩所が続かない、同じ親から分かれる先に同じ種類（店・休憩所・？）を並べない、休憩所は5階より前とボス前の1つ前に置かない。合わなければ戦闘
-{const fx=f=>f===0||f===6||f===LAST-1,L=[];for(let f=0;f<LAST;f++)m[f].forEach((n,j)=>{if(n)if(fx(f))n.t=f===0?0:f===6?5:3;else{n.t=-1;L.push([f,j])}});const nR=L.length,bag=[];for(const[t,r]of[[2,.05],[3,.12],[4,.22]])for(let k=0;k<Math.round(nR*r);k++)bag.push(t);while(bag.length<nR)bag.push(0);shuf(bag);shuf(L);
- const kd=(f,j)=>f+1<LAST?m[f][j].cn.map(c=>m[f+1][c]).filter(Boolean):[],sib=(f,j)=>par(f,j).flatMap(q=>q.cn.filter(c=>c!==j).map(c=>m[f][c])).filter(Boolean),ok=(f,j,t)=>!t||!(t===3&&(f<4||f===LAST-2))&&!((t===2||t===3)&&(par(f,j).some(q=>q.t===t)||kd(f,j).some(q=>q.t===t)))&&!sib(f,j).some(q=>q.t===t);
+{const fx=f=>f===0||f===8||f===LAST-1,L=[];for(let f=0;f<LAST;f++)m[f].forEach((n,j)=>{if(n)if(fx(f))n.t=f===0?0:f===8?5:3;else{n.t=-1;L.push([f,j])}});const nR=L.length,bag=[];for(const[t,r]of[[2,.05],[3,.12],[4,.22]])for(let k=0;k<Math.round(nR*r);k++)bag.push(t);while(bag.length<nR)bag.push(0);shuf(bag);shuf(L);
+ const kd=(f,j)=>f+1<LAST?m[f][j].cn.map(c=>m[f+1][c]).filter(Boolean):[],sib=(f,j)=>par(f,j).flatMap(q=>q.cn.filter(c=>c!==j).map(c=>m[f][c])).filter(Boolean),ok=(f,j,t)=>!t||!(t===3&&(f<5||f===LAST-2))&&!((t===2||t===3)&&(par(f,j).some(q=>q.t===t)||kd(f,j).some(q=>q.t===t)))&&!sib(f,j).some(q=>q.t===t);
  for(const[f,j]of L){const k=bag.findIndex(t=>ok(f,j,t));m[f][j].t=k>=0?bag.splice(k,1)[0]:0}}
 // 休憩所：5階より前には置かない。ボス前の列を除いて最低4マス（同じ道で続かない・ボス前の列の1つ前には置かない）
-{for(let f=0;f<4;f++)m[f].forEach(n=>{if(n&&n.t===3)n.t=0});const kd=(f,j)=>f+1<LAST?m[f][j].cn.map(c=>m[f+1][c]).filter(Boolean):[],cnt=()=>{let c=0;for(let f=4;f<LAST-1;f++)m[f].forEach(n=>{if(n&&n.t===3)c++});return c};
- for(let g=0;g<20&&cnt()<4;g++){const fl=new Set();for(let f=4;f<LAST-1;f++)if(m[f].some(n=>n&&n.t===3))fl.add(f);let cs=[];for(let f=4;f<LAST-2;f++)if(f!==6)m[f].forEach((n,j)=>{if(n&&(n.t===0||n.t===4)&&!par(f,j).some(q=>q.t===3)&&!kd(f,j).some(q=>q.t===3))cs.push([f,j])});if(!cs.length)break;const[f,j]=pk(cs);m[f][j].t=3}}
+{for(let f=0;f<5;f++)m[f].forEach(n=>{if(n&&n.t===3)n.t=0});const kd=(f,j)=>f+1<LAST?m[f][j].cn.map(c=>m[f+1][c]).filter(Boolean):[],cnt=()=>{let c=0;for(let f=5;f<LAST-1;f++)m[f].forEach(n=>{if(n&&n.t===3)c++});return c};
+ for(let g=0;g<20&&cnt()<4;g++){const fl=new Set();for(let f=5;f<LAST-1;f++)if(m[f].some(n=>n&&n.t===3))fl.add(f);let cs=[];for(let f=5;f<LAST-2;f++)if(f!==8)m[f].forEach((n,j)=>{if(n&&(n.t===0||n.t===4)&&!par(f,j).some(q=>q.t===3)&&!kd(f,j).some(q=>q.t===3))cs.push([f,j])});if(!cs.length)break;const[f,j]=pk(cs);m[f][j].t=3}}
 // エリート：1層に3〜5マス。序盤(5〜6階)・中盤(8〜10階)・終盤(11〜12階)に1つずつ置き、残りは空いた階へ。同じ道で続かないようにする
 {const kid=(f,j)=>f+1<LAST?m[f][j].cn.map(c=>m[f+1][c]).filter(Boolean):[],ok=(f,j)=>{const n=m[f][j];return n&&n.t===0&&!par(f,j).some(q=>q.t===1)&&!kid(f,j).some(q=>q.t===1)},
- bands=[[4,5],[7,8,9],[10,11]],tgt=3+(R()<.45?0:R()<.6?1:2),used=new Set();let n=0;
+ bands=[[5,6],[9,10,11],[12,13]],tgt=3+(R()<.45?0:R()<.6?1:2),used=new Set();let n=0;
  const put=fs=>{const l=[];for(const f of fs)if(!used.has(f))m[f].forEach((_,j)=>{if(ok(f,j))l.push([f,j])});if(!l.length)for(const f of fs)m[f].forEach((_,j)=>{if(ok(f,j))l.push([f,j])});if(!l.length)return 0;const[f,j]=pk(l);m[f][j].t=1;used.add(f);n++;return 1};
  for(const b of bands)put(b);for(let k=0;k<12&&n<tgt;k++)put(pk(bands))}
 m.push([{t:6,cn:[],dx:0,dy:0}]);return m}
@@ -2794,9 +2795,10 @@ function drawTfx(){if(!TFX)return;const t=T-TFX.t0,D=1.15;if(t>D){TFX=null;retur
   if(glow>0){ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=glow*.55*fi;const g=ctx.createRadialGradient(cx,cy,4,cx,cy,70*sc);g.addColorStop(0,o===b?'#ffe8a0':'#c9a0ff');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(cx-80*sc,cy-90*sc,160*sc,180*sc);ctx.restore()}
   if(tt>.55&&tt<.75){const u=(tt-.55)/.2;ctx.globalAlpha=(1-u)*fi;ctx.strokeStyle='#ffffff';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(cx,cy,20+u*70*sc,14+u*50*sc,0,0,6.3);ctx.stroke();ctx.globalAlpha=1}});
  if(t>.6){ctx.globalAlpha=Math.min(1,(t-.6)/.2)*fi;txt('カードが変化した',320,40,'#ffe680','center',15);ctx.globalAlpha=1}}
-function drawLPV(){if(!LPV)return;btns=[];ENI=[];const o=LPV.o,c=cd(o),a=Math.min(1,(T-LPV.t)/.15);ctx.globalAlpha=.86*a;ctx.fillStyle='#06040e';ctx.fillRect(0,0,640,360);ctx.globalAlpha=1;cardAt(o,150,186,1.9+(1-a)*.3,0,a,0,S==='battle'&&B?pvw(o,null):null);
+function drawLPV(){if(!LPV)return;btns=[];ENI=[];const cu=canUp(LPV.o),o=cu&&LPV.up?{...LPV.o,u:1}:LPV.o,c=cd(o),a=Math.min(1,(T-LPV.t)/.15);ctx.globalAlpha=.86*a;ctx.fillStyle='#06040e';ctx.fillRect(0,0,640,360);ctx.globalAlpha=1;cardAt(o,150,186,1.9+(1-a)*.3,0,a,0,S==='battle'&&B?pvw(o,null):null);
  const ty=['攻撃','スキル','パワー','状態異常','呪い'][c.t]||'',rr=c.r===2?'レア':c.r===1?'アンコモン':c.r===0?'コモン':c.r===-1?'初期カード':'特殊';txt(c.n,300,60,'#ffe680','left',18);txt(ty+'　'+rr+'　コスト '+(c.X?'X':c.un?'—':c.c),300,80,'#b8b0d8','left',11);
  let y=104;{const d2=dl(c,null).join('・');for(let i=0;i<d2.length;i+=26){txt(d2.slice(i,i+26),300,y,'#ffffff','left',11);y+=15}}y+=8;const ks=KWD.filter(k=>{try{return k[0](c)}catch(e){return false}}).slice(0,6);const wr=(t,n)=>{const l=[];let i=0;while(i<t.length){let j=Math.min(t.length,i+n);while(j<t.length&&'、。）」'.includes(t[j]))j++;l.push(t.slice(i,j));i=j}return l};for(const k of ks){const ls=wr(k[2],30),h=20+ls.length*12;if(y+h>340)break;ctx.fillStyle='rgba(40,32,72,.85)';ctx.fillRect(296,y-12,330,h);ctx.fillStyle='#c8a050';ctx.fillRect(296,y-12,2,h);txt(k[1],304,y+1,'#ffd23f','left',12);ls.forEach((t,j)=>txt(t,304,y+15+j*12,'#d8d0f0','left',10));y+=h+4}
+ LPV.bt=null;if(cu){const r={x:88,y:306,w:124,h:28},u=LPV.up;LPV.bt=r;box(r.x,r.y,r.w,r.h,u?'#5a4210':'#2c3566',u?'#ffd23f':'#f6f2ff');txt(u?'強化前に戻す':'強化後を見る',r.x+r.w/2,r.y+19,u?'#ffe680':'#fff','center',12);if(u)txt('強化後',150,62,'#7dff9a','center',11)}
  txt('画面を押すと閉じる',320,350,'#8a82b8','center',10)}
 // はじめての人向けの説明（最初の戦闘だけ・ひとりのとき）。手順ごとに矢印で場所を示し、その操作をするか「次へ」で進む。最後まで行くか「説明を閉じる」で二度と出ない
 // 日本語の折り返し（句読点で行が始まらないようにする）
@@ -3553,7 +3555,7 @@ const tr=t>=0?ER.find(r=>r.i===t):null;if(tr)txt('攻撃',tr.x+tr.w/2,tr.y-26,'#
 else if(dg.y<236){ctx.strokeStyle='#ffe14a';ctx.lineWidth=3;ctx.strokeRect(10,28,620,196);txt('離して使用',320,104,'#ffe14a','center',18)}
 o.hx=dg.x-42;o.hy=dg.y-60;o.hs=1;dg.rt=(dg.rt||0)+(Math.max(-.28,Math.min(.28,(dg.vx||0)*.025))-(dg.rt||0))*.25;ctx.fillStyle='rgba(0,0,0,.3)';ctx.fillRect(Math.round(dg.x-38),Math.round(dg.y+50),76,6);cardAt(o,dg.x,dg.y-7,1.06,dg.rt,.95,0,pvw(o,ptg))}}
 if(b.bn&&b.bn.t>0&&!(b.bn.dl>0)){const p=1-b.bn.t/1.1,a=p<.15?p/.15:p>.75?(1-p)/.25:1,off=p<.15?(1-p/.15)*-260:0;ctx.globalAlpha=Math.max(0,Math.min(1,a));ctx.fillStyle=b.bn.bg;ctx.fillRect(0,96,640,52);ctx.fillStyle='#fff';ctx.fillRect(0,96,640,3);ctx.fillRect(0,145,640,3);txt(b.bn.s,320+off,134,'#fff','center',32);ctx.globalAlpha=1}deusAll(b);drawTut(b)}
-const MCW=72,MSW=1112,MX=f=>40+(f+1)*MCW;let MSC=0;
+const MCW=72,MSW=1256,MX=f=>40+(f+1)*MCW;let MSC=0;
 function mpanel(k){const W=MSW,H=238,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');let sd=11+k;const rn=()=>(sd=(sd*16807)%2147483647)/2147483647,F=Math.floor;
 if(k===0){x.fillStyle='#d6be8e';x.fillRect(0,0,W,H);for(let i=0;i<1100;i++){x.fillStyle=['#c9ad78','#e2cfa4','#bfa06a'][i%3];x.fillRect(F(rn()*W/2)*2,F(rn()*H/2)*2,2,2)}
  x.fillStyle='rgba(110,80,40,.2)';for(let i=0;i<10;i++){const mx=F(30+rn()*560),my=F(30+rn()*170);for(let s=0;s<6;s++)x.fillRect(mx-s*2,my+s*2,s*4+2,2)}
@@ -3602,14 +3604,38 @@ let BT=null;const OCH=mk(['.bbbbbb.','b.yyyy.b','..yyyy..','bbbbbbbb','bbbyybbb'
 function btNext(){const q=P.bq;if(q&&q.length){const k=q.shift();if(k==='tome'){RW={g:0,rel:null,pot:null,title:'古びた魔導書：レアカードを選択',cards:rare3(),boss:false,nx:'act'};go('reward');return}
  if(k==='cage'){let n=0;const one=()=>openPick('空の檻：消すカードを選択（'+(n+1)+'/2）',P.deck.map((_,i)=>i),i=>{P.deck.splice(i,1);sfx('pk');if(++n<2)one();else btNext()},0);if(P.deck.length>2){one();return}}}startAct()}
 function openBossChest(){const l=shuf(Object.keys(RL).filter(k=>RL[k][2]===4&&!has(k))).slice(0,3);if(!l.length){startAct();return}BT={rs:l,pick:-1,t0:T,cf:0};go('btr')}
-function drawBT(){rwBg();topbar();const op=BT.pick>=0,el=T-BT.t0,n=BT.rs.length,sel=BT.sel==null?-1:BT.sel;
-txt('ボスの宝箱',320,96,'#ffd23f','center',22);txt(op?'力を手に入れた':'ボスレリックを1つ選べ（タップで選択）',320,120,'#cfc8ee','center',13);
-BT.rs.forEach((k,i)=>{const x=Math.round(320+(i-(n-1)/2)*190),y=196,me=op?BT.pick===i:sel===i;ctx.fillStyle='#2a2350';ctx.fillRect(x-56,y+38,112,8);
- if(me){ctx.save();ctx.translate(x,y-40);ctx.rotate(T*.6);ctx.fillStyle='rgba(255,210,63,.16)';for(let r=0;r<8;r++){ctx.rotate(Math.PI/4);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(110,-12);ctx.lineTo(110,12);ctx.fill()}ctx.restore()}
- ctx.globalAlpha=op&&!me?.35:1;ctx.drawImage(OCH,x-36,y-30,72,72);const by=op?0:Math.round(Math.sin(T*3+i*2)*3),sz=me?52:42;ctx.drawImage(rIcon(k),x-sz/2,y-58-sz/2+by,sz,sz);
- txt(RL[k][0],x,y+64,me?'#ffd23f':'#e8e4ff','center',14);wrap(RL[k][1],12).forEach((l,j)=>txt(l,x,y+82+j*14,me?'#fff':'#b9b2e0','center',11));
- if(!op){if(me){ctx.strokeStyle='#ffd23f';ctx.lineWidth=2;ctx.strokeRect(x-86,y-96,172,224)}hit(x-86,y-96,172,224,()=>{BT.sel=i;sfx('cl')})}else if(me)txt('入手',x,y-96,'#7dff9a','center',13);
- ctx.globalAlpha=1});
+function drawBT(){rwBg();ctx.fillStyle='rgba(4,2,10,.5)';ctx.fillRect(0,0,640,360);{const v=ctx.createRadialGradient(320,200,80,320,200,380);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,.6)');ctx.fillStyle=v;ctx.fillRect(0,0,640,360)}
+ for(let k=0;k<18;k++){const ph=(T*.05+k*.137)%1,mx=(k*97)%640+Math.sin(T*.6+k)*8,my=360-ph*320;ctx.globalAlpha=Math.sin(ph*Math.PI)*.5;ctx.fillStyle=k%3?'#c8a050':'#fff0b0';ctx.fillRect(Math.round(mx),Math.round(my),k%4?1:2,k%4?1:2)}ctx.globalAlpha=1;
+ topbar();const op=BT.pick>=0,el=T-BT.t0,n=BT.rs.length,sel=BT.sel==null?-1:BT.sel;
+ // 見出し：両側に金の飾り線と菱形
+ txt('ボスの宝箱',320,80,'#ffd23f','center',22);ctx.font='22px DotGothic16,sans-serif';const tw=ctx.measureText('ボスの宝箱').width/2+14;for(const sd of[-1,1]){const x0=320+sd*tw,x1=320+sd*(tw+90);const g=ctx.createLinearGradient(x0,0,x1,0);g.addColorStop(0,'#ffd23f');g.addColorStop(1,'rgba(200,160,80,0)');ctx.fillStyle=g;ctx.fillRect(Math.min(x0,x1),72,90,2);ctx.fillStyle='#ffd23f';ctx.beginPath();ctx.moveTo(x0,68);ctx.lineTo(x0+sd*4,73);ctx.lineTo(x0,78);ctx.lineTo(x0-sd*4,73);ctx.fill()}
+ txt(op?'力を手に入れた':'ボスレリックを1つ選べ（タップで選択）',320,98,'#cfc8ee','center',12);
+ BT.rs.forEach((k,i)=>{const x=Math.round(320+(i-(n-1)/2)*190),me=op?BT.pick===i:sel===i,ap=op?1:Math.max(0,Math.min(1,(T-BT.t0-i*.12)/.35)),lift=me?-4:0,top=110+lift+Math.round((1-ap)*20),w=164,hh=212,bt=top+hh,L=x-w/2,Rr=x+w/2,dim=op&&!me;if(BT.pick<0&&ap<=0)return;
+  ctx.globalAlpha=(dim?.3:1)*(BT.pick<0?ap:1);
+  // 光の柱（選択中）
+  if(me){const g=ctx.createLinearGradient(0,0,0,bt);g.addColorStop(0,'rgba(255,210,63,0)');g.addColorStop(.4,'rgba(255,210,63,.14)');g.addColorStop(1,'rgba(255,210,63,0)');ctx.fillStyle=g;ctx.fillRect(L-10,0,w+20,bt)}
+  // アーチ形の板
+  const arch=(o)=>{ctx.beginPath();ctx.moveTo(L+o,bt-o);ctx.lineTo(L+o,top+40);ctx.lineTo(L+16+o,top+16+o*.6);ctx.lineTo(x,top+o);ctx.lineTo(Rr-16-o,top+16+o*.6);ctx.lineTo(Rr-o,top+40);ctx.lineTo(Rr-o,bt-o);ctx.closePath()};
+  ctx.fillStyle='rgba(0,0,0,.5)';ctx.save();ctx.translate(4,4);arch(0);ctx.fill();ctx.restore();
+  const pg=ctx.createLinearGradient(0,top,0,bt);pg.addColorStop(0,me?'#2e2058':'#1e1840');pg.addColorStop(1,'#0a0716');arch(0);ctx.fillStyle=pg;ctx.fill();
+  ctx.lineWidth=2;arch(1);ctx.strokeStyle='#2a1a08';ctx.stroke();arch(4);ctx.lineWidth=1;ctx.strokeStyle=me?'#ffd23f':'#8a6a30';ctx.stroke();arch(7);ctx.strokeStyle=me?'rgba(255,210,63,.35)':'rgba(138,106,48,.35)';ctx.stroke();
+  // 頂の宝石と下の角飾り
+  const gem=(gx,gy,r,c)=>{ctx.fillStyle='#2a1a08';ctx.beginPath();ctx.moveTo(gx,gy-r-1);ctx.lineTo(gx+r+1,gy);ctx.lineTo(gx,gy+r+1);ctx.lineTo(gx-r-1,gy);ctx.fill();ctx.fillStyle=c;ctx.beginPath();ctx.moveTo(gx,gy-r);ctx.lineTo(gx+r,gy);ctx.lineTo(gx,gy+r);ctx.lineTo(gx-r,gy);ctx.fill();ctx.fillStyle='rgba(255,255,255,.7)';ctx.fillRect(gx-1,gy-r+2,2,2)};
+  gem(x,top+4,6,me?'#ff4a6a':'#a02a40');gem(L+8,bt-8,3,'#c8a050');gem(Rr-8,bt-8,3,'#c8a050');
+  // 台座と回る紋章
+  const cy=top+84,by=op&&me?0:Math.round(Math.sin(T*2.4+i*2)*3),sz=me?54:44;
+  ctx.save();ctx.translate(x,cy+30);ctx.scale(1,.24);for(let r=0;r<2;r++){ctx.strokeStyle=me?(r?'rgba(255,210,63,.8)':'rgba(255,240,180,.5)'):(r?'rgba(200,160,80,.5)':'rgba(200,160,80,.3)');ctx.lineWidth=r?2:1;ctx.beginPath();ctx.arc(0,0,r?36:44,0,6.3);ctx.stroke()}
+   for(let m=0;m<12;m++){const a=m/12*6.283+T*(me?.9:.3);ctx.fillStyle=me?'#ffe680':'#8a6a30';ctx.fillRect(Math.cos(a)*40-1.5,Math.sin(a)*40-1.5,3,3)}ctx.restore();
+  ctx.fillStyle='#1a1428';ctx.fillRect(x-24,cy+30,48,8);ctx.fillStyle='#3a3050';ctx.fillRect(x-24,cy+30,48,2);ctx.fillStyle='#120e1e';ctx.fillRect(x-18,cy+38,36,5);
+  if(me){const g=ctx.createRadialGradient(x,cy+by,4,x,cy+by,52);g.addColorStop(0,'rgba(255,220,120,.55)');g.addColorStop(1,'rgba(255,200,80,0)');ctx.fillStyle=g;ctx.fillRect(x-52,cy-52,104,104);
+   ctx.save();ctx.translate(x,cy+by);ctx.rotate(T*.5);ctx.fillStyle='rgba(255,210,63,.12)';for(let r=0;r<8;r++){ctx.rotate(Math.PI/4);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(70,-8);ctx.lineTo(70,8);ctx.fill()}ctx.restore();
+   for(let m=0;m<7;m++){const ph=(T*.7+m/7)%1;ctx.globalAlpha=(dim?.3:1)*(1-ph);ctx.fillStyle=m%2?'#ffe680':'#fff';ctx.fillRect(Math.round(x-22+((m*13)%44)),Math.round(cy+28-ph*60),2,2)}ctx.globalAlpha=dim?.3:1}
+  ctx.drawImage(rIcon(k),Math.round(x-sz/2),Math.round(cy-sz/2+by-4),sz,sz);
+  // 名前の下の飾り線
+  const ny=top+144;txt(RL[k][0],x,ny,me?'#ffd23f':'#f0e8ff','center',14);ctx.fillStyle=me?'#ffd23f':'#8a6a30';ctx.fillRect(x-50,ny+6,100,1);ctx.beginPath();ctx.moveTo(x,ny+3);ctx.lineTo(x+3,ny+6.5);ctx.lineTo(x,ny+10);ctx.lineTo(x-3,ny+6.5);ctx.fill();
+  wrap(RL[k][1],12).slice(0,4).forEach((l,j)=>txt(l,x,ny+24+j*14,me?'#fff':'#b9b2e0','center',11));
+  if(!op){if(ap>=1)hit(L,top,w,hh,()=>{BT.sel=i;sfx('cl')})}else if(me)txt('入手',x,top-6,'#7dff9a','center',13);
+  ctx.globalAlpha=1});
 if(!op&&sel>=0)btn(250,326,140,28,'これを選ぶ',()=>{BT.cf=1;sfx('cl')},'#6a4bd6',15);
 if(BT.cf&&!op&&sel>=0){const k=BT.rs[sel];hit(0,0,640,360,()=>{});ctx.fillStyle='rgba(5,4,12,.86)';ctx.fillRect(0,0,640,360);txt('本当にこれを取りますか？',320,74,'#ffd23f','center',18);txt('ボスレリックは1つしか選べない',320,96,'#cfc8ee','center',11);ctx.drawImage(OCH,284,112,72,72);ctx.drawImage(rIcon(k),294,104,52,52);txt(RL[k][0],320,206,'#ffd23f','center',15);wrap(RL[k][1],20).forEach((l,j)=>txt(l,320,226+j*15,'#fff','center',12));
  btn(196,292,120,36,'取る',()=>{BT.cf=0;BT.pick=sel;BT.t0=T;sfx('pk');sfx('bf');gain(k)},'#6a4bd6',15);btn(324,292,120,36,'やめる',()=>{BT.cf=0;sfx('cl')},'#2c3566',15)}
@@ -3908,7 +3934,19 @@ function drawNeow(){ctx.drawImage(NEB,0,0);const cx=470,cy=128+Math.sin(T*1.3)*5
  ctx.fillStyle='#0e1a2e';ctx.beginPath();ctx.moveTo(bx+bw,by+40);ctx.lineTo(bx+bw+40,by+62);ctx.lineTo(bx+bw,by+70);ctx.fill();ctx.fillStyle='#5ff6ff';ctx.fillRect(bx+bw-2,by,2,40);ctx.fillRect(bx+bw-2,by+70,2,bh-70);
  txt('？？？',bx+10,by+18,'#5ff6ff','left',12);const ln=['……観測対象を確認。','塔を登る者よ。','選択を一つ、許可する。','代償を伴うものも存在する。'],sh=Math.min(ln.join('').length,Math.floor((T-(NE.t0||0))*24));let u=0;
  ln.forEach((l,i)=>{const n=Math.max(0,Math.min(l.length,sh-u));u+=l.length;if(n)txt(l.slice(0,n),bx+10,by+40+i*17,'#e8f6ff','left',12)});
- NE.opts.forEach((o,i)=>{const R=o[0].startsWith('【代償】'),y=226+i*32;btn(20,y,420,28,o[0],o[1],R?'#5a1a2e':'#16304a',13)})}
+ NE.opts.forEach((o,i)=>nwOpt(20,226+i*32,420,28,o[0],o[1],i))}
+// Ver2.53 ？？？の選択肢（ユーザー指定：チープ感をなくす）。角を落とした半透明の板・左に番号の菱形・光の走査・右に流れる矢印。代償は赤い札と「代償／得るもの」で色分け。順に左から現れる
+function nwOpt(x,y,w,h,l,f,i){const R=l.startsWith('【代償】'),a=Math.max(0,Math.min(1,(T-(NE.t0||0)-.25-i*.12)/.3)),q=1-Math.pow(1-a,3),ox=Math.round((1-q)*-30);if(a<=0)return;ctx.save();ctx.globalAlpha=q;ctx.translate(ox,0);
+ const c=R?['#ff5a7a','#2a0c18','#160610','#ff9ab0']:['#5ff6ff','#0e2238','#08121e','#bff8ff'],k=7,pth=()=>{ctx.beginPath();ctx.moveTo(x+k,y);ctx.lineTo(x+w-k,y);ctx.lineTo(x+w,y+k);ctx.lineTo(x+w,y+h-k);ctx.lineTo(x+w-k,y+h);ctx.lineTo(x+k,y+h);ctx.lineTo(x,y+h-k);ctx.lineTo(x,y+k);ctx.closePath()};
+ ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(x+3,y+3,w,h);const g=ctx.createLinearGradient(x,0,x+w,0);g.addColorStop(0,c[1]);g.addColorStop(1,c[2]);pth();ctx.fillStyle=g;ctx.fill();
+ ctx.save();pth();ctx.clip();const sx=x-60+((T*.45+i*.27)%1.6)*(w+120)/1.2;const sg=ctx.createLinearGradient(sx-40,0,sx+40,0);sg.addColorStop(0,'rgba(255,255,255,0)');sg.addColorStop(.5,R?'rgba(255,120,150,.13)':'rgba(140,250,255,.13)');sg.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=sg;ctx.fillRect(x,y,w,h);
+ ctx.fillStyle=R?'rgba(255,90,122,.06)':'rgba(95,246,255,.05)';for(let yy=y+1;yy<y+h;yy+=3)ctx.fillRect(x,yy,w,1);ctx.restore();
+ pth();ctx.strokeStyle=c[0];ctx.globalAlpha=q*(.55+.25*Math.sin(T*3+i));ctx.lineWidth=1;ctx.stroke();ctx.globalAlpha=q;ctx.fillStyle=c[0];ctx.fillRect(x+k,y,24,2);ctx.fillRect(x+w-k-24,y+h-2,24,2);
+ const dx=x+16,dy=y+h/2;ctx.fillStyle=c[2];ctx.beginPath();ctx.moveTo(dx,dy-10);ctx.lineTo(dx+10,dy);ctx.lineTo(dx,dy+10);ctx.lineTo(dx-10,dy);ctx.fill();ctx.strokeStyle=c[0];ctx.stroke();ctx.fillStyle=c[0];ctx.globalAlpha=q*(.5+.5*Math.sin(T*4+i*1.3));ctx.fillRect(dx-1,dy-1,2,2);ctx.globalAlpha=q;txt(String(i+1),dx,dy+4,c[3],'center',11);
+ let tx=x+34;const sz=13;ctx.font=sz+'px DotGothic16,sans-serif';
+ if(R){const b=l.slice(4).split(' ＋ ');ctx.fillStyle='#ff5a7a';ctx.fillRect(tx,y+6,34,16);txt('代償',tx+17,y+19,'#fff','center',11);tx+=42;txt(b[0],tx,y+19,'#ff9ab0','left',sz);tx+=ctx.measureText(b[0]).width+8;if(b[1]){txt('＋',tx,y+19,'#8a7a9a','left',sz);tx+=ctx.measureText('＋').width+8;txt(b[1],tx,y+19,'#ffe680','left',sz)}}
+ else txt(l,tx,y+19,'#e8f6ff','left',sz);
+ for(let m=0;m<3;m++){const ph=((T*1.6+m/3)%1);ctx.globalAlpha=q*Math.sin(ph*Math.PI);txt('›',x+w-22+ph*10,y+19,c[0],'left',14)}ctx.restore();if(a>=1)hit(x,y,w,h,f)}
 const HELP_T=['遊び方','用語','ユウキング','坂井','坪内丸','名無し','ネブラ','ホーリー大輔'];
 const HELP_X=[[
 '【目的】塔の頂に待つボスを倒すこと。マップで進路を選び、戦いを重ね、カードとレリックを集めてデッキを鍛えていく。',
@@ -4169,7 +4207,7 @@ async function mpRejoin(){const r=rjInfo();if(!r)return;sfx('pk');MPR={me:r.me,c
 function rjFlush(){for(const id in MPR.rjq){const k=mpIdx(id);delete MPR.rjq[id];if(k<0)continue;const q=PL[k],mp=JSON.parse(JSON.stringify(q.P));mp.hp=Math.max(1,mp.hp,Math.min(mp.mhp,q.hpL||0));mp.path=(P.path||[]).slice();mp.back=null;q.P=mp;
   mpSend({ty:'rjs',to:id,hk:LK,hid:MPR.me,pl:MPR.pl,seed:MPR.seed,asc:ASC,bid:MPR.bid||0,cur:CUR,mp:MP,ps:PL.map((x,j)=>({P:j===k?mp:{...x.P,sc:null},st:x.st,gone:j===k?0:x.gone}))});mpSend({ty:'back',k,id:MPR.me})}}
 function rjApply(o){MPR.started=1;MPR.rj=0;MPR.pend={};MPR.pl=o.pl.map(q=>({...q,nm:nmClean(q.nm)||'プレイヤー'}));MPR.seed=o.seed;MPR.bid=o.bid||0;LK=Math.max(0,mpIdx(MPR.me));ASC=o.asc;MPR.hk=o.hk||0;MPR.hid=o.hid||MPR.pl[MPR.hk].id;MPR.host=false;
- PL=o.ps.map(x=>({P:x.P,PS:null,B:null,st:x.st,gone:x.gone}));P=PL[LK].P;CK=LK;MP=o.mp;CUR=o.cur;MPB=null;RNG=null;const a=Math.max(1,Math.min(3,P.act||1));BGM=[BGM1,BGM2,BGM3][a-1];BGB=bgbFor(a);
+ PL=o.ps.map(x=>({P:x.P,PS:null,B:null,st:x.st,gone:x.gone}));P=PL[LK].P;CK=LK;MP=o.mp;fixL();CUR=o.cur;MPB=null;RNG=null;const a=Math.max(1,Math.min(3,P.act||1));BGM=[BGM1,BGM2,BGM3][a-1];BGB=bgbFor(a);
  const now=Date.now();MPR.pl.forEach(q=>MPR.seen[q.id]=now);if(!P.nw)neowGen();rjSave();say('ゲームに戻った');go('map')}
 function drawMpRj(){ctx.drawImage(BGM1,0,0);ctx.fillStyle='rgba(8,6,20,.78)';ctx.fillRect(0,0,640,360);if(!MPR){S='title';return}
  txt('マルチに再接続',320,110,'#ffd23f','center',20);txt('部屋 '+MPR.code+'　'+MPR.nm,320,140,'#cfc8ee','center',13);const w=wrapJ?wrapJ(MPR.msg||'',30):[MPR.msg||''];w.forEach((l,i)=>txt(l,320,180+i*20,'#ffffff','center',13));
@@ -4337,9 +4375,11 @@ function bgCamp(){const c=MK(640,360),x=c.getContext('2d'),r=rng(11);
  x.strokeStyle='#3a2414';x.lineWidth=4;x.beginPath();x.moveTo(306,264);x.lineTo(334,252);x.moveTo(334,264);x.lineTo(306,252);x.stroke();
  return c}
 let C0=null;return()=>C0||(C0=bgCamp())})();
-function mpFire(){const cx=320,by=258;ctx.save();ctx.globalCompositeOperation='lighter';const f=Math.sin(T*13)*.5+Math.sin(T*7.3)*.5;const g=ctx.createRadialGradient(cx,by-10,2,cx,by-10,70+f*6);g.addColorStop(0,'rgba(255,160,70,.35)');g.addColorStop(1,'rgba(255,120,40,0)');ctx.fillStyle=g;ctx.fillRect(cx-80,by-90,160,160);ctx.restore();
- for(const[dx,h,c]of[[-6,22,'#ff5a1e'],[4,28,'#ff7a2a'],[0,18,'#ffb02e'],[-2,10,'#fff3b0']]){const hh=h+Math.sin(T*11+dx)*4;ctx.fillStyle=c;ctx.beginPath();ctx.moveTo(cx+dx-8,by);ctx.quadraticCurveTo(cx+dx-6,by-hh*.6,cx+dx+Math.sin(T*9+dx)*3,by-hh);ctx.quadraticCurveTo(cx+dx+6,by-hh*.6,cx+dx+8,by);ctx.fill()}
- for(let k=0;k<8;k++){const q=(T*.6+k/8)%1;ctx.globalAlpha=1-q;ctx.fillStyle=k%2?'#ffb02e':'#ff7a2a';ctx.fillRect(Math.round(cx+Math.sin(T*2+k*2)*10*q+((k*7)%13)-6),Math.round(by-20-q*70),2,2)}ctx.globalAlpha=1}
+// 焚き火の炎（Ver2.53 ドット絵に：2px の格子で、色ごとの柱を重ねる。揺れは1秒10コマで刻む）
+function mpFire(){const cx=320,by=258,u=2,tq=Math.floor(T*10)/10;ctx.save();ctx.globalCompositeOperation='lighter';const f=Math.sin(tq*13)*.5+Math.sin(tq*7.3)*.5;const g=ctx.createRadialGradient(cx,by-10,2,cx,by-10,70+f*6);g.addColorStop(0,'rgba(255,160,70,.35)');g.addColorStop(1,'rgba(255,120,40,0)');ctx.fillStyle=g;ctx.fillRect(cx-80,by-90,160,160);ctx.restore();
+ for(const[wd,c,hs]of[[7,'#b8281a',1],[5,'#ff6a1a',.8],[3,'#ffb42e',.6],[1,'#fff3b0',.38]])for(let dx=-wd;dx<=wd;dx++){const h=Math.max(1,Math.round(((wd+1-Math.abs(dx))*1.9+Math.sin(tq*9+dx*1.7)*1.5+f*1.2)*hs));ctx.fillStyle=c;ctx.fillRect(cx+dx*u-1,by-h*u,u,h*u)}
+ for(let k=0;k<4;k++){const q=(tq*1.3+k/4)%1;if(q>.6)continue;ctx.fillStyle=q<.3?'#ff9a2a':'#c8341a';ctx.fillRect(cx-1+(((k*5)%9)-4)*u,by-Math.round(15+q*12)*u,u,u)}
+ for(let k=0;k<8;k++){const q=(tq*.6+k/8)%1;if(q>.85)continue;ctx.fillStyle=q<.4?'#fff3a0':k%2?'#ffb02e':'#ff7a2a';ctx.fillRect(Math.round((cx+Math.sin(tq*2+k*2)*10*q+((k*7)%13)-6)/u)*u,Math.round((by-24-q*70)/u)*u,u,u)}}
 function mpBg(dim){ctx.drawImage(MPCB(),0,0);mpFire();if(dim){ctx.fillStyle='rgba(6,4,14,'+dim+')';ctx.fillRect(0,0,640,360)}}
 function mpPlate(x,y,w,h){ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(x+2,y+3,w,h);ctx.fillStyle='#3a2a1e';ctx.fillRect(x,y,w,h);ctx.fillStyle='#6a4a30';ctx.fillRect(x,y,w,2);ctx.fillRect(x,y,2,h);ctx.fillStyle='#1a120c';ctx.fillRect(x,y+h-2,w,2);ctx.fillRect(x+w-2,y,2,h)}
 function drawMpMenu(){mpBg(.45);mpPlate(150,26,340,40);headline('マルチプレイ（協力）',320,52);
@@ -4392,7 +4432,7 @@ const c=cd(o);if(d.y>=236){B.sel=-1;return}
 if(needT(c)){let ti=-1;for(const r of ER)if(d.x>=r.x-14&&d.x<=r.x+r.w+14&&d.y>=r.y-14&&d.y<=r.y+r.h+14){ti=r.i;break}
 if(ti<0&&alive().length===1)ti=B.en.indexOf(alive()[0]);
 if(ti<0){say('敵の上で離して使用');B.sel=-1;o.sk=T;return}play(d.i,ti)}else play(d.i,0);if(B&&B.hand[d.i]===o&&!o.pend){o.sk=T;sfx('no')}}
-cv.addEventListener('pointerdown',e=>{initAudio();const p=pos(e);LP={x:p.x,y:p.y,t:performance.now(),m:0};if(LPV){LPV=null;drag=null;dg=null;LP=null;sfx('cl');return}drag={...p,sc:scr,ms:MSC,m:0};dg=null;
+cv.addEventListener('pointerdown',e=>{initAudio();const p=pos(e);LP={x:p.x,y:p.y,t:performance.now(),m:0};if(LPV){const r=LPV.bt;if(r&&p.x>=r.x-6&&p.x<=r.x+r.w+6&&p.y>=r.y-6&&p.y<=r.y+r.h+6){LPV.up=!LPV.up;LP=null;drag=null;sfx('cl');return}LPV=null;drag=null;dg=null;LP=null;sfx('cl');return}drag={...p,sc:scr,ms:MSC,m:0};dg=null;
 if(!PZ&&S==='battle'&&B&&B.ph==='p'&&!B.vt&&!PM&&!tutBlk())for(let k=CR.length-1;k>=0;k--){const r=CR[k];if(p.x>=r.x&&p.x<=r.x+r.w&&p.y>=r.y&&p.y<=r.y+106){dg={i:r.i,x:p.x,y:p.y,sx:p.x,sy:p.y,mv:0};break}}});
 cv.addEventListener('pointermove',e=>{const p0=pos(e);if(LP&&Math.hypot(p0.x-LP.x,p0.y-LP.y)>8)LP.m=1;if(!drag||PZ)return;const p=pos(e);
 if(dg){dg.vx=(dg.vx||0)*.55+(p.x-dg.x)*.45;dg.x=p.x;dg.y=p.y;if(!dg.mv&&Math.hypot(p.x-dg.sx,p.y-dg.sy)>10){dg.mv=1;B.sel=dg.i;sfx('cl')}return}
