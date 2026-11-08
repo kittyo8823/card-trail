@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.68';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.69';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2132,7 +2132,7 @@ const C=[
 {n:'空き瓶',t:0,c:0,r:0,k:3,a:3,qk:1},{n:'杖の連打',t:0,c:1,r:0,k:3,a:4,h:2,mg:1},{n:'睨みつける',t:1,c:0,r:0,k:3,wk:1,mg:1},{n:'氷槍の頁',t:0,c:1,r:0,k:3,sp:1,a:10,wk:1},
 {n:'雷鳴の頁',t:0,c:2,r:0,k:3,sp:1,aa:13},{n:'毒霧の頁',t:1,c:1,r:0,k:3,sp:1,psA:5},{n:'障壁の頁',t:1,c:1,r:0,k:3,sp:1,b:13},{n:'物乞い',t:1,c:1,r:0,k:3,dr:2,mg:1},
 {n:'焚き火',t:1,c:1,r:0,k:3,b:7,mg:1},{n:'独り言',t:1,c:0,r:0,k:3,mg:1,dr:1},{n:'魔弾の頁',t:0,c:1,r:0,k:3,sp:1,a:7,mx:2},{n:'杖払い',t:0,c:1,r:0,k:3,aa:5,mg:1},
-{n:'炎嵐の頁',t:0,c:3,r:1,k:3,sp:2,aa:24},{n:'呪詛の頁',t:1,c:1,r:1,k:3,sp:1,vuA:2,wkA:1},{n:'吸命の頁',t:0,c:2,r:1,k:3,sp:1,a:13,lf:1},{n:'読み上げ',t:1,c:1,r:1,k:3,qk:2,dr:1},
+{n:'炎嵐の頁',t:0,c:3,r:1,k:3,sp:2,aa:24},{n:'呪詛の頁',t:1,c:1,r:1,k:3,sp:1,vuA:2,wkA:1},{n:'吸命の頁',t:0,c:2,r:1,k:3,sp:1,a:13,lf:1,x:1},{n:'読み上げ',t:1,c:1,r:1,k:3,qk:2,dr:1},
 {n:'安酒',t:1,c:0,r:1,k:3,hp:2,en:1,mg:2},{n:'老骨の意地',t:1,c:2,r:1,k:3,b:13,mg:2},{n:'魔を込めた杖',t:0,c:1,r:1,k:3,a:5,mx:3},{n:'星屑の頁',t:0,c:1,r:1,k:3,sp:1,a:3,h:4},
 {n:'栞を挟む',t:1,c:1,r:1,k:3,b:7,dr:1},{n:'独り言の癖',t:2,c:1,r:1,k:3,pw:'mgt',v:1},{n:'頁の護り',t:2,c:1,r:1,k:3,pw:'chs',v:3},{n:'写本',t:2,c:1,r:1,k:3,pw:'pg',v:1},
 {n:'禁書・終焉の頁',t:0,c:3,r:2,k:3,sp:2,aa:40},{n:'魔導の残響',t:2,c:3,r:2,k:3,pw:'echo',v:1},{n:'路地裏の王',t:2,c:2,r:2,k:3,pw:'arc',v:1},{n:'時渡りの頁',t:1,c:1,r:2,k:3,qk:9,dr:2,x:1},
