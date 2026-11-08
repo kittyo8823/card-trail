@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.65';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.66';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -1413,7 +1413,9 @@ function dParts(e,i,w,h){const L=EPT[e.k],d=SD[e.k],u=d[2],hw=Math.round(w/2),M=
 // 攻撃の動き用：武器だけ別の絵にして、手元を軸に回す（WPN の pv は手の位置＝元の単位）。ra があれば攻撃の間だけ構えの角度 rest から ra へ持ち上げる（Ver2.55 ユウキングの下段の構え）
 // Ver2.56 体の中心（元の単位）。戦闘で体の中心がHPバーの中心（x=110）に来るように置く
 // 足の下の空き（画素）。絵の下端に空きがあるので、その分だけ下げて足を地面につける
-const PFY={pl:5,si:5,sm:5,hori:5,hori1:5,hori2:5,hori3:5};
+const PFY={pl:5,si:5,sm:5,hori:5,hori1:5,hori2:5,hori3:5,hori_z1:5,hori_z2:5,hori_z3:5};
+// 絵の上端から足までの高さ（武器を合成した絵は fy、足の下の空き PFY を引く）。立たせて置く画面はこれで床に合わせる
+const ftY=(im,k)=>(im.fy||im.height)-(PFY[k]||0);
 const PCX={pl:19.5,si:19,sm:19,hori1:19,hori2:19,hori3:19};
 // Ver2.60 ユウキングの斬撃は横に軽く薙ぎ払う（ユーザー指定：ワイパーのようだった）。下段の構えのまま、剣先が腰の高さで前へ弧を描いて戻る。ng の付いた武器だけ、この角度 NGW を使い、剣を立てる ra は使わない
 // Ver2.64 腰の高さで地面と水平に振る：下段→剣を後ろへ水平に上げる→刃を水平のまま後ろから前へ（横から見ると、体の前を通る間は短く見える）→前で止めて→下へ回して下段に戻る。ngP(時間,構えの角度)＝[回転,刃の向きと長さ,手の前後]
@@ -2454,7 +2456,7 @@ function drawHdFx(){const t=T-HDFX.t0,zs=SPR.hori_z1||SPR[CH[4].s],im=SPR.hori1|
  ctx.globalAlpha=1;
  // 起き上がり：1.7秒まで寝ている、1.7〜2.05で跳ね起きる、そのあと床に着地
  const up=t<1.7?0:Math.min(1,(t-1.7)/.35),e=1-Math.pow(1-up,3),ang=-Math.PI/2*(1-e),jump=up<1?Math.sin(up*Math.PI)*70:0,land=t>2.05&&t<2.3?Math.sin((t-2.05)/.25*Math.PI)*.06:0,sp=up<1?zs:im,w=sp.width*sc,h=sp.height*sc;
- const zw=zs.width*sc,zh=zs.height*sc,px0=bx+30+zh,py0=fy-42-zw/2+34,px1=cx+20,py1=fy,px=px0+(px1-px0)*e,py=py0+(py1-py0)*e-jump;if(up>0){ctx.save();ctx.translate(Math.round(px),Math.round(py));ctx.rotate(ang);ctx.scale(1+land,1-land);ctx.drawImage(sp,Math.round(-w/2),Math.round(-h),Math.round(w),Math.round(h));ctx.restore()}
+ const zw=zs.width*sc,zh=zs.height*sc,px0=bx+30+zh,py0=fy-42-zw/2+34,px1=cx+20,py1=fy,px=px0+(px1-px0)*e,py=py0+(py1-py0)*e-jump;if(up>0){ctx.save();ctx.translate(Math.round(px),Math.round(py));ctx.rotate(ang);ctx.scale(1+land,1-land);ctx.drawImage(sp,Math.round(-w/2),Math.round(-h+5*sc),Math.round(w),Math.round(h));ctx.restore()}
  else{ctx.save();ctx.translate(bx+34,fy-60);ctx.rotate(-Math.PI/2);ctx.globalAlpha=ra;ctx.drawImage(zs,42,15,32,32,-32,-32,64,64);ctx.restore();ctx.globalAlpha=1}
  // 掛け布団（Ver2.26 描き直し）：肩から足までを覆うふくらみ（肩・腰・膝の山）、手前はベッドの縁から垂れる。起きると宙を舞って飛んでいく
  {const fl=t<1.7?0:Math.min(1.5,(t-1.7)*2.3),W=bw-58,br=Math.sin(t*2.2)*1.5,ox=bx+58+W/2+fl*200,oy=fy-48-Math.sin(Math.min(1,fl)*Math.PI)*110+fl*50;ctx.save();ctx.translate(ox,oy);ctx.rotate(fl*1.3);ctx.globalAlpha=ra*(t>2.7?Math.max(0,1-(t-2.7)*2):1);
@@ -4001,7 +4003,7 @@ function drawTitle(){const v=TV,d=TVD[v],P0=tPre(v),F=Math.floor;ctx.drawImage(P
  txt('Ver '+GVER,632,352,d.dim,'right',10);if(CFR&&HS&&S==='title')drawCfr();else CFR=0;if(A2H&&S==='title')drawA2h();if(HDFX){if(S==='title')drawHdFx();else HDFX=null}}
 // Ver2.22 続きからの確認（ユーザー指定：タイトル下の記録の行をやめ、押した時にその記録を見せて確かめる）
 let CFR=0;function drawCfr(){const q=HS.P,c=CH[q.cls]||CH[0],im=SPR[c.s];hit(0,0,640,360,()=>{});ctx.fillStyle='rgba(5,4,12,.8)';ctx.fillRect(0,0,640,360);const x=150,y=62,w=340,h=236;ctx.fillStyle='#14102a';ctx.fillRect(x,y,w,h);ctx.fillStyle=c.col||'#8a82b8';ctx.fillRect(x,y,w,3);
- txt('この記録の続きから始めますか？',320,y+28,'#ffd23f','center',15);if(im){const sc=Math.min(1.4,90/im.height,96/im.width);ctx.drawImage(im,Math.round(x+66-im.width*sc/2),Math.round(y+150-im.height*sc),Math.round(im.width*sc),Math.round(im.height*sc))}
+ txt('この記録の続きから始めますか？',320,y+28,'#ffd23f','center',15);if(im){const sc=Math.min(1.4,90/im.height,96/im.width);ctx.drawImage(im,Math.round(x+66-((im.bw||im.width)/2+(im.ox||0))*sc),Math.round(y+150-ftY(im,c.s)*sc),Math.round(im.width*sc),Math.round(im.height*sc))}
  const L=[['キャラ',c.n],['場所','第'+q.act+'層　'+Math.max(1,HS.CUR.f+1)+'階'],['HP',q.hp+' / '+q.mhp],['ゴールド',q.gold+'G'],['デッキ',q.deck.length+'枚　レリック '+q.relics.length+'個'],['難易度',q.asc?'アセンション'+q.asc:'アセンションなし']];if(q.rt)L.push(['遊んだ時間',fmtT(q.rt)]);
  L.forEach(([a,b],i)=>{txt(a,x+136,y+58+i*19,'#a8a0c8','left',11);txt(b,x+206,y+58+i*19,'#fff','left',12)});
  btn(x+30,y+h-50,130,36,'続きから始める',()=>{CFR=0;sfx('pk');loadRun()},'#2a5a3a',13);btn(x+180,y+h-50,130,36,'やめる',()=>{CFR=0;sfx('cl')},'#5a2a3a',13)}
@@ -4038,7 +4040,7 @@ function drawNeow(){ctx.drawImage(NEB,0,0);const cx=470,cy=128+Math.sin(T*1.3)*5
  ctx.drawImage(cb,Math.round(cx-cb.width/2),Math.round(cy-cb.height/2));
  for(let k=0;k<6;k++){const a=k/6*6.283+T*.7,r=118,fx=cx+Math.cos(a)*r,fy=cy+Math.sin(a)*34-10,z=Math.sin(a)>0;if(!z)continue;ctx.fillStyle='#08101e';ctx.fillRect(fx-5,fy-5,10,10);ctx.fillStyle='#34486a';ctx.fillRect(fx-4,fy-4,8,8);ctx.fillStyle='#5ff6ff';ctx.fillRect(fx-4,fy-4,8,1)}
  ring(128,26,80,.5,'#5ff6ff',0);ring(108,40,60,-.35,'#9af6ff',0);
- const im=SPR[CH[P.cls].s];ctx.drawImage(im,Math.round(90-(im.bw||im.width)/2),210-im.height);
+ const im=SPR[CH[P.cls].s];ctx.drawImage(im,Math.round(90-(im.bw||im.width)/2-(im.ox||0)),210-ftY(im,CH[P.cls].s));
  const bx=172,by=40,bw=196,bh=104;ctx.fillStyle='#08060f';ctx.fillRect(bx-2,by-2,bw+4,bh+4);ctx.fillStyle='#0e1a2e';ctx.fillRect(bx,by,bw,bh);ctx.fillStyle='#5ff6ff';ctx.fillRect(bx,by,bw,2);ctx.fillRect(bx,by+bh-2,bw,2);
  ctx.fillStyle='#0e1a2e';ctx.beginPath();ctx.moveTo(bx+bw,by+40);ctx.lineTo(bx+bw+40,by+62);ctx.lineTo(bx+bw,by+70);ctx.fill();ctx.fillStyle='#5ff6ff';ctx.fillRect(bx+bw-2,by,2,40);ctx.fillRect(bx+bw-2,by+70,2,bh-70);
  txt('？？？',bx+10,by+18,'#5ff6ff','left',12);const ln=['……観測対象を確認。','塔を登る者よ。','選択を一つ、許可する。','代償を伴うものも存在する。'],sh=Math.min(ln.join('').length,Math.floor((T-(NE.t0||0))*24));let u=0;
@@ -4172,7 +4174,7 @@ for(let k=0;k<28;k++){const x=(k*131)%640,y=360-(k*71+T*(12+k%4*6))%380;ctx.fill
 const a=Math.min(1,el/.8);ctx.globalAlpha=a;
 txt(win?(P.eyeEnd?'踏破':'勝利'):'敗北',320,64-Math.round((1-a)*16),win?'#ffd23f':'#ff5a5a','center',44);
 txt(win?(P.eyeEnd?'塔の頂で「虚空の眼」に見つめられ、その一部となった…':'塔の頂に到達した'):P.gaveUp?'挑戦を諦めた…':P.slept?'ホーリー大輔は寝てしまった':P.killer?'「'+P.killer+'」に倒された…':'力尽きた…',320,94,win?'#fff1c0':'#e8b0b8','center',14);
-const im=P.slept?SPR['hori_z'+P.act]:P.cls===4?SPR['hori'+P.act]:SPR[CH[P.cls].s];ctx.save();if(win||P.slept)ctx.drawImage(im,Math.round(110-(im.bw||im.width)/2),Math.round(232-im.height+Math.sin(T*3)*3));else{ctx.globalAlpha=a*.5;ctx.translate(110,232-im.width/2);ctx.rotate(-Math.PI/2);ctx.drawImage(im,-im.width/2,-im.height/2)}ctx.restore();ctx.globalAlpha=a;
+const im=P.slept?SPR['hori_z'+P.act]:P.cls===4?SPR['hori'+P.act]:SPR[CH[P.cls].s];ctx.save();if(win||P.slept)ctx.drawImage(im,Math.round(110-(im.bw||im.width)/2-(im.ox||0)),Math.round(232-ftY(im,P.cls===4?'hori':CH[P.cls].s)+Math.sin(T*3)*3));else{ctx.globalAlpha=a*.5;ctx.translate(110,232-im.width/2);ctx.rotate(-Math.PI/2);ctx.drawImage(im,-im.width/2,-im.height/2)}ctx.restore();ctx.globalAlpha=a;
 txt(CH[P.cls].n,110,254,'#fff','center',13);txt('デッキ'+P.deck.length+'枚・レリック'+P.relics.length+'個',110,272,'#cfc8ee','center',11);
 box(222,112,398,194,win?'#2a1e10':'#1a0c14',win?'#ffd23f':'#8a2a3a');txt('スコア',238,132,win?'#ffe9a8':'#e8b0b8','left',13);
 const sn=Math.max(0,Math.min(n,Math.floor((el-.9)/.22)+1));if(sn>sc.sh){sc.sh=sn;sfx('cl')}
@@ -4508,7 +4510,7 @@ function drawMpLobby(){mpBg(0);if(!MPR){S='mpm';return}
  if(NET.err&&NET.kind!=='bc')st+='　'+NET.err;if(st)txt(st,320,58,sc,'center',10);if(MPR.msg)txt(MPR.msg,320,74,'#ff9a6a','center',12);
  // 焚き火を囲む4つの立ち位置
  const L=MPR.lob||[],pos=[[120,258],[228,250],[412,250],[520,258]];
- for(let i=0;i<4;i++){const[px,py]=pos[i],p=L[i];if(p){const im=SPR[CH[p.cls]?CH[p.cls].s:'pl'],hh=im.height;ctx.fillStyle='rgba(0,0,0,.35)';ctx.beginPath();ctx.ellipse(px,py,26,5,0,0,7);ctx.fill();ctx.drawImage(im,Math.round(px-im.width/2),py-hh+Math.round(Math.sin(T*1.8+i)));
+ for(let i=0;i<4;i++){const[px,py]=pos[i],p=L[i];if(p){const ck=CH[p.cls]?CH[p.cls].s:'pl',im=SPR[ck],hh=ftY(im,ck);ctx.fillStyle='rgba(0,0,0,.35)';ctx.beginPath();ctx.ellipse(px,py,26,5,0,0,7);ctx.fill();ctx.drawImage(im,Math.round(px-(im.bw||im.width)/2-(im.ox||0)),py-hh+Math.round(Math.sin(T*1.8+i)));
    mpPlate(px-48,py+8,96,30);txt(p.nm||'プレイヤー',px,py+22,PCOL[i],'center',12);txt((CH[p.cls]?CH[p.cls].n:'?')+(p.id===MPR.hid?'・ホスト':''),px,py+34,'#cfc8ee','center',9);
    if(p.id===MPR.me){const ay=py-hh-10+Math.sin(T*4)*2;ctx.fillStyle='#ffd23f';ctx.beginPath();ctx.moveTo(px-5,ay-2);ctx.lineTo(px+5,ay-2);ctx.lineTo(px,ay+5);ctx.fill();txt('あなた',px,ay-6,'#ffd23f','center',9)}}
   else{ctx.globalAlpha=.22+.08*Math.sin(T*2+i);ctx.fillStyle='#cfc8ee';ctx.beginPath();ctx.arc(px,py-60,10,0,7);ctx.fill();ctx.fillRect(px-12,py-48,24,46);ctx.globalAlpha=1;mpPlate(px-48,py+8,96,30);txt('空き',px,py+27,'#7a7298','center',11)}}
