@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.70';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.71';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2368,7 +2368,7 @@ deus:{n:'機神デウス・マキナ',hp:[300,300],el:2,mv:[{a:13,h:3},{st:5,b:2
 gilL:{n:'圧殺の腕',hp:[120,120],el:2,pr:1,bd:'gilB',mv:[{a:8,vu:1},{a:12},{a:6,h:2},{b:18,lb:'固定'}]},gilR:{n:'砲撃の腕',hp:[105,105],el:2,pr:1,pt:1,bd:'gilB',mv:[{a:6,h:2},{b:8,lb:'装填'},{a:26,nm:'断罪の砲火',fc:'#ff8c2e'},{lb:'冷却'}]},
 protoA:{n:'試作機神・骨格',hp:[90,90],el:2,en:1,rv:'protoB',mv:[{a:9},{a:5,h:2},{st:2,b:10},{a:16,nm:'起動衝撃',fc:'#ff4a4a'}]},protoB:{n:'試作機神・装甲',hp:[140,140],el:2,pst:1,rv:'protoC',mv:[{a:4,h:3},{a:14},{b:15,st:2},{a:6,h:3,nm:'駆動槍',fc:'#5ff6ff'}]},protoC:{n:'試作機神・完全体',hp:[180,180],el:2,ph:1,mv:[{a:20},{a:7,h:3},{st:3,b:12},{a:38,nm:'創世の光',fc:'#fff6b0'}]},
 maiden:{n:'泉の乙女像',hp:[230,230],el:2,mv:[{a:8,h:2},{b:14,wk:1},{a:12},{a:6,vu:1,ps:3},{a:15,nm:'清めの奔流',fc:'#7ee8ff'}]},scales:{n:'永劫の天秤',hp:[290,290],el:2,fly:22,mv:[{a:20,sc2:['r','b'],sd:0}]},chronos:{n:'時の機神クロノス',hp:[280,280],el:2,mv:[{a:12,h:3},{b:28,st:4},{a:34,nm:'時の終焉',fc:'#ffd23f'},{wk:3,vu:3,a:14,sc:['火傷',2]}]},
-dragon:{n:'炎竜',hp:[190,190],el:2,mv:[{a:7,h:3},{st:3,b:12,sc:['火傷',2]},{a:18,nm:'灼熱のブレス',fc:'#ff8c2e'},{wk:2,vu:2,a:6}]},king:{n:'ゴーレムキング',hp:[210,210],el:2,mv:[{b:20},{a:20,nm:'大地砕き',fc:'#7ee8ff'},{a:9,h:2,wk:1},{st:4}]}};
+dragon:{n:'炎竜',hp:[190,190],el:2,mv:[{a:7,h:3},{st:3,b:12,sc:['火傷',2]},{a:18,nm:'灼熱のブレス',fc:'#ff8c2e'},{wk:2,vu:2,a:6}]},king:{n:'ゴーレムキング',hp:[210,210],el:2,mv:[{b:20},{a:20,nm:'大地砕き',fc:'#7ee8ff'},{a:9,h:2,wk:1},{st:4,b:10}]}};
 // 癖のある敵：sl 睡眠ターン（ダメージで目覚める、sb 眠っている間のブロック）、seal 毎ターン手札を封印する枚数、lim 1ターンに使えるカード枚数、tf HP半分で変身する先
 Object.assign(E,{archdemon2:{n:'夜の王・真体',hp:[215,215],el:2,mv:[{a:16,h:2},{vu:2,wk:2,b:15},{a:42,nm:'終夜の咆哮',fc:'#ff3b5c'},{st:3,b:15},{a:9,h:4},{b:20}]},
 mirrorK:{n:'鏡面騎士',hp:[62,68],thr:4,mv:[{a:14},{b:16,st:2},{a:7,h:2}]},
@@ -2396,6 +2396,9 @@ Object.assign(E,{
  userp:{n:'灯腸の大魚',hp:[196,196],el:2,fly:6,mv:[{a:6,h:2},{b:14,st:2},{a:26,nm:'深淵の呑み込み',fc:'#5ac8c0'},{a:9,vu:1}]},
  ulight:{n:'沈んだ灯台',hp:[205,205],el:2,mv:[{a:5,h:3},{vu:2,b:10},{a:22,nm:'灯光の薙ぎ',fc:'#d8ffe0'},{b:13,st:2}]}});
 const FIS=[[['ushell'],['ulens','ulens'],['ueel'],['uink'],['ushell','ulens']],[['udiver'],['uboat'],['ueel','uink'],['ucoral','ulens'],['ubell']],[['ubell','ulens'],['udiver','ushell'],['uboat','ucoral'],['uink','uink','ulens']]],ELS=['udrown','ugeel'];
+// Ver2.71 ボスの連撃が筋力で伸びすぎないように（ユーザー指定）：ボスの連撃は1発+2、筋力+4以上の行動は-2。ボスの筋力が上がるのは1戦で2回まで（3回目からはその行動の筋力だけ無し）
+for(const k in E)if(E[k].el===2)for(const m of E[k].mv){if(m.a&&m.h>1)m.a+=2;if(m.st>=4)m.st-=2}
+const stG=(e,m)=>m.st&&!(e.el===2&&(e.sgn||0)>=2)?m.st:0;
 // 1層の場所：P.v1 が 's' なら沈没都市、それ以外は黒い森
 const A1S=()=>!!(P&&P.act===1&&P.v1==='s'),bgbFor=a=>a===1&&P&&P.v1==='s'?BGB1S:[BGB1,BGB2,BGB3][a-1];
 const FI=[[['slime'],['bat','bat'],['goblin'],['spider'],['slime','bat']],[['skel'],['ghost'],['goblin','spider'],['bat','bat','bat'],['ogre']],[['golem'],['ogre','bat'],['skel','ghost'],['spider','spider','bat']]];
@@ -3040,7 +3043,7 @@ for(const e of B.en)if(!e.dead)e.blk=0;sfx('cl')}
 const WLMX=5,wlv=e=>Math.max(0,(e.wl==null?0:e.wl)-Math.floor((e.wdt||0)/25));
 function mdIt(e){return wlv(e)>=WLMX?{a:9999,nm:'大瀑布',fc:'#5ac8ff',wf:1}:e.mv[e.i%e.mv.length]}
 // 永劫の天秤：左右の玉が毎ターン色を変え、行動に合った色の側へ傾く。赤=強攻撃 白=連撃 青=防御+筋力 緑=回復 紫=毒 黄=弱体。5ターンごとに均衡の断罪
-const SCA={r:{a:20},w:{a:7,h:3},b:{b:24,st:2},g:{hl:24,b:8},p:{ps:7,a:8},y:{vu:2,wk:2,a:6}},SCN={r:'赤',w:'白',b:'青',g:'緑',p:'紫',y:'黄'};
+const SCA={r:{a:20},w:{a:9,h:3},b:{b:24,st:2},g:{hl:24,b:8},p:{ps:7,a:8},y:{vu:2,wk:2,a:6}},SCN={r:'赤',w:'白',b:'青',g:'緑',p:'紫',y:'黄'};
 function scIt(e){if(e.i<=0)return e.mv[0];if(e.scI===e.i&&e.sit)return e.sit;e.scI=e.i;let it;const L0=Object.keys(SCC);
  if(e.i%5===4)it={a:34,nm:'均衡の断罪',fc:'#ffd23f',sc2:['y','y'],sd:-1};
  else{const L=L0.filter(c=>c!==e.slc&&!(c==='g'&&e.hp>=e.mh*.9)),c=L[RI(L.length)],D=L0.filter(x=>x!==c),d=D[RI(D.length)],sd=RI(2);e.slc=c;it=Object.assign({},SCA[c],{sc2:sd?[d,c]:[c,d],sd})}
@@ -3062,7 +3065,7 @@ if(m.wf&&!nat)mpEach(()=>{B.blk=0});if(m.a&&!nat)for(let k=0;k<(m.h||1);k++){hit
 if(m.vu&&P.hp>0){PS.vuln+=m.vu;B.jv=1;nmb(110,118,'弱体+'+m.vu,'#ff9a6a');sfx('ps')}},tk>=0?tk:null);if(!MPB&&P.hp<=0)return;if(B.ph==='L')return;
 // 筋力アップは攻撃のあと（予告の数字どおりのダメージにする）。儀式 rit は行動のたびに筋力が上がる
 if(e.rit&&!e.dead){e.str+=e.rit;pop(e,'儀式 筋力+'+e.rit,'#ff8c2e')}
-if(m.st){e.str+=m.st;fxs('ar',p.x,p.y-40,{s:'▲',c:'#ff6a6a',d:.7});pop(e,'筋力+'+m.st,'#ffd23f');sfx('bf')}
+if(stG(e,m)){e.sgn=(e.sgn||0)+1;e.str+=m.st;fxs('ar',p.x,p.y-40,{s:'▲',c:'#ff6a6a',d:.7});pop(e,'筋力+'+m.st,'#ffd23f');sfx('bf')}
 if(e.k==='maiden'){const lv=wlv(e);e.wl=m.wf?0:Math.min(WLMX,lv+1);e.wdt=0;if(m.wf){e.i--;pop(e,'水位が引いた','#5ac8ff')}else if(e.wl>=3)pop(e,'水位'+e.wl,'#5ac8ff')}
 e.i++;if(e.weak>0)e.weak--;if(e.vuln>0)e.vuln--}
 function endBattle(){recTry('dmg',P.bTD||0);if(B.boss&&!B.hurt)P.perf++;if(has('burn'))P.hp=Math.min(P.mhp,P.hp+6);if(has('cheese')){P.mhp+=1;P.hp+=1}if(PS&&PS.shr)P.hp=Math.min(P.mhp,P.hp+PS.shr);if(has('ribbon'))P.hp=Math.min(P.mhp,P.hp+3);
@@ -3633,7 +3636,7 @@ b.en.forEach((e,i)=>{if(e.dead){if(e.dT!=null&&T-e.dT<.8)eDeath(e,i);if(e.dT!=nu
 if(!(b.sp&&b.sp.e===e)){ctx.save();ctx.translate(Math.round(p.x+off+s),Math.round(p.y+eo.y));ctx.rotate(eo.r);ctx.scale(eo.sx,eo.sy);const dE=()=>{if(e.k==='userp'&&im===SPR[e.k]){const ph=(T/3)%1,fi=uFish(Math.floor(ph*UFN)%UFN);ctx.drawImage(fi,-Math.round(w/2),-h);uGlow(-Math.round(w/2),-h,ph)}else if(e.k==='scales'&&im===SPR[e.k])scDraw(e,i,w,h);else if(EPT[e.k]&&im===SPR[e.k]){if(EPT[e.k][0].r){ctx.save();ctx.rotate(eo.ur*.7);dParts(e,i,w,h);ctx.restore()}else dParts(e,i,w,h)}else if(Math.abs(eo.ur)>.005){const sp=Math.round(h*.52),hw=Math.round(w/2);ctx.drawImage(im,0,sp,w,h-sp,-hw,-h+sp,w,h-sp);ctx.save();ctx.translate(0,-h+sp+2);ctx.rotate(eo.ur);ctx.drawImage(im,0,0,w,sp+3,-hw,-sp-2,w,sp+3);ctx.restore()}else ctx.drawImage(im,-Math.round(w/2),-h)};dE();if(eo.g>0){const ga=ctx.globalAlpha;ctx.globalCompositeOperation='lighter';ctx.globalAlpha=ga*eo.g;dE();ctx.globalCompositeOperation='source-over';ctx.globalAlpha=ga}ctx.restore()}flyFx(e,im,Math.round(p.x+off),Math.round(p.y+eo.y));ctx.globalAlpha=1;if(e.sl>0){for(let k=0;k<3;k++){const q=(T*.5+k/3)%1;ctx.globalAlpha=Math.sin(q*3.14);txt('z',p.x+(e.k==='behemoth'?-w*.3:w*.05)+q*14,p.y-h+10-q*24,'#c8d0ff','center',9+k*3)}ctx.globalAlpha=1}
 hpBar(p.x-32,p0.y+2,64,Math.min(e.mh,e.hp+(e.vq?e.vq.reduce((s2,q)=>s2+(q.at>T?q.d:0),0):0)),e.mh,e.el?'#c9a0ff':'#e8505b',e.blk,e.poison*(PS&&PS.pmul?2:1),e.doom||0);txt((e.el===1?'【エリート】':e.el===2?'【ボス】':'')+e.n,p.x,p0.y+22,e.el===1?'#e0b0ff':'#cfc8ee','center',10);
 chips(stat(e,0),p.x,p0.y+24,'c',b.en.length>2?106:150);
-const m=e.it,t=[];if(m.nm)t.push(['必殺',Math.floor(T*4)%2?'#ff3b5c':'#ffd23f']);if(m.wf)t.push(['即死','#ff3b5c']);else if(m.a)t.push(['攻'+calcP(e,m.a)+(m.h>1?'×'+m.h:''),'#ff6a6a']);if(m.b)t.push(['防'+m.b,'#7ec8ff']);if(m.st)t.push(['強+'+m.st,'#ffd23f']);if(m.wk||m.vu)t.push(['弱','#c9a0ff']);if(m.ab)t.push(['護'+m.ab,'#7ec8ff']);if(m.hl)t.push(['癒'+m.hl,'#7dff9a']);if(m.smn)t.push(['召','#5ff6ff']);if(m.dd)t.push(['鈍','#c8c8d8']);if(m.ps)t.push(['毒'+m.ps,'#7dff9a']);if(m.sc)t.push(['妨','#c8c8d8']);
+const m=e.it,t=[];if(m.nm)t.push(['必殺',Math.floor(T*4)%2?'#ff3b5c':'#ffd23f']);if(m.wf)t.push(['即死','#ff3b5c']);else if(m.a)t.push(['攻'+calcP(e,m.a)+(m.h>1?'×'+m.h:''),'#ff6a6a']);if(m.b)t.push(['防'+m.b,'#7ec8ff']);if(stG(e,m))t.push(['強+'+m.st,'#ffd23f']);if(m.wk||m.vu)t.push(['弱','#c9a0ff']);if(m.ab)t.push(['護'+m.ab,'#7ec8ff']);if(m.hl)t.push(['癒'+m.hl,'#7dff9a']);if(m.smn)t.push(['召','#5ff6ff']);if(m.dd)t.push(['鈍','#c8c8d8']);if(m.ps)t.push(['毒'+m.ps,'#7dff9a']);if(m.sc)t.push(['妨','#c8c8d8']);
 if(m.lb)t.push([m.lb,'#c9a0ff']);if(e.nat)t.push(['封','#c8c8d8']);if(e.stn){t.length=0;t.push(['行動不能','#c8c8d8'])}if(e.sl>0){t.length=0;t.push(['睡眠','#9ab0ff'])}if(e.reb){t.length=0;t.push(['再起動','#5ff6ff'])}if(has('dome')&&!e.stn&&!(e.sl>0)&&!e.reb){t.length=0;t.push(['？','#8a8aa0'])}tok(t,p.x,Math.max(46,p.y-h-8),13,1);if(b.ph==='e'&&b.en[b.eo?b.eo[b.ei]:b.ei]===e){ctx.fillStyle='#ff6a6a';const by=Math.round(Math.sin(T*10)*3);ctx.fillRect(p.x-6,p.y-h-34+by,12,4);ctx.fillRect(p.x-4,p.y-h-30+by,8,4);ctx.fillRect(p.x-2,p.y-h-26+by,4,4)}
 ER.push({i,x:p.x-w/2,y:p.y-h,w,h:h+12});hit(p.x-w/2,p.y-h,w,h+12,()=>{if(b.sel>=0&&needT(cd(b.hand[b.sel])))play(b.sel,i);else say(e.n+'  HP'+e.hp+'  '+(m.nm?'必殺「'+m.nm+'」':m.a?'攻撃':m.b?'防御':'行動'))})});
 drawFx();ctx.restore();drawBossIntro(b);
