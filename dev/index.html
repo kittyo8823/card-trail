@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.71';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.72';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2364,10 +2364,10 @@ reaper:{n:'死神ネヴァル',hp:[190,190],el:2,mv:[{a:7,h:3},{st:3,b:16},{a:26
 drone:{n:'守護ドローン',hp:[38,44],mv:[{a:7,h:2},{ab:9,a:5},{vu:2,a:8}]},sentry:{n:'光輪の番兵',hp:[58,64],mv:[{a:16},{b:14},{a:10,dd:1}]},cube:{n:'審判のキューブ',hp:[50,56],rit:2,mv:[{b:10},{a:15},{a:5,h:3}]},
 seraph:{n:'機械天使',hp:[46,52],avg:3,mv:[{a:5,h:3},{wk:2,vu:2},{a:18}]},priest:{n:'電脳神官',hp:[42,48],mv:[{smn:'drone'},{a:14},{hl:12,wk:1}]},serpent:{n:'光の大蛇',hp:[54,60],mv:[{a:9,sc:['粘液',2]},{a:21},{b:12,st:2}]},
 colossus:{n:'神殿の巨像',hp:[130,140],el:1,mv:[{b:20,st:3},{a:24,sx:1},{a:9,h:3},{wk:2,vu:2,a:12}]},oracle:{n:'預言機オラクル',hp:[112,120],el:1,en:1,mv:[{vu:3,wk:2,sc:['目眩',2]},{a:8,h:3},{st:3,b:14},{a:28,sx:1}]},
-deus:{n:'機神デウス・マキナ',hp:[300,300],el:2,mv:[{a:13,h:3},{st:5,b:25},{a:38,nm:'神罰の光',fc:'#5ff6ff'},{wk:3,vu:3,ps:8,sc:['負傷',2]},{a:3,h:5}]},mothP:{n:'月蛾の司祭モルナ',hp:[150,150],el:2,ld:1,mv:[{st:2,b:8},{a:7,wk:1},{a:7,vu:1},{a:4,h:4,nm:'月蝕の鱗粉',fc:'#c9a0ff'}]},mothF:{n:'鱗粉の信徒',hp:[42,44],mn:1,mv:[{a:5},{a:2,h:2},{st:2}]},mothF2:{n:'鱗粉の信徒',hp:[42,44],mn:1,mv:[{st:2},{a:5},{a:2,h:2}]},
+deus:{n:'機神デウス・マキナ',hp:[580,580],el:2,mv:[{a:9,h:3},{st:4,b:25},{a:38,nm:'神罰の光',fc:'#5ff6ff'},{wk:3,vu:3,ps:8,sc:['負傷',2]},{a:3,h:5}]},mothP:{n:'月蛾の司祭モルナ',hp:[150,150],el:2,ld:1,mv:[{st:2,b:8},{a:7,wk:1},{a:7,vu:1},{a:4,h:4,nm:'月蝕の鱗粉',fc:'#c9a0ff'}]},mothF:{n:'鱗粉の信徒',hp:[42,44],mn:1,mv:[{a:5},{a:2,h:2},{st:2}]},mothF2:{n:'鱗粉の信徒',hp:[42,44],mn:1,mv:[{st:2},{a:5},{a:2,h:2}]},
 gilL:{n:'圧殺の腕',hp:[120,120],el:2,pr:1,bd:'gilB',mv:[{a:8,vu:1},{a:12},{a:6,h:2},{b:18,lb:'固定'}]},gilR:{n:'砲撃の腕',hp:[105,105],el:2,pr:1,pt:1,bd:'gilB',mv:[{a:6,h:2},{b:8,lb:'装填'},{a:26,nm:'断罪の砲火',fc:'#ff8c2e'},{lb:'冷却'}]},
-protoA:{n:'試作機神・骨格',hp:[90,90],el:2,en:1,rv:'protoB',mv:[{a:9},{a:5,h:2},{st:2,b:10},{a:16,nm:'起動衝撃',fc:'#ff4a4a'}]},protoB:{n:'試作機神・装甲',hp:[140,140],el:2,pst:1,rv:'protoC',mv:[{a:4,h:3},{a:14},{b:15,st:2},{a:6,h:3,nm:'駆動槍',fc:'#5ff6ff'}]},protoC:{n:'試作機神・完全体',hp:[180,180],el:2,ph:1,mv:[{a:20},{a:7,h:3},{st:3,b:12},{a:38,nm:'創世の光',fc:'#fff6b0'}]},
-maiden:{n:'泉の乙女像',hp:[230,230],el:2,mv:[{a:8,h:2},{b:14,wk:1},{a:12},{a:6,vu:1,ps:3},{a:15,nm:'清めの奔流',fc:'#7ee8ff'}]},scales:{n:'永劫の天秤',hp:[290,290],el:2,fly:22,mv:[{a:20,sc2:['r','b'],sd:0}]},chronos:{n:'時の機神クロノス',hp:[280,280],el:2,mv:[{a:12,h:3},{b:28,st:4},{a:34,nm:'時の終焉',fc:'#ffd23f'},{wk:3,vu:3,a:14,sc:['火傷',2]}]},
+protoA:{n:'試作機神・骨格',hp:[100,100],el:2,en:1,rv:'protoB',mv:[{a:9},{a:5,h:2},{st:2,b:10},{a:16,nm:'起動衝撃',fc:'#ff4a4a'}]},protoB:{n:'試作機神・装甲',hp:[200,200],el:2,pst:1,rv:'protoC',mv:[{a:4,h:3},{a:14},{b:15,st:2},{a:6,h:3,nm:'駆動槍',fc:'#5ff6ff'}]},protoC:{n:'試作機神・完全体',hp:[300,300],el:2,ph:1,mv:[{a:20},{a:7,h:3},{st:3,b:12},{a:38,nm:'創世の光',fc:'#fff6b0'}]},
+maiden:{n:'泉の乙女像',hp:[230,230],el:2,mv:[{a:8,h:2},{b:14,wk:1},{a:12},{a:6,vu:1,ps:3},{a:15,nm:'清めの奔流',fc:'#7ee8ff'}]},scales:{n:'永劫の天秤',hp:[500,500],el:2,fly:22,mv:[{a:20,sc2:['r','b'],sd:0}]},chronos:{n:'時の機神クロノス',hp:[520,520],el:2,mv:[{a:9,h:3},{b:28,st:4},{a:34,nm:'時の終焉',fc:'#ffd23f'},{wk:3,vu:3,a:14,sc:['火傷',2]}]},
 dragon:{n:'炎竜',hp:[190,190],el:2,mv:[{a:7,h:3},{st:3,b:12,sc:['火傷',2]},{a:18,nm:'灼熱のブレス',fc:'#ff8c2e'},{wk:2,vu:2,a:6}]},king:{n:'ゴーレムキング',hp:[210,210],el:2,mv:[{b:20},{a:20,nm:'大地砕き',fc:'#7ee8ff'},{a:9,h:2,wk:1},{st:4,b:10}]}};
 // 癖のある敵：sl 睡眠ターン（ダメージで目覚める、sb 眠っている間のブロック）、seal 毎ターン手札を封印する枚数、lim 1ターンに使えるカード枚数、tf HP半分で変身する先
 Object.assign(E,{archdemon2:{n:'夜の王・真体',hp:[215,215],el:2,mv:[{a:16,h:2},{vu:2,wk:2,b:15},{a:42,nm:'終夜の咆哮',fc:'#ff3b5c'},{st:3,b:15},{a:9,h:4},{b:20}]},
