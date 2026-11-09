@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.76';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.77';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -3757,7 +3757,7 @@ function drawBT(){rwBg();ctx.fillStyle='rgba(4,2,10,.5)';ctx.fillRect(0,0,640,36
   wrap(RL[k][1],12).slice(0,4).forEach((l,j)=>txt(l,x,ny+24+j*14,me?'#fff':'#b9b2e0','center',11));
   if(!op){if(ap>=1)hit(L,top,w,hh,()=>{BT.sel=i;sfx('cl')})}else if(me)txt('入手',x,top-6,'#7dff9a','center',13);
   ctx.globalAlpha=1});
-if(!op&&sel>=0)btn(250,326,140,28,'これを選ぶ',()=>{BT.cf=1;sfx('cl')},'#6a4bd6',15);
+if(!op&&sel>=0)btn(250,326,140,28,'これを選ぶ',()=>{BT.cf=1;sfx('cl')},'#6a4bd6',15);if(!op&&!BT.cf&&el>.6)btn(500,326,110,28,'取らない',()=>{sfx('cl');btNext()},'#3a3068',13);
 if(BT.cf&&!op&&sel>=0){const k=BT.rs[sel];hit(0,0,640,360,()=>{});ctx.fillStyle='rgba(5,4,12,.86)';ctx.fillRect(0,0,640,360);txt('本当にこれを取りますか？',320,74,'#ffd23f','center',18);txt('ボスレリックは1つしか選べない',320,96,'#cfc8ee','center',11);ctx.drawImage(OCH,284,112,72,72);ctx.drawImage(rIcon(k),294,104,52,52);txt(RL[k][0],320,206,'#ffd23f','center',15);wrap(RL[k][1],20).forEach((l,j)=>txt(l,320,226+j*15,'#fff','center',12));
  btn(196,292,120,36,'取る',()=>{BT.cf=0;BT.pick=sel;BT.t0=T;sfx('pk');sfx('bf');gain(k)},'#6a4bd6',15);btn(324,292,120,36,'やめる',()=>{BT.cf=0;sfx('cl')},'#2c3566',15)}
 if(op&&el>.6)btn(270,326,100,28,'次へ',btNext,'#6a4bd6',15)}
