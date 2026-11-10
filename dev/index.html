@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.87';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.88';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -4823,7 +4823,7 @@ if(Math.abs(p.y-drag.y)>8&&(S==='pick'||S==='help'||S==='lib'||S==='rank'))drag.
 if(S==='select'&&Math.abs(p.x-drag.x)>8)drag.m=1;if(S==='map'){if(Math.abs(p.x-drag.x)>8)drag.m=1;if(drag.m)MSC=Math.max(0,Math.min(MSW-624,drag.ms-(p.x-drag.x)))}});
 addEventListener('keydown',e=>{if(e.key==='Escape'&&S==='mapv'){closeMapV();return}if(e.key==='Escape'&&P&&!['title','splash','select','over','win','mpm','mpj','mpn','mpl','rank','help','lib'].includes(S)){PZ=PZ?null:{c:0};return}if(S==='splash'){startGame();return}if(S==='select'){if(e.key==='ArrowLeft')selGo(-1);if(e.key==='ArrowRight')selGo(1);if(e.key==='Enter'){sfx('pk');newRun(CHV()[SEL])}}});
 cv.addEventListener('wheel',e=>{if(S==='map'||S==='mapv'){MSC=Math.max(0,Math.min(MSW-624,MSC+(e.deltaX||e.deltaY)*.6));e.preventDefault()}else if(S==='lib'||S==='pick'||S==='help'||S==='rank'){scr+=e.deltaY*.6;e.preventDefault()}},{passive:false});
-addEventListener('pointerup',e=>{LP=null;if(dg){drag=null;dropCard();return}if(!drag)return;const d=drag;drag=null;if(d.m){if(S==='select'){const dx=pos(e).x-d.x;if(Math.abs(dx)>40)selGo(dx<0?1:-1)}return}if(ENTIP){ENTIP=null;return}for(let i=ENI.length-1;i>=0;i--){const r=ENI[i];if(d.x>=r.x&&d.x<=r.x+r.w&&d.y>=r.y&&d.y<=r.y+r.h){ENTIP=r;sfx('cl');return}}let hb=null;for(let i=btns.length-1;i>=0;i--){const b=btns[i];if(d.x>=b.x&&d.x<=b.x+b.w&&d.y>=b.y&&d.y<=b.y+b.h){hb=b;break}}
+addEventListener('pointerup',e=>{LP=null;if(dg){drag=null;dropCard();return}if(!drag)return;const d=drag;drag=null;if(d.m){if(S==='select'){const dx=pos(e).x-d.x;if(Math.abs(dx)>40)selGo(dx<0?1:-1)}return}{const q=pos(e);if(Math.hypot(q.x-d.x,q.y-d.y)>18)return}if(ENTIP){ENTIP=null;return}for(let i=ENI.length-1;i>=0;i--){const r=ENI[i];if(d.x>=r.x&&d.x<=r.x+r.w&&d.y>=r.y&&d.y<=r.y+r.h){ENTIP=r;sfx('cl');return}}let hb=null;for(let i=btns.length-1;i>=0;i--){const b=btns[i];if(d.x>=b.x&&d.x<=b.x+b.w&&d.y>=b.y&&d.y<=b.y+b.h){hb=b;break}}
 // 指が少しずれても押せるように、真下にボタンが無ければ10px以内で一番近いボタンを押す
 if(!hb){let bd=10;for(const b of btns){const dx=Math.max(b.x-d.x,0,d.x-b.x-b.w),dy=Math.max(b.y-d.y,0,d.y-b.y-b.h),dd=Math.hypot(dx,dy);if(dd<bd){bd=dd;hb=b}}}if(hb)hb.f()});
 addEventListener('pointercancel',()=>{drag=null;dg=null});
