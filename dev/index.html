@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.84';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.85';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2634,7 +2634,7 @@ const par=(f,j)=>f?m[f-1].filter(n=>n&&n.cn.includes(j)):[];
  bands=[[5,6],[9,10,11],[12,13]],tgt=3+(R()<.45?0:R()<.6?1:2),used=new Set();let n=0;
  const put=fs=>{const l=[];for(const f of fs)if(!used.has(f))m[f].forEach((_,j)=>{if(ok(f,j))l.push([f,j])});if(!l.length)for(const f of fs)m[f].forEach((_,j)=>{if(ok(f,j))l.push([f,j])});if(!l.length)return 0;const[f,j]=pk(l);m[f][j].t=1;used.add(f);n++;return 1};
  for(const b of bands)put(b);for(let k=0;k<12&&n<tgt;k++)put(pk(bands))}
-if(!MPON()&&anyClr()&&P&&P.act<=3){const l=[];m.forEach(r=>r.forEach(n=>{if(n&&n.t===1)l.push(n)}));if(l.length)pk(l).au=1}
+if((MPR&&MPR.started?MPR.au:anyClr())&&P&&P.act<=3){const l=[];m.forEach(r=>r.forEach(n=>{if(n&&n.t===1)l.push(n)}));if(l.length)pk(l).au=1}
 m.push([{t:6,cn:[],dx:0,dy:0}]);return m}
 function avail(){if(CUR.f===-1&&P.nw===0)return[];if(CUR.f===-1)return MP[0].map((n,j)=>n?j:-1).filter(j=>j>=0);if(CUR.f===LAST)return[];return MP[CUR.f][CUR.j].cn}
 function enter(j){if(MPON()&&!MPR.ap){if(!MPR.votes[LK]||MPR.votes[LK].j!==j||MPR.votes[LK].f!==CUR.f+1)mpVote(j);return}P.back=null;const f=CUR.f+1;CUR={f,j};(P.path=P.path||[]).push(f+','+j);const n=MP[f][j];P.floors=(P.act-1)*(LAST+1)+f+1;const tt=n.t===4?qRoll():n.t;
@@ -3583,7 +3583,7 @@ const BOSSGS=[['userp'],['ulight']],BICNS=['userp','ulight'],bossG=()=>A1S()?BOS
 function bossI(){P.bsi=P.bsi||{};if(P.bsi[P.act]==null)P.bsi[P.act]=MPON()?withRng(MPR.seed+P.act*977,()=>RI(bossG().length)):Math.floor(Math.random()*bossG().length);return P.bsi[P.act]}
 const bossNm=()=>{const i=bossI();return bossN()[i]||E[bossIc()[i]].n};
 let BIC={};const bossIcon=k=>{if(BIC[k])return BIC[k];const im=SPR[k],c=MKC(24,24),x=c.getContext('2d'),sc=Math.min(24/im.width,24/im.height);x.imageSmoothingEnabled=false;x.drawImage(im,Math.round(12-im.width*sc/2),Math.round(24-im.height*sc),Math.round(im.width*sc),Math.round(im.height*sc));return BIC[k]=c};
-function topbar(){ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,640,30);txt('HP '+(S==='battle'&&B?Math.min(P.mhp,vHP()):P.hp)+'/'+P.mhp,6,21,'#ff9a9a','left',14);txt('G '+P.gold,92,21,'#ffd23f','left',14);if(!MPON()&&P.act<=3&&P.shd){ctx.drawImage(SHDI(),92,22,8,8);txt('欠片'+(P.shd||0)+'/3',102,29,'#ff8a9a','left',8)}txt(P.act+'-'+Math.max(1,CUR.f+1),146,21,'#cfe8ff','left',14);if(P.asc)txt('A'+P.asc,146,29,'#ff6a6a','left',8);
+function topbar(){ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,640,30);txt('HP '+(S==='battle'&&B?Math.min(P.mhp,vHP()):P.hp)+'/'+P.mhp,6,21,'#ff9a9a','left',14);txt('G '+P.gold,92,21,'#ffd23f','left',14);if(P.act<=3&&P.shd){ctx.drawImage(SHDI(),92,22,8,8);txt('欠片'+(P.shd||0)+'/3',102,29,'#ff8a9a','left',8)}txt(P.act+'-'+Math.max(1,CUR.f+1),146,21,'#cfe8ff','left',14);if(P.asc)txt('A'+P.asc,146,29,'#ff6a6a','left',8);
 for(let k=0;k<P.ps;k++){const x=180+k*31,po=P.pot[k];ctx.fillStyle='#1d2040';ctx.fillRect(x,1,28,28);ctx.fillStyle=po?'#f6f2ff':'#3a3a5a';ctx.fillRect(x,1,28,2);ctx.fillRect(x,27,28,2);ctx.fillRect(x,1,2,28);ctx.fillRect(x+26,1,2,28);if(po)ctx.drawImage(potIcon(po),x+2,3,24,24);hit(x-1,0,31,44,()=>po?potMenu(k):say('ポーション欄（空）'))}
 P.relics.forEach((k,i)=>{const x=6+(i%25)*25,y=33+Math.floor(i/25)*25;const used=k==='amulet'&&P.amu;if(used)ctx.globalAlpha=.35;ctx.drawImage(rIcon(k),x,y,24,24);ctx.globalAlpha=1;const rc=relCnt(k);if(rc!=null){const t=String(rc);ctx.font='10px DotGothic16,sans-serif';ctx.textAlign='right';ctx.lineJoin='round';ctx.lineWidth=3;ctx.strokeStyle='#120c1c';ctx.strokeText(t,x+24,y+24);ctx.fillStyle='#fff';ctx.fillText(t,x+24,y+24)}hit(x,y,24,24,()=>say(RL[k][0]+'：'+RL[k][1]))});
 if(S==='battle'&&B)txt('ターン'+B.turn+'　'+(B.ph==='e'&&!(B.bn&&B.bn.dl>0)?'敵のターン':'自分のターン'),186+P.ps*31,13,B.ph==='e'&&!(B.bn&&B.bn.dl>0)?'#ff8a8a':'#7ec8ff','left',11);
@@ -3662,7 +3662,7 @@ function drawEyeIn(){ctx.fillStyle='#050003';ctx.fillRect(0,0,640,360);ctx.globa
  const im=SPR.eye,a=Math.min(1,el*.25)*(.6+.1*Math.sin(T*2)),ey=Math.round(40+Math.sin(T*1.2)*4);eyeTent(320,ey+im.height/2,im.width,im.height,a*.4);ctx.globalAlpha=a*.5;ctx.drawImage(im,Math.round(320-im.width/2),ey);ctx.globalAlpha=1;
  const L=['第3層を踏破した。','だが、塔の頂のさらに上――','何かが、こちらを見ている。'];let u=Math.floor(el*14);L.forEach((l,i)=>{const n=Math.max(0,Math.min(l.length,u));u-=l.length+4;if(n)txt(l.slice(0,n),320,226+i*24,i===2?'#ff6a6a':'#e8d8e0','center',15)});
  if(el>4)btn(250,306,140,32,'最上階へ',eyeGo,'#5a0a1a',15)}
-function eyeGo(){sfx('ch');BGB=BGBV;fight(['eye'],2);if(!MPON()&&(P.shd||0)>=3){B.ph='lv';B.lvT=T;B.hand=[]}}
+function eyeGo(){sfx('ch');BGB=BGBV;fight(['eye'],2);if((P.shd||0)>=3){B.ph='lv';B.lvT=T;B.hand=[]}}
 // Ver2.78 眼の欠片が3つそろっている時：眼は欠片の光を避けて去り、「先へ進む」で4層へ
 function drawLv(){const el=T-B.lvT,a=x=>Math.max(0,Math.min(1,x));ctx.fillStyle='rgba(0,0,0,'+(.55*a(el/.6))+')';ctx.fillRect(0,236,640,124);
  ctx.globalAlpha=a((el-.2)/.6);ctx.drawImage(SHDI(),232,252,24,24);ctx.drawImage(SHDI(),308,252,24,24);ctx.drawImage(SHDI(),384,252,24,24);ctx.globalAlpha=a((el-.4)/.6);txt('三つの眼の欠片が、静かに光を放つ…',320,296,'#ffb0c0','center',13);
@@ -4561,10 +4561,10 @@ function drawMpName(){ttlBg(.55);const fs=MPN&&MPN.first;headline(fs?'ようこ�
 const mpNm=k=>{const p=MPR&&MPR.pl&&MPR.pl[k];return p&&p.nm?p.nm:PL[k]&&PL[k].P?CH[PL[k].P.cls].n:'?'};
 async function mpJoin(code,host){MPR={me:Math.random().toString(36).slice(2,10),code,host:!!host,hid:null,lob:[],asc:0,started:0,pl:[],seq:0,votes:{},seen:{},t0:Date.now(),cls:MPR&&MPR.cls||0,nm:nmClean(MPR&&MPR.nm)||'プレイヤー',msg:'',pend:{}};
  S='mpl';MPR.msg='接続中…';const ok=await netOpen(code);if(!MPR)return;if(!ok){MPR.msg='通信を開始できなかった';return}MPR.msg='';
- if(host){MPR.hid=MPR.me;MPR.lob=[{id:MPR.me,cls:MPR.cls,nm:MPR.nm}]}mpHello()}
-function mpHello(){if(!MPR||MPR.started)return;mpSend({ty:'hello',id:MPR.me,cls:MPR.cls,nm:MPR.nm})}
+ if(host){MPR.hid=MPR.me;MPR.lob=[{id:MPR.me,cls:MPR.cls,nm:MPR.nm,c:anyClr()?1:0}]}mpHello()}
+function mpHello(){if(!MPR||MPR.started)return;mpSend({ty:'hello',id:MPR.me,cls:MPR.cls,nm:MPR.nm,c:anyClr()?1:0})}
 function mpBackLobby(){if(!MPR)return;Object.assign(MPR,{started:0,pl:[],votes:{},seq:0,lost:0,msg:'',ap:0});MPB=null;PL=[];RNG=null;SB=null;CK=LK=0;S='mpl';bgm('t');sfx('cl');
- if(MPR.host){MPR.hid=MPR.me;MPR.lob=[{id:MPR.me,cls:MPR.cls,nm:MPR.nm}].concat(Object.values(MPR.pend).filter(q=>q.id!==MPR.me)).slice(0,4);MPR.pend={};mpLobBroadcast()}else{MPR.lob=[];mpHello()}}
+ if(MPR.host){MPR.hid=MPR.me;MPR.lob=[{id:MPR.me,cls:MPR.cls,nm:MPR.nm,c:anyClr()?1:0}].concat(Object.values(MPR.pend).filter(q=>q.id!==MPR.me)).slice(0,4);MPR.pend={};mpLobBroadcast()}else{MPR.lob=[];mpHello()}}
 
 // --- 途中で落ちた人の再接続（ホスト以外）。ホストは全員の P を持っているので、戦闘の外で丸ごと渡し直す ---
 function rjSave(){try{if(MPR&&MPR.started)localStorage.setItem('cardtower_mprj',JSON.stringify({code:MPR.code,me:MPR.me,nm:MPR.nm,cls:MPR.cls,host:MPR.host?1:0,t:Date.now()}))}catch(e){}}
@@ -4583,8 +4583,8 @@ function drawMpRj(){ctx.drawImage(BGM1,0,0);ctx.fillStyle='rgba(8,6,20,.78)';ctx
 function mpLeave(){try{localStorage.removeItem('cardtower_mprj')}catch(e){}if(MPR){try{netSend({ty:'bye',id:MPR.me})}catch(e){}}netClose();MPR=null;MPB=null;PL=[];RNG=null}
 function mpLobBroadcast(){if(MPR&&MPR.host&&!MPR.started)mpSend({ty:'lob',hid:MPR.me,pl:MPR.lob,asc:MPR.asc})}
 function mpIdx(id){return MPR&&MPR.pl?MPR.pl.findIndex(p=>p.id===id):-1}
-function mpStartGame(){if(!MPR||!MPR.host||MPR.started)return;mpSend({ty:'start',seed:Math.floor(Math.random()*2e9),asc:MPR.asc,pl:MPR.lob.slice(0,4)})}
-function mpBegin(o){MPR.started=1;MPR.hk=0;MPR.pend={};MPR.pl=o.pl.map(q=>({...q,nm:nmClean(q.nm)||'プレイヤー'}));MPR.seed=o.seed;LK=Math.max(0,mpIdx(MPR.me));ASC=o.asc;PL=[];
+function mpStartGame(){if(!MPR||!MPR.host||MPR.started)return;mpSend({ty:'start',seed:Math.floor(Math.random()*2e9),asc:MPR.asc,pl:MPR.lob.slice(0,4),au:MPR.lob.slice(0,4).every(q=>q.c)?1:0})}
+function mpBegin(o){MPR.started=1;MPR.au=o.au?1:0;MPR.hk=0;MPR.pend={};MPR.pl=o.pl.map(q=>({...q,nm:nmClean(q.nm)||'プレイヤー'}));MPR.seed=o.seed;LK=Math.max(0,mpIdx(MPR.me));ASC=o.asc;PL=[];
  o.pl.forEach((p,k)=>{PL.push({P:withRng(o.seed+k*977,()=>mkP(p.cls)),PS:null,B:null,st:'map',gone:0})});
  PL.forEach(q=>{if(q.P)q.P.v1=(Math.abs(o.seed|0)%2)?'s':'f'});P=PL[LK].P;CK=LK;BGM=BGM1;BGB=bgbFor(1);withRng(o.seed+31,()=>{MP=ascMap(genMap())});CUR={f:-1,j:0};neowGen();rjSave();go('map')}
 // --- 受信 ---
@@ -4594,13 +4594,13 @@ function mpMsg(o,self){if(!MPR)return;const ty=o.ty;if(o.id&&o.id!==MPR.me)MPR.s
  if(ty==='nh'){if(MPR.started){if(MPR.host&&o.id!==MPR.me)mpYield(o.id);else mpNewHost(o)}return}
  if(ty==='back'){if(MPR.started&&PL[o.k]&&o.k!==LK){PL[o.k].gone=0;PL[o.k].hpL=0;MPR.seen[MPR.pl[o.k].id]=Date.now();say(mpNm(o.k)+'が戻ってきた')}return}
  if(!MPR.started){
-  if(ty==='hello'&&MPR.host){const nm=nmClean(o.nm)||'プレイヤー',p=MPR.lob.find(q=>q.id===o.id);if(p){p.cls=o.cls;p.nm=nm}else if(MPR.lob.length<4)MPR.lob.push({id:o.id,cls:o.cls,nm});mpLobBroadcast()}
+  if(ty==='hello'&&MPR.host){const nm=nmClean(o.nm)||'プレイヤー',p=MPR.lob.find(q=>q.id===o.id);if(p){p.cls=o.cls;p.nm=nm;p.c=o.c?1:0}else if(MPR.lob.length<4)MPR.lob.push({id:o.id,cls:o.cls,nm,c:o.c?1:0});mpLobBroadcast()}
   else if(ty==='lob'){MPR.hid=o.hid;MPR.lob=(o.pl||[]).map(q=>({...q,nm:nmClean(q.nm)||'プレイヤー'}));MPR.asc=o.asc}
   else if(ty==='bye'&&MPR.host){MPR.lob=MPR.lob.filter(q=>q.id!==o.id);delete MPR.pend[o.id];mpLobBroadcast()}
   else if(ty==='bye'&&o.id===MPR.hid){MPR.msg='ホストが部屋を閉じた';MPR.lob=[]}
   else if(ty==='start'&&o.pl.some(p=>p.id===MPR.me))mpBegin(o);
   return}
- if(ty==='hello'&&MPR.host){MPR.pend[o.id]={id:o.id,cls:o.cls,nm:nmClean(o.nm)||'プレイヤー'};return}if(ty==='lob'||ty==='start')return;if(ty==='bye')delete MPR.pend[o.id];
+ if(ty==='hello'&&MPR.host){MPR.pend[o.id]={id:o.id,cls:o.cls,nm:nmClean(o.nm)||'プレイヤー',c:o.c?1:0};return}if(ty==='lob'||ty==='start')return;if(ty==='bye')delete MPR.pend[o.id];
  const k=o.id?mpIdx(o.id):-1;
  if(ty==='sync'&&k>=0&&k!==LK){PL[k].P=o.P;PL[k].st=o.st}
  else if(ty==='st'&&k>=0){PL[k].st=o.s}
@@ -4765,7 +4765,7 @@ function drawMpLobby(){mpBg(0);if(!MPR){S='mpm';return}
  let st='',sc='#7dff9a';if(NET.kind==='room'){let c=false;try{c=NET.room.connected()}catch(e){}st=c?'● オンライン接続中':'● 接続を待っている…';sc=c?'#7dff9a':'#ffd23f'}else if(NET.kind==='mq'){const c=NET.mq&&NET.mq.connected;st=c?'● オンライン接続中':'● 接続し直している…';sc=c?'#7dff9a':'#ffd23f'}else if(NET.kind==='bc'){st='オンラインにつながらなかった（'+(NET.err||'不明')+'）。インターネットの接続を確かめて入り直してほしい';sc='#ff9a6a'}
  if(NET.err&&NET.kind!=='bc')st+='　'+NET.err;if(st)txt(st,320,58,sc,'center',10);if(MPR.msg)txt(MPR.msg,320,74,'#ff9a6a','center',12);
  // 焚き火を囲む4つの立ち位置
- const L=MPR.lob||[],pos=[[120,258],[228,250],[412,250],[520,258]];
+ const L=MPR.lob||[],pos=[[120,258],[228,250],[412,250],[520,258]];if(L.length)txt(L.every(q=>q.c)?'全員クリア済み：眼の欠片のエリートが出る':'眼の欠片のエリートは、全員が1回クリアしていると出る',320,92,L.every(q=>q.c)?'#7dff9a':'#8a82b8','center',10);
  for(let i=0;i<4;i++){const[px,py]=pos[i],p=L[i];if(p){const ck=CH[p.cls]?CH[p.cls].s:'pl',im=SPR[ck],hh=ftY(im,ck);ctx.fillStyle='rgba(0,0,0,.35)';ctx.beginPath();ctx.ellipse(px,py,26,5,0,0,7);ctx.fill();ctx.drawImage(im,Math.round(px-(im.bw||im.width)/2-(im.ox||0)),py-hh+Math.round(Math.sin(T*1.8+i)));
    mpPlate(px-48,py+8,96,30);txt(p.nm||'プレイヤー',px,py+22,PCOL[i],'center',12);txt((CH[p.cls]?CH[p.cls].n:'?')+(p.id===MPR.hid?'・ホスト':''),px,py+34,'#cfc8ee','center',9);
    if(p.id===MPR.me){const ay=py-hh-10+Math.sin(T*4)*2;ctx.fillStyle='#ffd23f';ctx.beginPath();ctx.moveTo(px-5,ay-2);ctx.lineTo(px+5,ay-2);ctx.lineTo(px,ay+5);ctx.fill();txt('あなた',px,ay-6,'#ffd23f','center',9)}}
