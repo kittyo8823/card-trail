@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.85';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.86';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2240,7 +2240,7 @@ const C=[
 {n:'縮地・風切り',t:1,c:1,r:0,k:2,b:5,dr:2},{n:'紅蓮・焔舞',t:0,c:1,r:0,k:2,aa:6,vuA:1},{n:'影縫い・縛',t:0,c:1,r:0,k:2,a:7,wk:1,vu:1},{n:'瞬閃・雷切',t:0,c:1,r:0,k:2,a:9,ia:5},
 {n:'奥義・天翔龍閃',t:0,c:2,r:1,k:2,a:6,kx:4,kc:1},{n:'修羅・千手観音',t:0,c:2,r:1,k:2,a:3,h:6},{n:'破軍・星堕とし',t:0,c:2,r:1,k:2,a:18,ke:1},{n:'残心・落花',t:0,c:1,r:1,k:2,a:8,kd:2},
 {n:'絶影・鏡花水月',t:1,c:1,r:1,k:2,b:10,ct:6},{n:'禁忌・血盟の契',t:1,c:0,r:1,k:2,hp:4,kg:3,en:1},{n:'睨み・威圧の眼',t:1,c:1,r:1,k:2,wkA:1,vuA:1,x:1},{n:'絶・鬼哭啾啾',t:0,c:2,r:1,k:2,a:14,wk:2,vu:2},
-{n:'覚醒・修羅道',t:2,c:1,r:1,k:2,pw:'kig',v:2},{n:'無限・百鬼夜行',t:0,X:1,c:-1,r:1,k:2,aa:7},{n:'深淵・影喰らい',t:0,c:2,r:1,k:2,aa:6,lf:1},
+{n:'覚醒・修羅道',t:2,c:1,r:1,k:2,pw:'kig',v:2},{n:'無限・百鬼夜行',t:0,X:1,c:-1,r:1,k:2,aa:7},{n:'深淵・影喰らい',t:0,c:2,r:1,k:2,aa:6,lf:1,x:1},
 {n:'神速・無拍子',t:2,c:2,r:2,k:2,pw:'dd',v:1},{n:'終焉・黒き月',t:0,c:3,r:2,k:2,aa:18,kx:2,kc:1},{n:'一刀・魔断',t:0,c:2,r:2,k:2,a:26,ia:12},{n:'剣聖の心得',t:2,c:1,r:2,k:2,pw:'iai',v:6},
 {n:'血脈・因果応報',t:2,c:1,r:2,k:2,pw:'zan',v:1},{n:'絶界・無明の闇',t:1,c:2,r:2,k:2,b:20,ct:10,x:1},{n:'神殺し・天叢雲',t:0,c:3,r:2,k:2,a:30,kx:2,kc:1},
 {n:'目眩',t:3,c:0,r:-3,k:9,un:1,eth:1,art:'swirl'},{n:'負傷',t:3,c:0,r:-3,k:9,un:1,art:'blood'},{n:'火傷',t:3,c:0,r:-3,k:9,un:1,bn:2,art:'flame'},{n:'粘液',t:3,c:1,r:-3,k:9,x:1,art:'drop'},
@@ -2279,7 +2279,7 @@ const C=[
 {n:'奥義・無間',t:0,c:3,r:2,k:2,kh:4},{n:'刹那・時止め',t:1,c:2,r:2,k:2,stn:1,x:1},{n:'血桜の構え',t:2,c:2,r:2,k:8,pw:'vamp',v:2},
 {n:'速記',t:1,c:0,r:1,k:3,hst:1},{n:'再読',t:1,c:1,r:1,k:3,rec:1},{n:'魔力の盾',t:1,c:1,r:1,k:3,mb:2},{n:'増築',t:2,c:1,r:1,k:3,pw:'slot',v:1},
 {n:'頁の結界',t:2,c:1,r:1,k:3,pw:'chb',v:3},{n:'連鎖の頁',t:0,c:1,r:1,k:3,sp:1,a:6,csp:6},{n:'遠雷の頁',t:0,c:2,r:1,k:3,sp:3,aa:24},{n:'貯めた小銭',t:1,c:0,r:1,k:3,mdr:1},
-{n:'路地裏の喧嘩',t:0,c:1,r:1,k:3,a:3,hpm:1},{n:'物乞いの知恵',t:1,c:0,r:1,k:3,gg:12,x:1},{n:'反射の頁',t:1,c:1,r:1,k:3,sp:1,ct:8,b:4},{n:'吸魔の頁',t:0,c:1,r:1,k:3,sp:1,a:8,lf:1,mg:2},
+{n:'路地裏の喧嘩',t:0,c:1,r:1,k:3,a:3,hpm:1},{n:'物乞いの知恵',t:1,c:0,r:1,k:3,gg:12,x:1},{n:'反射の頁',t:1,c:1,r:1,k:3,sp:1,ct:8,b:4},{n:'吸魔の頁',t:0,c:1,r:1,k:3,sp:1,a:8,lf:1,mg:2,x:1},
 {n:'停滞の頁',t:1,c:2,r:2,k:3,sp:1,vuA:3,wkA:3,b:10},{n:'終わらない詠唱',t:2,c:3,r:2,k:3,pw:'rech',v:1},{n:'魔力爆縮',t:0,c:1,r:2,k:3,mxA:5},{n:'時渡りの書架',t:2,c:2,r:2,k:3,pw:'chD',v:1},
 {n:'頁の嵐',t:1,c:2,r:2,k:3,qkb:1},{n:'老人の昔話',t:1,c:1,r:2,k:3,rcl:2},{n:'魔導書の目覚め',t:1,c:1,r:2,k:3,fsp:2,x:1},
 {n:'タイムアタック',t:0,c:1,r:1,k:4,tm:1},{n:'仮眠の極意',t:1,c:2,r:1,k:4,msx:1,x:1},{n:'反復練習',t:0,c:1,r:1,k:4,a:4,gr:3},{n:'モーニングルーティン',t:1,c:1,r:1,k:4,inn:1,ts:3,dr:1},
