@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.76';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.82';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -91,7 +91,7 @@ else if(k==='ls')[392,330,262,196].forEach((f,i)=>tone(f,f*.9,.28,'sawtooth',.1,
 else if(k==='pk')tone(900,1500,.07,'square',.08);
 else if(k==='cl')tone(600,640,.03,'square',.05);else if(k==='tn'){tone(660,880,.1,'square',.1);tone(880,1320,.18,'square',.1,.1)}else if(k==='te'){tone(220,150,.2,'sawtooth',.14);tone(165,100,.3,'sawtooth',.14,.15)}}
 const TR={b:{lt:'square',lv:.11,dr:1,L:[76,0,71,76,79,76,71,0,72,0,67,72,76,72,67,0,74,0,69,74,78,74,69,0,71,0,66,71,75,71,78,75,83,0,79,76,83,0,79,76,84,0,79,76,84,0,79,76,81,0,78,74,81,0,78,74,83,0,78,75,71,0,75,78],B:[40,36,38,35,40,36,38,35]},
-x:{mt:1},t:{amb:1},b2:{fn:'b2'},b3:{fn:'b3'},x3:{fn:'x3'},v:{fn:'v'},b1s:{fn:'b1s'},b1x:{fn:'b1x'},
+x:{mt:1},t:{amb:1},gk:{fn:'gk'},e2:{fn:'e2'},b2:{fn:'b2'},b3:{fn:'b3'},x3:{fn:'x3'},v:{fn:'v'},b1s:{fn:'b1s'},b1x:{fn:'b1x'},
 m:{lt:'triangle',lv:.2,dr:0,L:[69,0,72,0,76,0,72,0,65,0,69,0,72,0,69,0,60,0,64,0,67,0,64,0,62,0,67,0,71,0,67,0],B:[45,41,48,43]}};
 function bnote(m,t,d,ty,v){const o=AC.createOscillator(),g=AC.createGain();o.type=ty;o.frequency.value=440*Math.pow(2,(m-69)/12);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(BG);o.start(t);o.stop(t+d)}
 // ボス曲用：ローパスを通した音（こもった重い音）、鐘、1ステップ分の演奏
@@ -258,7 +258,7 @@ function ambTick(){if(!AC||!ENV.g)return;const t=AC.currentTime,k=ENV.k,g=ENV.g;
  else if(k==='shop'){if(Math.random()<.018){ping(2400,2380,.35,.03,0);ping(3150,3120,.3,.022,.06)}if(Math.random()<.01)ping(660,655,1.2,.02,0);if(ENV.n[0])ENV.n[0].gg.gain.setTargetAtTime(.022+.012*Math.sin(t*.7),t,.3)}
  else if(k==='wind'&&ENV.w){const s2=.5+.5*Math.sin(t*.35)*Math.sin(t*.13+1);ENV.w.gg.gain.setTargetAtTime(.015+.04*s2,t,.4);ENV.w.f.frequency.setTargetAtTime(380+500*s2,t,.5)}
  else if(k==='drone'){if(Math.random()<.025)ping(1300,600,.25,.03,0)}}
-function bgmTick(){const tr=TR[cb];if(!AC||!tr)return;if(bnext<AC.currentTime-.3)bnext=AC.currentTime;while(bnext<AC.currentTime+.25){const t=bnext;if(tr.fn)({b2:b2Step,b3:b3Step,x3:x3Step,v:vStep,b1s:b1sStep,b1x:b1xStep})[tr.fn](bst,t);else if(tr.amb)ambStep(bst,t);else if(tr.mt)metalStep(bst%256,t);else if(tr.dr)batStep(bst,t);else if(tr.L.length===32)mapStep(bst,t);else{const i=bst%tr.L.length,bar=i>>3,s=i&7,l=tr.L[i],bs=tr.B[bar%tr.B.length];if(l)bnote(l,t,bsp*.8,tr.lt,tr.lv);
+function bgmTick(){const tr=TR[cb];if(!AC||!tr)return;if(bnext<AC.currentTime-.3)bnext=AC.currentTime;while(bnext<AC.currentTime+.25){const t=bnext;if(tr.fn)({gk:gkStep,e2:e2Step,b2:b2Step,b3:b3Step,x3:x3Step,v:vStep,b1s:b1sStep,b1x:b1xStep})[tr.fn](bst,t);else if(tr.amb)ambStep(bst,t);else if(tr.mt)metalStep(bst%256,t);else if(tr.dr)batStep(bst,t);else if(tr.L.length===32)mapStep(bst,t);else{const i=bst%tr.L.length,bar=i>>3,s=i&7,l=tr.L[i],bs=tr.B[bar%tr.B.length];if(l)bnote(l,t,bsp*.8,tr.lt,tr.lv);
 if(tr.dr){bnote(bs+(s===2||s===6?12:0),t,bsp*.85,'triangle',.35);if(s===0||s===4)kick(t);if(s===2||s===6)noise(.08,.25,1800,t,BG);else noise(.03,.1,7000,t,BG)}
 else if(!(s&1))bnote(bs,t,bsp*1.6,'triangle',.3)}
 bst++;bnext+=bsp}}
@@ -287,7 +287,50 @@ function b1xStep(n,t){const i=n%256,bar=i>>4,s=i&15,r=Y2R[bar],ch=Y2T[r],B=bar>=
  if(s===0){aOrgan(ch.map(x=>x-12),t,bsp*16,B?.012:.022);uNote(r-36,t,bsp*16,'sine',.1,200,0,.2)}
  if(s===0&&bar%2===0){bell(r+12,t);bell(r+18,t+bsp*8)}
  if(B)for(const q of Y2M)if(q[0]===bar&&q[1]===s){aChoir([q[2]-12],t,bsp*q[3],.045);aBrass(q[2]-24,t,bsp*q[3]*.9,.03)}}
-function bgm(n,sp){const v=sp||({b:.2,x:.115,t:60/76/2,b2:.19,b3:.13,x3:.17,v:.45,b1s:.15,b1x:.105})[n]||.3;if(cb===n&&bsp===v)return;if(cb==='v'&&n!=='v'&&VDK.vg&&AC){try{VDK.vg.gain.setTargetAtTime(0,AC.currentTime,.3)}catch(e){}VDK.ac=null}cb=n;bsp=v;if(!AC)return;if(!BG){BG=AC.createGain();BG.connect(MG)}bst=0;bnext=AC.currentTime+.1;clearInterval(btm);btm=setInterval(bgmTick,80)}
+// Ver2.78 門番の曲：絶望の哀歌（嬰ハ短調、半音ずつ下がる低音・オルガン・合唱・遠い鐘・重い太鼓、ピアノがぽつりと嘆く）
+const GKR=[37,36,35,34,33,32,37,37],GKT={37:[61,64,68],36:[60,64,68],35:[59,64,68],34:[58,61,66],33:[57,61,64],32:[56,60,63]};
+const GKM=[[0,0,73],[0,6,71],[0,8,68],[1,0,72],[1,8,68],[2,0,71],[2,6,69],[2,8,68],[3,0,66],[4,0,64],[4,8,66],[5,0,63],[5,8,60],[6,0,61],[7,0,61]];
+function gkStep(n,t){const i=n%128,bar=i>>4,s=i&15,r=GKR[bar],ch=GKT[r],lp=Math.floor(n/128)%2;
+ if(s===0){aOrgan(ch.map(x=>x-12),t,bsp*16,.013);aChoir(ch,t,bsp*16,lp?.024:.018);uNote(r-24,t,bsp*16,'sine',.12,200,0,.3);uNote(r-12,t,bsp*16,'sawtooth',.03,320,-6,.4);if(bar%2===0)bell(r+24,t)}
+ if(s===0||s===3)uKick(t,s?.32:.55);if(s===8)uTom(r-12,t,.14);if(bar===7&&s>=8&&s%2===0)uTom(r-12+(s-8),t,.1);
+ for(const q of GKM)if(q[0]===bar&&q[1]===s){aPiano(q[2],t,.05);if(lp)aFlute(q[2]-12,t,bsp*6,.035)}
+ if(s===12&&lp)aHarpsi(ch[2]+12,t,.012)}
+const OSC=[0,2,3,5,7,8,11],osn=k=>12*Math.floor(k/7)+OSC[((k%7)+7)%7];
+// Ver2.82 弱まった虚空の眼の曲（ユーザー採用）：低音主体の170BPMの高速戦闘曲。ニ短調・低いピアノの16分・太いシンセベース・強いキックとスネア、高い旋律やきらきらした音は使わない。32小節で1周、16〜19小節だけ静かになり20小節目の一撃から爆発する。
+// 音はすべて立ち上がりを数ミリ秒かけ（プツプツしないように）、この曲だけ専用の出口 xbus()（圧縮と柔らかい歪み）を通す：音はすべて立ち上がりを数ミリ秒かけ、出口に圧縮と柔らかい歪み
+let XB=null;function xbus(){if(XB&&XB.ctx===AC)return XB.in;const cp=AC.createDynamicsCompressor();cp.threshold.value=-18;cp.knee.value=8;cp.ratio.value=4;cp.attack.value=.006;cp.release.value=.12;
+ const sh=AC.createWaveShaper(),N=2048,c=new Float32Array(N);for(let i=0;i<N;i++){const x=i/(N-1)*2-1;c[i]=Math.tanh(x*1.6)/Math.tanh(1.6)}sh.curve=c;sh.oversample='4x';const og=AC.createGain();og.gain.value=.22;
+ const i0=AC.createGain();i0.gain.value=.45;i0.connect(cp);cp.connect(sh);sh.connect(og);og.connect(MG);XB={ctx:AC,in:i0};return i0}
+function xenv(g,t,v,a,d,rl){g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+a);g.gain.setValueAtTime(v,t+Math.max(a,d-rl));g.gain.linearRampToValueAtTime(0,t+d)}
+function xNz(d,v,fc,t,q,ty){const b=AC.createBuffer(1,Math.ceil(AC.sampleRate*d),AC.sampleRate),a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=b;f.type=ty||'bandpass';f.frequency.value=fc;f.Q.value=q||1;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.002);g.gain.exponentialRampToValueAtTime(.0005,t+d);g.gain.linearRampToValueAtTime(0,t+d+.005);s.connect(f);f.connect(g);g.connect(xbus());s.start(t);s.stop(t+d+.01)}
+function xKick(t,v){const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.setValueAtTime(155,t);o.frequency.exponentialRampToValueAtTime(48,t+.11);o.frequency.exponentialRampToValueAtTime(40,t+.35);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v*.9,t+.003);g.gain.exponentialRampToValueAtTime(v*.35,t+.12);g.gain.exponentialRampToValueAtTime(.0005,t+.38);g.gain.linearRampToValueAtTime(0,t+.39);o.connect(g);g.connect(xbus());o.start(t);o.stop(t+.4);
+ const o2=AC.createOscillator(),g2=AC.createGain();o2.type='triangle';o2.frequency.setValueAtTime(420,t);o2.frequency.exponentialRampToValueAtTime(120,t+.02);g2.gain.setValueAtTime(0,t);g2.gain.linearRampToValueAtTime(v*.25,t+.002);g2.gain.exponentialRampToValueAtTime(.0005,t+.03);g2.gain.linearRampToValueAtTime(0,t+.035);o2.connect(g2);g2.connect(xbus());o2.start(t);o2.stop(t+.04)}
+function xSnare(t,v){const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.setValueAtTime(220,t);o.frequency.exponentialRampToValueAtTime(160,t+.08);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v*.45,t+.002);g.gain.exponentialRampToValueAtTime(.0005,t+.14);g.gain.linearRampToValueAtTime(0,t+.15);o.connect(g);g.connect(xbus());o.start(t);o.stop(t+.16);xNz(.2,v*.5,1900,t,.8);xNz(.12,v*.2,4200,t,.7)}
+function xTom(m,t,v){const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.setValueAtTime(mf(m)*1.5,t);o.frequency.exponentialRampToValueAtTime(mf(m),t+.08);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.003);g.gain.exponentialRampToValueAtTime(.0005,t+.4);g.gain.linearRampToValueAtTime(0,t+.41);o.connect(g);g.connect(xbus());o.start(t);o.stop(t+.42)}
+function xBass(m,t,d,v){const f=AC.createBiquadFilter(),g=AC.createGain(),sh=AC.createWaveShaper(),N=1024,c=new Float32Array(N);for(let i=0;i<N;i++){const x=i/(N-1)*2-1;c[i]=Math.tanh(x*3)}sh.curve=c;f.type='lowpass';f.frequency.setValueAtTime(900,t);f.frequency.exponentialRampToValueAtTime(320,t+Math.min(d,.2));f.Q.value=2;
+ xenv(g,t,v,.006,d,.02);f.connect(sh);sh.connect(g);g.connect(xbus());for(const dt of[-12,12]){const o=AC.createOscillator();o.type='sawtooth';o.frequency.value=mf(m);o.detune.value=dt;o.connect(f);o.start(t);o.stop(t+d+.01)}
+ const so=AC.createOscillator(),sg=AC.createGain();so.type='sine';so.frequency.value=mf(m-12);xenv(sg,t,v*1.3,.006,d,.02);so.connect(sg);sg.connect(xbus());so.start(t);so.stop(t+d+.01)}
+function xSub(m,t,d,v){const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=mf(m);xenv(g,t,v,.05,d,.1);o.connect(g);g.connect(xbus());o.start(t);o.stop(t+d+.01)}
+function xPno(m,t,v,d){d=d||.26;const f=AC.createBiquadFilter(),g=AC.createGain();f.type='lowpass';f.frequency.setValueAtTime(2600,t);f.frequency.exponentialRampToValueAtTime(900,t+d);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.004);g.gain.exponentialRampToValueAtTime(v*.25,t+d*.6);g.gain.linearRampToValueAtTime(0,t+d);f.connect(g);g.connect(xbus());
+ for(const[r,ty,a]of[[1,'triangle',1],[1,'sawtooth',.25],[2,'sine',.25]]){const o=AC.createOscillator(),og=AC.createGain();o.type=ty;o.frequency.value=mf(m)*r;og.gain.value=a;o.connect(og);og.connect(f);o.start(t);o.stop(t+d+.01)}}
+function xRise(t,d,v){const b=AC.createBuffer(1,Math.ceil(AC.sampleRate*d),AC.sampleRate),a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=b;f.type='lowpass';f.frequency.setValueAtTime(200,t);f.frequency.exponentialRampToValueAtTime(3000,t+d);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+d*.95);g.gain.linearRampToValueAtTime(0,t+d);s.connect(f);f.connect(g);g.connect(xbus());s.start(t);s.stop(t+d+.01)}
+function xImp(t,v){xKick(t,v);const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.setValueAtTime(60,t);o.frequency.exponentialRampToValueAtTime(30,t+1.2);xenv(g,t,v*.8,.004,1.3,.6);o.connect(g);g.connect(xbus());o.start(t);o.stop(t+1.31);xNz(1.2,v*.12,1200,t,.5,'lowpass')}
+const XCR=[0,0,5,4,0,5,3,4,0,5,3,4,0,5,3,4,0,5,3,4,0,5,3,4,0,5,3,4,5,3,4,4];
+const XCP={a:[0,2,4,2,0,2,4,7,4,2,0,2,4,2,1,-1],b:[0,0,7,0,0,7,0,4,0,0,7,0,5,4,2,1],c:[7,4,2,0,7,4,2,0,9,7,4,2,7,4,2,0]};
+function e2Step(n,t){const i=n%512,bar=i>>4,s=i&15,d=XCR[bar],sec=bar<4?'I':bar<12?'A':bar<16?'B':bar<20?'Q':bar<28?'X':'F',root=26+osn(d),pn=k=>38+osn(d+k);
+ if(sec==='Q'){if(s===0){xSub(root,t,bsp*16,.3);xBass(root+12,t,bsp*16,.05)}if(s%4===0)xPno(pn([0,2,4,2][s>>2]),t,.11,.9);if(s===0||s===3)xKick(t,s?.35:.5);
+  if(bar===19){if(s===0)xRise(t,bsp*16,.12);if(s%(s<8?4:s<12?2:1)===0)xSnare(t,.25+s*.04);if(s>=8)xKick(t,.35+(s-8)*.06)}return}
+ if(s===0&&bar===20)xImp(t,1);
+ const pt=XCP[sec==='B'?'b':sec==='X'&&bar%2?'c':'a'];xPno(pn(pt[s]),t,sec==='X'?.12:.1);if(s%4===0||sec==='X'&&s%2===0)xPno(pn(pt[s])-12,t,.09);
+ if(s===0)xSub(root,t,bsp*16,.22);
+ if(sec==='I'){if(s%4===0)xKick(t,.9);if(s===0)xBass(root+12,t,bsp*16,.07);if(bar===3&&s>=8)xSnare(t,.35+(s-8)*.08);return}
+ if(sec==='A'){if(s%4===0||s===14)xKick(t,1);if(s===4||s===12)xSnare(t,1);if(s%4!==0)xBass(root+12+(s%8===6?12:0),t,bsp*.95,.11)}
+ else if(sec==='B'){if(s===0||s===6||s===10||s===11)xKick(t,1);if(s===4||s===12)xSnare(t,1);if(s===15)xSnare(t,.35);if(!(s&1))xBass(root+12+(s%4===2?12:0),t,bsp*1.9,.11)}
+ else if(sec==='X'){xKick(t,s%4===0?1:.55);if(s===4||s===12)xSnare(t,1);xBass(root+12+(s%4===2?12:0),t,bsp*.95,.12)}
+ else{if(bar<31){if([0,3,6,9,12,14].includes(s)){xKick(t,1);xSnare(t,.6);xBass(root+12,t,bsp*1.7,.14);xPno(pn(0)-12,t,.14,.4)}}else{xSnare(t,.3+s*.045);if(s%4===0){xTom(46-s,t,.45);xKick(t,.8)}}}
+ if(bar%4===3&&sec!=='F'&&s>=12)xSnare(t,.45+(s-12)*.12)}
+
+function bgm(n,sp){const v=sp||({gk:.2,e2:60/170/4,b:.2,x:.115,t:60/76/2,b2:.19,b3:.13,x3:.17,v:.45,b1s:.15,b1x:.105})[n]||.3;if(cb===n&&bsp===v)return;if(cb==='v'&&n!=='v'&&VDK.vg&&AC){try{VDK.vg.gain.setTargetAtTime(0,AC.currentTime,.3)}catch(e){}VDK.ac=null}cb=n;bsp=v;if(!AC)return;if(!BG){BG=AC.createGain();BG.connect(MG)}bst=0;bnext=AC.currentTime+.1;clearInterval(btm);btm=setInterval(bgmTick,80)}
 /* ===== 描画ヘルパー ===== */
 function mk(rows,pal,s){const h=rows.length,w=rows[0].length,c=document.createElement('canvas');c.width=w*s;c.height=h*s;const x=c.getContext('2d');rows.forEach((r,j)=>{for(let i=0;i<w;i++){const k=r[i];if(pal[k]){x.fillStyle=pal[k];x.fillRect(i*s,j*s,s,s)}}});return c}
 function txt(s,x,y,c,al,sz){ctx.font=(sz||12)+'px DotGothic16,sans-serif';ctx.textAlign=al||'left';ctx.fillStyle='#000';ctx.fillText(s,x+1,y+1);ctx.fillStyle=c||'#fff';ctx.fillText(s,x,y)}
@@ -1314,6 +1357,70 @@ return function(type,ph){return({r,p,q,l,t,e,sh})=>{
  sh()}}
 })();
 const UFS=2.9;SD.userp=[96,64,UFS,FISHD(1,0)];
+// Ver2.78 眼に関わるオーラのエリートと門番（右向きの斜めで描く）
+// 眼孔の苗床：無数の小さな眼が皮膚に生えた肉塊
+SD.auA1=[36,30,3,({t,e,l,p,q,sh})=>{
+t([[1,30],[2,22],[6,13],[13,7],[22,6],[30,9],[34,17],[36,30]],'#5e2230');
+t([[6,30],[7,22],[11,15],[19,11],[27,13],[31,21],[31,30]],'#86384a');
+t([[13,30],[15,24],[21,22],[26,25],[25,30]],'#a24c5a');t([[3,13],[7,10],[8,15],[5,17]],'#6e2a3a');t([[30,6],[33,8],[32,12],[29,11]],'#6e2a3a');
+t([[0,30],[2,26],[6,30]],'#4a1824');t([[31,30],[35,25],[36,30]],'#4a1824');
+sh();
+const O=(x,y,s)=>{e(x,y,s*1.35,s,'#efe2d4');e(x+s*.3,y,s*.6,s*.75,'#b8101e');e(x+s*.4,y,s*.28,s*.38,'#12040a');q(x+s*.1,y-s*.45,'#ffffff')};
+O(24,14,2.4);O(15.6,16.4,1.9);O(28.6,21.6,1.6);O(10.6,23.4,1.5);O(20,23.6,1.4);O(31.4,13.6,1.1);O(5.6,13.4,.9);O(17.6,9.6,.9);
+l(7.6,18,9.4,17.4,'#2a0a10',.4);l(25,27.4,27.4,27.2,'#2a0a10',.4);l(12,11,13.6,10.6,'#2a0a10',.4);
+l(12,26.6,9.4,29.6,'#d06070',.4);l(26.6,17.6,30.6,15.6,'#d06070',.4);l(20,18,22,19.6,'#d06070',.3);
+}];
+// 視神経の縛り手：背中から伸びた視神経の束で宙吊りになった人影
+SD.auA2=[30,40,3,({t,e,l,p,q,sh})=>{
+l(12.4,0,13,14,'#d8a898',1.3);l(17,0,16.4,13,'#c89080',1.1);l(7.6,0,11,15,'#b07868',.9);l(21.6,0,18.4,15,'#b07868',.9);l(15,0,14.8,12,'#e0b8a8',.7);
+t([[10.6,15],[19.4,15],[21.4,24],[20.6,33],[17,39.6],[12.4,37],[9,31],[8.8,22]],'#30202e');
+t([[13,15],[18.4,15],[19.6,25],[17.6,34],[14,34],[12,25]],'#46303e');t([[12,34],[14.6,40],[11,39.6],[9.6,35]],'#30202e');
+t([[19,16],[22.4,18.4],[24.6,27.4],[22.6,28.4],[20,20.4]],'#c8a8a0');t([[11,16],[8,19],[7,27.4],[9,27.4],[10.2,20]],'#987870');
+t([[22.4,27.4],[25,28],[24.2,30.4],[22.6,29.8]],'#b89890');
+t([[12.6,5.6],[19.4,5.6],[21.6,9],[20.6,14],[14,15],[11.8,11]],'#d6c0b2');
+sh();
+e(18.2,9.8,2.1,1.7,'#efe2d4');e(18.8,9.8,1.1,1.3,'#b8101e');q(19.2,9.2,'#ffffff');
+l(13.4,9,16,9.6,'#4a1018',.4);l(14,8.2,14.4,10.4,'#4a1018',.3);l(15.2,8.4,15.4,10.6,'#4a1018',.3);
+l(16,13,19,12.6,'#5a2028',.3);l(18.6,11.6,18.4,15.6,'#a01020',.4);
+for(const[x,y]of[[12.8,3],[16.8,4],[10,5],[19.6,6]])l(x,y,x+.2,y+2,'#ff7a90',.4);
+}];
+// 涙を飲む司祭：頭が丸ごと大きな眼球になった、ローブ姿の背の高い司祭
+SD.auA3=[32,42,3,({t,e,l,p,q,sh})=>{
+t([[9,18],[23,18],[27,30],[29,42],[3,42],[5,30]],'#26101e');
+t([[12.6,18],[20.4,18],[22.6,30],[23,42],[11.6,42],[10.6,30]],'#441a2e');
+t([[14.4,21],[18,21],[18.4,42],[14,42]],'#8a2236');t([[14.4,24],[18,24],[18,25.2],[14.4,25.2]],'#c8a050');t([[15.6,22.6],[16.8,22.6],[16.8,27],[15.6,27]],'#c8a050');
+t([[22,19],[27.4,23.4],[29.4,30],[26.4,31],[23.4,26]],'#341628');t([[26,28.6],[30,29.4],[30,32.6],[26.6,32.6]],'#c8a8a0');
+t([[27.6,24.6],[32,24.6],[31,28.4],[28.6,28.4]],'#b08a30');t([[29.4,28.4],[30.2,28.4],[30.4,31],[29.2,31]],'#b08a30');
+t([[8,13],[26,13],[23,19.6],[11,19.6]],'#26101e');
+e(17,9.6,9,8.6,'#e6d8cc');
+sh();
+e(20.6,10,4.2,4.6,'#9a1426');e(21.4,10,2.4,2.8,'#1a0408');q(22.6,8.2,'#ffffff');q(23,8.2,'#ffffff');
+l(9.6,6.6,12.6,4.6,'#c04050',.3);l(10.4,12.4,13.6,13.4,'#c04050',.3);l(24,4.4,26,7.6,'#c04050',.3);l(12,9,14,10,'#c04050',.3);
+l(20.6,14.6,20.2,20.6,'#c01020',.6);l(24.2,13,24.6,18.4,'#c01020',.5);t([[28.6,24.6],[31,24.6],[30.6,25.8],[28.8,25.8]],'#c01020');
+}];
+// 閉じた瞼の大盾：骨の縁取りの中に、縫い閉じた巨大な瞼がある浮かぶ盾（原作の盾と槍の盾にあたる）
+SD.gateS=[36,42,3,({t,e,l,p,q,sh})=>{
+t([[2,12],[0,8],[5,10]],'#bfb298');t([[24,1],[28,0],[27,4]],'#bfb298');t([[35,22],[36,27],[33,25]],'#bfb298');t([[20,41],[18,42],[17,39]],'#bfb298');
+t([[8,2],[24,1],[33,8],[35,22],[31,36],[20,41],[9,38],[3,26],[2,12]],'#cfc2a8');
+t([[10,5],[23,4],[30,10],[32,22],[29,33],[20,37.6],[11,35],[6,25],[5,13]],'#3a1020');
+t([[7.6,20.4],[12.6,14.4],[19.4,12.6],[26.2,14.4],[31.2,20.4],[26.2,26],[19.4,27.8],[12.6,26]],'#b07880');
+t([[9.6,18.6],[13.6,15.2],[19.4,13.8],[25.2,15.2],[29.2,18.6],[25.2,17.4],[19.4,16.4],[13.6,17.4]],'#d0a0a4');
+sh();
+const sm=[[8.4,20.6],[13,22.6],[19.4,23.4],[25.8,22.6],[30.4,20.6]];for(let k=0;k<4;k++)l(sm[k][0],sm[k][1],sm[k+1][0],sm[k+1][1],'#2a0610',.5);
+for(let k=0;k<9;k++){const u=(k+.5)/9,x=8.4+u*22,y=20.6+Math.sin(u*3.14)*2.8,dx=(u-.5)*2.4;l(x,y+.4,x+dx,y+2.6,'#14040a',.35)}
+l(19.6,24.2,19.9,30,'#c01020',.4);l(8,12,11,9,'#a04050',.3);l(28,30,31,27,'#a04050',.3);l(7,27,9,31,'#a04050',.3);l(24,8,27,10,'#a04050',.3);
+}];
+// 睫毛の大槍：ねじれた視神経の柄の先に骨の刃、刃の根元に眼球、柄に睫毛のとげ（原作の盾と槍の槍にあたる）
+SD.gateP=[40,44,3,({t,e,l,p,q,sh})=>{
+l(3,43,27,15,'#6a2636',2.4);l(4.4,42,27,15,'#a04858',1.1);
+t([[20,17],[25,13.6],[30,20],[25.6,23]],'#5a1a28');
+t([[24,13.4],[30.4,11.6],[39.4,0.6],[33.4,18],[28,19.4]],'#dcd0b8');t([[27,13.6],[30.4,12.6],[37.4,2.6],[31.4,16.4]],'#f2e8d6');
+e(26,17.6,4.4,4,'#efe2d4');
+sh();
+e(27.2,17.6,2.2,2.4,'#b8101e');e(27.8,17.6,1,1.3,'#12040a');q(27,16.4,'#ffffff');
+for(let k=0;k<5;k++){const x=7.4+k*3.9,y=38.6-k*4.6;l(x,y,x-2.8,y-3.2,'#14040a',.4);l(x+1,y+1,x+3.6,y+3.4,'#14040a',.4)}
+l(30.6,12.6,35.6,5.6,'#c8b898',.3);l(25,21,23,26,'#c01020',.4);
+}];
 for(const k in SD){const d=SD[k],im=paint(d[0],d[1],d[3],d[2]);SPR[k]=NOFL.test(k)?im:flipC(im)}
 // 60枚で3秒一巡（なめらかに動かすため）。ページを開いた後、少しずつ裏で描いておく。まだ描けていない絵はその場で描く
 const UFN=60,UFF=[],uFmk=k=>UFF[k]||(UFF[k]=flipC(paint(96,64,FISHD(1,k/UFN),UFS))),uFish=uFmk;
@@ -1442,7 +1549,7 @@ SPR.nnPlace=0;
  SPR.neb=MKC(80,104);nebPaint(SPR.neb.getContext('2d'),40,104,.6,{nh:1})}
 SPR.nn=(()=>{const b=SPR.grim,o=SPR.oji,c=MKC(b.width,b.height+o.height-36),x=c.getContext('2d');x.drawImage(b,0,0);x.drawImage(o,27,c.height-o.height);return c})();
 
-const I8=(r,p)=>mk(r,p,3),ICN=[
+const ICNA=mk(['r........r','r........r','.r.wwww.r.','.rrwwwwrr.','..wkwwkw..','..wwwwww..','...wkkw...','...wwww...','...w..w...'],{r:'#ff4a4a',w:'#e8e4d8',k:'#2a0408'},3),I8=(r,p)=>mk(r,p,3),ICN=[
 I8(['w......w','.w....w.','..w..w..','...ww...','...ww...','..w..w..','.k....k.','k......k'],{w:'#e8ecff',k:'#8a5a3a'}),
 I8(['r.wwww.r','rrwwwwrr','.wkwwkw.','.wwwwww.','..wkkw..','..wwww..','..w..w..','........'],{r:'#ff5a5a',w:'#e8e4d8',k:'#222'}),
 I8(['..yyyy..','.yywwyy.','yywyyyyy','yywyyyyy','yywyyyyy','yyywwyyy','.yyyyyy.','..yyyy..'],{y:'#ffd23f',w:'#fff6b0'}),
@@ -2396,11 +2503,17 @@ Object.assign(E,{
  userp:{n:'灯腸の大魚',hp:[230,230],el:2,fly:6,mv:[{a:5,h:2},{b:14,st:2},{a:31,nm:'深淵の呑み込み',fc:'#5ac8c0'},{a:9,vu:1}]},
  ulight:{n:'沈んだ灯台',hp:[240,240],el:2,mv:[{a:4,h:3},{vu:2,b:10},{a:19,nm:'灯光の薙ぎ',fc:'#d8ffe0'},{b:13,st:2}]}});
 const FIS=[[['ushell'],['ulens','ulens'],['ueel'],['uink'],['ushell','ulens']],[['udiver'],['uboat'],['ueel','uink'],['ucoral','ulens'],['ubell']],[['ubell','ulens'],['udiver','ushell'],['uboat','ucoral'],['uink','uink','ulens']]],ELS=['udrown','ugeel'];
+// Ver2.78 眼の欠片（ユーザー指定）：一度でもクリアすると各層のエリートの1つがオーラのマスになり、眼に関わる異形のエリート（通常の約1.2倍）が出る。倒すと眼の欠片。3つで眼が去り、4層（ショップ→休憩→門番→弱まった眼）へ
+Object.assign(E,{auA1:{n:'眼孔の苗床',hp:[86,90],el:1,au:1,mv:[{a:3,h:3},{b:10,lb:'開眼'},{a:3,h:4},{a:17,sx:1},{a:3,h:5}]},
+auA2:{n:'視神経の縛り手',hp:[176,184],el:1,au:1,seal:1,fly:12,mv:[{a:20},{a:8,h:3},{b:14,wk:2,vu:1},{a:30,sx:1}]},
+auA3:{n:'涙を飲む司祭',hp:[300,316],el:1,au:1,mv:[{a:12,h:2},{cp:1,b:16,lb:'写し'},{a:38,sx:1},{wk:2,vu:2,ps:6}]},
+gateS:{n:'瞼の大盾',hp:[170,170],el:1,fly:10,mv:[{ab:14,lb:'庇う'},{a:12,vu:1},{b:20,st:2},{a:22,sx:1}]},gateP:{n:'睫毛の大槍',hp:[230,230],el:1,fly:16,mv:[{a:6,h:3},{a:10,sc:['火傷',2]},{a:26,sx:1},{st:2,b:12},{a:5,h:4}]},
+eye2:{n:'虚空の眼',hp:[750,750],el:2,nt:1,cap:300,beat:1,fly:30,mv:[{vu:2,wk:2,sc:['目眩',3],lb:'凝視'},{a:2,h:12},{a:40,nm:'虚無の凝視',fc:'#ff2a2a'},{st:2,b:20,lb:'脈動'}]}});
 // Ver2.71 ボスの連撃が筋力で伸びすぎないように（ユーザー指定）：ボスの連撃は1発+2、筋力+4以上の行動は-2。ボスの筋力が上がるのは1戦で2回まで（3回目からはその行動の筋力だけ無し）
-for(const k in E)if(E[k].el===2)for(const m of E[k].mv){if(m.a&&m.h>1)m.a+=2;if(m.st>=4)m.st-=2}
+for(const k in E)if(E[k].el===2&&!E[k].nt)for(const m of E[k].mv){if(m.a&&m.h>1)m.a+=2;if(m.st>=4)m.st-=2}
 const stG=(e,m)=>m.st&&!(e.el===2&&(e.sgn||0)>=2)?m.st:0;
 // 1層の場所：P.v1 が 's' なら沈没都市、それ以外は黒い森
-const A1S=()=>!!(P&&P.act===1&&P.v1==='s'),bgbFor=a=>a===1&&P&&P.v1==='s'?BGB1S:[BGB1,BGB2,BGB3][a-1];
+const A1S=()=>!!(P&&P.act===1&&P.v1==='s'),bgbFor=a=>a===4?BGBV:a===1&&P&&P.v1==='s'?BGB1S:[BGB1,BGB2,BGB3][a-1];
 const FI=[[['slime'],['bat','bat'],['goblin'],['spider'],['slime','bat']],[['skel'],['ghost'],['goblin','spider'],['bat','bat','bat'],['ogre']],[['golem'],['ogre','bat'],['skel','ghost'],['spider','spider','bat']]];
 const FI3=[[['drone'],['priest'],['drone','drone'],['cube'],['phase'],['mirrorK']],[['sentry'],['seraph','drone'],['serpent'],['priest','cube'],['dormant'],['silencer','drone'],['splitter'],['mirrorK','drone'],['phase','priest']],[['sentry','priest'],['serpent','drone'],['cube','seraph'],['drone','drone','priest'],['seraph','seraph'],['dormant','priest'],['silencer','seraph'],['silencer','dormant'],['mirrorK','priest'],['phase','silencer'],['splitter','seraph'],['mirrorK','dormant'],['phase','phase']]];
 const FI2=[[['imp'],['bonedog','wisp'],['wisp','wisp'],['ooze'],['imp','bonedog']],[['knight'],['mage','bonedog'],['gargoyle'],['armor'],['wisp','wisp','imp']],[['armor','mage'],['knight','wisp'],['ooze','gargoyle'],['gargoyle','mage','imp'],['armor','bonedog'],['chainer'],['chainer','wisp'],['chainer','imp']]];
@@ -2430,7 +2543,7 @@ function clrGet(c){const a=clrAll()[c];return new Set(Array.isArray(a)?a:[])}
 const anyClr=()=>Object.values(clrAll()).some(l=>Array.isArray(l)&&l.length);
 // Ver2.25 初めてのクリアで、タイトルの D への誘導を出す（cardtower_hdg）
 function clrAdd(c,a){if(!anyClr()&&!HDU)try{localStorage.setItem('cardtower_hdg','1')}catch(e){}const d=clrAll(),l=Array.isArray(d[c])?d[c]:[];if(!l.includes(a)){l.push(a);d[c]=l;try{localStorage.setItem('cardtower_clr',JSON.stringify(d))}catch(e){}}}
-function go(s){ENTIP=null;if((s==='win'||s==='over')&&P)rkEnd(s==='win');if(s==='map'||s==='over'||s==='win'||s==='title')rkFlush();try{ambSet(s==='event'?'drone':null)}catch(e){}if(s==='win'&&P)clrAdd(P.cls,P.asc||0);if(!MPON()&&(s==='map'||s==='act'))saveRun();if(s==='map'&&P&&CUR&&CUR.f<0&&P.ainA!==P.act){P.ainA=P.act;AIN={t0:T,a:P.act,n:ANM()}}if(s==='map'&&CUR)MSC=Math.max(0,Math.min(MSW-624,MX(CUR.f)-200));if((s==='over'||s==='win')&&!MPON())clearSave();S=s;scr=0;mpGo(s);if(B)B.sel=-1;const bt=s==='battle'&&B;bgm(s==='title'||s==='select'?'t':s==='eyein'||(bt&&B.en.some(e=>e.k==='eye'))?'v':bt&&A1S()?(B.boss?'b1x':'b1s'):bt&&B.boss?(P.act===3?'x3':'x'):bt?['b','b2','b3'][P.act-1]:'m',0)}
+function go(s){ENTIP=null;if((s==='win'||s==='over')&&P)rkEnd(s==='win');if(s==='map'||s==='over'||s==='win'||s==='title')rkFlush();try{ambSet(s==='event'?'drone':null)}catch(e){}if(s==='win'&&P)clrAdd(P.cls,P.asc||0);if(!MPON()&&(s==='map'||s==='act'))saveRun();if(s==='map'&&P&&CUR&&CUR.f<0&&P.ainA!==P.act){P.ainA=P.act;AIN={t0:T,a:P.act,n:ANM()}}if(s==='map'&&CUR)MSC=Math.max(0,Math.min(MSW-624,MX(CUR.f)-200));if((s==='over'||s==='win')&&!MPON())clearSave();S=s;scr=0;mpGo(s);if(B)B.sel=-1;const bt=s==='battle'&&B;bgm(s==='title'||s==='select'?'t':bt&&B.en.some(e=>e.k==='eye2')?'e2':bt&&B.en.some(e=>/^gate/.test(e.k))?'gk':s==='eyein'||(bt&&B.en.some(e=>e.k==='eye'))?'v':bt&&A1S()?(B.boss?'b1x':'b1s'):bt&&B.boss?(P.act===3?'x3':'x'):bt?['b','b2','b3'][P.act-1]:'m',0)}
 function gain(k){P.relics.push(k);if(k==='astro')shuf(P.deck.filter(canUp)).slice(0,3).forEach(o=>o.u=1);if(k==='pandora'){const L=[];for(const o of P.deck)if(C[o.i].r===-1){const a={...o};o.i=cardPick(0);o.u=0;L.push([a,{...o}])}tfFx(L)}if(k==='calling'){P.deck.push({i:randCurse(),u:0});for(let j=0;j<3;j++){const r=relicPick();if(r)gain(r)}}if(k==='heart'){P.mhp+=14;P.hp+=14}if(k==='ring'){P.mhp-=8;P.hp=Math.min(P.hp,P.mhp)}if(k==='apple'){P.mhp+=10;P.hp+=10}if(k==='clover')P.gold+=100;if(k==='bottle')P.ps++;if(k==='fruit'){P.mhp+=30;P.hp+=30}if(k==='coffer'){P.ps++;while(P.pot.length<P.ps)P.pot.push(potPick())}if(k==='tome'||k==='cage')(P.bq=P.bq||[]).push(k);if(k==='kifuda')shuf(P.deck.filter(o=>encFor(o).length)).slice(0,3).forEach(o=>ench(o,pk(encFor(o))));say('レリック：'+RL[k][0]+'！ '+RL[k][1])}
 const CH=[{n:'ユウキング',hp:80,rel:'burn',s:'pl',col:'#e8505b',dk:'#3a0c14',lt:'#ff9a7a',dk:[0,0,0,0,0,1,1,1,1,2],dkt:'斬撃×5　防御×4　強打×1',st:'筋力と重い一撃で押し切る屈強な戦士。強化とブロックを得意とする。',key:'得意：筋力・ブロック・全体攻撃'},
 {n:'坂井',hp:70,rel:'snake',s:'si',col:'#58d46a',dk:'#0c2a14',lt:'#a8ffb0',dk:[0,0,0,0,0,1,1,1,1,1,44,45],dkt:'斬撃×5　防御×5　しびれ薬　見逃し',st:'毒と小ナイフで素早く仕留める暗殺者。カードを捨てて手札を回す。',key:'得意：毒・小ナイフ・ドロー'},
@@ -2510,10 +2623,11 @@ const par=(f,j)=>f?m[f-1].filter(n=>n&&n.cn.includes(j)):[];
  bands=[[5,6],[9,10,11],[12,13]],tgt=3+(R()<.45?0:R()<.6?1:2),used=new Set();let n=0;
  const put=fs=>{const l=[];for(const f of fs)if(!used.has(f))m[f].forEach((_,j)=>{if(ok(f,j))l.push([f,j])});if(!l.length)for(const f of fs)m[f].forEach((_,j)=>{if(ok(f,j))l.push([f,j])});if(!l.length)return 0;const[f,j]=pk(l);m[f][j].t=1;used.add(f);n++;return 1};
  for(const b of bands)put(b);for(let k=0;k<12&&n<tgt;k++)put(pk(bands))}
+if(!MPON()&&anyClr()&&P&&P.act<=3){const l=[];m.forEach(r=>r.forEach(n=>{if(n&&n.t===1)l.push(n)}));if(l.length)pk(l).au=1}
 m.push([{t:6,cn:[],dx:0,dy:0}]);return m}
 function avail(){if(CUR.f===-1&&P.nw===0)return[];if(CUR.f===-1)return MP[0].map((n,j)=>n?j:-1).filter(j=>j>=0);if(CUR.f===LAST)return[];return MP[CUR.f][CUR.j].cn}
 function enter(j){if(MPON()&&!MPR.ap){if(!MPR.votes[LK]||MPR.votes[LK].j!==j||MPR.votes[LK].f!==CUR.f+1)mpVote(j);return}P.back=null;const f=CUR.f+1;CUR={f,j};(P.path=P.path||[]).push(f+','+j);const n=MP[f][j];P.floors=(P.act-1)*(LAST+1)+f+1;const tt=n.t===4?qRoll():n.t;
-if(tt===0)fight(pk([A1S()?FIS:FI,FI2,FI3][P.act-1][f<4?0:f<9?1:2]),0);else if(tt===1)fight([pk([A1S()?ELS:['nob','hound','colony','phrog'],['oni','necro','behemoth'],['magik','spek','judge']][P.act-1])],1);else if(tt===6)fight(bossG()[bossI()],2);
+if(tt===7)fight(['gateS','gateP'],1);else if(tt===8)fight(['eye2'],2);else if(tt===0)fight(pk([A1S()?FIS:FI,FI2,FI3][P.act-1][f<4?0:f<9?1:2]),0);else if(tt===1&&n.au)fight([['auA1','auA2','auA3'][P.act-1]],1);else if(tt===1)fight([pk([A1S()?ELS:['nob','hound','colony','phrog'],['oni','necro','behemoth'],['magik','spek','judge']][P.act-1])],1);else if(tt===6)fight(bossG()[bossI()],2);
 else if(tt===2){shopGen();go('shop')}else if(tt===3)go('rest');else if(tt===4)evGen();else if(tt===5){const k=MPON()?mpChestPick():relicPick(),ck=has('ckey');EV={t:'宝箱',im:'chest',x:['古びた宝箱を見つけた。'].concat(ck?['呪いの鍵が疼く。開ければ呪いが1枚デッキに入る。']:[]),ch:[['開ける'+(ck?'（呪い1枚）':''),()=>{sfx('pk');if(ck)P.deck.push({i:randCurse(),u:0});if(k){gain(k);return'「'+RL[k][0]+'」を手に入れた。'+(ck?'呪いも1枚デッキに入った…':'')}return'中は空っぽだった…'+(ck?'呪いだけが残った…':'')}],['開けずに立ち去る',()=>'宝箱には手をつけなかった。']]};EV.ch=EV.ch.map(c=>[c[0],()=>{EV={t:'宝箱',im:'chest',x:[c[1]()],ch:[['次へ',()=>go('map')]]}}]);go('event')}}
 // Ver2.40 ？マスの中身（ユーザー指定：本家1作目と同じ仕組み）。戦闘10%・ショップ3%・宝箱2%から始め、残りはイベント。出た種類はその初めの確率に戻り、出なかった種類は戦闘+10%・ショップ+3%・宝箱+2%ずつ上がる。確率は P.qc に持つ（幕をまたいでも続く）。R() を使うのでマルチでも全員同じ結果
 function qRoll(){const q=P.qc||(P.qc={m:10,s:3,t:2}),r=R()*100;let k=4;if(r<q.m)k=0;else if(r<q.m+q.s)k=2;else if(r<q.m+q.s+q.t)k=5;
@@ -2539,8 +2653,8 @@ for(const k of MUTE1)for(const n of Object.keys(SPR))if(n===k||n===k+'_z'||n.sta
 // 飛ぶ雑魚：本当に宙に浮かせ、種類ごとに凝った飛び方（eMot の flyIdle）。h 浮く高さ・tr 残像
 const FLYP={ulens:{h:22,k:'drone'},bat:{h:30,k:'bat'},gargoyle:{h:20,k:'garg'},wisp:{h:26,k:'wisp',tr:1},drone:{h:24,k:'drone'},seraph:{h:18,k:'ser'},mothF:{h:22,k:'moth'},mothF2:{h:22,k:'moth'}};for(const k in FLYP)if(E[k])E[k].fly=FLYP[k].h;
 
-function fight(ks,kind){if(MPON()&&!(MPB&&MPB.init)&&!ks.includes('eye'))return mpFight(ks,kind);if(BGB!==BGBV)BGB=bgPick(kind);PS={orb:[],osl:3,foc:0,nwd:0,mig:0,sdc:0,lop:0,stm:0,shr:0,cai:0,eld:0,bcg:0,clwBk:0,forge:0,fnp:0,hlD:0,dsDr:0,fgT:0,fgAt:0,grA:0,dmP:0,strL:0,z0D:0,clwT:0,slyA:0,dbT:0,z0E:0,atKi:0,str:0,weak:0,vuln:0,poison:0,met:0,dem:0,rage:0,barr:0,comb:0,brut:0,tmp:0,dex:0,thn:0,nox:0,ibl:0,aft:0,cut:0,ki:0,cnt:0,kig:0,iai:0,zan:0,dd:0,mana:0,mgt:0,chs:0,pg:0,echo:0,arc:0,rgn:0,itg:0,sls:0,blkd:0,egy:0,psn:0,hpb:0,bers:0,udy:0,ftw:0,a3e:0,svb:0,dsd:0,pmul:0,fz:0,kdr:0,ct2:0,ksd:0,vamp:0,kfst:0,slot:0,chb:0,rech:0,chD:0,msd:0,stb:0,ms2:0,msf:0,qyp:0,gw:0,shvd:0,zt:0,mirT:0};
-B={en:MPB&&MPB.sen?MPB.sen:ks.map(k=>{const d=E[k],hp=Math.round((d.hp[0]+RI(d.hp[1]-d.hp[0]+1))*(MPB?mpHpM(MPB.np):1)*(d.el===1?(Aa(3)?1.15:1):d.el===2?(Aa(4)?1.1:1):d.mn?1:1.75*(Aa(2)?1.1:1)*(P.act===3?1.25:1)));return{k,n:d.n,hp,mh:hp,i:0,str:0,weak:0,vuln:0,poison:0,blk:0,mv:d.mv,el:d.el||0,enr:d.en,sl:d.sl||0,sb:d.sb||0,seal:d.seal||0,lim:d.lim||0,tf:d.tf||0,fly:d.fly||0,thr:d.thr||0,ph:d.ph||0,spl:d.spl||0,inv:d.inv||0,mn:d.mn||0,ld:d.ld||0,pr:d.pr||0,pt:d.pt||0,rv:d.rv||0,pst:d.pst||0,cap:d.cap?Math.round(d.cap*(MPB?mpHpM(MPB.np):1)):0,lost:0,dsp:d.dsp||0,dmp:d.dmp||0,hex:d.hex||0,rit:d.rit||0,avg:d.avg||0,fl:0,sh:0,lg:0,dead:0,it:d.mv[0]}}),
+function fight(ks,kind){SPR.eye2=SPR.eye;BFX.eye2=BFX.eye;if(MPON()&&!(MPB&&MPB.init)&&!ks.includes('eye'))return mpFight(ks,kind);if(P.act===4)BGB=BGBV;else if(BGB!==BGBV)BGB=bgPick(kind);PS={orb:[],osl:3,foc:0,nwd:0,mig:0,sdc:0,lop:0,stm:0,shr:0,cai:0,eld:0,bcg:0,clwBk:0,forge:0,fnp:0,hlD:0,dsDr:0,fgT:0,fgAt:0,grA:0,dmP:0,strL:0,z0D:0,clwT:0,slyA:0,dbT:0,z0E:0,atKi:0,str:0,weak:0,vuln:0,poison:0,met:0,dem:0,rage:0,barr:0,comb:0,brut:0,tmp:0,dex:0,thn:0,nox:0,ibl:0,aft:0,cut:0,ki:0,cnt:0,kig:0,iai:0,zan:0,dd:0,mana:0,mgt:0,chs:0,pg:0,echo:0,arc:0,rgn:0,itg:0,sls:0,blkd:0,egy:0,psn:0,hpb:0,bers:0,udy:0,ftw:0,a3e:0,svb:0,dsd:0,pmul:0,fz:0,kdr:0,ct2:0,ksd:0,vamp:0,kfst:0,slot:0,chb:0,rech:0,chD:0,msd:0,stb:0,ms2:0,msf:0,qyp:0,gw:0,shvd:0,zt:0,mirT:0};
+B={en:MPB&&MPB.sen?MPB.sen:ks.map(k=>{const d=E[k],hp=Math.round((d.hp[0]+RI(d.hp[1]-d.hp[0]+1))*(MPB?mpHpM(MPB.np):1)*(d.el===1?(Aa(3)?1.15:1):d.el===2?(Aa(4)?1.1:1):d.mn?1:1.75*(Aa(2)?1.1:1)*(P.act===3?1.25:1)));return{k,n:d.n,hp,mh:hp,i:0,str:0,weak:0,vuln:0,poison:0,blk:0,mv:d.mv,el:d.el||0,enr:d.en,sl:d.sl||0,sb:d.sb||0,seal:d.seal||0,lim:d.lim||0,tf:d.tf||0,beat:d.beat||0,fly:d.fly||0,thr:d.thr||0,ph:d.ph||0,spl:d.spl||0,inv:d.inv||0,mn:d.mn||0,ld:d.ld||0,pr:d.pr||0,pt:d.pt||0,rv:d.rv||0,pst:d.pst||0,cap:d.cap?Math.round(d.cap*(MPB?mpHpM(MPB.np):1)):0,lost:0,dsp:d.dsp||0,dmp:d.dmp||0,hex:d.hex||0,rit:d.rit||0,avg:d.avg||0,fl:0,sh:0,lg:0,dead:0,it:d.mv[0]}}),
 hand:[],dr:shuf(P.deck.map(o=>({...o}))),dis:[],ex:[],me:3,blk:0,turn:0,ph:'p',sel:-1,kind,boss:kind===2,bi:null,tut:kind===0&&!MPON()&&!tutDone()?{s:0,t0:T}:null,atks:0,vt:0,et:0,ei:0,lg:0,sh:0,dsc:0,bn:null,pl:0,fa:0,ch:[],g1:0,bkt:-9,fly:[],nd:0,lt:0};
 {B.dr=pfTop(B.dr);const isI=o=>C[o.i].inn||o.en==='royal',inn=B.dr.filter(isI);B.dr=B.dr.filter(o=>!isI(o)).concat(inn)}if(has('philo'))for(const e of B.en)e.str+=1;if(has('seye')){for(let k=0;k<2;k++)B.dr.push({i:CI('目眩'),u:0});shuf(B.dr)}if(has('mpain')){for(let k=0;k<2;k++)B.dr.push({i:CI('負傷'),u:0});shuf(B.dr)}if(has('dumb'))PS.str+=1;if(has('ring'))PS.str+=2;if(has('anchor'))B.blk=10;if(has('sya'))PS.ki+=2;if(P.cls===2&&!P.hintK){P.hintK=1;say('気と居合の説明は「？説明」→「坪内丸」を参照')}if(P.cls===3&&!P.hintM){P.hintM=1;say('詠唱と魔力の説明は「？説明」→「名無し」を参照')}if(has('lens'))PS.mana+=2;B.lch=0;if(has('ddisk'))PS.foc+=1;if(has('rcap'))PS.osl+=3;if(has('ccore'))oChan('L');if(has('svir'))oChan('D');if(has('nbat'))oChan('P');if(P.cls===6&&!P.hintN){P.hintN=1;say('小クラゲの説明は「？説明」→「ネブラ」を参照')}if(has('dice'))PS.str+=RI(3);
 B.nbE=0;if(P.nb>0){P.nb--;B.nbE=1}const hx=P.hx>0;if(hx)P.hx--;
@@ -3022,7 +3136,7 @@ if(PS.cut&&c.pw!=='cut')for(const e of alive())hitE(e,PS.cut,.1,0,0);
 if(c.gr)o.g=(o.g||0)+c.gr;if(c.cr)o.cm=(o.cm||0)+1;
 if(o.rpc){}else if(o.kr2){o.kr2=0;o.hx=null;o.ht=null;B.hand.push(o)}else if(c.t!==2)(c.x?exPush(o):B.dis.push(o));B.lastT=c.t;if(c.t===0&&B.dbn&&!c.dbn)B.dbn=0;if(c.dbn)B.dbn=1;
 if(c.dsc)B.dsc=Math.min(c.dsc,B.hand.length);B.pl++;
-const pn=B.hand.filter(q=>cd(q).pn).length;if(pn){P.killer='呪い・痛み';P.hp-=pn;nmb(110,150,'-'+pn,'#c9a0ff');if(P.hp<=0){lose();if(B.ph==='L')return}}
+{const bt=alive().find(e=>e.beat);if(bt&&!B.vt){hitP(bt,bt.beat,0);if(B.ph==='L')return}}const pn=B.hand.filter(q=>cd(q).pn).length;if(pn){P.killer='呪い・痛み';P.hp-=pn;nmb(110,150,'-'+pn,'#c9a0ff');if(P.hp<=0){lose();if(B.ph==='L')return}}
 if(!B.vt&&alive().length===0)chk();if(c.ms&&!B.vt){if(PS.msf&&B.pl===1){msBuff(c.ms);B.me+=1;drawC(2);say('短眠の極地：一瞬で目覚めた')}else{B.ms=c.ms;say('ホーリー大輔は立ったまま眠った…');endTurn()}}
 {const E2=o.en;let rpl=0;if(E2&&!o.rpc){if(E2==='swift'&&!o.fu)drawC(o.ev||1);if(E2==='adroit'){B.blk+=3;fxs('sh',110,175,{d:.4})}if(E2==='sown'&&!o.fu){B.me+=o.ev||1;nmb(34,225,'エナジー+'+(o.ev||1),'#7ec8ff')}if(E2==='momentum')o.mo=(o.mo||0)+(o.ev||5);
  if(E2==='goopy'){const dk=P.deck.find(q=>q.uid&&q.uid===o.uid);if(dk)dk.ev=(dk.ev||0)+1;o.ev=(o.ev||0)+1}if(E2==='slumb')o.sl1=0;rpl=E2==='spiral'||(E2==='glam'&&!o.fu);o.fu=1;
@@ -3048,7 +3162,7 @@ function scIt(e){if(e.i<=0)return e.mv[0];if(e.scI===e.i&&e.sit)return e.sit;e.s
  if(e.i%5===4)it={a:34,nm:'均衡の断罪',fc:'#ffd23f',sc2:['y','y'],sd:-1};
  else{const L=L0.filter(c=>c!==e.slc&&!(c==='g'&&e.hp>=e.mh*.9)),c=L[RI(L.length)],D=L0.filter(x=>x!==c),d=D[RI(D.length)],sd=RI(2);e.slc=c;it=Object.assign({},SCA[c],{sc2:sd?[d,c]:[c,d],sd})}
  return e.sit=it}
-function xIt(e){return e.k==='maiden'?mdIt(e):e.k==='scales'?scIt(e):e.mv[e.i%e.mv.length]}
+function xIt(e){return e.k==='eye2'?(e.i<=0?e.mv[0]:e.mv[1+(e.i-1)%(e.mv.length-1)]):e.k==='maiden'?mdIt(e):e.k==='scales'?scIt(e):e.mv[e.i%e.mv.length]}
 function enemyAct(e){if(e.dead)return;if(e.nw){e.nw=0;return}if(e.reb){rvE(e);return}if(e.tb){e.blk=Math.max(0,e.blk-e.tb);e.tb=0}
 if(e.poison>0){let pd=e.poison*(PS.pmul?2:1);if(e.cap){pd=Math.min(pd,Math.max(0,e.cap-e.lost));e.lost+=pd}e.hp-=pd;{const q=ePos(B.en.indexOf(e));nmb(q.x,150,String(pd),'#7dff9a');fxs('pz',q.x,q.y-(SPR[e.k]?SPR[e.k].height/2:30),{d:1.1,s:1})}e.poison--;if(e.inv&&e.hp<1)e.hp=1;if(e.hp<=0){killE(e);return}}
 if(e.doom>0&&!e.inv&&e.hp<=e.doom){const q=ePos(B.en.indexOf(e));nmb(q.x,150,'破滅','#b07cff');fxs('rg',q.x,q.y-40,{d:.6,c:'#b07cff'});e.hp=0;killE(e);return}
@@ -3065,13 +3179,13 @@ if(m.wf&&!nat)mpEach(()=>{B.blk=0});if(m.a&&!nat)for(let k=0;k<(m.h||1);k++){hit
 if(m.vu&&P.hp>0){PS.vuln+=m.vu;B.jv=1;nmb(110,118,'弱体+'+m.vu,'#ff9a6a');sfx('ps')}},tk>=0?tk:null);if(!MPB&&P.hp<=0)return;if(B.ph==='L')return;
 // 筋力アップは攻撃のあと（予告の数字どおりのダメージにする）。儀式 rit は行動のたびに筋力が上がる
 if(e.rit&&!e.dead){e.str+=e.rit;pop(e,'儀式 筋力+'+e.rit,'#ff8c2e')}
-if(stG(e,m)){e.sgn=(e.sgn||0)+1;e.str+=m.st;fxs('ar',p.x,p.y-40,{s:'▲',c:'#ff6a6a',d:.7});pop(e,'筋力+'+m.st,'#ffd23f');sfx('bf')}
+if(m.cp){const s2=Math.max(2,PS.str|0);e.str+=s2;pop(e,'写し取り 筋力+'+s2,'#ff6a8a');sfx('bf')}if(stG(e,m)){e.sgn=(e.sgn||0)+1;e.str+=m.st;fxs('ar',p.x,p.y-40,{s:'▲',c:'#ff6a6a',d:.7});pop(e,'筋力+'+m.st,'#ffd23f');sfx('bf')}
 if(e.k==='maiden'){const lv=wlv(e);e.wl=m.wf?0:Math.min(WLMX,lv+1);e.wdt=0;if(m.wf){e.i--;pop(e,'水位が引いた','#5ac8ff')}else if(e.wl>=3)pop(e,'水位'+e.wl,'#5ac8ff')}
 e.i++;if(e.weak>0)e.weak--;if(e.vuln>0)e.vuln--}
 function endBattle(){recTry('dmg',P.bTD||0);if(B.boss&&!B.hurt)P.perf++;if(has('burn'))P.hp=Math.min(P.mhp,P.hp+6);if(has('cheese')){P.mhp+=1;P.hp+=1}if(PS&&PS.shr)P.hp=Math.min(P.mhp,P.hp+PS.shr);if(has('ribbon'))P.hp=Math.min(P.mhp,P.hp+3);
-const k=B.kind;let g=Math.round((k===0?10+RI(10):k===1?25+RI(15):60)*(has('frog')?1.25:1)*(1+(P.act-1)*.3))+(has('purse')?12:0)+(PS&&PS.gw||0);if(has('ecto'))g=0;P.gold+=g;P.ge+=g;if(k===2&&P.act>=3){P.hp=P.mhp;P.eyT=T;clrAdd(P.cls,P.asc||0);go('eyein');return}
-const rel=k===1?relicPick():null;if(rel)gain(rel);if(k===1&&P.el2){P.el2=0;const r3=relicPick();if(r3){gain(r3);say('？？？の加護：レリック「'+RL[r3][0]+'」も手に入れた')}}if(k===1&&has('bstar')){const r2=relicPick();if(r2)gain(r2)}
-RW={g,rel,pot:(k>=1||R()<.4)?potPick():null,cards:(k===2?rare3():pick3(()=>cardPick(k===1))).slice(0,has('crown')?1:3),el:k===1,title:k===2?'ボス撃破報酬：レアカードを選択':null,boss:k===2};go('reward')}
+const k=B.kind;let g=Math.round((k===0?10+RI(10):k===1?25+RI(15):60)*(has('frog')?1.25:1)*(1+(P.act-1)*.3))+(has('purse')?12:0)+(PS&&PS.gw||0);if(has('ecto'))g=0;P.gold+=g;P.ge+=g;if(k===2&&P.act===4){P.eyeWin=1;go('win');return}if(k===2&&P.act===3){P.hp=P.mhp;P.eyT=T;clrAdd(P.cls,P.asc||0);go('eyein');return}
+const shd=k===1&&B.en.some(e=>E[e.k]&&E[e.k].au);if(shd)P.shd=Math.min(3,(P.shd||0)+1);const rel=k===1?relicPick():null;if(rel)gain(rel);if(k===1&&P.el2){P.el2=0;const r3=relicPick();if(r3){gain(r3);say('？？？の加護：レリック「'+RL[r3][0]+'」も手に入れた')}}if(k===1&&has('bstar')){const r2=relicPick();if(r2)gain(r2)}
+RW={g,rel,shd,pot:(k>=1||R()<.4)?potPick():null,cards:(k===2?rare3():pick3(()=>cardPick(k===1))).slice(0,has('crown')?1:3),el:k===1,title:k===2?'ボス撃破報酬：レアカードを選択':null,boss:k===2};go('reward')}
 const POT={pfoc:['集中の薬','集中+2','#5ab8ff',6,1],pdark:['闇の素','枠の数だけ闇クラゲを呼ぶ','#b06aff',6,2],pcap:['器の薬','小クラゲの枠+2','#7ee8ff',6,0],heal:['回復の雫','HPを20回復','#ff5a7a'],str:['力のエキス','この戦闘中 筋力+2','#ff8c2e'],blk:['鉄壁の水薬','ブロック+12','#7ec8ff'],draw:['疾風の薬','カードを3枚引く','#c9a0ff'],fire:['業火の瓶','全敵に20ダメージ','#ff6a2a'],venom:['毒蛇の瓶','全敵に毒8','#7dff9a'],weak:['弱体の薬','全敵に弱体3','#ff9a6a'],nrg:['気つけ薬','エナジー+2','#ffd23f'],life:['命の水','最大HP+5','#ff9ad0'],ki:['心眼の薬','気+4（坪内丸）','#4aa8ff',2],
 dex:['敏捷の薬','この戦闘中 敏捷+2','#7ec8ff',,2],fear:['恐怖の薬','全敵に脆弱3','#c9a0ff',,1],thunder:['雷の瓶','ランダムな敵に8ダメージ×4','#ffe14a',,3],regen:['再生の薬','3ターンの間 ターン開始時にHP+5','#7dff9a',,1],
 ghost:['霊体の薬','次の自分のターンまで 受けるダメージが1になる','#e8ecff',,2],fairy:['妖精の小瓶','力尽きたとき自動で使用：最大HPの30%で復活','#ff9ad0',,1],gamble:['運試しの薬','手札をすべて捨て、同じ枚数を引く','#ffb02e',,3],
@@ -3440,7 +3554,7 @@ const PSD=[['foc','集中','#5ab8ff','小クラゲ（プラズマ以外）の数
 ['msd','体内','#7dff9a','マイクロスリープのたび 敵全体に$ダメージ'],['stb','超回','#7ec8ff','筋力を得るたびブロック+$'],['ms2','育つ','#7dff9a','マイクロスリープの回復と筋力が2倍'],['msf','極地','#7dff9a','ターン最初のマイクロスリープでターンが終わらない'],['qyp','穴','#c8e86a','毎ターン開始時、スカンクがランダムな敵に$ダメージと毒2'],
 ['gw','貯金','#ffd23f','戦闘に勝つと$ゴールド'],['shvd','研刃','#e8ecff','小ナイフのダメージ+$'],['zt','逆風','#4aa8ff','このターン、攻撃を受けるたび気+1'],['mirT','鏡','#e8ecff','このターン、受けたダメージを相手に返す']];
 function stat(o,isP){const t=[],a=(l,c,d)=>t.push([l,c,d]);if(!isP&&o.k==='maiden'){const lv=wlv(o);a('水位'+lv+'/'+WLMX,'#5ac8ff','水位'+lv+'/'+WLMX+'：敵のターンごとに1上がり、'+WLMX+'になると「大瀑布」（即死）。1ターンに25ダメージ与えるごとに1下がる（このターン '+(o.wdt||0)+'ダメージ）')}if(!isP&&o.k==='scales'){const it=o.it||{},c=it.sc2&&it.sd>=0?it.sc2[it.sd]:null;a('天秤'+(c?'：'+SCN[c]:''),c?SCC[c]:'#ffd23f','天秤：傾いた側の玉の色で行動が決まる。赤=強攻撃 白=連撃 青=防御と筋力 緑=回復 紫=毒 黄=弱体。5ターンごとに「均衡の断罪」')}if(o.str)a('力'+o.str,'#ffd23f','筋力'+o.str+'：攻撃のダメージが'+(o.str>0?'+':'')+o.str);if(o.weak>0)a('脆弱'+o.weak,'#c9a0ff','脆弱：与えるダメージが0.75倍（残り'+o.weak+'ターン）');if(o.vuln>0)a('弱体'+o.vuln,'#ff9a6a','弱体：受けるダメージが1.5倍（残り'+o.vuln+'ターン）');if(o.poison>0)a('毒'+o.poison,'#7dff9a',(isP?'毒：自分のターン終了時に'+o.poison+'ダメージ（ブロックで防げる）、その後1減少':'毒：ターン開始時に'+o.poison+'ダメージ、その後1減少'));
-if(isP){for(const [k,l,c,d] of PSD)if(PS[k])a(l+(k==='barr'?'':PS[k]),c,l+'：'+d.replace('$',PS[k]))}else{if(o.ld)a('主','#c9a0ff','主：倒すと従者も逃げ去る');if(o.mn)a('従者','#c8c8d8','従者：主が倒れると逃げ去る');if(o.pr)a('連動','#ff8c2e','連動：片方の腕が壊れると、もう片方は筋力+5・ブロック+99（次の行動まで）');if(o.tb)a('激昂','#ff8c2e','激昂：次の行動までブロック+99');if(o.rv)a('再起動','#5ff6ff','再起動：HPが0になると機能停止し、次の行動で新たな姿になって起き上がる');if(o.reb)a('停止中','#5ff6ff','機能停止中：次の行動で再起動する');if(o.pst)a('棘槍','#c8c8d8','棘槍：この敵の攻撃でHPが減るたび、捨て札に負傷を1枚加える');if(o.enr)a('怒','#ff6a6a','激昂：スキルを使うたび、この敵の筋力+2');if(o.rit)a('儀式'+o.rit,'#ff8c2e','儀式：行動するたびに筋力+'+o.rit);if(o.avg)a('報復','#ff6a6a','報復：仲間が倒れると筋力+'+o.avg+'・ブロック+10');if(o.cap)a('硬殻'+o.cap,'#d8c8a0','硬い殻：1ターンに失うHPは最大'+o.cap+'（このターン残り'+Math.max(0,o.cap-o.lost)+'）');if(o.dsp)a('寄生','#9aff6a','寄生：倒すと寄生虫が2匹這い出る');if(o.dmp)a('減衰','#9ab0ff','減衰：この敵が生きている間、こちらのカードの強化が無効になる');if(o.hex)a('呪縛','#5ff6ff','呪縛：この敵が生きている間、毎ターン手札の半分（切り捨て）がエセリアルになる（ターン終了時に手札に残ると廃棄）');if(o.sl>0)a('睡眠'+o.sl,'#9ab0ff','睡眠：HPにダメージを受けるか、'+o.sl+'ターン経つと目覚める');if(o.seal)a('封印'+o.seal,'#c9a0ff','封印：自分のターン開始時、手札の'+o.seal+'枚を封じて使えなくする');if(o.lim)a('沈黙'+o.lim,'#c8c8d8','沈黙：この敵がいる間、1ターンに使えるカードは'+o.lim+'枚まで');if(o.tf&&!o.tfd)a('変身','#ff6a6a','HPが半分以下になると真の姿を現す');if(o.thr)a('鏡面'+o.thr,'#9af6ff','攻撃されるたびに'+o.thr+'ダメージを返す');if(o.doom>0)a('破滅'+o.doom,'#b07cff','破滅：敵のターン開始時、HPが'+o.doom+'以下なら倒れる');if(o.ph)a(B&&ePhOn(o,B.turn)?'位相中':'位相','#ff4fd8',(o.ph===3?'3ターンごと（3・6・9…ターン目）':'奇数ターン')+'は別の位相にいて、受けるダメージがすべて1になる');if(o.spl&&!o.spd)a('分裂','#ff4fd8','HPが半分以下になると2体に分かれる');if(o.inv)a('不滅','#ff2a2a','倒すことはできない')}return t}
+if(isP){for(const [k,l,c,d] of PSD)if(PS[k])a(l+(k==='barr'?'':PS[k]),c,l+'：'+d.replace('$',PS[k]))}else{if(o.ld)a('主','#c9a0ff','主：倒すと従者も逃げ去る');if(o.mn)a('従者','#c8c8d8','従者：主が倒れると逃げ去る');if(o.pr)a('連動','#ff8c2e','連動：片方の腕が壊れると、もう片方は筋力+5・ブロック+99（次の行動まで）');if(o.tb)a('激昂','#ff8c2e','激昂：次の行動までブロック+99');if(o.rv)a('再起動','#5ff6ff','再起動：HPが0になると機能停止し、次の行動で新たな姿になって起き上がる');if(o.reb)a('停止中','#5ff6ff','機能停止中：次の行動で再起動する');if(o.pst)a('棘槍','#c8c8d8','棘槍：この敵の攻撃でHPが減るたび、捨て札に負傷を1枚加える');if(o.enr)a('怒','#ff6a6a','激昂：スキルを使うたび、この敵の筋力+2');if(o.rit)a('儀式'+o.rit,'#ff8c2e','儀式：行動するたびに筋力+'+o.rit);if(o.avg)a('報復','#ff6a6a','報復：仲間が倒れると筋力+'+o.avg+'・ブロック+10');if(o.cap)a('硬殻'+o.cap,'#d8c8a0','硬い殻：1ターンに失うHPは最大'+o.cap+'（このターン残り'+Math.max(0,o.cap-o.lost)+'）');if(o.dsp)a('寄生','#9aff6a','寄生：倒すと寄生虫が2匹這い出る');if(o.dmp)a('減衰','#9ab0ff','減衰：この敵が生きている間、こちらのカードの強化が無効になる');if(o.hex)a('呪縛','#5ff6ff','呪縛：この敵が生きている間、毎ターン手札の半分（切り捨て）がエセリアルになる（ターン終了時に手札に残ると廃棄）');if(o.sl>0)a('睡眠'+o.sl,'#9ab0ff','睡眠：HPにダメージを受けるか、'+o.sl+'ターン経つと目覚める');if(o.seal)a('封印'+o.seal,'#c9a0ff','封印：自分のターン開始時、手札の'+o.seal+'枚を封じて使えなくする');if(o.lim)a('沈黙'+o.lim,'#c8c8d8','沈黙：この敵がいる間、1ターンに使えるカードは'+o.lim+'枚まで');if(o.tf&&!o.tfd)a('変身','#ff6a6a','HPが半分以下になると真の姿を現す');if(o.thr)a('鏡面'+o.thr,'#9af6ff','攻撃されるたびに'+o.thr+'ダメージを返す');if(o.doom>0)a('破滅'+o.doom,'#b07cff','破滅：敵のターン開始時、HPが'+o.doom+'以下なら倒れる');if(o.ph)a(B&&ePhOn(o,B.turn)?'位相中':'位相','#ff4fd8',(o.ph===3?'3ターンごと（3・6・9…ターン目）':'奇数ターン')+'は別の位相にいて、受けるダメージがすべて1になる');if(o.spl&&!o.spd)a('分裂','#ff4fd8','HPが半分以下になると2体に分かれる');if(o.inv)a('不滅','#ff2a2a','倒すことはできない');if(!isP&&o.beat)a('鼓動','#ff2a4a','鼓動：カードを1枚使うたび、'+o.beat+'ダメージを受ける');if(!isP&&o.cap&&o.k==='eye2')a('上限'+o.cap,'#c8c8d8','1ターンに失うHPは'+o.cap+'まで')}return t}
 function chips(t,x,y,al,mw){ctx.font='10px DotGothic16,sans-serif';const rows=[[]];let w=0;for(const a of t){const cw=Math.ceil(ctx.measureText(a[0]).width)+6;if(w+cw>mw&&rows[rows.length-1].length){rows.push([]);w=0}rows[rows.length-1].push([a,cw]);w+=cw+2}
 rows.forEach((r,j)=>{let cx=al==='c'?x-(r.reduce((s,q)=>s+q[1]+2,-2))/2:x;const cy=y+j*12;for(const [a,cw] of r){ctx.fillStyle='rgba(8,6,20,.75)';ctx.fillRect(cx,cy,cw,11);txt(a[0],cx+cw/2,cy+10,a[1],'center',10);hit(cx,cy,cw,11,()=>say(a[2]));cx+=cw+2}})}
 function hpBar(x,y,w,hp,mh,col,blk,ps,dm){ctx.fillStyle='#000';ctx.fillRect(x-1,y-1,w+2,12);ctx.fillStyle='#5a1a22';ctx.fillRect(x,y,w,10);ctx.fillStyle=blk>0?'#4a8fe0':col;ctx.fillRect(x,y,Math.max(0,w*hp/mh),10);
@@ -3457,7 +3571,7 @@ const BOSSGS=[['userp'],['ulight']],BICNS=['userp','ulight'],bossG=()=>A1S()?BOS
 function bossI(){P.bsi=P.bsi||{};if(P.bsi[P.act]==null)P.bsi[P.act]=MPON()?withRng(MPR.seed+P.act*977,()=>RI(bossG().length)):Math.floor(Math.random()*bossG().length);return P.bsi[P.act]}
 const bossNm=()=>{const i=bossI();return bossN()[i]||E[bossIc()[i]].n};
 let BIC={};const bossIcon=k=>{if(BIC[k])return BIC[k];const im=SPR[k],c=MKC(24,24),x=c.getContext('2d'),sc=Math.min(24/im.width,24/im.height);x.imageSmoothingEnabled=false;x.drawImage(im,Math.round(12-im.width*sc/2),Math.round(24-im.height*sc),Math.round(im.width*sc),Math.round(im.height*sc));return BIC[k]=c};
-function topbar(){ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,640,30);txt('HP '+(S==='battle'&&B?Math.min(P.mhp,vHP()):P.hp)+'/'+P.mhp,6,21,'#ff9a9a','left',14);txt('G '+P.gold,92,21,'#ffd23f','left',14);txt(P.act+'-'+Math.max(1,CUR.f+1),146,21,'#cfe8ff','left',14);if(P.asc)txt('A'+P.asc,146,29,'#ff6a6a','left',8);
+function topbar(){ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,640,30);txt('HP '+(S==='battle'&&B?Math.min(P.mhp,vHP()):P.hp)+'/'+P.mhp,6,21,'#ff9a9a','left',14);txt('G '+P.gold,92,21,'#ffd23f','left',14);if(!MPON()&&P.act<=3&&(P.shd||anyClr())){ctx.drawImage(SHDI(),92,22,8,8);txt('欠片'+(P.shd||0)+'/3',102,29,'#ff8a9a','left',8)}txt(P.act+'-'+Math.max(1,CUR.f+1),146,21,'#cfe8ff','left',14);if(P.asc)txt('A'+P.asc,146,29,'#ff6a6a','left',8);
 for(let k=0;k<P.ps;k++){const x=180+k*31,po=P.pot[k];ctx.fillStyle='#1d2040';ctx.fillRect(x,1,28,28);ctx.fillStyle=po?'#f6f2ff':'#3a3a5a';ctx.fillRect(x,1,28,2);ctx.fillRect(x,27,28,2);ctx.fillRect(x,1,2,28);ctx.fillRect(x+26,1,2,28);if(po)ctx.drawImage(potIcon(po),x+2,3,24,24);hit(x-1,0,31,44,()=>po?potMenu(k):say('ポーション欄（空）'))}
 P.relics.forEach((k,i)=>{const x=6+(i%25)*25,y=33+Math.floor(i/25)*25;const used=k==='amulet'&&P.amu;if(used)ctx.globalAlpha=.35;ctx.drawImage(rIcon(k),x,y,24,24);ctx.globalAlpha=1;const rc=relCnt(k);if(rc!=null){const t=String(rc);ctx.font='10px DotGothic16,sans-serif';ctx.textAlign='right';ctx.lineJoin='round';ctx.lineWidth=3;ctx.strokeStyle='#120c1c';ctx.strokeText(t,x+24,y+24);ctx.fillStyle='#fff';ctx.fillText(t,x+24,y+24)}hit(x,y,24,24,()=>say(RL[k][0]+'：'+RL[k][1]))});
 if(S==='battle'&&B)txt('ターン'+B.turn+'　'+(B.ph==='e'&&!(B.bn&&B.bn.dl>0)?'敵のターン':'自分のターン'),186+P.ps*31,13,B.ph==='e'&&!(B.bn&&B.bn.dl>0)?'#ff8a8a':'#7ec8ff','left',11);
@@ -3472,7 +3586,8 @@ function drawVol(){const x=436,y=32,w=200,h=72;hit(0,0,640,360,()=>{VP=0});ctx.f
 // 名無しの魔導書：老人の後ろに浮かび、詠唱中の魔法を頁の札で示す
 BFX.archdemon2=BFX.archdemon;
 // エリートの強攻撃の演出（ボスより控えめ。技名・「必殺」表示なし）。a=気をためる位置（反転後の絵の割合）
-const EFX={nob:{c:'#ffd23f',t:'slam'},hound:{c:'#ff8a2a',t:'fire',a:[.09,.45]},oni:{c:'#ff3b3b',t:'slam'},necro:{c:'#7dff9a',t:'orb',a:[.18,.12]},behemoth:{c:'#d8a060',t:'slam'},colossus:{c:'#ff4fd8',t:'beam',a:[.42,.17]},oracle:{c:'#ff4fd8',t:'beam',a:[.42,.44]},judge:{c:'#5ff6ff',t:'pillar',a:[.5,.2]},colony:{c:'#e8c88a',t:'stab',a:[.5,.5]},phrog:{c:'#9aff6a',t:'orb',a:[.12,.45]},magik:{c:'#9ab0ff',t:'bomb',a:[.09,.47]},spek:{c:'#5ff6ff',t:'fire',a:[.05,.15],pl:['#1a6aff','#5ff6ff','#9af6ff','#ffffff']}};
+Object.assign(ECAT,{auA1:'blob',auA2:'cast',auA3:'cast',gateS:'cast',gateP:'cast'});Object.assign(AST,{auA1:'acid',auA2:'lash',auA3:'magic',gateS:'bash',gateP:'stab'});
+const EFX={auA1:{c:'#ff3b5c',t:'stab',a:[.5,.5]},auA2:{c:'#c9a0ff',t:'beam',a:[.6,.25]},auA3:{c:'#ff2a4a',t:'pillar',a:[.5,.2]},gateS:{c:'#ff3b5c',t:'slam'},gateP:{c:'#ff8a3a',t:'stab',a:[.5,.5]},nob:{c:'#ffd23f',t:'slam'},hound:{c:'#ff8a2a',t:'fire',a:[.09,.45]},oni:{c:'#ff3b3b',t:'slam'},necro:{c:'#7dff9a',t:'orb',a:[.18,.12]},behemoth:{c:'#d8a060',t:'slam'},colossus:{c:'#ff4fd8',t:'beam',a:[.42,.17]},oracle:{c:'#ff4fd8',t:'beam',a:[.42,.44]},judge:{c:'#5ff6ff',t:'pillar',a:[.5,.2]},colony:{c:'#e8c88a',t:'stab',a:[.5,.5]},phrog:{c:'#9aff6a',t:'orb',a:[.12,.45]},magik:{c:'#9ab0ff',t:'bomb',a:[.09,.47]},spek:{c:'#5ff6ff',t:'fire',a:[.05,.15],pl:['#1a6aff','#5ff6ff','#9af6ff','#ffffff']}};
 EFX.udrown={c:'#9ab8a0',t:'stab'};EFX.ugeel={c:'#5ac8c0',t:'stab'};
 function efxCh(o,ef,p){const a=ef.a||[.5,.45],ax=o.x+o.w*a[0],ay=o.y+o.h*a[1];ctx.globalAlpha=p;for(let k=0;k<14;k++){const an=hs(k)*6.283,r=(1-((p*1.4+hs(k+2))%1))*56;sq(ax+Math.cos(an)*r,ay+Math.sin(an)*r*.7,k%3?3:4,k%4?ef.c:'#fff')}
  for(let w=0;w<3;w++){const q=1-((T*1.6+w/3)%1);ctx.globalAlpha=p*(1-q)*.9;ell(o.x+o.w/2,o.y+o.h*.55,o.w*.35+q*60,o.h*.3+q*40,28,3,w%2?'#fff':ef.c,T)}ctx.globalAlpha=p;
@@ -3535,7 +3650,19 @@ function drawEyeIn(){ctx.fillStyle='#050003';ctx.fillRect(0,0,640,360);ctx.globa
  const im=SPR.eye,a=Math.min(1,el*.25)*(.6+.1*Math.sin(T*2)),ey=Math.round(40+Math.sin(T*1.2)*4);eyeTent(320,ey+im.height/2,im.width,im.height,a*.4);ctx.globalAlpha=a*.5;ctx.drawImage(im,Math.round(320-im.width/2),ey);ctx.globalAlpha=1;
  const L=['第3層を踏破した。','だが、塔の頂のさらに上――','何かが、こちらを見ている。'];let u=Math.floor(el*14);L.forEach((l,i)=>{const n=Math.max(0,Math.min(l.length,u));u-=l.length+4;if(n)txt(l.slice(0,n),320,226+i*24,i===2?'#ff6a6a':'#e8d8e0','center',15)});
  if(el>4)btn(250,306,140,32,'最上階へ',eyeGo,'#5a0a1a',15)}
-function eyeGo(){sfx('ch');BGB=BGBV;fight(['eye'],2)}
+function eyeGo(){sfx('ch');BGB=BGBV;fight(['eye'],2);if(!MPON()&&(P.shd||0)>=3){B.ph='lv';B.lvT=T;B.hand=[]}}
+// Ver2.78 眼の欠片が3つそろっている時：眼は欠片の光を避けて去り、「先へ進む」で4層へ
+function drawLv(){const el=T-B.lvT,a=x=>Math.max(0,Math.min(1,x));ctx.fillStyle='rgba(0,0,0,'+(.55*a(el/.6))+')';ctx.fillRect(0,236,640,124);
+ ctx.globalAlpha=a((el-.2)/.6);ctx.drawImage(SHDI(),232,252,24,24);ctx.drawImage(SHDI(),308,252,24,24);ctx.drawImage(SHDI(),384,252,24,24);ctx.globalAlpha=a((el-.4)/.6);txt('三つの眼の欠片が、静かに光を放つ…',320,296,'#ffb0c0','center',13);
+ ctx.globalAlpha=a((el-3.4)/.6);txt('虚空の眼は、光を避けるように去っていった。',320,318,'#cfc8ee','center',13);ctx.globalAlpha=1;
+ if(el>4)btn(260,328,120,26,'先へ進む',()=>{sfx('pk');startAct()},'#7a1a2a',14)}
+let SHDC=null;function SHDI(){if(SHDC)return SHDC;const c=MKC(28,28),g=c.getContext('2d'),P2=(pts,col)=>{g.fillStyle=col;g.beginPath();pts.forEach((q,k)=>k?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]));g.closePath();g.fill()};
+ P2([[14,1],[25,10],[20,27],[6,24],[3,9]],'#3a0610');P2([[14,3],[23,10],[19,25],[7,22],[5,10]],'#a01828');P2([[14,3],[23,10],[14,12],[5,10]],'#c8303c');
+ g.fillStyle='#e8dcd0';g.beginPath();g.ellipse(14,15,6,4.5,0,0,6.3);g.fill();g.fillStyle='#c01020';g.beginPath();g.arc(15,15,3,0,6.3);g.fill();g.fillStyle='#100408';g.beginPath();g.arc(15.5,15,1.5,0,6.3);g.fill();g.fillStyle='#fff';g.fillRect(16,13,1,1);return SHDC=c}
+function auraD(x,y,r){const C=new Set(),G=2,tk=Math.floor(T*7),hs=(a,b)=>{const v=Math.sin(a*12.9898+b*78.233)*43758.5453;return v-Math.floor(v)},put=(px,py)=>C.add(Math.round(px/G)+','+Math.round(py/G));
+ for(let k=0;k<20;k++){const a=k/20*6.283,c=Math.cos(a),sn=Math.sin(a),up=sn<0?1+(-sn)*.8:.5,h=Math.round((2+hs(k,tk)*2.4)*up);for(let s2=0;s2<=h;s2++){const d=r+2+s2*G,w=Math.max(0,Math.round((h-s2)/h*1.4)),px=x+c*d,py=y+sn*d-s2*G*.55;for(let q=-w;q<=w;q++)put(px-sn*q*G,py+c*q*G)}}
+ ctx.fillStyle='rgba(70,255,140,.48)';for(const v of C){const[a,b]=v.split(',');ctx.fillRect(+a*G-1,+b*G-1,G,G)}}
+function genMap4(){LAST=3;const m=[];for(let f=0;f<LAST;f++){const r=Array(MR).fill(null);r[2]={t:[2,3,7][f],cn:[f<LAST-1?2:0],dx:0,dy:0};m.push(r)}m.push([{t:8,cn:[],dx:0,dy:0}]);return m}
 function sealMk(x,y){ctx.fillStyle='rgba(40,10,60,.35)';ctx.fillRect(x,y,84,106);for(let k=0;k<12;k++){sq(x+5+k*6.7,y+8+k*8,5,k%2?'#8a8fa0':'#c8ccd8');sq(x+79-k*6.7,y+8+k*8,5,k%2?'#8a8fa0':'#c8ccd8')}ctx.strokeStyle='#c9a0ff';ctx.lineWidth=2;ctx.strokeRect(x+37,y+40,10,8);ctx.fillStyle='#08060f';ctx.fillRect(x+33,y+46,18,16);ctx.fillStyle='#c9a0ff';ctx.fillRect(x+35,y+48,14,12);ctx.fillStyle='#08060f';ctx.fillRect(x+41,y+52,2,4)}
 // カードの動き（原作風）：引く＝山札から手札へ滑り込む／使う＝中央に出てから捨て札へ／パワー＝上へ消える／廃棄＝燃え尽きる／捨てる＝捨て札へ／山札の補充＝捨て札から裏向きで戻る
 const DP={x:36,y:336},DSP={x:604,y:336},FD={dis:.34,use:.62,pw:.6,ex:.6,sh:.45};
@@ -3632,9 +3759,9 @@ if(MPB)mpDrawPlayers(b);else{if(P.cls===3)drawGrim(b);const pim=P.cls===3?SPR.oj
 hpBar(74,210,72,Math.min(P.mhp,vHP()),P.mhp,'#e8505b',b.blk,PS.poison);chips(stat(PS,1),64,224,'l',204);}
 {const bd=b.en.find(e=>!e.dead&&E[e.k]&&E[e.k].bd);if(bd){const im=SPR[E[bd.k].bd];ctx.drawImage(im,Math.round(455-im.width/2),Math.round(194-im.height+Math.sin(T*1.2)*1.5))}}
 b.en.forEach((e,i)=>{if(e.dead){if(e.dT!=null&&T-e.dT<.8)eDeath(e,i);if(e.dT!=null&&T<e.dT&&e.vq){const p0=ePos(i);hpBar(p0.x-32,p0.y+2,64,Math.min(e.mh,e.vq.reduce((s2,q)=>s2+(q.at>T?q.d:0),0)),e.mh,e.el?'#c9a0ff':'#e8505b',0,0,0);txt(e.n,p0.x,p0.y+22,'#cfc8ee','center',10)}return}const p0=ePos(i),p={x:p0.x,y:p0.y-(e.fly?Math.round(e.fly+(FLYP[e.k]?0:Math.sin(T*1.4)*4)):0)},im=SPR[e.sl>0&&SPR[e.k+'_z']?e.k+'_z':e.k],w=im.width,h=im.height,eo=eMot(e,i),off=(e.lg>0?-Math.sin(e.lg/.3*3.14)*30:0)+eo.x,s=e.sh>0&&T>=(e.flS||0)?(Math.random()-.5)*8:0;
-{ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(p0.x+(eo.x||0),p0.y,Math.min(70,w*.36)*(e.fly?.7:1),e.fly?3:5,0,0,6.29);ctx.fill()}ctx.globalAlpha=e.reb?.45+.1*Math.sin(T*8):e.fl>0&&T>=(e.flS||0)&&Math.floor(T*30)%2?.45:ePhOn(e,b.turn)?.4+.15*Math.sin(T*6):1;if(e.k==='eye'){const ga=ctx.globalAlpha;eyeTent(p.x,p.y-h/2,w,h);ctx.globalAlpha=ga}if(FLYP[e.k]&&FLYP[e.k].tr&&!e.dead){const th=e.th||(e.th=[]);th.push([p.x+off,p.y+eo.y]);if(th.length>9)th.shift();const ga=ctx.globalAlpha;[[0,.14],[4,.26]].forEach(([j,al])=>{const q=th[j];if(q){ctx.globalAlpha=ga*al;ctx.drawImage(im,Math.round(q[0]-w/2),Math.round(q[1]-h))}});ctx.globalAlpha=ga}
+const lq=b.ph==='lv'?Math.min(1,Math.max(0,(T-b.lvT-1.2)/2.6)):0;if(lq){p.x+=lq*lq*260;p.y-=lq*80}{ctx.fillStyle='rgba(0,0,0,'+(.3*(1-lq))+')';ctx.beginPath();ctx.ellipse(p0.x+(eo.x||0),p0.y,Math.min(70,w*.36)*(e.fly?.7:1),e.fly?3:5,0,0,6.29);ctx.fill()}ctx.globalAlpha=e.reb?.45+.1*Math.sin(T*8):e.fl>0&&T>=(e.flS||0)&&Math.floor(T*30)%2?.45:ePhOn(e,b.turn)?.4+.15*Math.sin(T*6):1;if(b.ph==='lv')ctx.globalAlpha*=1-lq;if(e.k==='eye'||e.k==='eye2'){const ga=ctx.globalAlpha;eyeTent(p.x,p.y-h/2,w,h);ctx.globalAlpha=ga}if(FLYP[e.k]&&FLYP[e.k].tr&&!e.dead){const th=e.th||(e.th=[]);th.push([p.x+off,p.y+eo.y]);if(th.length>9)th.shift();const ga=ctx.globalAlpha;[[0,.14],[4,.26]].forEach(([j,al])=>{const q=th[j];if(q){ctx.globalAlpha=ga*al;ctx.drawImage(im,Math.round(q[0]-w/2),Math.round(q[1]-h))}});ctx.globalAlpha=ga}
 if(!(b.sp&&b.sp.e===e)){ctx.save();ctx.translate(Math.round(p.x+off+s),Math.round(p.y+eo.y));ctx.rotate(eo.r);ctx.scale(eo.sx,eo.sy);const dE=()=>{if(e.k==='userp'&&im===SPR[e.k]){const ph=(T/3)%1,fi=uFish(Math.floor(ph*UFN)%UFN);ctx.drawImage(fi,-Math.round(w/2),-h);uGlow(-Math.round(w/2),-h,ph)}else if(e.k==='scales'&&im===SPR[e.k])scDraw(e,i,w,h);else if(EPT[e.k]&&im===SPR[e.k]){if(EPT[e.k][0].r){ctx.save();ctx.rotate(eo.ur*.7);dParts(e,i,w,h);ctx.restore()}else dParts(e,i,w,h)}else if(Math.abs(eo.ur)>.005){const sp=Math.round(h*.52),hw=Math.round(w/2);ctx.drawImage(im,0,sp,w,h-sp,-hw,-h+sp,w,h-sp);ctx.save();ctx.translate(0,-h+sp+2);ctx.rotate(eo.ur);ctx.drawImage(im,0,0,w,sp+3,-hw,-sp-2,w,sp+3);ctx.restore()}else ctx.drawImage(im,-Math.round(w/2),-h)};dE();if(eo.g>0){const ga=ctx.globalAlpha;ctx.globalCompositeOperation='lighter';ctx.globalAlpha=ga*eo.g;dE();ctx.globalCompositeOperation='source-over';ctx.globalAlpha=ga}ctx.restore()}flyFx(e,im,Math.round(p.x+off),Math.round(p.y+eo.y));ctx.globalAlpha=1;if(e.sl>0){for(let k=0;k<3;k++){const q=(T*.5+k/3)%1;ctx.globalAlpha=Math.sin(q*3.14);txt('z',p.x+(e.k==='behemoth'?-w*.3:w*.05)+q*14,p.y-h+10-q*24,'#c8d0ff','center',9+k*3)}ctx.globalAlpha=1}
-hpBar(p.x-32,p0.y+2,64,Math.min(e.mh,e.hp+(e.vq?e.vq.reduce((s2,q)=>s2+(q.at>T?q.d:0),0):0)),e.mh,e.el?'#c9a0ff':'#e8505b',e.blk,e.poison*(PS&&PS.pmul?2:1),e.doom||0);txt((e.el===1?'【エリート】':e.el===2?'【ボス】':'')+e.n,p.x,p0.y+22,e.el===1?'#e0b0ff':'#cfc8ee','center',10);
+if(b.ph==='lv')return;hpBar(p.x-32,p0.y+2,64,Math.min(e.mh,e.hp+(e.vq?e.vq.reduce((s2,q)=>s2+(q.at>T?q.d:0),0):0)),e.mh,e.el?'#c9a0ff':'#e8505b',e.blk,e.poison*(PS&&PS.pmul?2:1),e.doom||0);txt((e.el===1?'【エリート】':e.el===2?'【ボス】':'')+e.n,p.x,p0.y+22,e.el===1?'#e0b0ff':'#cfc8ee','center',10);
 chips(stat(e,0),p.x,p0.y+24,'c',b.en.length>2?106:150);
 const m=e.it,t=[];if(m.nm)t.push(['必殺',Math.floor(T*4)%2?'#ff3b5c':'#ffd23f']);if(m.wf)t.push(['即死','#ff3b5c']);else if(m.a)t.push(['攻'+calcP(e,m.a)+(m.h>1?'×'+m.h:''),'#ff6a6a']);if(m.b)t.push(['防'+m.b,'#7ec8ff']);if(stG(e,m))t.push(['強+'+m.st,'#ffd23f']);if(m.wk||m.vu)t.push(['弱','#c9a0ff']);if(m.ab)t.push(['護'+m.ab,'#7ec8ff']);if(m.hl)t.push(['癒'+m.hl,'#7dff9a']);if(m.smn)t.push(['召','#5ff6ff']);if(m.dd)t.push(['鈍','#c8c8d8']);if(m.ps)t.push(['毒'+m.ps,'#7dff9a']);if(m.sc)t.push(['妨','#c8c8d8']);
 if(m.lb)t.push([m.lb,'#c9a0ff']);if(e.nat)t.push(['封','#c8c8d8']);if(e.stn){t.length=0;t.push(['行動不能','#c8c8d8'])}if(e.sl>0){t.length=0;t.push(['睡眠','#9ab0ff'])}if(e.reb){t.length=0;t.push(['再起動','#5ff6ff'])}if(has('dome')&&!e.stn&&!(e.sl>0)&&!e.reb){t.length=0;t.push(['？','#8a8aa0'])}tok(t,p.x,Math.max(46,p.y-h-8),13,1);if(b.ph==='e'&&b.en[b.eo?b.eo[b.ei]:b.ei]===e){ctx.fillStyle='#ff6a6a';const by=Math.round(Math.sin(T*10)*3);ctx.fillRect(p.x-6,p.y-h-34+by,12,4);ctx.fillRect(p.x-4,p.y-h-30+by,8,4);ctx.fillRect(p.x-2,p.y-h-26+by,4,4)}
@@ -3669,7 +3796,15 @@ const tr=t>=0?ER.find(r=>r.i===t):null;if(tr)txt('攻撃',tr.x+tr.w/2,tr.y-26,'#
 else if(dg.y<236){ctx.strokeStyle='#ffe14a';ctx.lineWidth=3;ctx.strokeRect(10,28,620,196);txt('離して使用',320,104,'#ffe14a','center',18)}
 o.hx=dg.x-42;o.hy=dg.y-60;o.hs=1;dg.rt=(dg.rt||0)+(Math.max(-.28,Math.min(.28,(dg.vx||0)*.025))-(dg.rt||0))*.25;ctx.fillStyle='rgba(0,0,0,.3)';ctx.fillRect(Math.round(dg.x-38),Math.round(dg.y+50),76,6);cardAt(o,dg.x,dg.y-7,1.06,dg.rt,.95,0,pvw(o,ptg))}}
 if(b.bn&&b.bn.t>0&&!(b.bn.dl>0)){const p=1-b.bn.t/1.1,a=p<.15?p/.15:p>.75?(1-p)/.25:1,off=p<.15?(1-p/.15)*-260:0;ctx.globalAlpha=Math.max(0,Math.min(1,a));ctx.fillStyle=b.bn.bg;ctx.fillRect(0,96,640,52);ctx.fillStyle='#fff';ctx.fillRect(0,96,640,3);ctx.fillRect(0,145,640,3);txt(b.bn.s,320+off,134,'#fff','center',32);ctx.globalAlpha=1}deusAll(b);drawTut(b)}
-const MCW=72,MSW=1256,MX=f=>40+(f+1)*MCW;let MSC=0;
+const MCW=72,MSW=1256,MX=f=>P&&P.act===4?150+(f+1)*100:40+(f+1)*MCW;let MSC=0;
+// Ver2.79 4層の地図：赤黒い肉の膜に血管が走り、縁は骨。中央に向かって暗く沈む
+function vpanel(){const W=640,H=238,c=MKC(MSW,H),x=c.getContext('2d');let sd=97;const rn=()=>(sd=(sd*16807)%2147483647)/2147483647;
+ const g=x.createRadialGradient(W/2,H/2,20,W/2,H/2,W*.6);g.addColorStop(0,'#1a0408');g.addColorStop(1,'#3a0a14');x.fillStyle=g;x.fillRect(0,0,W,H);
+ for(let k=0;k<26;k++){let px=rn()*W,py=rn()*H,a=rn()*6.3;x.strokeStyle='rgba('+(120+Math.floor(rn()*80))+',10,30,'+(.25+rn()*.3)+')';x.lineWidth=1+Math.floor(rn()*2);x.beginPath();x.moveTo(px,py);for(let s2=0;s2<14;s2++){a+=(rn()-.5)*.9;px+=Math.cos(a)*9;py+=Math.sin(a)*9;x.lineTo(Math.round(px),Math.round(py))}x.stroke()}
+ for(let k=0;k<60;k++){x.fillStyle='rgba(255,60,80,'+(rn()*.25)+')';x.fillRect(Math.floor(rn()*W),Math.floor(rn()*H),2,2)}
+ x.fillStyle='#cfc2a8';x.fillRect(0,0,W,3);x.fillRect(0,H-3,W,3);x.fillRect(0,0,3,H);x.fillRect(W-3,0,3,H);x.fillStyle='#6a5a48';x.fillRect(3,3,W-6,1);x.fillRect(3,H-4,W-6,1);
+ for(let k=0;k<W;k+=24){x.fillStyle='#cfc2a8';x.fillRect(k+8,0,4,6);x.fillRect(k+8,H-6,4,6)}
+ return c}
 function mpanel(k){const W=MSW,H=238,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');let sd=11+k;const rn=()=>(sd=(sd*16807)%2147483647)/2147483647,F=Math.floor;
 if(k===0){x.fillStyle='#d6be8e';x.fillRect(0,0,W,H);for(let i=0;i<1100;i++){x.fillStyle=['#c9ad78','#e2cfa4','#bfa06a'][i%3];x.fillRect(F(rn()*W/2)*2,F(rn()*H/2)*2,2,2)}
  x.fillStyle='rgba(110,80,40,.2)';for(let i=0;i<10;i++){const mx=F(30+rn()*560),my=F(30+rn()*170);for(let s=0;s<6;s++)x.fillRect(mx-s*2,my+s*2,s*4+2,2)}
@@ -3685,27 +3820,27 @@ else{x.fillStyle='rgba(2,16,26,.92)';x.fillRect(0,0,W,H);x.fillStyle='rgba(95,24
 return c}
 const MTH=[{pn:mpanel(0),ink:'#6a4422',hi:'#b0281a',tx:'#5a3010',sub:'#8a6a40',ring:'#6a4422',nb:'#3a2a1a',cur:'#2a6ab0'},
 {pn:mpanel(1),ink:'#b8a8d8',hi:'#ffd23f',tx:'#e8e0ff',sub:'#7a6a98',ring:'#6a5a8a',nb:'#1d1828',cur:'#7ec8ff'},
-{pn:mpanel(2),ink:'#5ad0e0',hi:'#ffd23f',tx:'#bff8ff',sub:'#3a8a9a',ring:'#5ff6ff',nb:'#06202c',cur:'#ff4fd8'}];
+{pn:mpanel(2),ink:'#5ad0e0',hi:'#ffd23f',tx:'#bff8ff',sub:'#3a8a9a',ring:'#5ff6ff',nb:'#06202c',cur:'#ff4fd8'},{pn:vpanel(),ink:'#8a1a2a',hi:'#ff3b5c',tx:'#ffd0d8',sub:'#a04050',ring:'#7a1020',nb:'#140006',cur:'#ffd23f'}];
 // 点線の曲がった道（sd で毎回同じ曲がり方）
 function trail(x1,y1,x2,y2,sd,col,sz,an){const cx=(x1+x2)/2+(hs(sd)-.5)*18,cy=(y1+y2)/2+(hs(sd+1)-.5)*18,L=Math.hypot(x2-x1,y2-y1),n=Math.max(2,Math.floor(L/6));
 for(let i=0;i<=n;i++){const t=i/n;if(t*L<15||(1-t)*L<15)continue;const u=1-t,x=u*u*x1+2*u*t*cx+t*t*x2,y=u*u*y1+2*u*t*cy+t*t*y2;if(an&&(i+Math.floor(T*10))%3)continue;sq(x,y,sz,col)}}
 // Ver2.13 1層の地図の背景を戦闘と同じ夜の森に（ユーザー指定）
 // Ver2.70 層の始まりに地図の上へ層の名前を出す（ユーザー指定：本家のような「1層目 ～沈没都市～」）。go('map') で CUR.f<0 の時に AIN を立てる
-let AIN=null;const ANM=()=>P.act===1?(P.v1==='s'?'沈没都市':'黒い森'):P.act===2?'地下の広間':'機神の神殿';
+let AIN=null;const ANM=()=>P.act===1?(P.v1==='s'?'沈没都市':'黒い森'):P.act===2?'地下の広間':P.act===4?'虚空の頂':'機神の神殿';
 function drawAin(){const t=T-AIN.t0,D=3.4;if(t>D){AIN=null;return}const al=Math.min(1,t/.6,(D-t)/.7),cy=170;ctx.save();ctx.globalAlpha=al;
  const g=ctx.createLinearGradient(0,cy-60,0,cy+60);g.addColorStop(0,'rgba(5,4,12,0)');g.addColorStop(.3,'rgba(5,4,12,.82)');g.addColorStop(.7,'rgba(5,4,12,.82)');g.addColorStop(1,'rgba(5,4,12,0)');ctx.fillStyle=g;ctx.fillRect(0,cy-60,640,120);
  const w=Math.min(1,t/.9)*150;ctx.fillStyle='#c8a050';ctx.fillRect(320-w,cy-6,w*2,1);ctx.fillStyle='rgba(200,160,80,.5)';ctx.fillRect(320-w*.7,cy-3,w*1.4,1);
  ctx.globalAlpha=al*Math.min(1,Math.max(0,(t-.2)/.5));txt(AIN.a+'層目',320,cy-18,'#cfc8ee','center',18);
  ctx.globalAlpha=al*Math.min(1,Math.max(0,(t-.6)/.6));txt('～'+AIN.n+'～',320,cy+28,'#ffe6a0','center',28);ctx.restore()}
-function drawMap(){{const a=Math.max(1,Math.min(3,P.act||1)),g=bgbFor(a),o=BGB;ctx.drawImage(g,0,0);BGB=g;bgAnim();BGB=o;ctx.fillStyle='rgba(6,4,12,.28)';ctx.fillRect(0,0,640,360)}const th=MTH[P.act-1]||MTH[0],mx=MSW-624;MSC=Math.max(0,Math.min(mx,MSC));ctx.drawImage(th.pn,Math.round(MSC),0,624,238,8,62,624,238);topbar();
+function drawMap(){{const a=Math.max(1,Math.min(4,P.act||1)),g=bgbFor(a),o=BGB;ctx.drawImage(g,0,0);BGB=g;bgAnim();BGB=o;ctx.fillStyle='rgba(6,4,12,.28)';ctx.fillRect(0,0,640,360)}const th=MTH[P.act-1]||MTH[2],mx=P.act===4?0:MSW-624;MSC=Math.max(0,Math.min(mx,MSC));ctx.drawImage(th.pn,Math.round(MSC),0,624,238,8,62,624,238);topbar();
 const X=(f,n)=>8+MX(f)-MSC,Y=(f,j,n)=>f===LAST?184:104+j*40+(n.dy||0),av=avail(),vs=new Set(P.path||[]),vi=(f,j)=>vs.has(f+','+j);
 ctx.save();ctx.beginPath();ctx.rect(10,64,620,234);ctx.clip();
 for(let f=0;f<LAST;f++)MP[f].forEach((n,j)=>{if(!n)return;n.cn.forEach(k=>{const m=MP[f+1][k];if(!m)return;const x1=X(f,n),y1=Y(f,j,n),x2=X(f+1,m),y2=Y(f+1,k,m),sd=f*31+j*7+k;if(x2<-20||x1>660)return;
  if(vi(f,j)&&vi(f+1,k))trail(x1,y1,x2,y2,sd,th.hi,3);else if(CUR.f===f&&CUR.j===j&&av.includes(k))trail(x1,y1,x2,y2,sd,th.hi,3,1);else{ctx.globalAlpha=f<CUR.f?.3:.9;trail(x1,y1,x2,y2,sd,th.ink,2);ctx.globalAlpha=1}})});
-for(let f=0;f<=LAST;f++){const fx=8+MX(f)-MSC;if(fx<-30||fx>670)continue;txt(String(f+1),fx,292,th.sub,'center',10);MP[f].forEach((n,j)=>{if(!n)return;const x=X(f,n),y=Y(f,j,n),can=CUR.f+1===f&&av.includes(j),cur=CUR.f===f&&CUR.j===j,bs=f===LAST,r=bs?22:14;
+for(let f=0;f<=LAST;f++){const fx=8+MX(f)-MSC;if(fx<-30||fx>670)continue;txt(String(f+1),fx,292,th.sub,'center',10);MP[f].forEach((n,j)=>{if(!n)return;const x=X(f,n),y=Y(f,j,n),can=CUR.f+1===f&&av.includes(j),cur=CUR.f===f&&CUR.j===j,bs=f===LAST,r=bs?(P.act===4?34:22):14;
  if(can){pc(x,y,r+4+Math.floor(Math.sin(T*6)*2),th.hi);if(x>8&&x<632)hit(Math.max(10,x-r-2),y-r-2,r*2+4,r*2+4,()=>{sfx('pk');enter(j)})}else if(cur)pc(x,y,r+3,th.cur);
- ctx.globalAlpha=f<=CUR.f&&!vi(f,j)?.3:1;pc(x,y,r+1,th.ring);pc(x,y,r-1,th.nb);if(bs)ctx.drawImage(ICN[6],x-18,y-18,36,36);else ctx.drawImage(ICN[n.t],x-12,y-12);
- if(vi(f,j)&&!cur)ell(x,y,r+3,r+3,20,2,th.hi);ctx.globalAlpha=1;if(bs)txt('ボス',x,y-28,'#ff6a6a','center',11)})}
+ ctx.globalAlpha=f<=CUR.f&&!vi(f,j)?.3:1;if(n.au&&!vi(f,j))auraD(x,y,r);pc(x,y,r+1,n.au||n.t>=7?'#7a1020':th.ring);pc(x,y,r-1,n.t===8?'#140006':th.nb);if(bs&&P.act===4)ctx.drawImage(SPR.eye,x-27,y-25+Math.round(Math.sin(T*1.5)),54,48);else if(bs)ctx.drawImage(ICN[6],x-18,y-18,36,36);else if(n.au)ctx.drawImage(ICNA,x-15,y-16);else ctx.drawImage(ICN[n.t===7?1:n.t],x-12,y-12);
+ if(vi(f,j)&&!cur)ell(x,y,r+3,r+3,20,2,th.hi);ctx.globalAlpha=1;if(bs&&P.act!==4)txt('ボス',x,y-28,'#ff6a6a','center',11)})}
 if(MPON())mpDrawMap(X,Y);
 // 悪魔マス（第1層の最初）。第2層以降は入口の印
 {const x=8+MX(-1)-MSC,y=184,dm=P.act===1&&P.nw!==undefined,can=dm&&P.nw===0&&CUR.f===-1,r=18;
@@ -3716,10 +3851,10 @@ if(MPON())mpDrawMap(X,Y);
 ctx.restore();
 // スクロールの目印：両はしの矢印と下のバー
 const pu=Math.floor(T*3)%2;if(MSC>2){ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(10,170,18,30);txt('◀',19,191,pu?'#fff':th.hi,'center',14)}if(MSC<mx-2){ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(612,170,18,30);txt('▶',621,191,pu?'#fff':th.hi,'center',14)}
-ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillRect(20,296,600,3);ctx.fillStyle=th.hi;ctx.fillRect(20+Math.round(600*MSC/MSW),296,Math.round(600*624/MSW),3);
-txt('第'+P.act+'層　'+(MPON()?(MPR.votes[LK]&&MPR.votes[LK].f===CUR.f+1&&MPR.votes[LK].a===P.act?'投票済み・仲間を待っている':'進路を投票（多数決）'):'進路を選べ'),320,80,th.tx,'center',14);if(S==='map'&&P.back&&!(MPON()&&MPR.votes[LK]&&MPR.votes[LK].f===CUR.f+1&&MPR.votes[LK].a===P.act)&&((P.back.pot&&!P.back.pt&&!has('sozu'))||!P.back.ct))btn(14,66,150,24,'◀ 前のマスに戻る',()=>{RW=P.back;sfx('cl');S='reward'},'#3a3068',11);txt('◀ ドラッグで動かせる ▶',622,80,th.sub,'right',10);
+if(P.act!==4){ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillRect(20,296,600,3);ctx.fillStyle=th.hi;ctx.fillRect(20+Math.round(600*MSC/MSW),296,Math.round(600*624/MSW),3)}
+txt('第'+P.act+'層　'+(MPON()?(MPR.votes[LK]&&MPR.votes[LK].f===CUR.f+1&&MPR.votes[LK].a===P.act?'投票済み・仲間を待っている':'進路を投票（多数決）'):'進路を選べ'),320,80,th.tx,'center',14);if(S==='map'&&P.back&&!(MPON()&&MPR.votes[LK]&&MPR.votes[LK].f===CUR.f+1&&MPR.votes[LK].a===P.act)&&((P.back.pot&&!P.back.pt&&!has('sozu'))||!P.back.ct))btn(14,66,150,24,'◀ 前のマスに戻る',()=>{RW=P.back;sfx('cl');S='reward'},'#3a3068',11);if(P.act!==4)txt('◀ ドラッグで動かせる ▶',622,80,th.sub,'right',10);
 if(MPON()){mpParty();return}const lg=[['戦闘',0],['エリート',1],['ショップ',2],['休憩',3],['？',4],['宝箱',5]];lg.forEach((a,i)=>{ctx.drawImage(ICN[a[1]],16+i*100,310,24,24);txt(a[0],44+i*100,328,'#cfc8ee','left',11)})}
-function after(){if(RW.nx){const x=RW.nx;RW.nx=null;if(x==='act')btNext();else go(x);return}if(RW.boss){if(P.act<3)openBossChest();else go('win')}else{const n=CUR&&MP[CUR.f]&&MP[CUR.f][CUR.j];P.back=n&&(n.t===0||n.t===1)?{...RW,g:0,rel:null,title:'戦利品の回収'}:null;go('map')}}
+function after(){if(RW.nx){const x=RW.nx;RW.nx=null;if(x==='act')btNext();else go(x);return}if(RW.boss){if(P.act<3)openBossChest();else go('win')}else{const n=CUR&&MP[CUR.f]&&MP[CUR.f][CUR.j];P.back=n&&(n.t===0||n.t===1)?{...RW,g:0,rel:null,shd:0,title:'戦利品の回収'}:null;go('map')}}
 let BT=null;const OCH=mk(['.bbbbbb.','b.yyyy.b','..yyyy..','bbbbbbbb','bbbyybbb','bbbbbbbb','bbbbbbbb','........'],{b:'#8a5a3a',y:'#ffe14a'},3);
 // ボスレリックの「拾うと〜」で選ぶもの（古びた魔導書・空の檻）を順に処理してから次の層へ
 function btNext(){const q=P.bq;if(q&&q.length){const k=q.shift();if(k==='tome'){RW={g:0,rel:null,pot:null,title:'古びた魔導書：レアカードを選択',cards:rare3(),boss:false,nx:'act'};go('reward');return}
@@ -3757,11 +3892,11 @@ function drawBT(){rwBg();ctx.fillStyle='rgba(4,2,10,.5)';ctx.fillRect(0,0,640,36
   wrap(RL[k][1],12).slice(0,4).forEach((l,j)=>txt(l,x,ny+24+j*14,me?'#fff':'#b9b2e0','center',11));
   if(!op){if(ap>=1)hit(L,top,w,hh,()=>{BT.sel=i;sfx('cl')})}else if(me)txt('入手',x,top-6,'#7dff9a','center',13);
   ctx.globalAlpha=1});
-if(!op&&sel>=0)btn(250,326,140,28,'これを選ぶ',()=>{BT.cf=1;sfx('cl')},'#6a4bd6',15);
+if(!op&&sel>=0)btn(250,326,140,28,'これを選ぶ',()=>{BT.cf=1;sfx('cl')},'#6a4bd6',15);if(!op&&!BT.cf&&el>.6)btn(500,326,110,28,'取らない',()=>{sfx('cl');btNext()},'#3a3068',13);
 if(BT.cf&&!op&&sel>=0){const k=BT.rs[sel];hit(0,0,640,360,()=>{});ctx.fillStyle='rgba(5,4,12,.86)';ctx.fillRect(0,0,640,360);txt('本当にこれを取りますか？',320,74,'#ffd23f','center',18);txt('ボスレリックは1つしか選べない',320,96,'#cfc8ee','center',11);ctx.drawImage(OCH,284,112,72,72);ctx.drawImage(rIcon(k),294,104,52,52);txt(RL[k][0],320,206,'#ffd23f','center',15);wrap(RL[k][1],20).forEach((l,j)=>txt(l,320,226+j*15,'#fff','center',12));
  btn(196,292,120,36,'取る',()=>{BT.cf=0;BT.pick=sel;BT.t0=T;sfx('pk');sfx('bf');gain(k)},'#6a4bd6',15);btn(324,292,120,36,'やめる',()=>{BT.cf=0;sfx('cl')},'#2c3566',15)}
 if(op&&el>.6)btn(270,326,100,28,'次へ',btNext,'#6a4bd6',15)}
-function startAct(){P.back=null;P.act++;P.hp=P.mhp;BGM=[BGM1,BGM2,BGM3][P.act-1];BGB=bgbFor(P.act);MP=MPON()?withRng(MPR.seed+P.act*101,()=>ascMap(genMap())):ascMap(genMap());CUR={f:-1,j:0};P.path=[];sfx('wn');go('map')}
+function startAct(){P.back=null;P.act++;P.hp=P.mhp;BGM=[BGM1,BGM2,BGM3,BGM3][P.act-1];BGB=bgbFor(P.act);MP=P.act===4?genMap4():MPON()?withRng(MPR.seed+P.act*101,()=>ascMap(genMap())):ascMap(genMap());CUR={f:-1,j:0};P.path=[];sfx('wn');go('map')}
 function drawAct(){ctx.drawImage(BGM,0,0);txt('第'+P.act+'層 踏破',320,90,'#ffd23f','center',30);txt(P.act===1?'塔のさらに奥へ…':'塔の最上層「機神の神殿」へ…',320,130,'#cfc8ee','center',16);
 txt('HPが全回復した。第'+(P.act+1)+'層の敵はさらに手強い。',320,166,'#fff','center',14);txt('到達階：'+P.floors,320,190,'#b9b2e0','center',13);
 btn(220,232,200,44,'第'+(P.act+1)+'層へ進む',startAct,'#6a4bd6',18)}
@@ -3934,11 +4069,11 @@ function drawEvent(){const k=EIC[EV.im]?EV.im:'chest';ctx.drawImage(evBg(k),0,0)
  if(EL.length){let yy=y+ch*sp+2;ctx.font='11px DotGothic16,sans-serif';const lines=EL.flatMap(l=>{const o=[];let c='';for(const t of l){if(ctx.measureText(c+t).width>276&&!/[、。・）」]/.test(t)){o.push(c);c='　'+t}else c+=t}o.push(c);const n=o.length;if(n>1&&o[n-1].length<6){const a=o[n-2];o[n-2]=a.slice(0,-5);o[n-1]='　'+a.slice(-5)+o[n-1].slice(1)}return o}),hh=lines.length*14+8;ctx.fillStyle='rgba(30,20,50,.82)';ctx.fillRect(330,yy,290,hh);ctx.fillStyle='#c9a0ff';ctx.fillRect(330,yy,3,hh);yy+=13;for(const w of lines){txt(w,340,yy,w[0]==='【'?'#e8d8ff':'#cfc8ee','left',11);yy+=14}}}
 // Ver2.17 報酬画面の背景をその層の戦闘背景に（ユーザー指定・試し）。動き bgAnim＋暗幕
 function rwBg(){const a=Math.max(1,Math.min(3,P.act||1)),g=bgbFor(a),o=BGB;ctx.drawImage(g,0,0);BGB=g;bgAnim();BGB=o;ctx.fillStyle='rgba(6,4,12,.42)';ctx.fillRect(0,0,640,360)}
-function drawReward(){rwBg();topbar();const pot=RW.pot&&!has('sozu'),hasL=RW.g||RW.rel||pot,cx=hasL?432:320,title=RW.title||'勝利';
+function drawReward(){rwBg();topbar();const pot=RW.pot&&!has('sozu'),hasL=RW.g||RW.rel||RW.shd||pot,cx=hasL?432:320,title=RW.title||'勝利';
  ctx.font='18px DotGothic16,sans-serif';const tw=Math.max(120,ctx.measureText(title).width+60),ry=66;ctx.fillStyle='#5a0e18';ctx.beginPath();ctx.moveTo(320-tw/2-26,ry+6);ctx.lineTo(320-tw/2,ry+6);ctx.lineTo(320-tw/2,ry+30);ctx.lineTo(320-tw/2-26,ry+30);ctx.lineTo(320-tw/2-16,ry+18);ctx.fill();ctx.beginPath();ctx.moveTo(320+tw/2+26,ry+6);ctx.lineTo(320+tw/2,ry+6);ctx.lineTo(320+tw/2,ry+30);ctx.lineTo(320+tw/2+26,ry+30);ctx.lineTo(320+tw/2+16,ry+18);ctx.fill();
  ctx.fillStyle='#8a1c2a';ctx.fillRect(320-tw/2,ry,tw,28);ctx.fillStyle='#d4a838';ctx.fillRect(320-tw/2,ry,tw,2);ctx.fillRect(320-tw/2,ry+26,tw,2);txt(title,320,ry+21,'#ffe680','center',18);
  if(hasL){orn(16,108,204,196,'#c8a050');txt('戦利品',118,128,'#d8b860','center',12);let i=0;const row=(icon,a,s,tag,f)=>{const y=140+i*48;i++;ctx.fillStyle=f?'#24204a':'#1a1832';ctx.fillRect(26,y,184,40);ctx.fillStyle=f?'#c8a050':'#3a3458';ctx.fillRect(26,y,3,40);ctx.drawImage(icon,34,y+6,28,28);txt(a,68,y+17,'#fff','left',12);txt(s,68,y+32,'#a8a0c8','left',10);if(tag)txt(tag,204,y+17,f?'#ffe14a':'#7dff9a','right',10);if(f)hit(26,y,184,40,f)};
-  if(RW.g)row(ICN[2],'ゴールド +'+RW.g,'所持 '+P.gold+'G',null);if(RW.rel)row(rIcon(RW.rel),RL[RW.rel][0],RL[RW.rel][1].slice(0,13),'入手');
+  if(RW.g)row(ICN[2],'ゴールド +'+RW.g,'所持 '+P.gold+'G',null);if(RW.shd)row(SHDI(),'眼の欠片','集めた数 '+(P.shd||0)+'/3','入手');if(RW.rel)row(rIcon(RW.rel),RL[RW.rel][0],RL[RW.rel][1].slice(0,13),'入手');
   if(pot){const q=POT[RW.pot];row(potIcon(RW.pot),q[0],q[1].slice(0,13),RW.pt?'受取済':'受け取る',RW.pt?null:()=>{if(P.pot.length<P.ps){givePot(RW.pot);RW.pt=1}else PM={swap:RW.pot,cb:()=>{RW.pt=1}}})}}
  if(!RW.ct)txt('カードを1枚選択',cx,124,'#cfc8ee','center',13);
  if(RW.ct){txt('カードは選択済み',cx,190,'#8a82b8','center',13);RW.cards=RW.ct?[]:RW.cards}
@@ -4216,7 +4351,7 @@ else{ctx.fillStyle='#0a0408';ctx.fillRect(0,0,640,360);const g=ctx.createRadialG
 for(let k=0;k<28;k++){const x=(k*131)%640,y=360-(k*71+T*(12+k%4*6))%380;ctx.fillStyle='rgba(255,90,90,'+(.12+k%3*.1)+')';ctx.fillRect(Math.round(x),Math.round(y),2,2)}}
 const a=Math.min(1,el/.8);ctx.globalAlpha=a;
 txt(win?(P.eyeEnd?'踏破':'勝利'):'敗北',320,64-Math.round((1-a)*16),win?'#ffd23f':'#ff5a5a','center',44);
-txt(win?(P.eyeEnd?'塔の頂で「虚空の眼」に見つめられ、その一部となった…':'塔の頂に到達した'):P.gaveUp?'挑戦を諦めた…':P.slept?'ホーリー大輔は寝てしまった':P.killer?'「'+P.killer+'」に倒された…':'力尽きた…',320,94,win?'#fff1c0':'#e8b0b8','center',14);
+txt(win?(P.eyeEnd?'塔の頂で「虚空の眼」に見つめられ、その一部となった…':P.eyeWin?'「虚空の眼」を討ち、塔の頂を越えた':'塔の頂に到達した'):P.gaveUp?'挑戦を諦めた…':P.slept?'ホーリー大輔は寝てしまった':P.killer?'「'+P.killer+'」に倒された…':'力尽きた…',320,94,win?'#fff1c0':'#e8b0b8','center',14);
 const im=P.slept?SPR['hori_z'+P.act]:P.cls===4?SPR['hori'+P.act]:SPR[CH[P.cls].s];ctx.save();if(win||P.slept)ctx.drawImage(im,Math.round(110-(im.bw||im.width)/2-(im.ox||0)),Math.round(232-ftY(im,P.cls===4?'hori':CH[P.cls].s)+Math.sin(T*3)*3));else{ctx.globalAlpha=a*.5;ctx.translate(110,232-im.width/2);ctx.rotate(-Math.PI/2);ctx.drawImage(im,-im.width/2,-im.height/2)}ctx.restore();ctx.globalAlpha=a;
 txt(CH[P.cls].n,110,254,'#fff','center',13);txt('デッキ'+P.deck.length+'枚・レリック'+P.relics.length+'個',110,272,'#cfc8ee','center',11);
 box(222,112,398,194,win?'#2a1e10':'#1a0c14',win?'#ffd23f':'#8a2a3a');txt('スコア',238,132,win?'#ffe9a8':'#e8b0b8','left',13);
@@ -4245,7 +4380,7 @@ function drawEmv(){if(!EMV)return emvClose();ctx.drawImage(BGB,0,0);const e=EMV.
  ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(0,286,640,74);btn(8,296,56,54,'◀',()=>emvSet(EMV.i-1),'#2c3566',18);btn(576,296,56,54,'▶',()=>emvSet(EMV.i+1),'#2c3566',18);
  [['at','攻撃'],['mh','連続攻撃'],['bf','強化'],['bk','防御'],['db','妨害'],['hit','被弾'],['die','撃破']].forEach(([k,l],j)=>btn(72+j*72,300,66,46,l,()=>emvAct(k),k==='at'||k==='mh'?'#6a2a3a':'#3a3566',12))}
 function draw(){btns=[];LPC=[];ENI=[];const ti=S==='title'||S==='splash';if(ti&&(!(TLS==='title'||TLS==='splash')||TV<0))pickTitle();TLS=S;
-if(S==='title'||S==='splash')drawTitle();else if(S==='map'){drawMap();if(AIN)drawAin()}else if(S==='mapv'){drawMapV()}else if(S==='battle'){drawBattle();topbar()}else if(S==='reward')drawReward();else if(S==='rank')drawRank();else if(S==='rest')drawRest();else if(S==='event')drawEvent();else if(S==='shop')drawShop();else if(S==='pick')drawPick();else if(S==='select')drawSelect();else if(S==='neow')drawNeow();else if(S==='help')drawHelp();else if(S==='lib')drawLib();else if(S==='mpm')drawMpMenu();else if(S==='mpn')drawMpName();else if(S==='mpj')drawMpJoin();else if(S==='mpl')drawMpLobby();else if(S==='act')drawAct();else if(S==='conf')drawConf();else if(S==='btr')drawBT();else if(S==='eyein')drawEyeIn();else if(S==='over')drawEnd(0);else if(S==='win')drawEnd(1);else if(S==='emv')drawEmv();else if(S==='mprj')drawMpRj();
+if(S==='title'||S==='splash')drawTitle();else if(S==='map'){drawMap();if(AIN)drawAin()}else if(S==='mapv'){drawMapV()}else if(S==='battle'){drawBattle();topbar();if(B&&B.ph==='lv')drawLv()}else if(S==='reward')drawReward();else if(S==='rank')drawRank();else if(S==='rest')drawRest();else if(S==='event')drawEvent();else if(S==='shop')drawShop();else if(S==='pick')drawPick();else if(S==='select')drawSelect();else if(S==='neow')drawNeow();else if(S==='help')drawHelp();else if(S==='lib')drawLib();else if(S==='mpm')drawMpMenu();else if(S==='mpn')drawMpName();else if(S==='mpj')drawMpJoin();else if(S==='mpl')drawMpLobby();else if(S==='act')drawAct();else if(S==='conf')drawConf();else if(S==='btr')drawBT();else if(S==='eyein')drawEyeIn();else if(S==='over')drawEnd(0);else if(S==='win')drawEnd(1);else if(S==='emv')drawEmv();else if(S==='mprj')drawMpRj();
 drawPotMenu();
 if(P&&P.hz&&!['title','splash','select','help','over','win'].includes(S)){const ms=Math.max(0,P.hz-Date.now()),mm=Math.floor(ms/60000),ss=Math.floor(ms/1000)%60,lw=ms<300000,tm=String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0'),s='ショートスリープまで残り '+tm,tc=lw&&Math.floor(T*2)%2?'#ff9a9a':lw?'#ff6a6a':'#c8ffd0';if(S==='battle'){/* Ver2.31 戦闘中は左下（エナジーと山札の間）に小さく出す。右上だと敵の予告に重なった（ユーザー指摘） */ctx.fillStyle='rgba(0,0,0,.72)';ctx.fillRect(4,284,84,32);ctx.fillStyle=lw?'#ff3b5c':'#5aff7a';ctx.fillRect(4,284,2,32);txt('ショートスリープ',10,297,'#a8c8b0','left',9);txt('まで '+tm,10,311,tc,'left',11)}else{ctx.fillStyle='rgba(0,0,0,.72)';ctx.fillRect(444,31,194,17);ctx.fillStyle=lw?'#ff3b5c':'#5aff7a';ctx.fillRect(444,31,2,17);txt(s,632,44,tc,'right',11)}
  if(ms<=0){P.slept=1;P.killer=null;sfx('ls');go('over')}}
