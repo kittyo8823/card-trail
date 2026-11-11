@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.97';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.98';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -3889,6 +3889,12 @@ ctx.fillStyle=bf.tn+(.6*p)+')';ctx.fillRect(-20,24,680,206);ctx.drawImage(im,Mat
 ctx.globalCompositeOperation='lighter';ctx.globalAlpha=(.2+.2*Math.sin(T*30))*p;ctx.drawImage(im,Math.round(o.x),Math.round(o.y));ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;bf.ch(o);ctx.globalAlpha=1;
 const ba=Math.min(1,(p-.1)/.15)*Math.min(1,(.85-p)/.15);if(ba>0){ctx.globalAlpha=ba;ctx.fillStyle='rgba(0,0,0,.78)';ctx.fillRect(-20,98,680,48);ctx.fillStyle=c;ctx.fillRect(-20,98,680,2);ctx.fillRect(-20,144,680,2);txt('―　'+e.it.nm+'　―',Math.round(320+(1-Math.min(1,(p-.1)/.15))*90),133,c,'center',28);ctx.globalAlpha=1}}
 }
+// Ver2.98 ターンの帯（ユーザー採用の案A・横から真っすぐ入る）：上が明るく下が網目の2段の帯、上下の縁に点線、文字の両脇に菱形の飾り。色は bg から作り、敵のターンは赤い飾り・それ以外は金
+function drawBn(bn){const p=1-bn.t/1.1,a=p<.15?p/.15:p>.75?(1-p)/.25:1,off=p<.15?(1-p/.15)*-260:0,sx=p<.15?Math.round((1-ez(p/.15))*-640):0,y=96,h=52,c2=bn.bg,c1=adj(bn.bg,-.45),hi=/敵/.test(bn.s)?'#ff6a7a':'#ffd23f';
+ ctx.globalAlpha=Math.max(0,Math.min(1,a));ctx.fillStyle=c1;ctx.fillRect(sx,y,640,h);ctx.fillStyle=c2;ctx.fillRect(sx,y,640,Math.round(h*.45));for(let x=0;x<640;x+=4)for(let yy=y+Math.round(h*.55);yy<y+h;yy+=4)if(((x+yy)>>2)%2===0){ctx.fillRect(sx+x,yy,2,2)}
+ ctx.fillStyle=hi;for(let x=0;x<640;x+=4){ctx.fillRect(sx+x,y-4,2,2);ctx.fillRect(sx+x+2,y+h+2,2,2)}ctx.fillStyle='rgba(255,255,255,.35)';ctx.fillRect(sx,y,640,2);
+ for(const dx of[-160,160]){const cx=320+dx+off;ctx.fillStyle=hi;ctx.fillRect(cx-2,y+h/2-6,4,12);ctx.fillRect(cx-6,y+h/2-2,12,4);ctx.fillStyle='#fff';ctx.fillRect(cx-1,y+h/2-1,2,2)}
+ txt(bn.s,320+off,y+37,'#fff','center',32);ctx.globalAlpha=1}
 function drawBattle(){const b=B;ER=[];CR=[];hit(0,24,640,206,()=>{b.sel=-1});ctx.drawImage(BGB,0,0);bgAnim();
 ctx.save();if(shk>0)ctx.translate((Math.random()-.5)*shk*2,(Math.random()-.5)*shk*2);
 const lg=b.lg>0?Math.sin(b.lg/.25*3.14)*(b.lgA!=null?b.lgA:30):0,sh=b.sh>0&&b.sh<=.3?(Math.random()-.5)*8:0;
@@ -3928,7 +3934,7 @@ for(const r of ER){const on=r.i===t,pu=on?Math.sin(T*10)*2:0,g=on?4-pu:8,L=on?12
 const tr=t>=0?ER.find(r=>r.i===t):null;if(tr)txt('攻撃',tr.x+tr.w/2,tr.y-26,'#ff6a5a','center',14)}
 else if(dg.y<236){ctx.strokeStyle='#ffe14a';ctx.lineWidth=3;ctx.strokeRect(10,28,620,196);txt('離して使用',320,104,'#ffe14a','center',18)}
 o.hx=dg.x-42;o.hy=dg.y-60;o.hs=1;dg.rt=(dg.rt||0)+(Math.max(-.28,Math.min(.28,(dg.vx||0)*.025))-(dg.rt||0))*.25;ctx.fillStyle='rgba(0,0,0,.3)';ctx.fillRect(Math.round(dg.x-38),Math.round(dg.y+50),76,6);cardAt(o,dg.x,dg.y-7,1.06,dg.rt,.95,0,pvw(o,ptg))}}
-if(b.bn&&b.bn.t>0&&!(b.bn.dl>0)){const p=1-b.bn.t/1.1,a=p<.15?p/.15:p>.75?(1-p)/.25:1,off=p<.15?(1-p/.15)*-260:0;ctx.globalAlpha=Math.max(0,Math.min(1,a));ctx.fillStyle=b.bn.bg;ctx.fillRect(0,96,640,52);ctx.fillStyle='#fff';ctx.fillRect(0,96,640,3);ctx.fillRect(0,145,640,3);txt(b.bn.s,320+off,134,'#fff','center',32);ctx.globalAlpha=1}deusAll(b);drawTut(b)}
+if(b.bn&&b.bn.t>0&&!(b.bn.dl>0))drawBn(b.bn);deusAll(b);drawTut(b)}
 const MCW=72,MSW=1256,MX=f=>P&&P.act===4?150+(f+1)*100:40+(f+1)*MCW;let MSC=0;
 // Ver2.79 4層の地図：赤黒い肉の膜に血管が走り、縁は骨。中央に向かって暗く沈む
 function vpanel(){const W=640,H=238,c=MKC(MSW,H),x=c.getContext('2d');let sd=97;const rn=()=>(sd=(sd*16807)%2147483647)/2147483647;
