@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.99';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.00';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2557,13 +2557,13 @@ const FIS=[[['ushell'],['ulens','ulens'],['ueel'],['uink'],['ushell','ulens']],[
 Object.assign(E,{auA1:{n:'眼孔の苗床',hp:[86,90],el:1,au:1,mv:[{a:3,h:3},{b:10,lb:'開眼'},{a:3,h:4},{a:17,sx:1},{a:3,h:5}]},
 auA2:{n:'視神経の縛り手',hp:[100,104],el:1,au:1,seal:1,fly:12,mv:[{a:11},{a:5,h:3},{b:14,wk:2,vu:1},{a:17,sx:1}]},
 auA2s:{n:'吊られた眼',hp:[42,44],el:1,au:1,fly:26,mv:[{a:3,h:2},{wk:1,lb:'凝視'},{a:6}]},auA2t:{n:'吊られた眼',hp:[42,44],el:1,au:1,fly:30,mv:[{wk:1,lb:'凝視'},{a:6},{a:3,h:2}]},
-eyeC:{n:'血の魔導結晶',hp:[120,120],el:1,fly:26,mv:[{hl:40,lb:'癒す'},{ab:25,lb:'護る'},{gzA:5,lb:'瞳を開かせる'}]},
+eyeC:{n:'血の魔導結晶',hp:[120,120],el:1,fly:26,mv:[{hl:30,lb:'癒す'},{ab:20,lb:'護る'},{gzA:5,lb:'瞳を開かせる'}]},
 auA3:{n:'涙を飲む司祭',hp:[300,316],el:1,au:1,mv:[{a:12,h:2},{cp:1,b:16,lb:'写し'},{a:38,sx:1},{wk:2,vu:2,ps:6}]},
 gateS:{n:'瞼の大盾',hp:[170,170],el:1,fly:10,mv:[{ab:14,lb:'庇う'},{a:12,vu:1},{b:20,st:2},{a:22,sx:1}]},gateP:{n:'睫毛の大槍',hp:[230,230],el:1,fly:16,mv:[{a:6,h:3},{a:10,sc:['火傷',2]},{a:26,sx:1},{st:2,b:12},{a:5,h:4}]},
-eye2:{n:'虚空の眼',hp:[750,750],el:2,nt:1,cap:300,gz:10,gzd:10,fly:30,mv:[{vu:2,wk:2,sc:['目眩',3],lb:'凝視'},{a:2,h:12},{a:40,nm:'虚無の凝視',fc:'#ff2a2a'},{st:2,b:20,lb:'脈動'}]}});
+eye2:{n:'虚空の眼',hp:[750,750],el:2,nt:1,nc:1,cap:300,gz:10,gzd:10,fly:30,mv:[{vu:2,wk:2,sc:['目眩',5],lb:'凝視'},{a:2,h:12},{a:40,nm:'虚無の凝視',fc:'#ff2a2a'},{st:2,lb:'脈動'}]}});
 // Ver2.71 ボスの連撃が筋力で伸びすぎないように（ユーザー指定）：ボスの連撃は1発+2、筋力+4以上の行動は-2。ボスの筋力が上がるのは1戦で2回まで（3回目からはその行動の筋力だけ無し）
 for(const k in E)if(E[k].el===2&&!E[k].nt)for(const m of E[k].mv){if(m.a&&m.h>1)m.a+=2;if(m.st>=4)m.st-=2}
-const stG=(e,m)=>m.st&&!(e.el===2&&(e.sgn||0)>=2)?m.st:0;
+const stG=(e,m)=>m.st&&!(e.el===2&&!(E[e.k]&&E[e.k].nc)&&(e.sgn||0)>=2)?m.st:0;
 // 1層の場所：P.v1 が 's' なら沈没都市、それ以外は黒い森
 const A1S=()=>!!(P&&P.act===1&&P.v1==='s'),bgbFor=a=>a===4?BGBV:a===1&&P&&P.v1==='s'?BGB1S:[BGB1,BGB2,BGB3][a-1];
 const FI=[[['slime'],['bat','bat'],['goblin'],['spider'],['slime','bat']],[['skel'],['ghost'],['goblin','spider'],['bat','bat','bat'],['ogre']],[['golem'],['ogre','bat'],['skel','ghost'],['spider','spider','bat']]];
@@ -3234,7 +3234,7 @@ if(m.wf&&!nat)mpEach(()=>{B.blk=0});if(m.a&&!nat)for(let k=0;k<(m.h||1);k++){hit
 if(m.vu&&P.hp>0){PS.vuln+=m.vu;B.jv=1;nmb(110,118,'弱体+'+m.vu,'#ff9a6a');sfx('ps')}},tk>=0?tk:null);if(!MPB&&P.hp<=0)return;if(B.ph==='L')return;
 // 筋力アップは攻撃のあと（予告の数字どおりのダメージにする）。儀式 rit は行動のたびに筋力が上がる
 if(e.rit&&!e.dead){e.str+=e.rit;pop(e,'儀式 筋力+'+e.rit,'#ff8c2e')}
-if(m.sa){for(const x of alive())if(x!==e){x.str+=m.sa;pop(x,'筋力+'+m.sa,'#ffd23f')}sfx('bf')}if(m.gzA){for(const x of alive())if(x.gz){x.gzc=(x.gzc||0)+m.gzA;pop(x,'視線+'+m.gzA,'#ff4a5a');if(x.gzc>=x.gz){x.gzc-=x.gz;if(!QT)xGazeBeam(x);hitP(x,x.gzd,.55)}}}if(m.cp){const s2=Math.max(2,PS.str|0);e.str+=s2;pop(e,'写し取り 筋力+'+s2,'#ff6a8a');sfx('bf')}if(stG(e,m)){e.sgn=(e.sgn||0)+1;e.str+=m.st;fxs('ar',p.x,p.y-40,{s:'▲',c:'#ff6a6a',d:.7});pop(e,'筋力+'+m.st,'#ffd23f');sfx('bf')}
+if(m.sa){for(const x of alive())if(x!==e){x.str+=m.sa;pop(x,'筋力+'+m.sa,'#ffd23f')}sfx('bf')}if(e.k==='eye2'&&m.lb==='脈動'){e.pul=(e.pul||0)+1;const n=e.pul;if(n===2){e.gzd=15;pop(e,'光線の威力 15','#ff4a5a')}else if(n===3){e.gz=8;e.gzc=Math.min(e.gzc||0,7);pop(e,'視線が8で溜まる','#ff4a5a')}else if(n===4){e.str+=10;pop(e,'筋力+10','#ffd23f')}else if(n>=5){e.str+=30;pop(e,'筋力+30','#ffd23f')}if(!QT){const E2=XEP(e);xRing(E2.x,E2.y,'#ff2a4a',10,E2.w*.8,0,.8,6)}}if(m.gzA){for(const x of alive())if(x.gz){x.gzc=(x.gzc||0)+m.gzA;pop(x,'視線+'+m.gzA,'#ff4a5a');if(x.gzc>=x.gz){x.gzc-=x.gz;if(!QT)xGazeBeam(x);hitP(x,x.gzd,.55)}}}if(m.cp){const s2=Math.max(2,PS.str|0);e.str+=s2;pop(e,'写し取り 筋力+'+s2,'#ff6a8a');sfx('bf')}if(stG(e,m)){e.sgn=(e.sgn||0)+1;e.str+=m.st;fxs('ar',p.x,p.y-40,{s:'▲',c:'#ff6a6a',d:.7});pop(e,'筋力+'+m.st,'#ffd23f');sfx('bf')}
 if(e.k==='maiden'){const lv=wlv(e);e.wl=m.wf?0:Math.min(WLMX,lv+1);e.wdt=0;if(m.wf){e.i--;pop(e,'水位が引いた','#5ac8ff')}else if(e.wl>=3)pop(e,'水位'+e.wl,'#5ac8ff')}
 e.i++;if(e.weak>0)e.weak--;if(e.vuln>0)e.vuln--}
 function endBattle(){recTry('dmg',P.bTD||0);if(B.boss&&!B.hurt)P.perf++;if(has('burn'))P.hp=Math.min(P.mhp,P.hp+6);if(has('cheese')){P.mhp+=1;P.hp+=1}if(PS&&PS.shr)P.hp=Math.min(P.mhp,P.hp+PS.shr);if(has('ribbon'))P.hp=Math.min(P.mhp,P.hp+3);
