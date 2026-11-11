@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.93';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.94';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2548,8 +2548,8 @@ Object.assign(E,{
 const FIS=[[['ushell'],['ulens','ulens'],['ueel'],['uink'],['ushell','ulens']],[['udiver'],['uboat'],['ueel','uink'],['ucoral','ulens'],['ubell']],[['ubell','ulens'],['udiver','ushell'],['uboat','ucoral'],['uink','uink','ulens']]],ELS=['udrown','ugeel'];
 // Ver2.78 眼の欠片（ユーザー指定）：一度でもクリアすると各層のエリートの1つがオーラのマスになり、眼に関わる異形のエリート（通常の約1.2倍）が出る。倒すと眼の欠片。3つで眼が去り、4層（ショップ→休憩→門番→弱まった眼）へ
 Object.assign(E,{auA1:{n:'眼孔の苗床',hp:[86,90],el:1,au:1,mv:[{a:3,h:3},{b:10,lb:'開眼'},{a:3,h:4},{a:17,sx:1},{a:3,h:5}]},
-auA2:{n:'視神経の縛り手',hp:[100,104],el:1,au:1,seal:1,fly:12,mv:[{a:20},{a:8,h:3},{b:14,wk:2,vu:1},{a:30,sx:1}]},
-auA2s:{n:'吊られた眼',hp:[42,44],el:1,au:1,fly:26,mv:[{a:6,h:2},{wk:1,vu:1,lb:'凝視'},{a:10}]},auA2t:{n:'吊られた眼',hp:[42,44],el:1,au:1,fly:30,mv:[{wk:1,vu:1,lb:'凝視'},{a:10},{a:6,h:2}]},
+auA2:{n:'視神経の縛り手',hp:[100,104],el:1,au:1,seal:1,fly:12,mv:[{a:11},{a:5,h:3},{b:14,wk:2,vu:1},{a:17,sx:1}]},
+auA2s:{n:'吊られた眼',hp:[42,44],el:1,au:1,fly:26,mv:[{a:3,h:2},{wk:1,lb:'凝視'},{a:6}]},auA2t:{n:'吊られた眼',hp:[42,44],el:1,au:1,fly:30,mv:[{wk:1,lb:'凝視'},{a:6},{a:3,h:2}]},
 auA3:{n:'涙を飲む司祭',hp:[300,316],el:1,au:1,mv:[{a:12,h:2},{cp:1,b:16,lb:'写し'},{a:38,sx:1},{wk:2,vu:2,ps:6}]},
 gateS:{n:'瞼の大盾',hp:[170,170],el:1,fly:10,mv:[{ab:14,lb:'庇う'},{a:12,vu:1},{b:20,st:2},{a:22,sx:1}]},gateP:{n:'睫毛の大槍',hp:[230,230],el:1,fly:16,mv:[{a:6,h:3},{a:10,sc:['火傷',2]},{a:26,sx:1},{st:2,b:12},{a:5,h:4}]},
 eye2:{n:'虚空の眼',hp:[750,750],el:2,nt:1,cap:300,beat:1,fly:30,mv:[{vu:2,wk:2,sc:['目眩',3],lb:'凝視'},{a:2,h:12},{a:40,nm:'虚無の凝視',fc:'#ff2a2a'},{st:2,b:20,lb:'脈動'}]}});
