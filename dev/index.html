@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.89';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.90';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -3687,9 +3687,13 @@ function drawLv(){const el=T-B.lvT,a=x=>Math.max(0,Math.min(1,x));ctx.fillStyle=
 let SHDC=null;function SHDI(){if(SHDC)return SHDC;const c=MKC(28,28),g=c.getContext('2d'),P2=(pts,col)=>{g.fillStyle=col;g.beginPath();pts.forEach((q,k)=>k?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]));g.closePath();g.fill()};
  P2([[14,1],[25,10],[20,27],[6,24],[3,9]],'#3a0610');P2([[14,3],[23,10],[19,25],[7,22],[5,10]],'#a01828');P2([[14,3],[23,10],[14,12],[5,10]],'#c8303c');
  g.fillStyle='#e8dcd0';g.beginPath();g.ellipse(14,15,6,4.5,0,0,6.3);g.fill();g.fillStyle='#c01020';g.beginPath();g.arc(15,15,3,0,6.3);g.fill();g.fillStyle='#100408';g.beginPath();g.arc(15.5,15,1.5,0,6.3);g.fill();g.fillStyle='#fff';g.fillRect(16,13,1,1);return SHDC=c}
-function auraD(x,y,r){const C=new Set(),G=2,tk=Math.floor(T*7),hs=(a,b)=>{const v=Math.sin(a*12.9898+b*78.233)*43758.5453;return v-Math.floor(v)},put=(px,py)=>C.add(Math.round(px/G)+','+Math.round(py/G));
- for(let k=0;k<20;k++){const a=k/20*6.283,c=Math.cos(a),sn=Math.sin(a),up=sn<0?1+(-sn)*.8:.5,h=Math.round((2+hs(k,tk)*2.4)*up);for(let s2=0;s2<=h;s2++){const d=r+2+s2*G,w=Math.max(0,Math.round((h-s2)/h*1.4)),px=x+c*d,py=y+sn*d-s2*G*.55;for(let q=-w;q<=w;q++)put(px-sn*q*G,py+c*q*G)}}
- ctx.fillStyle='rgba(70,255,140,.48)';for(const v of C){const[a,b]=v.split(',');ctx.fillRect(+a*G-1,+b*G-1,G,G)}}
+// Ver2.90 オーラ：にじむ血の輪と下へ垂れる滴（ユーザー採用の案A）。2px格子のドット絵、暗い赤・血の赤・明るい赤とつや
+const BLC=['#3a0006','#7a0a14','#b8121e','#ff6a70'],bhs=(a,b)=>{const v=Math.sin(a*12.9898+b*78.233)*43758.5453;return v-Math.floor(v)};
+function auraD(x,y,r){const t=T,M=new Map(),px=(X,Y,c)=>M.set(Math.round(X/2)*2+','+Math.round(Y/2)*2,c);
+ for(let k=0;k<64;k++){const a=k/64*6.283,w=2.5+1.5*Math.sin(a*5+t*2)+Math.sin(a*3-t*1.3);for(let d=0;d<w;d+=1.5){const R=r+1+d;px(x+Math.cos(a)*R,y+Math.sin(a)*R,d<1?BLC[1]:d>w-1.6?BLC[0]:BLC[2])}}
+ for(let k=0;k<5;k++){const a=.9+k*.32,bx=x+Math.cos(a)*(r+2),by=y+Math.sin(a)*(r+2),ph=(t*.45+bhs(k,1))%1,L=4+ph*14;for(let j=0;j<L;j+=2)px(bx,by+j,j>L-3?BLC[2]:BLC[1]);if(ph>.7){const dy=(ph-.7)/.3*16;px(bx,by+L+dy,BLC[2]);px(bx,by+L+dy+2,BLC[1])}}
+ for(let k=0;k<6;k++){const a=k*1.1+t*.3;px(x+Math.cos(a)*(r+3),y+Math.sin(a)*(r+3)-1,BLC[3])}
+ for(const[k,c]of M){const[a,b]=k.split(',');ctx.fillStyle=c;ctx.fillRect(+a-1,+b-1,2,2)}}
 function genMap4(){LAST=3;const m=[];for(let f=0;f<LAST;f++){const r=Array(MR).fill(null);r[2]={t:[2,3,7][f],cn:[f<LAST-1?2:0],dx:0,dy:0};m.push(r)}m.push([{t:8,cn:[],dx:0,dy:0}]);return m}
 function sealMk(x,y){ctx.fillStyle='rgba(40,10,60,.35)';ctx.fillRect(x,y,84,106);for(let k=0;k<12;k++){sq(x+5+k*6.7,y+8+k*8,5,k%2?'#8a8fa0':'#c8ccd8');sq(x+79-k*6.7,y+8+k*8,5,k%2?'#8a8fa0':'#c8ccd8')}ctx.strokeStyle='#c9a0ff';ctx.lineWidth=2;ctx.strokeRect(x+37,y+40,10,8);ctx.fillStyle='#08060f';ctx.fillRect(x+33,y+46,18,16);ctx.fillStyle='#c9a0ff';ctx.fillRect(x+35,y+48,14,12);ctx.fillStyle='#08060f';ctx.fillRect(x+41,y+52,2,4)}
 // カードの動き（原作風）：引く＝山札から手札へ滑り込む／使う＝中央に出てから捨て札へ／パワー＝上へ消える／廃棄＝燃え尽きる／捨てる＝捨て札へ／山札の補充＝捨て札から裏向きで戻る
