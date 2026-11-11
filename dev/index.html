@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='2.90';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='2.91';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -295,40 +295,57 @@ function gkStep(n,t){const i=n%128,bar=i>>4,s=i&15,r=GKR[bar],ch=GKT[r],lp=Math.
  if(s===0||s===3)uKick(t,s?.32:.55);if(s===8)uTom(r-12,t,.14);if(bar===7&&s>=8&&s%2===0)uTom(r-12+(s-8),t,.1);
  for(const q of GKM)if(q[0]===bar&&q[1]===s){aPiano(q[2],t,.05);if(lp)aFlute(q[2]-12,t,bsp*6,.035)}
  if(s===12&&lp)aHarpsi(ch[2]+12,t,.012)}
-const OSC=[0,2,3,5,7,8,11],osn=k=>12*Math.floor(k/7)+OSC[((k%7)+7)%7];
-// Ver2.82 弱まった虚空の眼の曲（ユーザー採用）：低音主体の170BPMの高速戦闘曲。ニ短調・低いピアノの16分・太いシンセベース・強いキックとスネア、高い旋律やきらきらした音は使わない。32小節で1周、16〜19小節だけ静かになり20小節目の一撃から爆発する。
-// 音はすべて立ち上がりを数ミリ秒かけ（プツプツしないように）、この曲だけ専用の出口 xbus()（圧縮と柔らかい歪み）を通す：音はすべて立ち上がりを数ミリ秒かけ、出口に圧縮と柔らかい歪み
-let XB=null;function xbus(){if(XB&&XB.ctx===AC)return XB.in;const cp=AC.createDynamicsCompressor();cp.threshold.value=-18;cp.knee.value=8;cp.ratio.value=4;cp.attack.value=.006;cp.release.value=.12;
- const sh=AC.createWaveShaper(),N=2048,c=new Float32Array(N);for(let i=0;i<N;i++){const x=i/(N-1)*2-1;c[i]=Math.tanh(x*1.6)/Math.tanh(1.6)}sh.curve=c;sh.oversample='4x';const og=AC.createGain();og.gain.value=.22;
- const i0=AC.createGain();i0.gain.value=.45;i0.connect(cp);cp.connect(sh);sh.connect(og);og.connect(MG);XB={ctx:AC,in:i0};return i0}
+// Ver2.91 弱まった虚空の眼の曲（ユーザー採用「エレキ案1・改」）：高速エレキが主役。ホ短調（和声的短音階 g3）・175BPM・32小節で1周。
+// A 0-3 タッピング風の分散和音／4-11 刻みの上でリードの主旋律（8小節目からハモり）／12-15 ツインリード／16-19 静かな区間と盛り上げ直し／20-27 一撃から速弾きソロ・16分のキック／28-31 キメと駆け下り。
+// リード gC は粒がはっきりするよう、しゃくり上げ・ずらし重ねは無し。出口 xbus は低い帯域（130Hz未満）を圧縮も歪みも通さず別に流し、上の帯域だけ軽くまとめて5kHz以上を少し下げる（キンキンせず重低音が潰れない）
+let XB=null;function xbus(){if(XB&&XB.ctx===AC)return XB.in;const i0=AC.createGain();i0.gain.value=.5;
+ const lo=AC.createBiquadFilter();lo.type='lowpass';lo.frequency.value=130;lo.Q.value=.7;const lg=AC.createGain();lg.gain.value=1.25;
+ const hi=AC.createBiquadFilter();hi.type='highpass';hi.frequency.value=130;hi.Q.value=.7;const cp=AC.createDynamicsCompressor();cp.threshold.value=-20;cp.knee.value=10;cp.ratio.value=3;cp.attack.value=.012;cp.release.value=.15;
+ const sh=AC.createWaveShaper(),N=1024,c=new Float32Array(N);for(let i=0;i<N;i++){const x=i/(N-1)*2-1;c[i]=Math.tanh(x*1.2)/Math.tanh(1.2)}sh.curve=c;const hs=AC.createBiquadFilter();hs.type='highshelf';hs.frequency.value=5000;hs.gain.value=-5;const mud=AC.createBiquadFilter();mud.type='peaking';mud.frequency.value=320;mud.Q.value=1;mud.gain.value=-2.5;
+ const sum=AC.createGain(),lim=AC.createDynamicsCompressor();lim.threshold.value=-4;lim.knee.value=2;lim.ratio.value=12;lim.attack.value=.003;lim.release.value=.08;
+ i0.connect(lo);lo.connect(lg);lg.connect(sum);i0.connect(hi);hi.connect(cp);cp.connect(sh);sh.connect(hs);hs.connect(mud);mud.connect(sum);sum.connect(lim);const og=AC.createGain();og.gain.value=.19;lim.connect(og);og.connect(MG);XB={ctx:AC,in:i0};return i0}
 function xenv(g,t,v,a,d,rl){g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+a);g.gain.setValueAtTime(v,t+Math.max(a,d-rl));g.gain.linearRampToValueAtTime(0,t+d)}
 function xNz(d,v,fc,t,q,ty){const b=AC.createBuffer(1,Math.ceil(AC.sampleRate*d),AC.sampleRate),a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=b;f.type=ty||'bandpass';f.frequency.value=fc;f.Q.value=q||1;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.002);g.gain.exponentialRampToValueAtTime(.0005,t+d);g.gain.linearRampToValueAtTime(0,t+d+.005);s.connect(f);f.connect(g);g.connect(xbus());s.start(t);s.stop(t+d+.01)}
-function xKick(t,v){const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.setValueAtTime(155,t);o.frequency.exponentialRampToValueAtTime(48,t+.11);o.frequency.exponentialRampToValueAtTime(40,t+.35);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v*.9,t+.003);g.gain.exponentialRampToValueAtTime(v*.35,t+.12);g.gain.exponentialRampToValueAtTime(.0005,t+.38);g.gain.linearRampToValueAtTime(0,t+.39);o.connect(g);g.connect(xbus());o.start(t);o.stop(t+.4);
- const o2=AC.createOscillator(),g2=AC.createGain();o2.type='triangle';o2.frequency.setValueAtTime(420,t);o2.frequency.exponentialRampToValueAtTime(120,t+.02);g2.gain.setValueAtTime(0,t);g2.gain.linearRampToValueAtTime(v*.25,t+.002);g2.gain.exponentialRampToValueAtTime(.0005,t+.03);g2.gain.linearRampToValueAtTime(0,t+.035);o2.connect(g2);g2.connect(xbus());o2.start(t);o2.stop(t+.04)}
 function xSnare(t,v){const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.setValueAtTime(220,t);o.frequency.exponentialRampToValueAtTime(160,t+.08);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v*.45,t+.002);g.gain.exponentialRampToValueAtTime(.0005,t+.14);g.gain.linearRampToValueAtTime(0,t+.15);o.connect(g);g.connect(xbus());o.start(t);o.stop(t+.16);xNz(.2,v*.5,1900,t,.8);xNz(.12,v*.2,4200,t,.7)}
 function xTom(m,t,v){const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.setValueAtTime(mf(m)*1.5,t);o.frequency.exponentialRampToValueAtTime(mf(m),t+.08);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.003);g.gain.exponentialRampToValueAtTime(.0005,t+.4);g.gain.linearRampToValueAtTime(0,t+.41);o.connect(g);g.connect(xbus());o.start(t);o.stop(t+.42)}
 function xBass(m,t,d,v){const f=AC.createBiquadFilter(),g=AC.createGain(),sh=AC.createWaveShaper(),N=1024,c=new Float32Array(N);for(let i=0;i<N;i++){const x=i/(N-1)*2-1;c[i]=Math.tanh(x*3)}sh.curve=c;f.type='lowpass';f.frequency.setValueAtTime(900,t);f.frequency.exponentialRampToValueAtTime(320,t+Math.min(d,.2));f.Q.value=2;
  xenv(g,t,v,.006,d,.02);f.connect(sh);sh.connect(g);g.connect(xbus());for(const dt of[-12,12]){const o=AC.createOscillator();o.type='sawtooth';o.frequency.value=mf(m);o.detune.value=dt;o.connect(f);o.start(t);o.stop(t+d+.01)}
  const so=AC.createOscillator(),sg=AC.createGain();so.type='sine';so.frequency.value=mf(m-12);xenv(sg,t,v*1.3,.006,d,.02);so.connect(sg);sg.connect(xbus());so.start(t);so.stop(t+d+.01)}
-function xSub(m,t,d,v){const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=mf(m);xenv(g,t,v,.05,d,.1);o.connect(g);g.connect(xbus());o.start(t);o.stop(t+d+.01)}
-function xPno(m,t,v,d){d=d||.26;const f=AC.createBiquadFilter(),g=AC.createGain();f.type='lowpass';f.frequency.setValueAtTime(2600,t);f.frequency.exponentialRampToValueAtTime(900,t+d);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.004);g.gain.exponentialRampToValueAtTime(v*.25,t+d*.6);g.gain.linearRampToValueAtTime(0,t+d);f.connect(g);g.connect(xbus());
- for(const[r,ty,a]of[[1,'triangle',1],[1,'sawtooth',.25],[2,'sine',.25]]){const o=AC.createOscillator(),og=AC.createGain();o.type=ty;o.frequency.value=mf(m)*r;og.gain.value=a;o.connect(og);og.connect(f);o.start(t);o.stop(t+d+.01)}}
 function xRise(t,d,v){const b=AC.createBuffer(1,Math.ceil(AC.sampleRate*d),AC.sampleRate),a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=b;f.type='lowpass';f.frequency.setValueAtTime(200,t);f.frequency.exponentialRampToValueAtTime(3000,t+d);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+d*.95);g.gain.linearRampToValueAtTime(0,t+d);s.connect(f);f.connect(g);g.connect(xbus());s.start(t);s.stop(t+d+.01)}
 function xImp(t,v){xKick(t,v);const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.setValueAtTime(60,t);o.frequency.exponentialRampToValueAtTime(30,t+1.2);xenv(g,t,v*.8,.004,1.3,.6);o.connect(g);g.connect(xbus());o.start(t);o.stop(t+1.31);xNz(1.2,v*.12,1200,t,.5,'lowpass')}
-const XCR=[0,0,5,4,0,5,3,4,0,5,3,4,0,5,3,4,0,5,3,4,0,5,3,4,0,5,3,4,5,3,4,4];
-const XCP={a:[0,2,4,2,0,2,4,7,4,2,0,2,4,2,1,-1],b:[0,0,7,0,0,7,0,4,0,0,7,0,5,4,2,1],c:[7,4,2,0,7,4,2,0,9,7,4,2,7,4,2,0]};
-function e2Step(n,t){const i=n%512,bar=i>>4,s=i&15,d=XCR[bar],sec=bar<4?'I':bar<12?'A':bar<16?'B':bar<20?'Q':bar<28?'X':'F',root=26+osn(d),pn=k=>38+osn(d+k);
- if(sec==='Q'){if(s===0){xSub(root,t,bsp*16,.3);xBass(root+12,t,bsp*16,.05)}if(s%4===0)xPno(pn([0,2,4,2][s>>2]),t,.11,.9);if(s===0||s===3)xKick(t,s?.35:.5);
-  if(bar===19){if(s===0)xRise(t,bsp*16,.12);if(s%(s<8?4:s<12?2:1)===0)xSnare(t,.25+s*.04);if(s>=8)xKick(t,.35+(s-8)*.06)}return}
- if(s===0&&bar===20)xImp(t,1);
- const pt=XCP[sec==='B'?'b':sec==='X'&&bar%2?'c':'a'];xPno(pn(pt[s]),t,sec==='X'?.12:.1);if(s%4===0||sec==='X'&&s%2===0)xPno(pn(pt[s])-12,t,.09);
- if(s===0)xSub(root,t,bsp*16,.22);
- if(sec==='I'){if(s%4===0)xKick(t,.9);if(s===0)xBass(root+12,t,bsp*16,.07);if(bar===3&&s>=8)xSnare(t,.35+(s-8)*.08);return}
- if(sec==='A'){if(s%4===0||s===14)xKick(t,1);if(s===4||s===12)xSnare(t,1);if(s%4!==0)xBass(root+12+(s%8===6?12:0),t,bsp*.95,.11)}
- else if(sec==='B'){if(s===0||s===6||s===10||s===11)xKick(t,1);if(s===4||s===12)xSnare(t,1);if(s===15)xSnare(t,.35);if(!(s&1))xBass(root+12+(s%4===2?12:0),t,bsp*1.9,.11)}
- else if(sec==='X'){xKick(t,s%4===0?1:.55);if(s===4||s===12)xSnare(t,1);xBass(root+12+(s%4===2?12:0),t,bsp*.95,.12)}
- else{if(bar<31){if([0,3,6,9,12,14].includes(s)){xKick(t,1);xSnare(t,.6);xBass(root+12,t,bsp*1.7,.14);xPno(pn(0)-12,t,.14,.4)}}else{xSnare(t,.3+s*.045);if(s%4===0){xTom(46-s,t,.45);xKick(t,.8)}}}
- if(bar%4===3&&sec!=='F'&&s>=12)xSnare(t,.45+(s-12)*.12)}
+function xKick(t,v){const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.setValueAtTime(155,t);o.frequency.exponentialRampToValueAtTime(48,t+.11);o.frequency.exponentialRampToValueAtTime(40,t+.35);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v*.9,t+.003);g.gain.exponentialRampToValueAtTime(v*.35,t+.12);g.gain.exponentialRampToValueAtTime(.0005,t+.38);g.gain.linearRampToValueAtTime(0,t+.39);o.connect(g);g.connect(xbus());o.start(t);o.stop(t+.4);
+ const o2=AC.createOscillator(),g2=AC.createGain();o2.type='triangle';o2.frequency.setValueAtTime(420,t);o2.frequency.exponentialRampToValueAtTime(120,t+.02);g2.gain.setValueAtTime(0,t);g2.gain.linearRampToValueAtTime(v*.25,t+.002);g2.gain.exponentialRampToValueAtTime(.0005,t+.03);g2.gain.linearRampToValueAtTime(0,t+.035);o2.connect(g2);g2.connect(xbus());o2.start(t);o2.stop(t+.04);const o3=AC.createOscillator(),g3n=AC.createGain();o3.type='sine';o3.frequency.setValueAtTime(70,t);o3.frequency.exponentialRampToValueAtTime(42,t+.25);g3n.gain.setValueAtTime(0,t);g3n.gain.linearRampToValueAtTime(v*.55,t+.006);g3n.gain.exponentialRampToValueAtTime(.0005,t+.45);g3n.gain.linearRampToValueAtTime(0,t+.46);o3.connect(g3n);g3n.connect(xbus());o3.start(t);o3.stop(t+.47)}
+function xSub(m,t,d,v){v*=1.5;const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=mf(m);xenv(g,t,v,.05,d,.1);o.connect(g);g.connect(xbus());o.start(t);o.stop(t+d+.01)}
+let GCV2=null;function gCurve2(k){if(!GCV2||GCV2.ctx!==AC)GCV2={ctx:AC};if(GCV2[k])return GCV2[k];const N=2048,c=new Float32Array(N);for(let i=0;i<N;i++){const x=i/(N-1)*2-1;c[i]=Math.tanh(x*k)/Math.tanh(k)}return GCV2[k]=c}
+function gC(ms,t,d,v,o){o=o||{};const hp=AC.createBiquadFilter(),pre=AC.createBiquadFilter(),sh=AC.createWaveShaper(),cab=AC.createBiquadFilter(),pk=AC.createBiquadFilter(),g=AC.createGain();
+ hp.type='highpass';hp.frequency.value=o.lead?200:110;pre.type='lowpass';pre.Q.value=1;if(o.pm){pre.frequency.value=800}else{pre.frequency.setValueAtTime(o.lead?4600:3800,t);pre.frequency.exponentialRampToValueAtTime(o.lead?2500:2300,t+.08)}
+ sh.curve=gCurve2(o.drv||16);sh.oversample='4x';cab.type='lowpass';cab.frequency.value=o.pm?2300:(o.lead?4600:4200);pk.type='peaking';pk.frequency.value=o.lead?2100:1500;pk.gain.value=o.lead?3:1.5;pk.Q.value=1;
+ const rl=Math.min(.025,d*.3);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.003);g.gain.setValueAtTime(v*(o.pm?.55:.85),t+Math.max(.004,d-rl));g.gain.linearRampToValueAtTime(0,t+d);
+ hp.connect(pre);pre.connect(sh);sh.connect(cab);cab.connect(pk);pk.connect(g);g.connect(xbus());
+ for(const m of ms){for(const[ty,a,dt]of o.lead?[['sawtooth',1,0],['square',.28,0]]:[['sawtooth',1,-7],['sawtooth',1,7]]){const os=AC.createOscillator(),og=AC.createGain();os.type=ty;os.frequency.value=mf(m);os.detune.value=dt;og.gain.value=a;
+  if(o.lead&&d>.4){const l=AC.createOscillator(),lg=AC.createGain();l.frequency.value=6;lg.gain.setValueAtTime(0,t+.22);lg.gain.linearRampToValueAtTime(12,t+Math.min(d,.6));l.connect(lg);lg.connect(os.detune);l.start(t);l.stop(t+d+.02)}
+  os.connect(og);og.connect(hp);os.start(t);os.stop(t+d+.02)}}}
+const GS3=[0,2,3,5,7,8,11],g3=k=>12*Math.floor(k/7)+GS3[((k%7)+7)%7];
+const PAT={tap:[0,4,7,11,7,4,0,4,7,11,14,11,7,4,7,11],run:[0,1,2,3,4,5,6,7,8,9,10,9,8,7,6,5],dn:[14,13,12,11,10,9,8,7,8,7,6,5,4,3,2,1],zig:[0,2,1,3,2,4,3,5,4,6,5,7,6,8,7,9],pd:[7,4,7,2,7,4,7,1,7,4,7,2,7,4,7,0],sw:[0,2,4,7,9,11,14,11,9,7,4,2,0,2,4,7],tr:[7,8,7,8,7,8,7,6,7,6,7,6,4,5,4,2]};
+// 共通の進行：sec を返す
+function gSec(bar){return bar<4?'I':bar<12?'A':bar<16?'H':bar<20?'Q':bar<28?'S':'F'}
+function gDrums(t,sec,s,bar,style){if(s===0&&bar===20)xImp(t,1);if(s===0&&bar%4===0&&sec!=='Q')xNz(.9,.05,3800,t,.5);
+ if(sec==='Q'){if(bar===19){if(s===0)xRise(t,bsp*16,.1);if(s%(s<8?4:s<12?2:1)===0)xSnare(t,.25+s*.04);if(s>=8)xKick(t,.35+(s-8)*.06)}return}
+ if(sec==='I'){if(s%4===0)xKick(t,.9);if(bar>=2&&(s===4||s===12))xSnare(t,.8);if(bar===3&&s>=8)xSnare(t,.35+(s-8)*.08);return}
+ if(sec==='F'){if(bar<31){if([0,3,6,9,12,14].includes(s)){xKick(t,1);xSnare(t,.6)}}else{xSnare(t,.3+s*.045);if(s%4===0){xTom(46-s,t,.45);xKick(t,.8)}}return}
+ let kv=0;if(sec==='S'||style==='gallop')kv=s%4===0?1:.55;else if(style==='groove')kv=[0,3,6,10,11].includes(s)?1:0;else kv=s%2===0?(s%4===0?1:.6):0;if(kv)xKick(t,kv);
+ if(style==='groove'&&sec!=='S'){if(s===8)xSnare(t,1)}else if(s===4||s===12)xSnare(t,1);if(s%2)xNz(.03,.03,6000,t,1)}
+// 案1：王道の速弾き（ホ短調・175BPM）。前の曲の音色を直したもの
+const R1=[0,0,5,6,0,0,5,4,0,5,3,4,0,5,6,4,0,5,3,4,0,5,6,4,0,5,6,4,5,6,4,4];
+const M1=[[4,0,7,4],[4,4,9,2],[4,6,10,2],[4,8,9,4],[4,12,7,4],[5,0,8,6],[5,6,7,2],[5,8,5,8],[6,0,6,4],[6,4,8,4],[6,8,10,4],[6,12,11,4],[7,0,11,8],[7,8,9,4],[7,12,8,4],[8,0,7,3],[8,3,9,3],[8,6,10,2],[8,8,11,4],[8,12,12,4],[9,0,10,8],[9,8,9,4],[9,12,7,4],[10,0,8,4],[10,4,10,4],[10,8,12,4],[10,12,10,4],[11,0,11,12],[11,12,9,4]];
+function e2Step(n,t){const i=n%512,bar=i>>4,s=i&15,d=R1[bar],root=28+g3(d),sec=gSec(bar),ln=k=>64+g3(d+k);gDrums(t,sec,s,bar,'drive');
+ if(sec==='Q'){if(s===0){xSub(root,t,bsp*16,.22)}if(s%2===0)gC([ln(PAT.pd[s])-12],t,bsp*1.8,.06,{lead:1,drv:7});return}
+ if(sec!=='F'&&!(s&1))xBass(root+12+(s%8===6?12:0),t,bsp*1.8,.07);if(s===0)xSub(root,t,bsp*16,.16);
+ if(sec==='A'||sec==='H'||sec==='S'){const acc=[0,6,10].includes(s);gC(acc?[root+12,root+19,root+24]:[root+12],t,acc?bsp*1.6:bsp*.8,acc?.07:.05,{pm:!acc})}
+ if(sec==='F'&&bar<31&&[0,3,6,9,12,14].includes(s))gC([root+12,root+19],t,bsp*1.5,.09);
+ if(sec==='I')gC([ln(PAT.tap[s])],t,bsp*.95,.07,{lead:1});
+ else if(sec==='A'||sec==='H'){for(const q of M1)if(q[0]===bar&&q[1]===s){gC([ln(q[2])],t,bsp*q[3]*.97,.085,{lead:1});if(sec==='H'||bar>=8)gC([ln(q[2]+2)],t,bsp*q[3]*.97,.045,{lead:1})}if(sec==='H'){gC([ln(PAT.zig[s])],t,bsp*.95,.06,{lead:1});gC([ln(PAT.zig[s]+2)],t,bsp*.95,.035,{lead:1})}}
+ else if(sec==='S')gC([ln(PAT[['run','dn','zig','tap'][bar%4]][s])],t,bsp*.95,.08,{lead:1,drv:18});else if(sec==='F'&&bar===31)gC([ln(PAT.dn[s])],t,bsp*.95,.07,{lead:1})}
 
 // Ver2.87 眼の欠片のエリートの曲（ユーザー指定：今までにない不気味さ）。7/8拍子・96BPM（1ステップ＝8分）。調の定まらない低いうなり（少しずれた2本がうなる）、
 // 揃わない心音、音程の狂ったオルゴール、滑るガラスの笛、ささやくような息、時計の刻み、半音でぶつかる和音、最後に逆再生のようにせり上がる音。16小節で1周、2周目は少し濃くなる
@@ -346,7 +363,7 @@ function auStep(n,t){const i=n%112,lp=Math.floor(n/112)%2,bar=Math.floor(i/7),s=
  for(const q of AUM)if(q[0]===bar&&q[1]===s){aBell(q[2]-12,t,.045);aBell(q[2]-11.7,t+.03,.018)}
  if(s===0&&(bar===4||bar===12))auGl(r+36,r+30,t,bsp*7,.02);if(s===2&&bar===8)auGl(r+31,r+37,t,bsp*5,.018);
  if(bar===15&&s===0)auRv(r,t,bsp*7,.05);if(bar===7&&s===3)aTimp(r-12,t,.08)}
-function bgm(n,sp){const v=sp||({au:60/96/2,gk:.2,e2:60/170/4,b:.2,x:.115,t:60/76/2,b2:.19,b3:.13,x3:.17,v:.45,b1s:.15,b1x:.105})[n]||.3;if(cb===n&&bsp===v)return;if(cb==='v'&&n!=='v'&&VDK.vg&&AC){try{VDK.vg.gain.setTargetAtTime(0,AC.currentTime,.3)}catch(e){}VDK.ac=null}cb=n;bsp=v;if(!AC)return;if(!BG){BG=AC.createGain();BG.connect(MG)}bst=0;bnext=AC.currentTime+.1;clearInterval(btm);btm=setInterval(bgmTick,80)}
+function bgm(n,sp){const v=sp||({au:60/96/2,gk:.2,e2:60/175/4,b:.2,x:.115,t:60/76/2,b2:.19,b3:.13,x3:.17,v:.45,b1s:.15,b1x:.105})[n]||.3;if(cb===n&&bsp===v)return;if(cb==='v'&&n!=='v'&&VDK.vg&&AC){try{VDK.vg.gain.setTargetAtTime(0,AC.currentTime,.3)}catch(e){}VDK.ac=null}cb=n;bsp=v;if(!AC)return;if(!BG){BG=AC.createGain();BG.connect(MG)}bst=0;bnext=AC.currentTime+.1;clearInterval(btm);btm=setInterval(bgmTick,80)}
 /* ===== 描画ヘルパー ===== */
 function mk(rows,pal,s){const h=rows.length,w=rows[0].length,c=document.createElement('canvas');c.width=w*s;c.height=h*s;const x=c.getContext('2d');rows.forEach((r,j)=>{for(let i=0;i<w;i++){const k=r[i];if(pal[k]){x.fillStyle=pal[k];x.fillRect(i*s,j*s,s,s)}}});return c}
 function txt(s,x,y,c,al,sz){ctx.font=(sz||12)+'px DotGothic16,sans-serif';ctx.textAlign=al||'left';ctx.fillStyle='#000';ctx.fillText(s,x+1,y+1);ctx.fillStyle=c||'#fff';ctx.fillText(s,x,y)}
