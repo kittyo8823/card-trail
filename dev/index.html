@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.03';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.04';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -370,7 +370,12 @@ function txt(s,x,y,c,al,sz){ctx.font=(sz||12)+'px DotGothic16,sans-serif';ctx.te
 function box(x,y,w,h,f,b){ctx.fillStyle=b||'#f6f2ff';ctx.fillRect(x-2,y-2,w+4,h+4);ctx.fillStyle=f||'#1d2040';ctx.fillRect(x,y,w,h)}
 let btns=[];
 function hit(x,y,w,h,f){btns.push({x,y,w,h,f})}
-function btn(x,y,w,h,l,f,col,sz){box(x,y,w,h,col||'#2c3566');txt(l,x+w/2,y+h/2+5,'#fff','center',sz||14);hit(x,y,w,h,f)}
+// Ver3.04 ボタンは板を無くし、文字と下の光る線だけ（ユーザー指定・案C）。決定（紫・緑）は ▶ 付きの金、赤は危険の色。読みやすいよう後ろにうっすら暗いにじみ
+function btn(x,y,w,h,l,f,col,sz){const c=col||'',p=/6a4bd6|2a5a3a/.test(c),d=/7a2a3a|5a2a3a|6a2a3a|5a0a1a/.test(c),lc=p?'255,216,144':d?'255,138,138':'220,210,190';
+ let g=ctx.createRadialGradient(x+w/2,y+h/2,2,x+w/2,y+h/2,Math.max(w,h)*.62);g.addColorStop(0,'rgba(0,0,0,.42)');g.addColorStop(.7,'rgba(0,0,0,.22)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(x-8,y-6,w+16,h+12);
+ if(p){g=ctx.createRadialGradient(x+w/2,y+h/2,2,x+w/2,y+h/2,w/2);g.addColorStop(0,'rgba(255,200,120,.2)');g.addColorStop(1,'rgba(255,200,120,0)');ctx.fillStyle=g;ctx.fillRect(x,y,w,h)}
+ g=ctx.createLinearGradient(x,0,x+w,0);g.addColorStop(0,'rgba('+lc+',0)');g.addColorStop(.5,'rgba('+lc+','+(p||d?.95:.6)+')');g.addColorStop(1,'rgba('+lc+',0)');ctx.fillStyle=g;ctx.fillRect(x,y+h-3,w,1);
+ txt((p?'▶ ':'')+l,x+w/2,y+h/2+(sz||14)/2-2,p?'#ffe0a0':d?'#ffb0b0':'#e8e0cc','center',sz||14);hit(x,y,w,h,f)}
 // Ver3.01 軽くする：同じ大きさ・色の丸は一度描いた画像を使い回す（見た目は同じ）
 const PCC2={};function pc(x,y,r,col){r=Math.round(r);const key=r+col;let c=PCC2[key];if(!c){c=MKC(r*2,r*2);const g=c.getContext('2d');g.fillStyle=col;for(let j=-r;j<r;j+=2){const w=Math.floor(Math.sqrt(r*r-j*j)/2)*2;g.fillRect(r-w,r+j,w*2,2)}PCC2[key]=c}ctx.drawImage(c,x-r,y-r);return;}
 /* ===== ドット絵 ===== */
@@ -3816,10 +3821,16 @@ function topbar(){ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,640,30);txt('H
 for(let k=0;k<P.ps;k++){const x=180+k*31,po=P.pot[k];ctx.fillStyle='#1d2040';ctx.fillRect(x,1,28,28);ctx.fillStyle=po?'#f6f2ff':'#3a3a5a';ctx.fillRect(x,1,28,2);ctx.fillRect(x,27,28,2);ctx.fillRect(x,1,2,28);ctx.fillRect(x+26,1,2,28);if(po)ctx.drawImage(potIcon(po),x+2,3,24,24);hit(x-1,0,31,44,()=>po?potMenu(k):say('ポーション欄（空）'))}
 P.relics.forEach((k,i)=>{const x=6+(i%25)*25,y=33+Math.floor(i/25)*25;const used=k==='amulet'&&P.amu;if(used)ctx.globalAlpha=.35;ctx.drawImage(rIcon(k),x,y,24,24);ctx.globalAlpha=1;const rc=relCnt(k);if(rc!=null){const t=String(rc);ctx.font='10px DotGothic16,sans-serif';ctx.textAlign='right';ctx.lineJoin='round';ctx.lineWidth=3;ctx.strokeStyle='#120c1c';ctx.strokeText(t,x+24,y+24);ctx.fillStyle='#fff';ctx.fillText(t,x+24,y+24)}hit(x,y,24,24,()=>say(RL[k][0]+'：'+RL[k][1]))});
 if(S==='battle'&&B)txt('ターン'+B.turn+'　'+(B.ph==='e'&&!(B.bn&&B.bn.dl>0)?'敵のターン':'自分のターン'),186+P.ps*31,13,B.ph==='e'&&!(B.bn&&B.bn.dl>0)?'#ff8a8a':'#7ec8ff','left',11);
-{/* Ver2.34 経過時間（ユーザー指定：上の空いている所に時計の絵とカウントアップ）。P.rt＝遊んだ時間（ポーズ中は止まる）。ボスのアイコンの左、戦闘中はターン表示と重ならない位置 */const bxx=S==='battle'?472:408,r0=Math.floor(P.rt||0),h=Math.floor(r0/3600),m=Math.floor(r0/60)%60,sc=r0%60,z=v=>String(v).padStart(2,'0'),ts=(h?h+':'+z(m):z(m))+':'+z(sc);ctx.font='11px DotGothic16,sans-serif';const tw=ctx.measureText(ts).width,w=tw+20;if(S==='battle'&&B){const x0=186+P.ps*31,cx=x0+4,cy=23;pc(cx,cy,4,'#cfe8ff');pc(cx,cy,2,'#14102a');ctx.fillStyle='#ffd23f';ctx.fillRect(cx,cy-2,1,2);ctx.fillRect(cx,cy,2,1);txt(ts,x0+11,27,'#a8c0d8','left',10)}else{const x0=bxx-w-6;if(x0>180+P.ps*31){const cx=x0+7,cy=15;pc(cx,cy,6,'#cfe8ff');pc(cx,cy,4,'#14102a');ctx.fillStyle='#cfe8ff';ctx.fillRect(cx-1,cy-4,2,4);ctx.fillRect(cx,cy-1,3,2);ctx.fillStyle='#ffd23f';ctx.fillRect(cx-1,cy-1,2,2);txt(ts,x0+15,20,'#cfe8ff','left',11)}}}
-if(P.act>=1&&P.act<=3&&S!=='eyein'){const bx=S==='battle'?472:408,k=bossIc()[bossI()];ctx.drawImage(bossIcon(k),bx+2,3);hit(bx-1,0,31,44,()=>{sfx('cl');say('この層のボス：'+bossNm())})}
-{const f=()=>{PZ={c:0};sfx('cl')};btn(542,3,58,24,'ポーズ',f,'#2a5a3a',13);hit(540,0,62,44,f)}if(S!=='map'&&S!=='mapv'&&MP&&CUR)mapBtn(506,3);if(S!=='battle'&&S!=='mapv'){const f=()=>openPick('デッキ（'+P.deck.length+'枚）',P.deck.map((_,i)=>i),null,1);btn(442,3,58,24,'デッキ',f,'#3a3068',13);hit(440,0,62,44,f)}
-txt(muted||!VOL?'×':'♪',623,22,'#fff','center',18);hit(602,0,38,44,()=>{VP=VP?0:1;sfx('cl')})}
+{/* Ver2.34 経過時間（ユーザー指定：上の空いている所に時計の絵とカウントアップ）。P.rt＝遊んだ時間（ポーズ中は止まる）。ボスのアイコンの左、戦闘中はターン表示と重ならない位置 */const bxx=topSlots().left,r0=Math.floor(P.rt||0),h=Math.floor(r0/3600),m=Math.floor(r0/60)%60,sc=r0%60,z=v=>String(v).padStart(2,'0'),ts=(h?h+':'+z(m):z(m))+':'+z(sc);ctx.font='11px DotGothic16,sans-serif';const tw=ctx.measureText(ts).width,w=tw+20;if(S==='battle'&&B){const x0=186+P.ps*31,cx=x0+4,cy=23;pc(cx,cy,4,'#cfe8ff');pc(cx,cy,2,'#14102a');ctx.fillStyle='#ffd23f';ctx.fillRect(cx,cy-2,1,2);ctx.fillRect(cx,cy,2,1);txt(ts,x0+11,27,'#a8c0d8','left',10)}else{const x0=bxx-w-6;if(x0>180+P.ps*31){const cx=x0+7,cy=15;pc(cx,cy,6,'#cfe8ff');pc(cx,cy,4,'#14102a');ctx.fillStyle='#cfe8ff';ctx.fillRect(cx-1,cy-4,2,4);ctx.fillRect(cx,cy-1,3,2);ctx.fillStyle='#ffd23f';ctx.fillRect(cx-1,cy-1,2,2);txt(ts,x0+15,20,'#cfe8ff','left',11)}}}
+{const o=topSlots(),H=(cx,f)=>hit(cx-18,0,36,40,f);
+ if(o.bs!=null){const k=bossIc()[bossI()];ctx.drawImage(bossIcon(k),o.bs-12,3);H(o.bs,()=>{sfx('cl');say('この層のボス：'+bossNm())})}
+ if(o.mp!=null){mapIc(o.mp);H(o.mp,openMapV)}
+ if(o.dk!=null){const x=o.dk-11;for(let k=2;k>=0;k--){ctx.fillStyle='#0a0810';ctx.fillRect(x+k*3,4+k*2,14,18);ctx.fillStyle=k?'#5a5070':'#d8cce8';ctx.fillRect(x+k*3+1,5+k*2,12,16)}ctx.fillStyle='#3a3060';ctx.fillRect(x+3,8,8,6);txt(String(P.deck.length),o.dk+15,28,'#fff','right',9);H(o.dk,()=>openPick('デッキ（'+P.deck.length+'枚）',P.deck.map((_,i)=>i),null,1))}
+ {const x=o.pz;ctx.fillStyle='rgba(255,255,255,.1)';ctx.beginPath();ctx.arc(x,15,11,0,7);ctx.fill();ctx.fillStyle='#e8e0cc';ctx.fillRect(x-5,9,4,12);ctx.fillRect(x+2,9,4,12);H(x,()=>{PZ={c:0};sfx('cl')})}
+ txt(muted||!VOL?'×':'♪',o.mu,22,'#fff','center',18);H(o.mu,()=>{VP=VP?0:1;sfx('cl')})}}
+// 上のバーの右側の並び（右から ♪・ポーズ・デッキ・地図・ボス、36間隔）。押せる範囲は見た目より広い 36×40
+function topSlots(){let x=622;const o={mu:x};x-=36;o.pz=x;if(S!=='battle'&&S!=='mapv'){x-=36;o.dk=x}if(S!=='map'&&S!=='mapv'&&MP&&CUR){x-=36;o.mp=x}if(P.act>=1&&P.act<=3&&S!=='eyein'){x-=36;o.bs=x}o.left=x-16;return o}
+function mapIc(cx){const x=cx-11,y=5;ctx.fillStyle='#0a0810';ctx.fillRect(x-1,y-1,24,20);ctx.fillStyle='#e8d8b0';ctx.fillRect(x,y,22,18);ctx.fillStyle='#c8b088';ctx.fillRect(x+7,y,2,18);ctx.fillRect(x+14,y,2,18);ctx.fillStyle='#8a1c2a';for(const[a,b]of[[2,13],[4,11],[6,9],[9,8],[11,6],[13,5]])ctx.fillRect(x+a,y+b,2,2);ctx.fillStyle='#c4122f';ctx.fillRect(x+16,y+2,3,3);ctx.fillRect(x+15,y+3,5,1)}
 // 音量パネル（♪を押すと開く）：10段階＋ミュート。外を押すと閉じる
 function drawVol(){const x=436,y=32,w=200,h=72;hit(0,0,640,360,()=>{VP=0});ctx.fillStyle='rgba(10,8,24,.95)';ctx.fillRect(x,y,w,h);ctx.fillStyle='#c8a050';ctx.fillRect(x,y,w,2);ctx.fillRect(x,y+h-2,w,2);ctx.fillRect(x,y,2,h);ctx.fillRect(x+w-2,y,2,h);hit(x,y,w,h,()=>{});
  txt('音量 '+(muted?'（ミュート）':VOL),x+10,y+18,muted?'#ff9a9a':'#ffe680','left',12);for(let i=0;i<10;i++){const bx=x+10+i*18,on=!muted&&i<VOL,bh=8+i*1.6;ctx.fillStyle=on?'#7dff9a':'#3a3a5a';ctx.fillRect(bx,y+44-bh,14,bh);hit(bx-2,y+22,18,26,()=>{muted=0;setVol(i+1);sfx('cl')})}
