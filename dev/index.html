@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.23';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.24';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -3085,6 +3085,23 @@ const FXS={
 // 攻撃カードの武器に振った残像（数は強さから）。坪内丸の刀には握る両手と袖
 for(const nm of['hSword','hKnife','hKatana','hAxe']){const f0=window[nm];window[nm]=function(g,x,y,a,...r){if(HMX.t===0&&!HMX.ng){HMX.ng=1;const n=Math.max(1,Math.round(.5+2.2*HMX.I));for(let i=n;i>=1;i--){g.globalAlpha=.1+.1*(n-i)/n;f0(g,x,y,a+.1*i,...r)}g.globalAlpha=1;HMX.ng=0}f0(g,x,y,a,...r);if(nm==='hKatana'&&HMX.k===2&&!HMX.nh&&(r[0]||0)>=30&&x>=-4&&x<=78&&y>=-4&&y<=48){fxHands(g,x,y,a)}}}
 for(const k in FXS){const cc=C.find(c=>c.n===k);HART[k]=()=>hmMk(FXS[k],cc?cc.t:1,cc)}
+// 状態異常・呪いのカードの絵（Ver3.24）
+const SK8={st:['#17151e','#2c2836','#4e4250'],cu:['#0e0d12','#2a1a3a','#4a2a6a'],sick:['#0e0d12','#2a3426','#3e4a34']};
+const HMC8={
+'目眩':g=>{hBg(g,SK8.st);for(let k=0;k<5;k++){g.strokeStyle='rgba(200,180,230,'+(.55-k*.08)+')';g.lineWidth=1.4;g.beginPath();g.arc(37+k*1.5,22,4+k*4,k*.9,k*.9+4.4);g.stroke()}g.globalAlpha=.35;for(let k=0;k<4;k++){g.strokeStyle='#c8a888';g.lineWidth=1;g.beginPath();g.arc(42,24,5+k*5,k,k+3.6);g.stroke()}g.globalAlpha=1},
+'負傷':g=>{hBg(g,SK8.st);g.save();g.translate(37,24);g.rotate(-.35);g.scale(1.9,1.9);hBArm(g,16,0,0,32);g.restore();g.fillStyle='rgba(142,36,48,.85)';g.beginPath();g.ellipse(36,25,6,4,-.35,0,7);g.fill();for(let i=0;i<3;i++)hDrop(g,32+i*4,34+i*2,.8)},
+'火傷':g=>{hBg(g,['#17151e','#3a1414','#5a1e1c']);hFlame(g,37,44,40,30,3);hFist(g,37,20,1.1,0,'#d88a48');hSmoke(g,37,10,4,'#4e4250','#3a3442',12);hEmb(g,[[16,8],[58,10],[24,4],[50,4]])},
+'粘液':g=>{hBg(g,SK8.sick);hPC(g,37,20,16,.85);for(const[x,y]of[[30,14],[44,18],[36,24]]){g.fillStyle='rgba(220,240,180,.5)';g.beginPath();g.ellipse(x,y,2,1.2,-.4,0,7);g.fill()}for(let i=0;i<5;i++){const x=22+i*7;g.fillStyle='#4a7a34';g.fillRect(x,26,2,8+(i%3)*4);g.beginPath();g.ellipse(x+1,35+(i%3)*4,1.8,2.4,0,0,7);g.fill()}},
+'寄生卵':g=>{hBg(g,['#0e0d12','#3a1414','#5a1e1c']);for(const[x,y,r]of[[24,28,8],[38,24,10],[52,28,8],[31,34,6],[46,34,6]]){g.fillStyle='#c8a888';g.beginPath();g.ellipse(x,y,r*.8,r,0,0,7);g.fill();g.fillStyle='#e0c0b4';g.beginPath();g.ellipse(x-r*.25,y-r*.35,r*.25,r*.35,0,0,7);g.fill();g.strokeStyle='#8e2430';g.lineWidth=.6;g.beginPath();g.moveTo(x-r*.5,y);g.quadraticCurveTo(x,y-r*.4,x+r*.4,y+r*.3);g.stroke()}hCrack(g,38,18,[-1.2,-.4],6);hG(g,38,18,6,'166,58,44',.6)},
+'呪い・苦悩':g=>{hBg(g,SK8.cu);hHeart(g,37,24,2.4,'#8e2430');hChains(g,8,10,66,34);hChains(g,8,34,66,10);hG(g,37,22,12,'106,62,142',.4)},
+'呪い・迷い':g=>{hBg(g,['#17151e','#2a2a44','#4e4250']);g.fillStyle='#3a3442';g.beginPath();g.moveTo(30,44);g.lineTo(44,44);g.lineTo(40,30);g.lineTo(34,30);g.fill();hP(g,[[34,30],[40,30],[24,10],[18,10]],'#3a3442');hP(g,[[34,30],[40,30],[58,10],[52,10]],'#3a3442');for(let i=0;i<6;i++){g.fillStyle='rgba(200,206,210,.18)';g.beginPath();g.ellipse(10+i*12,14+(i%2)*6,12,4,0,0,7);g.fill()}hL(g,37,40,37,22,'#4a3220',1.4);hP(g,[[37,22],[50,20],[52,23],[37,25]],'#6a4a30');hP(g,[[37,26],[24,24],[22,27],[37,29]],'#6a4a30')},
+'呪い・不器用':g=>{hBg(g,SK8.cu);g.save();g.translate(40,24);g.rotate(1.9);hSword(g,-16,0,0,32,1.8);g.restore();for(let i=0;i<3;i++){g.strokeStyle='rgba(200,168,136,'+(.5-i*.12)+')';g.lineWidth=.8;g.beginPath();g.arc(40,24,10+i*4,3.6,5.2);g.stroke()}hFist(g,16,10,.6,.6)},
+'呪い・痛み':g=>{hBg(g,SK8.cu);for(let k=0;k<3;k++){g.strokeStyle='#2e1e14';g.lineWidth=2;g.beginPath();g.moveTo(0,10+k*12);g.bezierCurveTo(20,0+k*12,50,24+k*8,74,8+k*12);g.stroke();for(let i=0;i<8;i++){const x=6+i*9,y=10+k*12+Math.sin(i+k)*4;hP(g,[[x,y],[x+2,y-4],[x+3,y]],'#6a4a30')}}hBlood(g,40,26,10,10,9)},
+'呪い・罪悪感':g=>{hBg(g,SK8.cu);hGround(g,36,'#17151e','#211e2a');g.fillStyle='#2a3038';g.beginPath();g.arc(48,28,10,0,7);g.fill();g.fillStyle='#5a6272';g.beginPath();g.arc(45,25,4,0,7);g.fill();hChains(g,20,34,40,28);hP(g,[[12,30],[22,30],[22,38],[12,38]],'#3c4450');g.fillStyle='#17151e';g.fillRect(14,32,6,4)},
+'呪い・強欲':g=>{hBg(g,['#0e0d12','#3a3442','#5a4424']);for(let i=0;i<12;i++)hCoin(g,18+((i*11)%38),36-((i*5)%10),4);hSmoke(g,37,30,6,'#2a1a3a','#17151e',30);hOldHand(g,56,18,1,2.6)},
+'呪い・腐敗':g=>{hBg(g,SK8.sick);g.fillStyle='#5a4424';g.beginPath();g.ellipse(37,26,12,11,0,0,7);g.fill();g.fillStyle='#8e2430';g.beginPath();g.ellipse(34,23,7,6,0,0,7);g.fill();for(const[x,y]of[[40,28],[32,30],[42,20]]){g.fillStyle='#4a7a34';g.beginPath();g.arc(x,y,2.4,0,7);g.fill()}hL(g,37,15,39,10,'#2e1e14',1.4);for(const[x,y]of[[20,10],[54,8],[58,16]]){g.fillStyle='#17151e';g.fillRect(x,y,2,1.4);g.fillStyle='rgba(200,206,210,.5)';g.fillRect(x-1,y-1,1,1);g.fillRect(x+2,y-1,1,1)}},
+'呪い・不運':g=>{hBg(g,SK8.cu);hP(g,[[24,6],[50,6],[52,38],[22,38]],'#4a3220');hP(g,[[26,8],[48,8],[50,36],[24,36]],'#5a7078');hCrack(g,38,20,[0,1.1,2.3,3.4,4.6,5.6],14);for(const[x,y,a]of[[14,30,.4],[60,12,-.6],[62,34,1.2]]){g.save();g.translate(x,y);g.rotate(a);hP(g,[[-3,-3],[3,-2],[1,3]],'#86a0a4');g.restore()}}};
+for(const k in HMC8){const cc=C.find(c=>c.n===k);HART[k]=()=>hmMk(HMC8[k],cc?cc.t:1,cc)}
 for(const T of[HMC0,HMC1,HMC2,HMC3,HMC4,HMC5,HMC6,HMC7])for(const k in T)if(!HART[k]){const cc=C.find(c=>c.n===k);HART[k]=()=>hmMk(T[k],cc?cc.t:1,cc)}
 function card(x,y,o,dim,gl,pv){card0(x,y,o,dim,gl,pv);if(o&&o.en&&ENC[o.en])enBadge(x+73,y+28,o.en,o.en==='sharp'||o.en==='nimble'?o.ev:null)}
 function card0(x,y,o,dim,gl,pv){{const m=ctx.getTransform();LPC.push({x:(m.a*x+m.c*y+m.e)/K,y:(m.b*x+m.d*y+m.f)/K,w:84*m.a/K,h:106*m.d/K,o})}if(C[o.i]&&C[o.i].fa){cardFA(x,y,o,dim,gl,pv);return}const c=cd(o),rare=c.r===2,bk=c.t>=3,col=bk?(c.t===4?'#7a3a8a':'#5a5a66'):c.k===5||c.r===-2?'#a8a8b8':TC[c.t],parts=dl(c,pv),ls=[],lc=[],PL=parts.map((p,i)=>[p,parts.cl[i]||(p==='廃棄'?'#ffd23f':'#e8e4ff')]);PL.sort((a,b)=>(a[0]==='廃棄')-(b[0]==='廃棄'));
