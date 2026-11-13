@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.07';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.08';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -4205,6 +4205,17 @@ const ANIC={
  sand:anGi(['.kkkkkkkkkk.','.kyyyyyyyyk.','..kssssssk..','...kssssk...','....kssk....','.....kk.....','.....kk.....','....k..k....','...k.ss.k...','..kssssssk..','.kyyyyyyyyk.','.kkkkkkkkkk.'],{y:'#a87a3a',s:'#f0d088'}),
  ash:anGi(['.........kk.','........kwk.','.......kwrk.','......kwrk..','.....kwrrk..','....kwrrk...','...kwrrk....','..kwrrk.....','..krrk......','.kok........','.kk.........','............'],{w:'#ffe0a0',r:'#e8602a',o:'#8a2a10'}),
  seed:anGi(['.....kk.....','....kcck....','...kcwcck...','..kccwccck..','..kcccccck..','.kccccccbck.','.kcccccbbck.','..kccccbck..','...kccbck...','....kcck....','.....kk.....','............'],{c:'#7ae8d8',w:'#f0fffc',b:'#2a8a8a'}),
+ lamp:anGi(['.....kk.....','....kyyk....','...kkkkkk...','...kffffk...','..kffwwffk..','..kfwwwwfk..','..kffwwffk..','...kffffk...','...kkkkkk...','....kyyk....','.....kk.....','............'],{y:'#a87a3a',f:'#ffb040',w:'#fff4c0'}),
+ shell:anGi(['............','....kkkk....','..kkggggkk..','.kgglgglggk.','.kglggglgk..','kgglgglgggk.','kgglgglgggk.','kggggggggggk','kkkkkkkkkkkk','.k........k.','............','............'],{g:'#5a7a4a',l:'#a8c878'}),
+ tide:anGi(['............','.k........k.','.kk......kk.','.kbk....kbk.','.kbbkkkkbbk.','.kbwbbbbwbk.','.kbbbwwbbbk.','..kbbbbbbk..','...kbbbbk...','....kkkk....','...kkkkkk...','............'],{b:'#3a8ad0',w:'#c8ecff'}),
+ echo:anGi(['............','...kk..kk...','..k..kk..k..','.k..k..k..k.','.k.k.ww.k.k.','.k.k.ww.k.k.','.k..k..k..k.','..k..kk..k..','...kk..kk...','............','............','............'],{w:'#a8d8f0'}),
+ shed:anGi(['..kkk.......','.kssskk.....','..kkssk.....','....ksk.....','...ksk......','..ksk.......','..kssk......','...kssk.....','....kssk....','.....ksskk..','......kssk..','.......kk...'],{s:'#d8c890'}),
+ coil:anGi(['....kkkk....','..kkggggkk..','.kggkkkkggk.','.kgk....kgk.','kgk......kgk','kgk......kyk','kgk......kyk','kgk.....kgk.','.kgk...kgk..','.kggkkkggk..','..kkggggk...','....kkkk....'],{g:'#4a7a5a',y:'#ffe060'}),
+ reborn:anGi(['.....k......','....kok.....','....korkk...','...korrok...','..korryrok..','..koryyrok..','.koryywyrok.','.koryywyrok.','.korryyrrok.','..korrrrok..','...kkkkkk...','............'],{o:'#8a2a10',r:'#e8602a',y:'#ffc040',w:'#fff4c0'}),
+ sap:anGi(['.....kk.....','....kcck....','....kcck....','...kccwck...','...kcwcck...','..kccccccck.','..kcccccbck.','..kccccbbck.','...kccbbck..','....kkkkk...','............','............'],{c:'#7ae8d8',w:'#f0fffc',b:'#2a8a8a'}),
+ nectar:anGi(['............','...kkkkkk...','...kwwwwk...','..kkkkkkkk..','.kyyyyyyyyk.','.kyhhyyyyyk.','.kyhyyyyyyk.','.kyyyyyyyyk.','.kyyyyyyoyk.','..kyyyyyok..','...kkkkkk...','............'],{w:'#d8c8a8',y:'#f0b030',h:'#fff0a0',o:'#a86a10'}),
+ ink:anGi(['.......kk...','......kfk...','.....kfk....','....kfk.....','...kkkkkk...','...kwwwwk...','..kddddddk..','.kddddddddk.','.kdbddddddk.','.kdddddddk..','..kkkkkkk...','............'],{f:'#e8e0d0',w:'#8a7a6a',d:'#1a1a2e',b:'#4a4a6e'}),
+ index:anGi(['..kkkkkkk...','..kwwwwwkrk.','..kwlllwkrk.','..kwwwwwkrk.','..kwllllkrk.','..kwwwwwkkk.','..kwllllwwk.','..kwwwwwwwk.','..kwlllllwk.','..kwwwwwwwk.','..kkkkkkkkk.','............'],{w:'#f0e4c8',l:'#8a7a5a',r:'#c03a3a'}),
  page:anGi(['..kkkkkkk...','..kwwwwwkk..','..kwlllwwkk.','..kwwwwwwwk.','..kwlllllwk.','..kwwwwwwwk.','..kwlllllwk.','..kwwwwwwwk.','..kwllllwwk.','..kwwwwwwwk.','..kkkkkkkkk.','............'],{w:'#f0e4c8',l:'#8a7a5a'})};
 const ANC=[
  {n:'灯甲',sub:'千年を背負うもの',say:'……千年ぶりの客か。灯を一つ、持っていくがよい。',op:['fang','moss','pumpkin'],sc:(t)=>{
@@ -4394,15 +4405,16 @@ function anSoft(a,t){const A=ANC[a],cv=ctx.canvas;A.sc(t);if(ANOC.width!==cv.wid
  // 黒を少し持ち上げる（淡く）
  ctx.fillStyle=hz.replace('A',.05);ctx.fillRect(0,0,640,360);ctx.restore()};
 // 古の者ごとの選択肢の候補（恵み＋ボスレリック）。毎回この中から3つ
-[['fang','moss','pumpkin','pflesh','fruit','ckey'],['song','fang','astro','sozu','rcube'],['sand','pyr','seye','ecto','choker','pandora'],['ash','fang','mpain','philo','gaunt','cage'],['seed','fruit','coffer','crown','bstar'],['page','tome','drift','dome','calling']].forEach((l,i)=>ANC[i].pool=l);
+[['fang','moss','lamp','shell','pumpkin','pflesh','fruit','ckey'],['song','fang','tide','echo','astro','sozu','rcube'],['sand','shed','coil','pyr','seye','ecto','choker','pandora'],['ash','fang','reborn','mpain','philo','gaunt','cage'],['seed','sap','nectar','fruit','coffer','crown','bstar'],['page','ink','index','tome','drift','dome','calling']].forEach((l,i)=>ANC[i].pool=l);
 // キャラごとの古の版：元の初期カード → 古の版
 const FAN={0:['強打','砕月'],1:['しびれ薬','痺霧'],2:['抜刀・閃華','抜刀・月閃'],3:['火球の頁','劫火の頁'],4:['マイクロスリープ','深き眠り'],6:['放電','雷霆招来']};
 const faTgt=()=>{const f=FAN[P.cls];if(!f)return -1;const j=CI(f[0]);return P.deck.findIndex(o=>o.i===j)};
-const ANGT={moss:['苔むした灯','カードを4枚選んで強化する','デッキから好きなカードを4枚選び、1枚ずつ強化する。'],song:['骨鯨の歌','最大HP+12／休憩所の回復量が増える','最大HPが12増える。この冒険の間、休憩所で休んだ時の回復量が、最大HPの15%分増える。'],sand:['刻の砂','カード3枚を変化させ、強化する','デッキからランダムに3枚（初期カードを優先）を別のカードに変え、それらを強化する。'],ash:['灰の羽','カードを2枚選んで消す','デッキから好きなカードを2枚選び、取り除く。'],seed:['晶の種','レアカード3枚から1枚選んで得る','自分のキャラのレアカードが3枚出る。1枚選んでデッキに加える。'],page:['写しの頁','カード1枚を選んで複製する','デッキのカード1枚を選び、同じカード（強化も含む）をもう1枚加える。']};
+const ANGT={moss:['苔むした灯','カードを4枚選んで強化する','デッキから好きなカードを4枚選び、1枚ずつ強化する。'],song:['骨鯨の歌','最大HP+12／休憩所の回復量が増える','最大HPが12増える。この冒険の間、休憩所で休んだ時の回復量が、最大HPの15%分増える。'],sand:['刻の砂','カード3枚を変化させ、強化する','デッキからランダムに3枚（初期カードを優先）を別のカードに変え、それらを強化する。'],ash:['灰の羽','カードを2枚選んで消す','デッキから好きなカードを2枚選び、取り除く。'],seed:['晶の種','レアカード3枚から1枚選んで得る','自分のキャラのレアカードが3枚出る。1枚選んでデッキに加える。'],page:['写しの頁','カード1枚を選んで複製する','デッキのカード1枚を選び、同じカード（強化も含む）をもう1枚加える。'],
+lamp:['道を照らす灯','次のショップが半額／次のエリートでレリック+1','次に入るショップの品物がすべて半額になる。次に倒したエリートから、レリックをもう1つ得る。'],shell:['甲羅の守り','最大HP+6、HPを全回復','最大HPが6増え、HPがすべて回復する。'],tide:['潮の器','ポーション枠+1、空きをすべて満たす','ポーション枠が1つ増え、空いている枠すべてにランダムなポーションが入る。'],echo:['遠い残響','最初の3回の戦闘、1ターン目にエナジー+1・カード+1','次の3回の戦闘で、1ターン目のエナジーが1増え、カードを1枚多く引く。'],shed:['抜け殻','初期カードを2枚選んで消す','デッキの初期カードから2枚を選び、取り除く。'],coil:['時の輪','カードを2枚選んで変化させ、強化する','デッキから好きなカードを2枚選び、別のカードに変えて強化する。'],reborn:['灰からの再生','呪いをすべて消し、HPを全回復','デッキの呪いをすべて取り除き、HPがすべて回復する。'],sap:['晶の樹液','ポーションを2つ得る、ポーション枠+1','ポーション枠が1つ増え、ランダムなポーションを2つ得る。'],nectar:['根の蜜','150ゴールド、最大HP+5','150ゴールドを得て、最大HPが5増える。'],ink:['古い墨','無色カード3枚から1枚選んで得る','無色カードが3枚出る。1枚選んでデッキに加える。'],index:['索引','カードを2枚選んで強化する','デッキから好きなカードを2枚選び、1枚ずつ強化する。']};
 function anTxt(k){if(k==='fang'){const f=FAN[P.cls]||['',''];return['古の牙','「'+f[0]+'」を古の版「'+f[1]+'」に変える','初期カード「'+f[0]+'」1枚が、古の版「'+f[1]+'」に変わる。古の版は普通の強化よりさらに強い。強化してあれば強化も引き継ぐ。']}return ANGT[k]||[RL[k][0],RL[k][1],RL[k][1]]}
 const anIco=k=>ANIC[k]||rIcon(k);
-function anOk(k){if(k==='fang')return faTgt()>=0;if(k==='moss')return P.deck.some(canUp);if(k==='ash'||k==='sand')return P.deck.length>3;if(ANGT[k])return true;return!!RL[k]&&!has(k)}
-function openBossChest(){const seen=P.ancS||[],l=[0,1,2,3,4,5].filter(i=>!seen.includes(i)),a=shuf(l.length?l:[0,1,2,3,4,5])[0];P.ancS=seen.concat([a]);const rs=shuf(ANC[a].pool.filter(anOk)).slice(0,3);if(!rs.length){startAct();return}BT={anc:a,rs,pick:-1,t0:T,cf:0,sel:null,lp:null};go('btr')}
+function anOk(k){if(k==='fang')return faTgt()>=0;if(k==='moss')return P.deck.some(canUp);if(k==='ash'||k==='sand')return P.deck.length>3;if(k==='index')return P.deck.some(canUp);if(k==='tide'||k==='sap')return!has('sozu');if(k==='shed')return P.deck.filter(o=>C[o.i].r===-1).length>=2&&P.deck.length>4;if(k==='coil')return P.deck.length>=2;if(ANGT[k])return true;return!!RL[k]&&!has(k)}
+function openBossChest(){const seen=P.ancS||[],l=[0,1,2,3,4,5].filter(i=>!seen.includes(i)),a=shuf(l.length?l:[0,1,2,3,4,5])[0];P.ancS=seen.concat([a]);const ok=ANC[a].pool.filter(anOk),gf=shuf(ok.filter(k=>ANGT[k]||k==='fang')),rl=shuf(ok.filter(k=>!ANGT[k]&&k!=='fang')),nr=rl.length&&(gf.length<3||Math.random()<.35)?1:0,rs=shuf(gf.slice(0,3-nr).concat(rl.slice(0,nr)));if(!rs.length){startAct();return}BT={anc:a,rs,pick:-1,t0:T,cf:0,sel:null,lp:null};go('btr')}
 // 選んだ恵みの効果。画面を開くものは、終わったら btNext（次の層へ）
 function anDo(k){if(RL[k]&&!ANGT[k]&&k!=='fang'){gain(k);return 0}
  if(k==='fang'){const i=faTgt(),o={...P.deck[i]};P.deck[i]={i:CI(FAN[P.cls][1]),u:o.u||0};tfFx([[o,{...P.deck[i]}]]);return 0}
@@ -4411,6 +4423,17 @@ function anDo(k){if(RL[k]&&!ANGT[k]&&k!=='fang'){gain(k);return 0}
  if(k==='moss'){let n=0;const one=()=>{const l=P.deck.map((_,i)=>i).filter(i=>canUp(P.deck[i]));if(n>=4||!l.length){btNext();return}upPick(l,()=>{n++;one()},'btr')};one();return 1}
  if(k==='ash'){let n=0;const one=()=>openPick('灰の羽：消すカードを選択（'+(n+1)+'/2）',P.deck.map((_,i)=>i),i=>{P.deck.splice(i,1);sfx('pk');if(++n<2)one();else btNext()},0);one();return 1}
  if(k==='seed'){RW={g:0,rel:null,pot:null,title:'晶の種：レアカードを選択',cards:rare3(),boss:false,nx:'act'};go('reward');return 1}
+ if(k==='lamp'){P.half=1;P.el2=1;sfx('pk');return 0}
+ if(k==='shell'){P.mhp+=6;P.hp=P.mhp;sfx('hl');return 0}
+ if(k==='tide'){P.ps++;while(P.pot.length<P.ps){const n=P.pot.length;givePot(potPick());if(P.pot.length===n)break}sfx('pk');return 0}
+ if(k==='echo'){P.nb=(P.nb||0)+3;sfx('bf');return 0}
+ if(k==='reborn'){P.deck=P.deck.filter(o=>C[o.i].t!==4);P.hp=P.mhp;sfx('hl');return 0}
+ if(k==='sap'){P.ps++;givePot(potPick());givePot(potPick());sfx('pk');return 0}
+ if(k==='nectar'){P.gold+=150;P.mhp+=5;P.hp+=5;sfx('pk');return 0}
+ if(k==='ink'){RW={g:0,rel:null,pot:null,title:'古い墨：無色カードを選択',cards:pick3(cPick),boss:false,nx:'act'};go('reward');return 1}
+ if(k==='index'){let n=0;const one=()=>{const l=P.deck.map((_,i)=>i).filter(i=>canUp(P.deck[i]));if(n>=2||!l.length){btNext();return}upPick(l,()=>{n++;one()},'btr')};one();return 1}
+ if(k==='shed'){let n=0;const one=()=>openPick('抜け殻：消す初期カードを選択（'+(n+1)+'/2）',P.deck.map((_,i)=>i).filter(i=>C[P.deck[i].i].r===-1),i=>{P.deck.splice(i,1);sfx('pk');if(++n<2)one();else btNext()},0);one();return 1}
+ if(k==='coil'){let n=0;const L=[],one=()=>openPick('時の輪：変化させるカードを選択（'+(n+1)+'/2）',P.deck.map((_,i)=>i),i=>{const a={...P.deck[i]};P.deck[i]={i:cardPick(0),u:1};L.push([a,{...P.deck[i]}]);sfx('pk');if(++n<2)one();else{btNext();tfFx(L)}},0);one();return 1}
  if(k==='page'){openPick('写しの頁：複製するカードを選択',P.deck.map((_,i)=>i),i=>{P.deck.push({...P.deck[i]});sfx('pk');btNext()},0);return 1}return 0}
 // 背景は重いので 20コマ/秒で描き直して写しを使う
 let ANCC=null,ANCT=-9,ANCA=-1;
