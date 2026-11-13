@@ -278,4 +278,4 @@ Playwright（chromium）入りの環境なら、ページを開いて `page.eval
 
 ## 次の会話への引き継ぎ（Ver3.04 公開後）
 - 公開版は Ver3.04（GitHub Pages 反映済み、控え index42 = Ver3.00）。dev は Ver3.06（レアカードの光と金を調整、未アプデ）。
-- 地図のマスの見た目を変える案は保留（ユーザー指定：「地図は一旦いい」）。見本のコードは `dev/mock/map_node_mock.js`（地図の色に合わせた案 `NODEV.S`）、撮影は `node dev/mock/map_node_shot.js`。2回目の案 C（丸なし・縁取りと影）／D（菱形の札）／E（カード札）は1層だけ `node dev/mock/map_node_shot2.js 0 C D E` で撮る（返事待ち）。
+- 地図のマスの見た目を変える案は保留（ユーザー指定：「地図は一旦いい」）。見本のコードは `dev/mock/map_node_mock.js`（地図の色に合わせた案 `NODEV.S`）、撮影は `node dev/mock/map_node_shot.js`。2回目の案 C（丸なし・縁取りと影）／D（菱形の札）／E（カード札）は1層だけ `node dev/mock/map_node_shot2.js 0 C D E` で撮る。本家風の案 F（丸なし・墨一色の絵、選べるマスは絵が脈打つ）は `... 0 F`（返事待ち）。

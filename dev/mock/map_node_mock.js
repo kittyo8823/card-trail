@@ -43,3 +43,6 @@ NODEV.D={bg:(x,y,r,n,th)=>{const red=nzRed(n),R=r+3;ctx.fillStyle='rgba(0,0,0,.3
  ic:(x,y,n,im)=>{ctx.drawImage(im,x-12,y-12)}};
 NODEV.E={bg:(x,y,r,n,th)=>{const red=nzRed(n),w=24,h=30,l=x-w/2,t=y-h/2;ctx.save();ctx.translate(x,y);ctx.rotate(((x*7+y*3)%5-2)*.025);ctx.translate(-x,-y);ctx.fillStyle='rgba(40,20,8,.35)';ctx.fillRect(l+1.5,t+2.5,w,h);ctx.fillStyle=red?'#8a1a22':'#4a3018';ctx.fillRect(l,t,w,h);ctx.fillStyle=red?'#e8c8b8':'#f4e6c8';ctx.fillRect(l+2,t+2,w-4,h-4);ctx.fillStyle='rgba(255,255,255,.5)';ctx.fillRect(l+2,t+2,w-4,1);ctx.fillStyle='rgba(120,80,40,.25)';ctx.fillRect(l+2,t+h-3,w-4,1);ctx.restore()},
  ic:(x,y,n,im)=>{ctx.drawImage(im,x-12,y-12)}};
+// --- 本家風（F）：丸なし、墨一色の絵を羊皮紙に直接。選べるマスは絵が脈打つ（NVc）、通ったマスは手描きの丸（元のまま）
+window.NVc=0;
+NODEV.F={nr:1,bg:()=>{},ic:(x,y,n,im)=>{const t=nzDuo(im,'#100806','#3e2e20'),s=NVc?1.12+Math.sin(T*6)*.12:1;ctx.save();ctx.translate(x,y);ctx.scale(s,s);if(NVc){ctx.globalAlpha*=.35;ctx.drawImage(tintI(im,'#fff4d0'),-13,-13,26,26);ctx.globalAlpha/=.35}ctx.drawImage(t,-12,-12);ctx.restore()}};
