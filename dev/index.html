@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.12';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.13';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -4534,6 +4534,8 @@ const ANGT={song:['骨鯨の歌','最大HP+20／休憩所の回復量が増え�
 eshp:['鍛えの灯火','攻撃カードすべてに【鋭利3】','デッキの攻撃カード（エンチャントの無いもの）すべてに【鋭利3】が付く。ダメージ+3。'],egla:['響きの余韻','カード3枚に【華】','好きなカードを3枚選び【華】を付ける。1戦闘に1回、もう一度発動する。'],espi:['時の渦','カード1枚に【渦】','好きなカードを1枚選び【渦】を付ける。使うたび、もう一度発動する。'],eimb:['不滅の火種','カード2枚に【宿り】','好きなカードを2枚選び【宿り】を付ける。戦闘開始時に自動で発動する。'],esow:['晶の芽','カード3枚に【芽吹き】','好きなカードを3枚選び【芽吹き】を付ける。戦闘で最初に使うとエナジー+1。'],eroy:['王の綴じ紐','カード2枚に【御墨付き】','好きなカードを2枚選び【御墨付き】を付ける。必ず最初の手札に来て、ターン終了時に手札に残る。'],
 relup:['昇華の儀','',''],ac0:['','',''],ac1:['','',''],ac2:['','',''],ac3:['','',''],ac4:['','',''],ac5:['','','']};
 // エンチャントの恵み：[エンチャント, 枚数（0＝攻撃カードすべて）]。古の者のフルアートカードの名前
+// エンチャントを付けられるカードの説明（ENC の条件と同じ内容）
+const ENCT={sharp:'攻撃カード',glam:'Xコスト以外のカード',spiral:'Xコスト以外のカード',imbued:'パワーとXコスト以外のカード',sown:'状態異常・呪い以外のカード',royal:'状態異常・呪い以外のカード'};
 const ANEN={eshp:['sharp',0],egla:['glam',3],espi:['spiral',1],eimb:['imbued',2],esow:['sown',3],eroy:['royal',2]},anEL=k=>dkL((o,c)=>!o.en&&c.t<3&&ENC[ANEN[k][0]][3](o.u?up(c):c)),ACN=['千年の灯','骨鯨の歌声','時呑み','灰燼の翼','晶樹の実り','万象の頁'];
 function anTxt(k){if(k==='relup'){const a=CH[P.cls].rel,b=RLUP[a]||'burn2',A=RL[a]||RL.burn;return['昇華の儀','「'+A[0]+'」を「'+RL[b][0]+'」に変える','初期レリック「'+A[0]+'」（'+A[1]+'）が、上位の「'+RL[b][0]+'」（'+RL[b][1]+'）に変わる。']}if(/^ac\d$/.test(k)){const c=C[CI(ACN[+k[2]])];return['「'+c.n+'」','フルアートカード「'+c.n+'」を得る','古の者の姿を写した特別なカード。'+dl(c).join('・')+'。']}if(k==='fang'){const f=FAN[P.cls]||['',''];return['古の牙','「'+f[0]+'」を古の版「'+f[1]+'」に変える','初期カード「'+f[0]+'」1枚が、古の版「'+f[1]+'」に変わる。古の版は普通の強化よりさらに強い。強化してあれば強化も引き継ぐ。']}return ANGT[k]||[RL[k][0],RL[k][1],RL[k][1]]}
 const anIco=k=>ANIC[k]||(k==='relup'?rIcon(RLUP[CH[P.cls].rel]||'burn2'):ANEN[k]?enIcon(ANEN[k][0]):/^ac\d$/.test(k)?ANIC.acard:rIcon(k));
@@ -4577,6 +4579,7 @@ function drawAncLP(){btns=[];const A=ANC[BT.anc],k=BT.rs[BT.lp],isG=!!(ANGT[k]||
  let y=118;for(const l of wrap(ld,26)){txt(l,190,y,'#ffffff','left',11);y+=15}y+=8;
  const bar=(h1,body)=>{const ls=wrap(body,30),h=20+ls.length*12;ctx.fillStyle='rgba(40,32,72,.85)';ctx.fillRect(186,y-12,400,h);ctx.fillStyle='#c8a050';ctx.fillRect(186,y-12,2,h);txt(h1,194,y+1,'#ffd23f','left',12);ls.forEach((t,j)=>txt(t,194,y+15+j*12,'#d8d0f0','left',10));y+=h+4};
  if(k==='fang'){const i=faTgt();bar('古の版','普通の強化よりさらに強い特別なカード。絵がカード全体に広がる。');if(i>=0){const o=P.deck[i];card(64,200,{i:o.i,u:o.u||0},0,0);txt('→',170,258,'#ffd23f','center',16);card(190,200,{i:CI(FAN[P.cls][1]),u:o.u||0},0,0)}}
+ else if(ANEN[k]){const[e,n]=ANEN[k],E=ENC[e];bar('【'+E[0]+'】（エンチャント）',E[2](E[4])+'。強化とは別にカードに後から付く効果で、強化しても消えない。1枚に付けられるのは1つだけ。');bar('付けられるカード',(ENCT[e]||'状態異常・呪い以外のカード')+'（すでにエンチャントが付いているものは除く）。いまのデッキでは'+anEL(k).length+'枚。'+(n?'このうち'+n+'枚を選ぶ。':'当てはまるカードすべてに付く。'))}
  else if(!isG)bar('ボスレリック','一度取ると、この冒険の間ずっと効果が続く。');else bar('恵み','その場で効果が出る。レリックとしては残らない。');
  txt('画面を押すと閉じる',320,350,'#8a82b8','center',10)}
 function drawBT(){if(BT.anc!=null){drawAnc();return}rwBg();ctx.fillStyle='rgba(4,2,10,.5)';ctx.fillRect(0,0,640,360);{const v=ctx.createRadialGradient(320,200,80,320,200,380);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,.6)');ctx.fillStyle=v;ctx.fillRect(0,0,640,360)}
