@@ -33,3 +33,13 @@ NODEV.S={bg:(x,y,r,n,th)=>{const p=NZSP[Math.max(0,(P.act||1)-1)]||NZSP[0],red=n
   g=ctx.createRadialGradient(x-r*.35,y-r*.4,1,x,y,r+.5);g.addColorStop(0,red?'#e8a8a0':p.c0);g.addColorStop(1,red?'#6a2028':p.c1);ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fill();
   ctx.strokeStyle='rgba(255,255,255,.28)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y,r-1,3.5,5.4);ctx.stroke()},
  ic:(x,y,n,im)=>{const p=NZSP[Math.max(0,(P.act||1)-1)]||NZSP[0],red=n.t===1||n.t>=7||n.au;ctx.drawImage(nzDuo(im,red?p.rd:p.d,red?p.rl:p.l,p.inv),x-12,y-12);ctx.save();ctx.globalAlpha*=.22;ctx.drawImage(im,x-12,y-12);ctx.restore()}};
+// --- 2回目の案（C：丸なし・縁取りと影／D：菱形の札／E：カード札）
+const nzRed=n=>n.t===1||n.t>=7||n.au;
+const nzOut=(x,y,im,col)=>{const t=tintI(im,col);for(const[dx,dy]of[[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]])ctx.drawImage(t,x-12+dx,y-12+dy)};
+NODEV.C={bg:(x,y,r,n,th)=>{ctx.fillStyle='rgba(40,20,8,.32)';ctx.beginPath();ctx.ellipse(x,y+11,10,3.5,0,0,7);ctx.fill()},
+ ic:(x,y,n,im)=>{nzOut(x,y,im,nzRed(n)?'#5a0a0a':'#2a1608');ctx.drawImage(im,x-12,y-12)}};
+const nzDia=(x,y,r)=>{ctx.beginPath();ctx.moveTo(x,y-r);ctx.lineTo(x+r,y);ctx.lineTo(x,y+r);ctx.lineTo(x-r,y);ctx.closePath()};
+NODEV.D={bg:(x,y,r,n,th)=>{const red=nzRed(n),R=r+3;ctx.fillStyle='rgba(0,0,0,.3)';nzDia(x+1,y+2,R);ctx.fill();ctx.fillStyle=red?'#7a1020':'#3a2a1a';nzDia(x,y,R);ctx.fill();ctx.fillStyle=red?'#2a0608':'#f2e2c0';nzDia(x,y,R-2.5);ctx.fill();ctx.strokeStyle=red?'rgba(255,120,120,.35)':'rgba(140,100,60,.45)';ctx.lineWidth=1;nzDia(x,y,R-5);ctx.stroke()},
+ ic:(x,y,n,im)=>{ctx.drawImage(im,x-12,y-12)}};
+NODEV.E={bg:(x,y,r,n,th)=>{const red=nzRed(n),w=24,h=30,l=x-w/2,t=y-h/2;ctx.save();ctx.translate(x,y);ctx.rotate(((x*7+y*3)%5-2)*.025);ctx.translate(-x,-y);ctx.fillStyle='rgba(40,20,8,.35)';ctx.fillRect(l+1.5,t+2.5,w,h);ctx.fillStyle=red?'#8a1a22':'#4a3018';ctx.fillRect(l,t,w,h);ctx.fillStyle=red?'#e8c8b8':'#f4e6c8';ctx.fillRect(l+2,t+2,w-4,h-4);ctx.fillStyle='rgba(255,255,255,.5)';ctx.fillRect(l+2,t+2,w-4,1);ctx.fillStyle='rgba(120,80,40,.25)';ctx.fillRect(l+2,t+h-3,w-4,1);ctx.restore()},
+ ic:(x,y,n,im)=>{ctx.drawImage(im,x-12,y-12)}};
