@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.11';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.12';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -4942,7 +4942,9 @@ function drawNeow(){ctx.drawImage(NEB,0,0);const cx=470,cy=128+Math.sin(T*1.3)*5
  ctx.fillStyle='#0e1a2e';ctx.beginPath();ctx.moveTo(bx+bw,by+40);ctx.lineTo(bx+bw+40,by+62);ctx.lineTo(bx+bw,by+70);ctx.fill();ctx.fillStyle='#5ff6ff';ctx.fillRect(bx+bw-2,by,2,40);ctx.fillRect(bx+bw-2,by+70,2,bh-70);
  txt('？？？',bx+10,by+18,'#5ff6ff','left',12);const ln=['……観測対象を確認。','塔を登る者よ。','選択を一つ、許可する。','代償を伴うものも存在する。'],sh=Math.min(ln.join('').length,Math.floor((T-(NE.t0||0))*24));let u=0;
  ln.forEach((l,i)=>{const n=Math.max(0,Math.min(l.length,sh-u));u+=l.length;if(n)txt(l.slice(0,n),bx+10,by+40+i*17,'#e8f6ff','left',12)});
- NE.opts.forEach((o,i)=>nwOpt(20,226+i*32,420,28,o[0],o[1],i))}
+ NE.opts.forEach((o,i)=>nwOpt(20,226+i*32,420,28,o[0],o[1],i));
+ // フルアートカードの選択肢は長押しでカードの詳細（ユーザー指定）
+ let fa=0;NE.opts.forEach((o,i)=>{const m=o[0].match(/フルアートカード「(.+?)」/);if(m&&CI(m[1])>=0){fa=1;LPC.push({x:20,y:226+i*32,w:420,h:28,o:{i:CI(m[1]),u:0}})}});if(fa&&T-(NE.t0||0)>.8)txt('フルアートカードは長押しで詳細',440,221,'#8ab8c8','right',9)}
 // Ver2.53 ？？？の選択肢（ユーザー指定：チープ感をなくす）。角を落とした半透明の板・左に番号の菱形・光の走査・右に流れる矢印。代償は赤い札と「代償／得るもの」で色分け。順に左から現れる
 function nwOpt(x,y,w,h,l,f,i){const R=l.startsWith('【代償】'),a=Math.max(0,Math.min(1,(T-(NE.t0||0)-.25-i*.12)/.3)),q=1-Math.pow(1-a,3),ox=Math.round((1-q)*-30);if(a<=0)return;ctx.save();ctx.globalAlpha=q;ctx.translate(ox,0);
  const c=R?['#ff5a7a','#2a0c18','#160610','#ff9ab0']:['#5ff6ff','#0e2238','#08121e','#bff8ff'],k=7,pth=()=>{ctx.beginPath();ctx.moveTo(x+k,y);ctx.lineTo(x+w-k,y);ctx.lineTo(x+w,y+k);ctx.lineTo(x+w,y+h-k);ctx.lineTo(x+w-k,y+h);ctx.lineTo(x+k,y+h);ctx.lineTo(x,y+h-k);ctx.lineTo(x,y+k);ctx.closePath()};
