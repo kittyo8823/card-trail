@@ -1,0 +1,4 @@
+const {chromium}=require('playwright');const S=process.argv[2];(async()=>{const br=await chromium.launch(),pg=await br.newPage({viewport:{width:640,height:360},deviceScaleFactor:2}),er=[];pg.on('pageerror',e=>er.push(e.message));await pg.route('**/fonts.googleapis.com/**',r=>r.abort());await pg.goto('file:///home/user/card-trail/dev/index.html');await pg.waitForTimeout(400);
+await pg.addScriptTag({path:'/home/user/card-trail/dev/mock/anc_whale.js'});
+await pg.evaluate(()=>{newRun(0);go('map');const old=faArt('anc1');faArt('sai');FAA.anc1old=old;FAA.anc1x=ancWhale();const o=draw;draw=function(){o();ctx.fillStyle='#0a0814';ctx.fillRect(0,0,640,360);FAA.anc1=FAA.anc1old;cardAt({i:CI('骨鯨の歌声'),u:0},170,190,2.1,0,1);FAA.anc1=FAA.anc1x;cardAt({i:CI('骨鯨の歌声'),u:0},460,190,2.1,0,1)}});
+await pg.waitForTimeout(500);await pg.screenshot({path:S+'/wh.png'});console.log(er);await br.close()})();
