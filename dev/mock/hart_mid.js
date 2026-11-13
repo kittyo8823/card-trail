@@ -28,3 +28,21 @@ const artDefendM=()=>hmMk(['#101418','#182026','#202c34','#2a3a44','#364a54','#4
  // 当たった所：にじむ光と、はじける短い火花の線（星形にしない）
  const ix=W*.62,iy=H*.3,gl=g.createRadialGradient(ix,iy,.5,ix,iy,11);gl.addColorStop(0,'rgba(226,204,174,.9)');gl.addColorStop(.4,'rgba(200,168,136,.45)');gl.addColorStop(1,'rgba(200,168,136,0)');g.fillStyle=gl;g.fillRect(0,0,W,H);
  g.strokeStyle='#e2ccae';g.lineWidth=.8;for(const[a,l]of[[-.6,7],[.1,6],[.8,5],[-1.4,5],[2.6,4],[1.6,4]]){g.beginPath();g.moveTo(ix+Math.cos(a)*3,iy+Math.sin(a)*3);g.lineTo(ix+Math.cos(a)*(3+l),iy+Math.sin(a)*(3+l));g.stroke()}});
+// 斬撃その2：剣を枠からはみ出すほど大きく手前に。刃が画面を斜めに横切り、柄と鍔は左下で大きく見える
+const artStrikeM2=()=>hmMk(['#14131c','#1e1c28','#2a2734','#3a3442','#4e4250','#6a5458','#8a6a5e','#a8846c','#c8a888','#e2ccae','#3c4250','#5a6272','#848c9a','#b4b8c0','#dcdee0','#5a4424','#8a6c34','#b8984e','#2e1e14','#4a3220'],(g,W,H)=>{
+ let q=g.createLinearGradient(0,0,W,H);q.addColorStop(0,'#3a3242');q.addColorStop(.5,'#2a2734');q.addColorStop(1,'#14131c');g.fillStyle=q;g.fillRect(0,0,W,H);
+ // 振りの流れ：画面いっぱいの大きな弧の帯
+ for(const[r,c,al]of[[70,'#6a5458',.5],[62,'#8a6a5e',.55],[56,'#a8846c',.5],[52,'#c8a888',.45]]){g.strokeStyle=c;g.globalAlpha=al;g.lineWidth=r===70?10:r===62?6:3;g.beginPath();g.arc(W*.12,H*1.25,r,-1.75,-.42);g.stroke()}g.globalAlpha=1;
+ const A=-.46;g.save();g.translate(W*.17,H*.84);g.rotate(A);
+ // 刃：太く長く、枠の右上へ突き抜ける
+ HMP(g,[[14,-6],[96,-5],[96,5],[14,6]],'#5a6272');HMP(g,[[14,-6],[96,-5],[96,0],[14,0]],'#b4b8c0');HMP(g,[[16,-1.4],[96,-1.2],[96,.6],[16,.6]],'#848c9a');g.fillStyle='#dcdee0';g.fillRect(30,-6,40,1.4);g.fillStyle='#3c4250';g.fillRect(14,5,82,1);
+ // 刃こぼれと傷
+ g.fillStyle='#3c4250';for(const[x,y]of[[42,-5.6],[58,-5.4],[74,4.6]])g.fillRect(x,y,2,1);
+ // 鍔：大きな真鍮の十字
+ HMP(g,[[8,-16],[14,-15],[14,15],[8,16]],'#8a6c34');g.fillStyle='#b8984e';g.fillRect(8,-16,2,32);g.fillStyle='#5a4424';g.fillRect(13,-15,1,30);g.fillStyle='#b8984e';g.fillRect(9,-1.5,4,3);
+ // 柄（革巻き）と柄頭
+ HMP(g,[[-10,-3.6],[8,-3.6],[8,3.6],[-10,3.6]],'#4a3220');g.fillStyle='#2e1e14';for(let k=-9;k<8;k+=3.5)g.fillRect(k,-3.6,1.2,7.2);g.fillStyle='#6a4a30';g.fillRect(-10,-3.6,18,1);
+ HMP(g,[[-17,-5],[-10,-5],[-10,5],[-17,5]],'#8a6c34');g.fillStyle='#b8984e';g.fillRect(-17,-5,7,1.4);g.restore();
+ // 刃に沿って走る光と、右上に散る短い火花の線
+ const gl=g.createRadialGradient(W*.8,H*.18,1,W*.8,H*.18,20);gl.addColorStop(0,'rgba(226,204,174,.5)');gl.addColorStop(1,'rgba(226,204,174,0)');g.fillStyle=gl;g.fillRect(0,0,W,H);
+ g.strokeStyle='#e2ccae';g.lineWidth=.8;for(const[x,y,a,l]of[[W*.78,H*.12,-.9,5],[W*.86,H*.22,-.2,6],[W*.7,H*.08,-1.6,4],[W*.92,H*.36,.3,4]]){g.beginPath();g.moveTo(x,y);g.lineTo(x+Math.cos(a)*l,y+Math.sin(a)*l);g.stroke()}});
