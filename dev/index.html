@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.06';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.07';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -4239,7 +4239,7 @@ const ANC=[
   g=ctx.createRadialGradient(200,90,10,260,120,300);g.addColorStop(0,'rgba(90,60,160,.35)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,640,360);
   // 雲海
   for(let i=0;i<14;i++){ctx.fillStyle='rgba(40,50,90,'+(.25+(i%3)*.08)+')';ctx.beginPath();ctx.ellipse((i*61+t*4)%760-60,250+(i%4)*14,90,18,0,0,7);ctx.fill()}
-  const wy=130+Math.sin(t*.5)*5,wx=330;
+  const wy=130+Math.sin(t*.5)*2,wx=330;
   // 鯨の骨：頭骨・背骨・肋骨・ひれ（青白く光る）
   ctx.save();ctx.shadowColor='rgba(140,200,255,.6)';ctx.shadowBlur=10;
   const bone='#d8e4f0',bd='rgba(120,150,190,.25)';
@@ -4248,9 +4248,9 @@ const ANC=[
   ctx.fillStyle='#0a0e1c';ctx.beginPath();ctx.ellipse(wx-140,wy-8,9,6,0,0,7);ctx.fill();ctx.fillStyle='#8ad8ff';ctx.beginPath();ctx.arc(wx-140,wy-8,2.5,0,7);ctx.fill();
   ctx.strokeStyle=bd;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(wx-200,wy+8);ctx.quadraticCurveTo(wx-160,wy+34,wx-110,wy+26);ctx.stroke();
   ctx.restore();
-  for(let i=0;i<20;i++){const px=wx-100+i*15,py=wy-14+Math.sin(i*.35+t)*6-i*.6,s=7-i*.25;ctx.fillStyle='rgba(140,200,255,.18)';ctx.beginPath();ctx.arc(px,py,s+4,0,7);ctx.fill();ctx.fillStyle=bd;ctx.fillRect(px-s/2-1,py-s/2-1,s+2,s+2);ctx.fillStyle=bone;ctx.fillRect(px-s/2,py-s/2,s,s);ctx.fillStyle='#fff';ctx.fillRect(px-s/2,py-s/2,s,1);
+  for(let i=0;i<20;i++){const px=wx-100+i*15,py=wy-14+Math.sin(i*.35)*6+Math.sin(t*1.4)*.8-i*.6,s=7-i*.25;ctx.fillStyle='rgba(140,200,255,.18)';ctx.beginPath();ctx.arc(px,py,s+4,0,7);ctx.fill();ctx.fillStyle=bd;ctx.fillRect(px-s/2-1,py-s/2-1,s+2,s+2);ctx.fillStyle=bone;ctx.fillRect(px-s/2,py-s/2,s,s);ctx.fillStyle='#fff';ctx.fillRect(px-s/2,py-s/2,s,1);
    if(i<12){const L=34-i*1.6;ctx.strokeStyle=bd;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(px,py);ctx.quadraticCurveTo(px+8,py+L*.6,px-2,py+L);ctx.stroke();ctx.strokeStyle=bone;ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(px,py);ctx.quadraticCurveTo(px+8,py+L*.6,px-2,py+L);ctx.stroke()}}
-  {const tx=wx+204,ty=wy-28+Math.sin(t*.5+5)*3;for(const d of[-1,1]){ctx.fillStyle=bd;ctx.beginPath();ctx.moveTo(tx,ty);ctx.quadraticCurveTo(tx+20,ty+d*4,tx+44,ty+d*26);ctx.quadraticCurveTo(tx+26,ty+d*12,tx,ty+d*3);ctx.fill();ctx.strokeStyle=bone;ctx.lineWidth=1.4;for(let k=0;k<4;k++){ctx.beginPath();ctx.moveTo(tx+2,ty+d);ctx.lineTo(tx+16+k*8,ty+d*(5+k*5));ctx.stroke()}}}
+  {const tx=wx+204,ty=wy-28+Math.sin(t*.5+5)*1.5;for(const d of[-1,1]){ctx.fillStyle=bd;ctx.beginPath();ctx.moveTo(tx,ty);ctx.quadraticCurveTo(tx+20,ty+d*4,tx+44,ty+d*26);ctx.quadraticCurveTo(tx+26,ty+d*12,tx,ty+d*3);ctx.fill();ctx.strokeStyle=bone;ctx.lineWidth=1.4;for(let k=0;k<4;k++){ctx.beginPath();ctx.moveTo(tx+2,ty+d);ctx.lineTo(tx+16+k*8,ty+d*(5+k*5));ctx.stroke()}}}
   for(const d of[0,1]){const fx=wx-70+d*30,fy=wy+18;ctx.strokeStyle=bd;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(fx,fy);ctx.quadraticCurveTo(fx+4,fy+24,fx-14+d*6,fy+44+Math.sin(t+d)*3);ctx.stroke();ctx.strokeStyle=bone;ctx.lineWidth=1.5;ctx.stroke();for(let k=1;k<4;k++){ctx.fillStyle=bone;ctx.fillRect(fx-2+k*-3+d*2,fy+k*11,3,3)}}
   // 中に浮かぶ光の魚
   for(let i=0;i<9;i++){const px=wx-60+((i*29+t*20)%220),py=wy+6+Math.sin(t*2+i)*8;ctx.fillStyle='rgba(140,220,255,.25)';ctx.beginPath();ctx.arc(px,py,4,0,7);ctx.fill();ctx.fillStyle='#bff0ff';ctx.fillRect(px-1,py-1,3,2)}
@@ -4343,7 +4343,7 @@ ANC[2].sc=(t)=>{let g=ctx.createLinearGradient(0,0,0,360);g.addColorStop(0,'#140
  ctx.fillStyle='rgba(200,230,255,.07)';ctx.strokeStyle='rgba(220,240,255,.4)';ctx.lineWidth=1.5;ctx.beginPath();[[hx-38,hy+2],[hx-34,hy+60],[hx-4,hy+90],[hx-34,hy+120],[hx-38,hy+178],[hx+38,hy+178],[hx+34,hy+120],[hx+4,hy+90],[hx+34,hy+60],[hx+38,hy+2]].forEach(p=>ctx.lineTo(p[0],p[1]));ctx.closePath();ctx.fill();ctx.stroke();
  ANPL([[hx-30,hy+40],[hx+30,hy+40],[hx+4,hy+86],[hx-4,hy+86]],'#c89448');ANPL([[hx-30,hy+40],[hx,hy+40],[hx-2,hy+86],[hx-4,hy+86]],'#e0b060');ctx.fillStyle='#e0b060';ctx.fillRect(hx-1,hy+88,2,56);ANPL([[hx-34,hy+176],[hx-8,hy+144],[hx+8,hy+144],[hx+34,hy+176]],'#c89448');
  // 体：中心線を折れ線で取り、各区間を「上面（明）・側面（暗）」の板にする
- const N=26,pts=[];for(let i=0;i<=N;i++){const p=i/N,ph=p*9.4+t*.4;pts.push([hx+Math.sin(ph)*58,hy+182-p*168,Math.cos(ph)])}
+ const N=26,pts=[],pu=1+Math.sin(t*1.6)*.025;for(let i=0;i<=N;i++){const p=i/N,ph=p*9.4+.6;pts.push([hx+Math.sin(ph)*58*pu,hy+182-p*168,Math.cos(ph)])}
  for(let i=0;i<N;i++){const[a,b]=[pts[i],pts[i+1]],w=13-i*.18,dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy),nx=-dy/L*w,ny=dx/L*w,front=a[2]>0;
   const q=[[a[0]+nx,a[1]+ny],[b[0]+nx*.95,b[1]+ny*.95],[b[0]-nx*.95,b[1]-ny*.95],[a[0]-nx,a[1]-ny]];
   ANPL(q.map(p=>[p[0]+(p[0]-(a[0]+b[0])/2)*.12,p[1]+(p[1]-(a[1]+b[1])/2)*.12]),'rgba(0,0,0,0)');
@@ -4362,7 +4362,7 @@ ANC[2].sc=(t)=>{let g=ctx.createLinearGradient(0,0,0,360);g.addColorStop(0,'#140
 ANC[3].sc=(t)=>{let g=ctx.createLinearGradient(0,0,0,360);g.addColorStop(0,'#0a0303');g.addColorStop(.5,'#240806');g.addColorStop(1,'#060202');ctx.fillStyle=g;ctx.fillRect(0,0,640,360);
  g=ctx.createRadialGradient(320,140,10,320,140,240);g.addColorStop(0,'rgba(255,110,40,.35)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,640,360);
  ANPL([[0,360],[0,220],[80,200],[160,230],[250,214],[400,226],[500,198],[640,222],[640,360]],'#050202');for(let i=0;i<9;i++){ctx.fillStyle='rgba(255,90,20,.6)';ctx.fillRect(i*76+20,226+(i%3)*4,30,1)}
- const cx=320,cy=136+Math.sin(t*1.2)*4,fl=Math.sin(t*2)*.06;
+ const cx=320,cy=136+Math.sin(t*1.2)*1.5,fl=Math.sin(t*1.4)*.02;
  // 翼：3段の刃羽（外ほど長く暗い）
  for(const d of[-1,1])for(let row=0;row<3;row++)for(let k=0;k<7-row;k++){const a=-.15-k*.2-row*.08+fl*d,L=(150-k*12)*(1-row*.22),W=7-row;ctx.save();ctx.translate(cx+d*16,cy-6+row*6);ctx.scale(d,1);ctx.rotate(-a*-1-.0);ctx.rotate(-(.15+k*.2+row*.08)+fl*d*2);
   ANPL([[0,-W-2],[L*.55,-W-3],[L+4,0],[L*.55,W+1],[0,W+2]],'rgba(0,0,0,0)');
