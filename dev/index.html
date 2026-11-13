@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.19';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.20';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2511,7 +2511,12 @@ const HMPAL=['#0e0d12','#17151e','#211e2a','#2c2836','#3a3442','#4e4250','#6a545
  '#2a3038','#3c4450','#5a6272','#848c9a','#b4b8c0','#dcdee0','#5a4424','#8a6c34','#b8984e','#2e1e14','#4a3220','#6a4a30',
  '#3a1414','#5a1e1c','#7e2a24','#a63a2c','#c8583a','#d88a48','#e8b070','#2a3426','#3e4a34','#5a6a48','#283a40','#3a5058','#5a7078','#86a0a4','#2a2a44','#3e3e66','#6a6a98','#7a8a48','#9aa860','#9a6a78','#c8b060'];
 const HMPP=HMPAL.map(s=>[parseInt(s.slice(1,3),16),parseInt(s.slice(3,5),16),parseInt(s.slice(5,7),16)]),HMBY=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5];
-function hmMk(f){const w=74,h=44,c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');f(g,w,h);const d=g.getImageData(0,0,w,h),a=d.data,P=HMPP;
+function hmMk(f,t){const w=74,h=44,c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');
+ // 躍動感：攻撃は少し傾けて寄せる、スキル・パワーは少し寄せる（はみ出た分は切れる）
+ const z=t===0?1.16:t===1?1.08:1.05,rt=t===0?-.08:0;g.save();g.translate(w/2,h/2);g.rotate(rt);g.scale(z,z);g.translate(-w/2,-h/2);f(g,w,h);g.restore();
+ const d=g.getImageData(0,0,w,h),a=d.data,P=HMPP;
+ // 明るさ：暗い所を持ち上げる（中間を明るく、色合いはそのまま）
+ for(let i=0;i<a.length;i+=4)for(let k=0;k<3;k++)a[i+k]=Math.min(255,255*Math.pow(a[i+k]/255,.72)+6);
  for(let i=0;i<a.length;i+=4){const px=(i>>2)%w,py=((i>>2)/w)|0,dz=(HMBY[(py&3)*4+(px&3)]/16-.47)*14;let b=0,bd=1e9;for(let k=0;k<P.length;k++){const p=P[k],e=(a[i]+dz-p[0])**2*.3+(a[i+1]+dz-p[1])**2*.59+(a[i+2]+dz-p[2])**2*.11;if(e<bd){bd=e;b=k}}a[i]=P[b][0];a[i+1]=P[b][1];a[i+2]=P[b][2];a[i+3]=255}
  g.putImageData(d,0,0);const o=document.createElement('canvas');o.width=148;o.height=88;const q=o.getContext('2d');q.imageSmoothingEnabled=false;q.drawImage(c,0,0,148,88);return o}
 // 部品
@@ -3054,7 +3059,7 @@ const HMC7={
 '囮':g=>{hBg(g,SKY.ash);hP(g,[[30,10],[44,10],[46,38],[28,38]],'#6a4a30');hP(g,[[34,4],[40,4],[40,10],[34,10]],'#a8846c');g.strokeStyle='#7e2a24';g.lineWidth=1;g.beginPath();g.arc(37,22,6,0,7);g.stroke();g.beginPath();g.arc(37,22,2,0,7);g.stroke()},
 '共鳴':g=>{hBg(g,SKY.violet);for(let i=0;i<4;i++){g.strokeStyle='rgba(200,168,136,'+(.6-i*.1)+')';g.lineWidth=1;g.beginPath();g.arc(16+i*14,22,6,0,7);g.stroke()}hWaves(g,37,22,4,0,6.283,'rgba(200,168,136,.3)')},
 '蘇生の祈り':g=>{hBg(g,SKY.gold);hRays(g,37,0,12,'232,176,112',.16,48);for(const d of[-1,1])hP(g,[[37+d*2,40],[37+d*10,20],[37+d*6,14],[37+d*1,30]],'#c8a888');hG(g,37,16,10,'232,176,112',.5)}};
-for(const T of[HMC0,HMC1,HMC2,HMC3,HMC4,HMC5,HMC6,HMC7])for(const k in T)if(!HART[k])HART[k]=()=>hmMk(T[k]);
+for(const T of[HMC0,HMC1,HMC2,HMC3,HMC4,HMC5,HMC6,HMC7])for(const k in T)if(!HART[k]){const cc=C.find(c=>c.n===k);HART[k]=()=>hmMk(T[k],cc?cc.t:1)}
 function card(x,y,o,dim,gl,pv){card0(x,y,o,dim,gl,pv);if(o&&o.en&&ENC[o.en])enBadge(x+73,y+28,o.en,o.en==='sharp'||o.en==='nimble'?o.ev:null)}
 function card0(x,y,o,dim,gl,pv){{const m=ctx.getTransform();LPC.push({x:(m.a*x+m.c*y+m.e)/K,y:(m.b*x+m.d*y+m.f)/K,w:84*m.a/K,h:106*m.d/K,o})}if(C[o.i]&&C[o.i].fa){cardFA(x,y,o,dim,gl,pv);return}const c=cd(o),rare=c.r===2,bk=c.t>=3,col=bk?(c.t===4?'#7a3a8a':'#5a5a66'):c.k===5||c.r===-2?'#a8a8b8':TC[c.t],parts=dl(c,pv),ls=[],lc=[],PL=parts.map((p,i)=>[p,parts.cl[i]||(p==='廃棄'?'#ffd23f':'#e8e4ff')]);PL.sort((a,b)=>(a[0]==='廃棄')-(b[0]==='廃棄'));PL.forEach(([p,cl])=>{for(const l of wrap(p,8)){ls.push(l);lc.push(cl)}});const ah=AH(ls.length);
 if(rare&&gl){const a=.5+.25*Math.sin(T*3+x*.05);ctx.save();ctx.shadowColor='rgba(255,196,80,'+a+')';ctx.shadowBlur=12*K;ctx.fillStyle='#ffd070';ctx.fillRect(x-2,y-2,88,110);ctx.restore()}
