@@ -273,14 +273,14 @@ Playwright（chromium）入りの環境なら、ページを開いて `page.eval
   - ホーリー大輔：前髪のある髪・後ろの手に小さなダンベル。
 - 選択画面のキャラは1.5倍（`SK2`）、足元 `fy` で床に置く。立たせて置く画面は `ftY(絵,キー)`（上端から足までの高さ）で床に合わせる（Ver2.66）。
 - 軽くする工夫（Ver3.01）：自キャラの部位の画像は `trimC()` で中身の部分だけに切り詰め（`ox/oy` で元の位置、`plParts` がずらして描く）、地図の丸 `pc()` は大きさ・色ごとに一度描いた画像を使い回す（`PCC2`）、ターンの帯は色ごとに一度描いて使い回す（`bnBand`/`BNC`）。毎フレームたくさんの小さな四角を描く所は、このように一度描いてとっておく。
-- カードの絵・細かさ2（Ver3.15〜、ユーザー採用）：74×44 で描いて2倍の 2px ドット（`hmMk`）、色はくすんだ色の表 `HMPAL` に寄せてディザ。部品 `hSword/hAxe/hShield/hFist/hArm/hHelm/hSqHelm/hBlood/hDrop/hFlame/hSmoke/hDrum/hCoin/hSkull/hHorn/hClaw/hCandle/hRune/hMedal/hChains`、効果 `hArc`（軌跡）`hHit`（光のにじみ＋短い火花の線）`hSpk/hCrack/hWaves/hRays/hDust/hSpeed`。カードごとの絵は `HMC0`（ユウキング。名前→関数）で、`HART` に登録（すでに HART がある命刈りの鎌はそのまま）。キャラは全身を描かず手や腕だけ（小さいと全身は微妙＝ユーザー指定）。盾・兜などは正面向きばかりにせず多くを斜め向きに（`hShield` の `o.t`・`hSqHelm` の `q`。正面は数枚まで＝ユーザー指定）。兜だけの絵（顔に見える）は使わない（頭突きのように兜そのものが技の時だけ）。全カードを枠ごと並べて見るのは `node tests/card_sheet.js 出力先`。他のキャラは HMC1… を足して同じように登録する。
+- カードの絵・細かさ2（Ver3.15〜、ユーザー採用）：74×44 で描いて2倍の 2px ドット（`hmMk`）、色はくすんだ色の表 `HMPAL` に寄せてディザ。部品 `hSword/hAxe/hShield/hFist/hArm/hHelm/hSqHelm/hBlood/hDrop/hFlame/hSmoke/hDrum/hCoin/hSkull/hHorn/hClaw/hCandle/hRune/hMedal/hChains`、効果 `hArc`（軌跡）`hHit`（光のにじみ＋短い火花の線）`hSpk/hCrack/hWaves/hRays/hDust/hSpeed`。カードごとの絵は `HMC0`（ユウキング）・`HMC1`（坂井。部品 `hKnife/hVial/hPC/hBArm/hCard/hNeedle/hCloak`）（名前→関数）で、`HART` に登録（すでに HART がある命刈りの鎌はそのまま）。キャラは全身を描かず手や腕だけ（小さいと全身は微妙＝ユーザー指定）。盾・兜などは正面向きばかりにせず多くを斜め向きに（`hShield` の `o.t`・`hSqHelm` の `q`。正面は数枚まで＝ユーザー指定）。顔だけ・兜だけの絵は描かない（ユーザー方針。頭突きのように兜そのものが技の時だけ例外）。全カードを枠ごと並べて見るのは `node tests/card_sheet.js 出力先 キャラ番号`。他のキャラは HMC1… を足して同じように登録する。
 - 見た目だけの小さな変更は、自動プレイのテストを省いてスクリーンショットの確認だけにしている（Ver2.61〜）。ゲームの仕組みに触る変更では smoke.js を回す。
 
 ## やりたいことリスト（ユーザーが後でやる予定。終わったら消す）
 （今は無し）
 
 ## 次の会話への引き継ぎ（Ver3.14 公開後）
-- 公開版は Ver3.14（GitHub Pages 反映済み、控え index44 = Ver3.11）。dev は Ver3.17（ユウキングのカードの絵を細かさ2に、盾と兜の多くを斜め向きに、兜だけの絵をやめた。未アプデ）。他のキャラのカードの絵も同じ作りで描く予定（ユーザー指定「他のカードもやっちゃって」。まずユウキングだけ済み）。
+- 公開版は Ver3.14（GitHub Pages 反映済み、控え index44 = Ver3.11）。dev は Ver3.18（カードの絵を細かさ2に：ユウキング・坂井まで済み。未アプデ）。残り：坪内丸 k2（64）・名無し k3（65）・ホーリー大輔 k4（63）・ネブラ k6（56）・無色 k5（16）・協力 k7（8）を同じ作りで描く（ユーザー指定）。
 - 戦闘で説明が長い（4〜5行）カードは下が切れる。案1（長い時だけ絵の窓を小さくする）・案2（手札を8px上げる：`y=sel…?232:250`）・案3（触ると全文）を出したが、ユーザーは「一旦いい」（保留）。5行のカードは案2だけでは収まらない。
 - 初期カード「斬撃」「防御」を命刈りの鎌と同じ細かさ（HART、148×88・1px）で描いた見本：`dev/mock/hart_basic.js`（`artStrike`／`artDefend`）、撮影 `node dev/mock/hart_basic_shot.js 出力先`。ユーザー指定で「描くだけ」（ゲームには入れていない）。その2（本家の描き方を参考：主役1つを大きく斜めに・平塗り＋2〜3段の影・背景は大きな色の形・主役に暗い縁取り。構図はまねしない）は `dev/mock/hart_basic2.js`（`artStrike2`／`artDefend2`）、撮影 `node dev/mock/hart_basic2_shot.js 出力先`。細かさ「2」（1＝今の粗いドット、3＝本家風の見本その2の間。74×44 で描いて2倍の 2px ドット、くすんだ色の表に寄せる・ディザあり）は `dev/mock/hart_mid.js`（`artStrikeM`／`artDefendM`、剣を大きく手前に寄せた斬撃 `artStrikeM2`）、撮影 `node dev/mock/hart_mid_shot.js 出力先`。5枚の見本（兜割り・鉄壁・大回転・粉砕・魔の力）は `dev/mock/hart_mid5.js`、撮影 `node dev/mock/hart_mid5_shot.js 出力先`（返事待ち）。ユーザーの考え：斬撃は剣をでかでかと描く、他の攻撃カードはキャラが剣を振る絵もあり（本家2のアイアンクラッドのように）。返事待ち。本家の絵は slay-the-spire.fandom.com の api.php（imageinfo）で画像の場所を取れる（環境で許可済み。ページ本体は確認画面で止まる）。
 - 地図のマスのアイコンを細かく（8×8・倍率3 → 12×12・倍率2）する見本：`dev/mock/map_icons.py`（形と色。実行すると `map_icons.js` を作る）、撮影 `node dev/mock/map_icons_shot.js 出力先`。2回目（テカテカさせない・丸い形にしない・黒い輪郭を付けない）も見たうえで、ユーザーは今のままを選んだ（入れない）。
