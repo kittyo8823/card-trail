@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.20';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.21';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2509,14 +2509,14 @@ HART['命刈りの鎌']=artScythe})();
 // 決まり：衝撃を星形にしない（光のにじみと短い火花の線）・おもちゃのような彩度の高い色を使わない・キャラは全身を描かず手や腕だけ
 const HMPAL=['#0e0d12','#17151e','#211e2a','#2c2836','#3a3442','#4e4250','#6a5458','#8a6a5e','#a8846c','#c8a888','#e2ccae',
  '#2a3038','#3c4450','#5a6272','#848c9a','#b4b8c0','#dcdee0','#5a4424','#8a6c34','#b8984e','#2e1e14','#4a3220','#6a4a30',
- '#3a1414','#5a1e1c','#7e2a24','#a63a2c','#c8583a','#d88a48','#e8b070','#2a3426','#3e4a34','#5a6a48','#283a40','#3a5058','#5a7078','#86a0a4','#2a2a44','#3e3e66','#6a6a98','#7a8a48','#9aa860','#9a6a78','#c8b060'];
+ '#3a1414','#5a1e1c','#7e2a24','#a63a2c','#c8583a','#d88a48','#e8b070','#2a3426','#3e4a34','#5a6a48','#283a40','#3a5058','#5a7078','#86a0a4','#2a2a44','#3e3e66','#6a6a98','#7a8a48','#9aa860','#9a6a78','#c8b060','#58161e','#8e2430','#b0402e','#1e2a5a','#2e4486','#5a78b0','#1e5a5a','#2e7a74','#b06a20','#d8902e','#4a2a6a','#6a3e8e','#2e5a2a','#4a7a34','#f2dccc','#e0c0b4'];
 const HMPP=HMPAL.map(s=>[parseInt(s.slice(1,3),16),parseInt(s.slice(3,5),16),parseInt(s.slice(5,7),16)]),HMBY=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5];
 function hmMk(f,t){const w=74,h=44,c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');
  // 躍動感：攻撃は少し傾けて寄せる、スキル・パワーは少し寄せる（はみ出た分は切れる）
  const z=t===0?1.16:t===1?1.08:1.05,rt=t===0?-.08:0;g.save();g.translate(w/2,h/2);g.rotate(rt);g.scale(z,z);g.translate(-w/2,-h/2);f(g,w,h);g.restore();
  const d=g.getImageData(0,0,w,h),a=d.data,P=HMPP;
  // 明るさ：暗い所を持ち上げる（中間を明るく、色合いはそのまま）
- for(let i=0;i<a.length;i+=4)for(let k=0;k<3;k++)a[i+k]=Math.min(255,255*Math.pow(a[i+k]/255,.72)+6);
+ for(let i=0;i<a.length;i+=4){let r=a[i],gg=a[i+1],b=a[i+2];const L=(r*.3+gg*.59+b*.11);r=L+(r-L)*1.45;gg=L+(gg-L)*1.45;b=L+(b-L)*1.45;for(const[k,v]of[[0,r],[1,gg],[2,b]]){let x=Math.max(0,Math.min(1,v/255));x=Math.pow(x,.86);x=x<.5?2*x*x*.92+x*.08:1-2*(1-x)*(1-x)*.92-(1-x)*.08;a[i+k]=Math.min(255,x*255)}}
  for(let i=0;i<a.length;i+=4){const px=(i>>2)%w,py=((i>>2)/w)|0,dz=(HMBY[(py&3)*4+(px&3)]/16-.47)*14;let b=0,bd=1e9;for(let k=0;k<P.length;k++){const p=P[k],e=(a[i]+dz-p[0])**2*.3+(a[i+1]+dz-p[1])**2*.59+(a[i+2]+dz-p[2])**2*.11;if(e<bd){bd=e;b=k}}a[i]=P[b][0];a[i+1]=P[b][1];a[i+2]=P[b][2];a[i+3]=255}
  g.putImageData(d,0,0);const o=document.createElement('canvas');o.width=148;o.height=88;const q=o.getContext('2d');q.imageSmoothingEnabled=false;q.drawImage(c,0,0,148,88);return o}
 // 部品
