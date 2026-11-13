@@ -182,7 +182,7 @@
 3-2. **バージョン `GVER`（タイトル画面の右下に小さく表示）を公開のたびに1つ上げる**（例 1.49→1.50。ユーザー指定）。返答で新しいバージョン番号を毎回伝える。
 4. ~~SendUserFile で index.html を送る~~ → 送らない（ユーザー指定で変更：変更後はアーティファクトだけ送る）。
 5. git にコミットする。
-6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19、Ver2.23 が index20、Ver2.26 が index21、Ver2.30 が index22、Ver2.32 が index23、Ver2.36 が index24、Ver2.37 が index25、Ver2.39 が index26、Ver2.42 が index27、Ver2.43 が index28、Ver2.47 が index29、Ver2.52 が index30、Ver2.60 が index31、Ver2.61 が index32、Ver2.65 が index33、Ver2.73 が index34、Ver2.76 が index35、Ver2.82 が index36、Ver2.84 が index37、Ver2.89 が index38、Ver2.90 が index39、Ver2.97 が index40、Ver3.00 が index41、Ver3.04 が index42、Ver3.11 が index43。Ver3.11 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
+6. **GitHub への反映は、ユーザーが「アプデして」と言った時だけ**（ユーザー指定）。言われていない時は、変更後にアーティファクトを公開してリンクを伝えるだけにする（index.html の送付もしない）。反映する時の手順：GitHub（`kittyo8823/card-trail`、GitHub Pages https://kittyo8823.github.io/card-trail/ ）にも反映する**（ユーザー指定・Ver2.19から）。クローンは `/home/user/card-trail`（無ければ add_repo で付けて `git clone --depth 1`）。`git fetch --depth 1 origin main` → 今の `index.html` を次の番号の控え `index<N>.html` にコピー（Ver2.18 が index16、Ver2.19 が index17、Ver2.21 が index18、Ver2.22 が index19、Ver2.23 が index20、Ver2.26 が index21、Ver2.30 が index22、Ver2.32 が index23、Ver2.36 が index24、Ver2.37 が index25、Ver2.39 が index26、Ver2.42 が index27、Ver2.43 が index28、Ver2.47 が index29、Ver2.52 が index30、Ver2.60 が index31、Ver2.61 が index32、Ver2.65 が index33、Ver2.73 が index34、Ver2.76 が index35、Ver2.82 が index36、Ver2.84 が index37、Ver2.89 が index38、Ver2.90 が index39、Ver2.97 が index40、Ver3.00 が index41、Ver3.04 が index42、Ver3.11 が index43、Ver3.14 が index44。Ver3.14 を反映済み。アイコン3つと manifest.webmanifest もリポジトリに置いてある）→ 新しい版を `index.html` に → 日本語のメッセージ（`Ver2.xx: 変更内容`）でコミット → `git push -u origin main`（Internal Server Error は数秒おいて再試行）。
 7. 変更の記録は `dev/HISTORY.md` の最後に足す（CLAUDE.md には足さない。仕組みが変わった時だけ CLAUDE.md の説明を直す）。
 8. **変更のたびに、作業版とメモを GitHub の `dev/` にも保存する**（ユーザー同意・Ver2.24から）：`dev/index.html`・`dev/CLAUDE.md`（先頭に置き場所の説明あり）・`dev/tests/` を最新にして push。公開中の直下 `index.html` は「アプデして」の時だけ変える。
 
@@ -277,8 +277,9 @@ Playwright（chromium）入りの環境なら、ページを開いて `page.eval
 ## やりたいことリスト（ユーザーが後でやる予定。終わったら消す）
 （今は無し）
 
-## 次の会話への引き継ぎ（Ver3.11 公開後）
-- 公開版は Ver3.11（GitHub Pages 反映済み、控え index43 = Ver3.04）。dev は Ver3.14（3.12 ？？？のフルアートカードの選択肢を長押しで詳細、3.13 古の者のエンチャントの恵みの長押しにエンチャントの効果、3.14 廃棄の文字を一番下に黄色で。未アプデ）。
+## 次の会話への引き継ぎ（Ver3.14 公開後）
+- 公開版は Ver3.14（GitHub Pages 反映済み、控え index44 = Ver3.11）。dev も Ver3.14。
+- 戦闘で説明が長い（4〜5行）カードは下が切れる。案1（長い時だけ絵の窓を小さくする）・案2（手札を8px上げる：`y=sel…?232:250`）・案3（触ると全文）を出したが、ユーザーは「一旦いい」（保留）。5行のカードは案2だけでは収まらない。
 - 初期カード「斬撃」「防御」を命刈りの鎌と同じ細かさ（HART、148×88・1px）で描いた見本：`dev/mock/hart_basic.js`（`artStrike`／`artDefend`）、撮影 `node dev/mock/hart_basic_shot.js 出力先`。ユーザー指定で「描くだけ」（ゲームには入れていない）。その2（本家の描き方を参考：主役1つを大きく斜めに・平塗り＋2〜3段の影・背景は大きな色の形・主役に暗い縁取り。構図はまねしない）は `dev/mock/hart_basic2.js`（`artStrike2`／`artDefend2`）、撮影 `node dev/mock/hart_basic2_shot.js 出力先`。本家の絵は slay-the-spire.fandom.com の api.php（imageinfo）で画像の場所を取れる（環境で許可済み。ページ本体は確認画面で止まる）。
 - 地図のマスのアイコンを細かく（8×8・倍率3 → 12×12・倍率2）する見本：`dev/mock/map_icons.py`（形と色。実行すると `map_icons.js` を作る）、撮影 `node dev/mock/map_icons_shot.js 出力先`。2回目（テカテカさせない・丸い形にしない・黒い輪郭を付けない）も見たうえで、ユーザーは今のままを選んだ（入れない）。
 - 地図のマスの見た目を変える案は保留（ユーザー指定：「地図は一旦いい」）。見本のコードは `dev/mock/map_node_mock.js`（地図の色に合わせた案 `NODEV.S`）、撮影は `node dev/mock/map_node_shot.js`。2回目の案 C（丸なし・縁取りと影）／D（菱形の札）／E（カード札）は1層だけ `node dev/mock/map_node_shot2.js 0 C D E` で撮る。本家風の案 F（丸なし・墨一色の絵、選べるマスは絵が脈打つ）は `... 0 F`（返事待ち）。

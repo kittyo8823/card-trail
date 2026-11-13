@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.11';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.14';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2506,7 +2506,7 @@ const artScythe=(W,H)=>{const c=MK(W,H),x=c.getContext('2d');const px=(a,b,col)=
  return c};
 HART['命刈りの鎌']=artScythe})();
 function card(x,y,o,dim,gl,pv){card0(x,y,o,dim,gl,pv);if(o&&o.en&&ENC[o.en])enBadge(x+73,y+28,o.en,o.en==='sharp'||o.en==='nimble'?o.ev:null)}
-function card0(x,y,o,dim,gl,pv){{const m=ctx.getTransform();LPC.push({x:(m.a*x+m.c*y+m.e)/K,y:(m.b*x+m.d*y+m.f)/K,w:84*m.a/K,h:106*m.d/K,o})}if(C[o.i]&&C[o.i].fa){cardFA(x,y,o,dim,gl,pv);return}const c=cd(o),rare=c.r===2,bk=c.t>=3,col=bk?(c.t===4?'#7a3a8a':'#5a5a66'):c.k===5||c.r===-2?'#a8a8b8':TC[c.t],parts=dl(c,pv),ls=[],lc=[];parts.forEach((p,i)=>{for(const l of wrap(p,8)){ls.push(l);lc.push(parts.cl[i]||'#e8e4ff')}});const ah=AH(ls.length);
+function card0(x,y,o,dim,gl,pv){{const m=ctx.getTransform();LPC.push({x:(m.a*x+m.c*y+m.e)/K,y:(m.b*x+m.d*y+m.f)/K,w:84*m.a/K,h:106*m.d/K,o})}if(C[o.i]&&C[o.i].fa){cardFA(x,y,o,dim,gl,pv);return}const c=cd(o),rare=c.r===2,bk=c.t>=3,col=bk?(c.t===4?'#7a3a8a':'#5a5a66'):c.k===5||c.r===-2?'#a8a8b8':TC[c.t],parts=dl(c,pv),ls=[],lc=[],PL=parts.map((p,i)=>[p,parts.cl[i]||(p==='廃棄'?'#ffd23f':'#e8e4ff')]);PL.sort((a,b)=>(a[0]==='廃棄')-(b[0]==='廃棄'));PL.forEach(([p,cl])=>{for(const l of wrap(p,8)){ls.push(l);lc.push(cl)}});const ah=AH(ls.length);
 if(rare&&gl){const a=.5+.25*Math.sin(T*3+x*.05);ctx.save();ctx.shadowColor='rgba(255,196,80,'+a+')';ctx.shadowBlur=12*K;ctx.fillStyle='#ffd070';ctx.fillRect(x-2,y-2,88,110);ctx.restore()}
 ctx.fillStyle='#08060f';ctx.fillRect(x-2,y-2,88,110);ctx.fillStyle=rare?'#f0c038':col;ctx.fillRect(x,y,84,106);ctx.fillStyle='rgba(255,255,255,.45)';ctx.fillRect(x,y,84,1);ctx.fillRect(x,y,1,106);ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(x,y+105,84,1);ctx.fillRect(x+83,y,1,106);ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(x+1,y+1,82,104);ctx.fillStyle=rare?'#f0c038':col;ctx.fillRect(x+2,y+2,80,102);ctx.fillStyle='rgba(0,0,0,.3)';ctx.fillRect(x+2,y+103,80,1);ctx.fillRect(x+81,y+2,1,102);ctx.fillStyle=bk?'#0e0e12':'#16142a';ctx.fillRect(x+3,y+3,78,100);
 ctx.fillStyle=rare?'#a87810':bk?'#202028':'#2a2648';ctx.fillRect(x+5,y+4,74,14);ctx.fillStyle=rare?'#ffe680':col;ctx.fillRect(x+5,y+4,74,1);ctx.fillRect(x+5,y+17,74,1);
@@ -2820,7 +2820,7 @@ function faDraw(x,y,name,cost,type,lines,art,gem,nc){const t=T||0;
  const ox=x+3,oy=y+4,oc=(rr)=>{ctx.beginPath();for(let i=0;i<8;i++){const a=Math.PI/8+i*Math.PI/4;ctx.lineTo(ox+Math.cos(a)*rr,oy+Math.sin(a)*rr)}ctx.closePath()};
  ctx.fillStyle='rgba(0,0,0,.5)';ctx.save();ctx.translate(1,2);oc(11);ctx.fill();ctx.restore();ctx.fillStyle='#050304';oc(11);ctx.fill();const og=ctx.createRadialGradient(ox-3,oy-4,1,ox,oy,11);const GM=gem||['#f8b880','#c04a1a','#4a0e06'];og.addColorStop(0,GM[0]);og.addColorStop(.35,GM[1]);og.addColorStop(1,GM[2]);ctx.fillStyle=og;oc(9.5);ctx.fill();ctx.strokeStyle='rgba(255,210,170,.45)';ctx.lineWidth=.6;ctx.stroke();txt(String(cost),ox,oy+4.5,'#fff','center',12)};
 const FAG={0:['#f8b880','#c04a1a','#4a0e06'],1:['#c8ffb0','#3a9a3a','#0a2a0a'],2:['#d0dcff','#4a6ad8','#0e1a4a'],3:['#e8c8ff','#8a4ad8','#2a0e4a'],4:['#d0ffd8','#3ac860','#0a3a14'],5:['#f4f4f8','#9a9aa8','#2a2a34'],6:['#d0f0ff','#3a9ae8','#0a2a4a']};
-function cardFA(x,y,o,dim,gl,pv){const c=cd(o),b=C[o.i],parts=dl(c,pv),mkL=n=>{const r=[];parts.forEach((p,i)=>{for(const l of wrap(p,n))r.push([l,parts.cl[i]||(p==='廃棄'?'#ffd23f':null)])});return r};let lines=null;for(const n of[8,9,10,11,12]){const L=mkL(n),ml=Math.max(...L.map(l=>l[0].length)),fz=Math.min(9,Math.floor(80/ml));if(fz>=7&&L.length<=(fz>=9?3:fz>=8?4:5)&&!L.some(l=>l[0].length<2)){L.fz=fz;lines=L;break}}if(!lines){lines=mkL(12);lines.fz=7}
+function cardFA(x,y,o,dim,gl,pv){const c=cd(o),b=C[o.i],parts=dl(c,pv),mkL=n=>{const r=[],q=[];parts.forEach((p,i)=>{for(const l of wrap(p,n))(p==='廃棄'?q:r).push([l,parts.cl[i]||(p==='廃棄'?'#ffd23f':null)])});return r.concat(q)};let lines=null;for(const n of[8,9,10,11,12]){const L=mkL(n),ml=Math.max(...L.map(l=>l[0].length)),fz=Math.min(9,Math.floor(80/ml));if(fz>=7&&L.length<=(fz>=9?3:fz>=8?4:5)&&!L.some(l=>l[0].length<2)){L.fz=fz;lines=L;break}}if(!lines){lines=mkL(12);lines.fz=7}
  faDraw(x,y,c.n,c.X?'X':c.un?'—':c.c,TL[c.t],lines,faArt(b.fa),FAG[b.k||0],c.u?'#a0ffa8':null);if(dim){ctx.fillStyle='rgba(0,0,0,.5)';faRR(x-2,y-2,88,110,6);ctx.fill()}}
 const E={slime:{n:'スライム',hp:[16,20],mv:[{a:6},{a:4,wk:1,sc:['粘液',1]},{a:7}]},goblin:{n:'ゴブリン',hp:[18,22],mv:[{a:7},{b:6},{a:5,h:2}]},bat:{n:'コウモリ',hp:[11,15],mv:[{a:3,h:2},{a:5,vu:1}]},
 skel:{n:'骸骨兵',hp:[22,28],mv:[{b:8},{a:10},{a:6,wk:1}]},spider:{n:'毒蜘蛛',hp:[18,22],mv:[{a:6},{a:7},{b:6,wk:1}]},ghost:{n:'怨霊',hp:[24,30],mv:[{vu:2,wk:1,sc:['目眩',2]},{a:8},{a:5,h:2}]},
@@ -4534,6 +4534,8 @@ const ANGT={song:['骨鯨の歌','最大HP+20／休憩所の回復量が増え�
 eshp:['鍛えの灯火','攻撃カードすべてに【鋭利3】','デッキの攻撃カード（エンチャントの無いもの）すべてに【鋭利3】が付く。ダメージ+3。'],egla:['響きの余韻','カード3枚に【華】','好きなカードを3枚選び【華】を付ける。1戦闘に1回、もう一度発動する。'],espi:['時の渦','カード1枚に【渦】','好きなカードを1枚選び【渦】を付ける。使うたび、もう一度発動する。'],eimb:['不滅の火種','カード2枚に【宿り】','好きなカードを2枚選び【宿り】を付ける。戦闘開始時に自動で発動する。'],esow:['晶の芽','カード3枚に【芽吹き】','好きなカードを3枚選び【芽吹き】を付ける。戦闘で最初に使うとエナジー+1。'],eroy:['王の綴じ紐','カード2枚に【御墨付き】','好きなカードを2枚選び【御墨付き】を付ける。必ず最初の手札に来て、ターン終了時に手札に残る。'],
 relup:['昇華の儀','',''],ac0:['','',''],ac1:['','',''],ac2:['','',''],ac3:['','',''],ac4:['','',''],ac5:['','','']};
 // エンチャントの恵み：[エンチャント, 枚数（0＝攻撃カードすべて）]。古の者のフルアートカードの名前
+// エンチャントを付けられるカードの説明（ENC の条件と同じ内容）
+const ENCT={sharp:'攻撃カード',glam:'Xコスト以外のカード',spiral:'Xコスト以外のカード',imbued:'パワーとXコスト以外のカード',sown:'状態異常・呪い以外のカード',royal:'状態異常・呪い以外のカード'};
 const ANEN={eshp:['sharp',0],egla:['glam',3],espi:['spiral',1],eimb:['imbued',2],esow:['sown',3],eroy:['royal',2]},anEL=k=>dkL((o,c)=>!o.en&&c.t<3&&ENC[ANEN[k][0]][3](o.u?up(c):c)),ACN=['千年の灯','骨鯨の歌声','時呑み','灰燼の翼','晶樹の実り','万象の頁'];
 function anTxt(k){if(k==='relup'){const a=CH[P.cls].rel,b=RLUP[a]||'burn2',A=RL[a]||RL.burn;return['昇華の儀','「'+A[0]+'」を「'+RL[b][0]+'」に変える','初期レリック「'+A[0]+'」（'+A[1]+'）が、上位の「'+RL[b][0]+'」（'+RL[b][1]+'）に変わる。']}if(/^ac\d$/.test(k)){const c=C[CI(ACN[+k[2]])];return['「'+c.n+'」','フルアートカード「'+c.n+'」を得る','古の者の姿を写した特別なカード。'+dl(c).join('・')+'。']}if(k==='fang'){const f=FAN[P.cls]||['',''];return['古の牙','「'+f[0]+'」を古の版「'+f[1]+'」に変える','初期カード「'+f[0]+'」1枚が、古の版「'+f[1]+'」に変わる。古の版は普通の強化よりさらに強い。強化してあれば強化も引き継ぐ。']}return ANGT[k]||[RL[k][0],RL[k][1],RL[k][1]]}
 const anIco=k=>ANIC[k]||(k==='relup'?rIcon(RLUP[CH[P.cls].rel]||'burn2'):ANEN[k]?enIcon(ANEN[k][0]):/^ac\d$/.test(k)?ANIC.acard:rIcon(k));
@@ -4577,6 +4579,7 @@ function drawAncLP(){btns=[];const A=ANC[BT.anc],k=BT.rs[BT.lp],isG=!!(ANGT[k]||
  let y=118;for(const l of wrap(ld,26)){txt(l,190,y,'#ffffff','left',11);y+=15}y+=8;
  const bar=(h1,body)=>{const ls=wrap(body,30),h=20+ls.length*12;ctx.fillStyle='rgba(40,32,72,.85)';ctx.fillRect(186,y-12,400,h);ctx.fillStyle='#c8a050';ctx.fillRect(186,y-12,2,h);txt(h1,194,y+1,'#ffd23f','left',12);ls.forEach((t,j)=>txt(t,194,y+15+j*12,'#d8d0f0','left',10));y+=h+4};
  if(k==='fang'){const i=faTgt();bar('古の版','普通の強化よりさらに強い特別なカード。絵がカード全体に広がる。');if(i>=0){const o=P.deck[i];card(64,200,{i:o.i,u:o.u||0},0,0);txt('→',170,258,'#ffd23f','center',16);card(190,200,{i:CI(FAN[P.cls][1]),u:o.u||0},0,0)}}
+ else if(ANEN[k]){const[e,n]=ANEN[k],E=ENC[e];bar('【'+E[0]+'】（エンチャント）',E[2](E[4])+'。強化とは別にカードに後から付く効果で、強化しても消えない。1枚に付けられるのは1つだけ。');bar('付けられるカード',(ENCT[e]||'状態異常・呪い以外のカード')+'（すでにエンチャントが付いているものは除く）。いまのデッキでは'+anEL(k).length+'枚。'+(n?'このうち'+n+'枚を選ぶ。':'当てはまるカードすべてに付く。'))}
  else if(!isG)bar('ボスレリック','一度取ると、この冒険の間ずっと効果が続く。');else bar('恵み','その場で効果が出る。レリックとしては残らない。');
  txt('画面を押すと閉じる',320,350,'#8a82b8','center',10)}
 function drawBT(){if(BT.anc!=null){drawAnc();return}rwBg();ctx.fillStyle='rgba(4,2,10,.5)';ctx.fillRect(0,0,640,360);{const v=ctx.createRadialGradient(320,200,80,320,200,380);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,.6)');ctx.fillStyle=v;ctx.fillRect(0,0,640,360)}
@@ -4942,7 +4945,9 @@ function drawNeow(){ctx.drawImage(NEB,0,0);const cx=470,cy=128+Math.sin(T*1.3)*5
  ctx.fillStyle='#0e1a2e';ctx.beginPath();ctx.moveTo(bx+bw,by+40);ctx.lineTo(bx+bw+40,by+62);ctx.lineTo(bx+bw,by+70);ctx.fill();ctx.fillStyle='#5ff6ff';ctx.fillRect(bx+bw-2,by,2,40);ctx.fillRect(bx+bw-2,by+70,2,bh-70);
  txt('？？？',bx+10,by+18,'#5ff6ff','left',12);const ln=['……観測対象を確認。','塔を登る者よ。','選択を一つ、許可する。','代償を伴うものも存在する。'],sh=Math.min(ln.join('').length,Math.floor((T-(NE.t0||0))*24));let u=0;
  ln.forEach((l,i)=>{const n=Math.max(0,Math.min(l.length,sh-u));u+=l.length;if(n)txt(l.slice(0,n),bx+10,by+40+i*17,'#e8f6ff','left',12)});
- NE.opts.forEach((o,i)=>nwOpt(20,226+i*32,420,28,o[0],o[1],i))}
+ NE.opts.forEach((o,i)=>nwOpt(20,226+i*32,420,28,o[0],o[1],i));
+ // フルアートカードの選択肢は長押しでカードの詳細（ユーザー指定）
+ let fa=0;NE.opts.forEach((o,i)=>{const m=o[0].match(/フルアートカード「(.+?)」/);if(m&&CI(m[1])>=0){fa=1;LPC.push({x:20,y:226+i*32,w:420,h:28,o:{i:CI(m[1]),u:0}})}});if(fa&&T-(NE.t0||0)>.8)txt('フルアートカードは長押しで詳細',440,221,'#8ab8c8','right',9)}
 // Ver2.53 ？？？の選択肢（ユーザー指定：チープ感をなくす）。角を落とした半透明の板・左に番号の菱形・光の走査・右に流れる矢印。代償は赤い札と「代償／得るもの」で色分け。順に左から現れる
 function nwOpt(x,y,w,h,l,f,i){const R=l.startsWith('【代償】'),a=Math.max(0,Math.min(1,(T-(NE.t0||0)-.25-i*.12)/.3)),q=1-Math.pow(1-a,3),ox=Math.round((1-q)*-30);if(a<=0)return;ctx.save();ctx.globalAlpha=q;ctx.translate(ox,0);
  const c=R?['#ff5a7a','#2a0c18','#160610','#ff9ab0']:['#5ff6ff','#0e2238','#08121e','#bff8ff'],k=7,pth=()=>{ctx.beginPath();ctx.moveTo(x+k,y);ctx.lineTo(x+w-k,y);ctx.lineTo(x+w,y+k);ctx.lineTo(x+w,y+h-k);ctx.lineTo(x+w-k,y+h);ctx.lineTo(x+k,y+h);ctx.lineTo(x,y+h-k);ctx.lineTo(x,y+k);ctx.closePath()};
