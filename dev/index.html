@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.13';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.14';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2506,7 +2506,7 @@ const artScythe=(W,H)=>{const c=MK(W,H),x=c.getContext('2d');const px=(a,b,col)=
  return c};
 HART['命刈りの鎌']=artScythe})();
 function card(x,y,o,dim,gl,pv){card0(x,y,o,dim,gl,pv);if(o&&o.en&&ENC[o.en])enBadge(x+73,y+28,o.en,o.en==='sharp'||o.en==='nimble'?o.ev:null)}
-function card0(x,y,o,dim,gl,pv){{const m=ctx.getTransform();LPC.push({x:(m.a*x+m.c*y+m.e)/K,y:(m.b*x+m.d*y+m.f)/K,w:84*m.a/K,h:106*m.d/K,o})}if(C[o.i]&&C[o.i].fa){cardFA(x,y,o,dim,gl,pv);return}const c=cd(o),rare=c.r===2,bk=c.t>=3,col=bk?(c.t===4?'#7a3a8a':'#5a5a66'):c.k===5||c.r===-2?'#a8a8b8':TC[c.t],parts=dl(c,pv),ls=[],lc=[];parts.forEach((p,i)=>{for(const l of wrap(p,8)){ls.push(l);lc.push(parts.cl[i]||'#e8e4ff')}});const ah=AH(ls.length);
+function card0(x,y,o,dim,gl,pv){{const m=ctx.getTransform();LPC.push({x:(m.a*x+m.c*y+m.e)/K,y:(m.b*x+m.d*y+m.f)/K,w:84*m.a/K,h:106*m.d/K,o})}if(C[o.i]&&C[o.i].fa){cardFA(x,y,o,dim,gl,pv);return}const c=cd(o),rare=c.r===2,bk=c.t>=3,col=bk?(c.t===4?'#7a3a8a':'#5a5a66'):c.k===5||c.r===-2?'#a8a8b8':TC[c.t],parts=dl(c,pv),ls=[],lc=[],PL=parts.map((p,i)=>[p,parts.cl[i]||(p==='廃棄'?'#ffd23f':'#e8e4ff')]);PL.sort((a,b)=>(a[0]==='廃棄')-(b[0]==='廃棄'));PL.forEach(([p,cl])=>{for(const l of wrap(p,8)){ls.push(l);lc.push(cl)}});const ah=AH(ls.length);
 if(rare&&gl){const a=.5+.25*Math.sin(T*3+x*.05);ctx.save();ctx.shadowColor='rgba(255,196,80,'+a+')';ctx.shadowBlur=12*K;ctx.fillStyle='#ffd070';ctx.fillRect(x-2,y-2,88,110);ctx.restore()}
 ctx.fillStyle='#08060f';ctx.fillRect(x-2,y-2,88,110);ctx.fillStyle=rare?'#f0c038':col;ctx.fillRect(x,y,84,106);ctx.fillStyle='rgba(255,255,255,.45)';ctx.fillRect(x,y,84,1);ctx.fillRect(x,y,1,106);ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(x,y+105,84,1);ctx.fillRect(x+83,y,1,106);ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(x+1,y+1,82,104);ctx.fillStyle=rare?'#f0c038':col;ctx.fillRect(x+2,y+2,80,102);ctx.fillStyle='rgba(0,0,0,.3)';ctx.fillRect(x+2,y+103,80,1);ctx.fillRect(x+81,y+2,1,102);ctx.fillStyle=bk?'#0e0e12':'#16142a';ctx.fillRect(x+3,y+3,78,100);
 ctx.fillStyle=rare?'#a87810':bk?'#202028':'#2a2648';ctx.fillRect(x+5,y+4,74,14);ctx.fillStyle=rare?'#ffe680':col;ctx.fillRect(x+5,y+4,74,1);ctx.fillRect(x+5,y+17,74,1);
@@ -2820,7 +2820,7 @@ function faDraw(x,y,name,cost,type,lines,art,gem,nc){const t=T||0;
  const ox=x+3,oy=y+4,oc=(rr)=>{ctx.beginPath();for(let i=0;i<8;i++){const a=Math.PI/8+i*Math.PI/4;ctx.lineTo(ox+Math.cos(a)*rr,oy+Math.sin(a)*rr)}ctx.closePath()};
  ctx.fillStyle='rgba(0,0,0,.5)';ctx.save();ctx.translate(1,2);oc(11);ctx.fill();ctx.restore();ctx.fillStyle='#050304';oc(11);ctx.fill();const og=ctx.createRadialGradient(ox-3,oy-4,1,ox,oy,11);const GM=gem||['#f8b880','#c04a1a','#4a0e06'];og.addColorStop(0,GM[0]);og.addColorStop(.35,GM[1]);og.addColorStop(1,GM[2]);ctx.fillStyle=og;oc(9.5);ctx.fill();ctx.strokeStyle='rgba(255,210,170,.45)';ctx.lineWidth=.6;ctx.stroke();txt(String(cost),ox,oy+4.5,'#fff','center',12)};
 const FAG={0:['#f8b880','#c04a1a','#4a0e06'],1:['#c8ffb0','#3a9a3a','#0a2a0a'],2:['#d0dcff','#4a6ad8','#0e1a4a'],3:['#e8c8ff','#8a4ad8','#2a0e4a'],4:['#d0ffd8','#3ac860','#0a3a14'],5:['#f4f4f8','#9a9aa8','#2a2a34'],6:['#d0f0ff','#3a9ae8','#0a2a4a']};
-function cardFA(x,y,o,dim,gl,pv){const c=cd(o),b=C[o.i],parts=dl(c,pv),mkL=n=>{const r=[];parts.forEach((p,i)=>{for(const l of wrap(p,n))r.push([l,parts.cl[i]||(p==='廃棄'?'#ffd23f':null)])});return r};let lines=null;for(const n of[8,9,10,11,12]){const L=mkL(n),ml=Math.max(...L.map(l=>l[0].length)),fz=Math.min(9,Math.floor(80/ml));if(fz>=7&&L.length<=(fz>=9?3:fz>=8?4:5)&&!L.some(l=>l[0].length<2)){L.fz=fz;lines=L;break}}if(!lines){lines=mkL(12);lines.fz=7}
+function cardFA(x,y,o,dim,gl,pv){const c=cd(o),b=C[o.i],parts=dl(c,pv),mkL=n=>{const r=[],q=[];parts.forEach((p,i)=>{for(const l of wrap(p,n))(p==='廃棄'?q:r).push([l,parts.cl[i]||(p==='廃棄'?'#ffd23f':null)])});return r.concat(q)};let lines=null;for(const n of[8,9,10,11,12]){const L=mkL(n),ml=Math.max(...L.map(l=>l[0].length)),fz=Math.min(9,Math.floor(80/ml));if(fz>=7&&L.length<=(fz>=9?3:fz>=8?4:5)&&!L.some(l=>l[0].length<2)){L.fz=fz;lines=L;break}}if(!lines){lines=mkL(12);lines.fz=7}
  faDraw(x,y,c.n,c.X?'X':c.un?'—':c.c,TL[c.t],lines,faArt(b.fa),FAG[b.k||0],c.u?'#a0ffa8':null);if(dim){ctx.fillStyle='rgba(0,0,0,.5)';faRR(x-2,y-2,88,110,6);ctx.fill()}}
 const E={slime:{n:'スライム',hp:[16,20],mv:[{a:6},{a:4,wk:1,sc:['粘液',1]},{a:7}]},goblin:{n:'ゴブリン',hp:[18,22],mv:[{a:7},{b:6},{a:5,h:2}]},bat:{n:'コウモリ',hp:[11,15],mv:[{a:3,h:2},{a:5,vu:1}]},
 skel:{n:'骸骨兵',hp:[22,28],mv:[{b:8},{a:10},{a:6,wk:1}]},spider:{n:'毒蜘蛛',hp:[18,22],mv:[{a:6},{a:7},{b:6,wk:1}]},ghost:{n:'怨霊',hp:[24,30],mv:[{vu:2,wk:1,sc:['目眩',2]},{a:8},{a:5,h:2}]},
