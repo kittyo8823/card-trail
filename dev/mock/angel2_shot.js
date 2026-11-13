@@ -1,0 +1,5 @@
+// 使い方: node mock/angel_shot.js 出力先.png（天使のボスの見本を第3層の背景に置いて撮る）
+const {chromium}=require('playwright'),fs=require('fs');(async()=>{const br=await chromium.launch(),pg=await br.newPage({viewport:{width:640,height:360}}),er=[];pg.on('pageerror',e=>er.push(e.message));await pg.route('**/fonts.googleapis.com/**',r=>r.abort());await pg.goto('file://'+__dirname+'/../index.html');await pg.waitForTimeout(400);
+await pg.addScriptTag({path:__dirname+'/angel2.js'});
+const d=await pg.evaluate(()=>{const W=640,H=360,cv=document.getElementById('c');draw=()=>{};cv.width=W*2;cv.height=H*2;ctx.setTransform(2,0,0,2,0,0);ctx.imageSmoothingEnabled=false;ctx.drawImage(bgbFor(3),0,0,W,H);const im=SPR.pl||SPR[CH[0].s];if(im)ctx.drawImage(im,90,208-im.height);const a=angelBoss2();ctx.drawImage(a,300,208-a.height+6);ctx.fillStyle='#c8583a';ctx.fillRect(390,214,150,8);txt('審判の熾天使（見本）',465,236,'#fff','center',11);return cv.toDataURL('image/png')});
+fs.writeFileSync(process.argv[2],Buffer.from(d.split(',')[1],'base64'));console.log(er);await br.close()})();
