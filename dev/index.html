@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.18';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.19';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2509,7 +2509,7 @@ HART['命刈りの鎌']=artScythe})();
 // 決まり：衝撃を星形にしない（光のにじみと短い火花の線）・おもちゃのような彩度の高い色を使わない・キャラは全身を描かず手や腕だけ
 const HMPAL=['#0e0d12','#17151e','#211e2a','#2c2836','#3a3442','#4e4250','#6a5458','#8a6a5e','#a8846c','#c8a888','#e2ccae',
  '#2a3038','#3c4450','#5a6272','#848c9a','#b4b8c0','#dcdee0','#5a4424','#8a6c34','#b8984e','#2e1e14','#4a3220','#6a4a30',
- '#3a1414','#5a1e1c','#7e2a24','#a63a2c','#c8583a','#d88a48','#e8b070','#2a3426','#3e4a34','#5a6a48','#283a40','#3a5058','#5a7078','#86a0a4','#2a2a44','#3e3e66','#6a6a98','#7a8a48','#9aa860'];
+ '#3a1414','#5a1e1c','#7e2a24','#a63a2c','#c8583a','#d88a48','#e8b070','#2a3426','#3e4a34','#5a6a48','#283a40','#3a5058','#5a7078','#86a0a4','#2a2a44','#3e3e66','#6a6a98','#7a8a48','#9aa860','#9a6a78','#c8b060'];
 const HMPP=HMPAL.map(s=>[parseInt(s.slice(1,3),16),parseInt(s.slice(3,5),16),parseInt(s.slice(5,7),16)]),HMBY=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5];
 function hmMk(f){const w=74,h=44,c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');f(g,w,h);const d=g.getImageData(0,0,w,h),a=d.data,P=HMPP;
  for(let i=0;i<a.length;i+=4){const px=(i>>2)%w,py=((i>>2)/w)|0,dz=(HMBY[(py&3)*4+(px&3)]/16-.47)*14;let b=0,bd=1e9;for(let k=0;k<P.length;k++){const p=P[k],e=(a[i]+dz-p[0])**2*.3+(a[i+1]+dz-p[1])**2*.59+(a[i+2]+dz-p[2])**2*.11;if(e<bd){bd=e;b=k}}a[i]=P[b][0];a[i+1]=P[b][1];a[i+2]=P[b][2];a[i+3]=255}
@@ -2732,7 +2732,329 @@ const HMC1={
 '終幕':g=>{hBg(g,['#0e0d12','#17151e','#3a1414']);g.fillStyle='#5a1e1c';g.fillRect(0,0,12,44);g.fillRect(62,0,12,44);g.fillStyle='#3a1414';for(let k=0;k<12;k+=3){g.fillRect(k,0,1,44);g.fillRect(62+k,0,1,44)}hKnife(g,20,40,-.9,40);hG(g,44,10,10,'226,204,174',.4)},
 '毒の連鎖':g=>{hBg(g,SKY1.poison);for(let i=0;i<3;i++)hPC(g,14+i*23,22,9,.7);g.strokeStyle='#7a8a48';g.lineWidth=.8;g.beginPath();g.moveTo(14,22);g.lineTo(37,22);g.lineTo(60,22);g.stroke()},
 '手管の極意':g=>{hBg(g,SKY.gold);hRays(g,37,22,8,'226,204,174',.12,40);for(let i=0;i<5;i++)hCard(g,17+i*10,24-Math.abs(i-2)*3,-.5+i*.25,1.3,i===2);hG(g,37,18,12,'232,176,112',.4)}};
-for(const T of[HMC0,HMC1])for(const k in T)if(!HART[k])HART[k]=()=>hmMk(T[k]);
+function hBolt(g,x1,y1,x2,y2,c){const n=6;g.beginPath();g.moveTo(x1,y1);for(let i=1;i<=n;i++){const t=i/n;g.lineTo(x1+(x2-x1)*t+(i<n?(i%2?3:-3):0),y1+(y2-y1)*t)}g.strokeStyle='rgba(200,176,96,.4)';g.lineWidth=3;g.stroke();g.strokeStyle=c||'#e2ccae';g.lineWidth=1;g.stroke()}
+// 坪内丸のカードの絵（細かさ2）。刀・鞘・気・居合・鍛冶
+function hKatana(g,x,y,a,L,o){o=o||{};g.save();g.translate(x,y);g.rotate(a);const b=L*.26;g.fillStyle='#17151e';g.fillRect(0,-1.4,b-1,2.8);g.fillStyle='#c8a888';for(let k=1;k<b-2;k+=2.4){g.fillRect(k,-.8,1,1.6)}g.fillStyle='#3c4450';g.fillRect(b-1.4,-3,1.8,6);g.fillStyle='#b8984e';g.fillRect(b-1.4,-3,1.8,.8);
+ g.fillStyle=o.c||'#b4b8c0';g.beginPath();g.moveTo(b,-1.3);g.quadraticCurveTo(L*.72,-2.6,L,-.6);g.lineTo(L-2.5,.8);g.quadraticCurveTo(L*.7,.2,b,1.3);g.fill();g.strokeStyle=o.e||'#dcdee0';g.lineWidth=.6;g.beginPath();g.moveTo(b+1,.6);g.quadraticCurveTo(L*.7,-.6,L-2,.1);g.stroke();g.strokeStyle='#5a6272';g.lineWidth=.5;g.beginPath();g.moveTo(b,-1.3);g.quadraticCurveTo(L*.72,-2.6,L,-.6);g.stroke();g.restore()}
+function hSaya(g,x,y,a,L){g.save();g.translate(x,y);g.rotate(a);hP(g,[[0,-2],[L,-1.6],[L+1,0],[L,1.6],[0,2]],'#17151e');g.fillStyle='#3a3442';g.fillRect(2,-2,L-4,.8);g.fillStyle='#7e2a24';g.fillRect(L*.2,-2.6,2,5.2);g.fillStyle='#b8984e';g.fillRect(L-1,-1.6,1.4,3.2);g.restore()}
+function hKi(g,x,y,r){hG(g,x,y,r,'134,160,164',.45);for(let i=0;i<6;i++){const a=i/6*6.283+.4;g.strokeStyle='rgba(134,160,164,.6)';g.lineWidth=.8;g.beginPath();g.moveTo(x+Math.cos(a)*r*.4,y+Math.sin(a)*r*.4);g.quadraticCurveTo(x+Math.cos(a+.5)*r*.8,y+Math.sin(a+.5)*r*.8-3,x+Math.cos(a+.2)*r,y+Math.sin(a+.2)*r-5);g.stroke()}}
+function hFlash(g,x1,y1,x2,y2,rgb){hL(g,x1,y1,x2,y2,'rgba('+(rgb||'226,204,174')+',.3)',3.2);hL(g,x1,y1,x2,y2,'#e2ccae',.9)}
+function hPetal(g,n,c,seed){let s=seed||9;const r=()=>(s=s*16807%2147483647)/2147483647;for(let i=0;i<n;i++){const x=r()*74,y=r()*44;g.fillStyle=c||'#9a6a78';g.save();g.translate(x,y);g.rotate(r()*3);g.beginPath();g.ellipse(0,0,1.6,.9,0,0,7);g.fill();g.restore()}}
+function hAnvil(g,x,y){hP(g,[[x-14,y],[x+10,y],[x+16,y-3],[x+10,y+3],[x+6,y+3],[x+4,y+9],[x+8,y+12],[x-10,y+12],[x-6,y+9],[x-8,y+3],[x-14,y+3]],'#3c4450');g.fillStyle='#5a6272';g.fillRect(x-14,y,24,1.2)}
+function hHammer(g,x,y,a){g.save();g.translate(x,y);g.rotate(a);hP(g,[[0,-1],[18,-1],[18,1],[0,1]],'#4a3220');hP(g,[[16,-5],[22,-5],[22,5],[16,5]],'#5a6272');g.fillStyle='#848c9a';g.fillRect(16,-5,6,1);g.restore()}
+function hMoon(g,x,y,r,c){g.fillStyle=c||'#c8a888';g.beginPath();g.arc(x,y,r,0,7);g.fill();g.fillStyle='rgba(23,21,30,1)';g.beginPath();g.arc(x+r*.4,y-r*.25,r*.9,0,7);g.fill()}
+const HS2={dusk:['#211e2a','#3a3442','#6a5458'],night:['#0e0d12','#17151e','#283a40'],ki:['#0e0d12','#1c2a34','#283a40'],blood:['#17151e','#3a1414','#5a1e1c'],fire:['#17151e','#3a1414','#7e2a24'],gold:['#17151e','#3a3442','#5a4424'],violet:['#17151e','#2a2a44','#3e3e66']};
+const kSl=(g,bg,a,o)=>{o=o||{};if(bg)hBg(g,bg);if(o.moon)hMoon(g,58,10,6);if(o.pet)hPetal(g,14,o.pet,o.seed);if(o.ki)hKi(g,o.kx||37,o.ky||22,o.ki);hFlash(g,4,40,70,4);hKatana(g,o.hx||10,o.hy||38,a,o.L||58,{c:o.bc});if(o.hit)hHit(g,o.hit[0],o.hit[1],8)};
+const HMC2={
+'一ノ太刀':g=>kSl(g,HS2.dusk,-.55,{hit:[56,10]}),
+'受け流し':g=>{hBg(g,HS2.night);hKatana(g,8,26,-.15,60);hKatana(g,70,4,2.4,30,{c:'#848c9a'});hSpk(g,40,20,7,5,'#e2ccae',-2.4,2.4)},
+'抜刀・閃華':g=>{hBg(g,HS2.night);hSaya(g,8,32,-.1,40);hKatana(g,30,30,-.38,40);hFlash(g,10,36,72,8);hG(g,60,12,8,'226,204,174',.5)},
+'呼吸・凪':g=>{hBg(g,HS2.ki);hKi(g,37,22,20);hKatana(g,16,36,-.25,46);for(let i=0;i<3;i++){g.strokeStyle='rgba(134,160,164,.35)';g.lineWidth=.7;g.beginPath();g.moveTo(4,34+i*3);g.quadraticCurveTo(37,30+i*3,70,34+i*3);g.stroke()}},
+'双牙・燕返し':g=>{hBg(g,HS2.dusk);hFlash(g,6,6,68,34);hFlash(g,6,38,68,8);hKatana(g,6,40,-.45,50);hHit(g,37,22,7)},
+'月影・朧斬り':g=>{hBg(g,HS2.night);hMoon(g,52,12,8);g.strokeStyle='rgba(226,204,174,.6)';g.lineWidth=1.2;g.beginPath();g.ellipse(37,30,32,8,0,3.3,6.1);g.stroke();hKatana(g,6,30,-.1,58)},
+'見切り・無明剣':g=>{hBg(g,HS2.night);g.fillStyle='rgba(14,13,18,.6)';g.fillRect(0,0,74,44);hKatana(g,20,40,-1.2,44);hKatana(g,70,4,2.6,26,{c:'#848c9a'});hSpk(g,30,14,6,4)},
+'明鏡止水':g=>{hBg(g,['#17151e','#283a40','#3a5058']);g.fillStyle='#3a5058';g.fillRect(0,30,74,14);for(let i=0;i<3;i++){g.strokeStyle='rgba(134,160,164,'+(.5-i*.12)+')';g.lineWidth=.6;g.beginPath();g.ellipse(37,34,8+i*8,1.5+i,0,0,7);g.stroke()}hKatana(g,37,4,1.57,26);hMoon(g,14,10,5)},
+'無想の境地':g=>{hBg(g,HS2.ki);hKi(g,37,22,22);hSaya(g,10,26,-.05,54);hKatana(g,10,22,-.05,0)},
+'夜叉・血桜':g=>{kSl(g,HS2.blood,-.55,{pet:'#7e2a24',seed:4,bc:'#a8846c'});hBlood(g,56,12,10,10,3)},
+'剣気・飛翔斬':g=>{hBg(g,HS2.ki);hKatana(g,6,38,-.5,30);g.strokeStyle='#86a0a4';g.lineWidth=1.6;g.beginPath();g.arc(30,48,34,-1.4,-.5);g.stroke();hG(g,56,22,10,'134,160,164',.5)},
+'刹那・飛燕':g=>{hBg(g,HS2.dusk);hSpeed(g,[12,16,20],30,72,'rgba(220,222,224,.3)');hKatana(g,6,30,-.35,40);hFlash(g,40,12,70,4)},
+'縮地・風切り':g=>{hBg(g,HS2.night);hSpeed(g,[10,14,18,26,30,34],0,50,'rgba(134,160,164,.35)');hKatana(g,44,30,-.2,28)},
+'紅蓮・焔舞':g=>{hBg(g,HS2.fire);hFlame(g,20,44,24,22,3);hFlame(g,54,44,24,22,7);g.strokeStyle='#d88a48';g.lineWidth=1.6;g.beginPath();g.ellipse(37,22,30,10,-.1,3.4,6.2);g.stroke();hKatana(g,8,26,-.15,56,{c:'#c8a888'})},
+'影縫い・縛':g=>{hBg(g,HS2.violet);hKatana(g,37,0,1.45,38);g.strokeStyle='#6a6a98';g.lineWidth=.7;for(let i=0;i<4;i++){g.beginPath();g.moveTo(37,38);g.lineTo(10+i*18,44);g.stroke()}hG(g,37,38,8,'106,106,152',.5)},
+'瞬閃・雷切':g=>{hBg(g,HS2.violet);hBolt(g,50,0,42,30);hFlash(g,4,40,70,4);hKatana(g,10,38,-.5,58)},
+'奥義・天翔龍閃':g=>{hBg(g,HS2.ki);hKi(g,37,24,24);g.strokeStyle='#86a0a4';g.lineWidth=1.4;g.beginPath();g.moveTo(10,40);g.bezierCurveTo(20,10,50,40,66,4);g.stroke();hKatana(g,10,40,-.75,50)},
+'修羅・千手観音':g=>{hBg(g,HS2.gold);for(let i=0;i<6;i++){const a=-1.4+i*.5;g.globalAlpha=.4+(i%2)*.4;hKatana(g,37,40,a-1.57+.0,30);}g.globalAlpha=1;hG(g,37,20,10,'232,176,112',.4)},
+'破軍・星堕とし':g=>{hBg(g,HS2.night);for(let i=0;i<12;i++){g.fillStyle='#c8a888';g.fillRect((i*23)%74,(i*13)%20,1,1)}hFlash(g,60,0,30,40);hKatana(g,40,40,-1.1,40);hHit(g,32,38,9)},
+'残心・落花':g=>{kSl(g,HS2.dusk,-.5,{pet:'#9a6a78',seed:6})},
+'絶影・鏡花水月':g=>{hBg(g,HS2.ki);g.globalAlpha=.35;hKatana(g,14,30,-.3,50);g.globalAlpha=1;hKatana(g,24,36,-.3,50);hMoon(g,58,10,5,'#86a0a4');g.fillStyle='#283a40';g.fillRect(0,36,74,8)},
+'禁忌・血盟の契':g=>{hBg(g,HS2.blood);hRune(g,37,32,28,'#7e2a24');hKatana(g,37,2,1.57,30,{c:'#a8846c'});hKi(g,37,20,12)},
+'睨み・威圧の眼':g=>{hBg(g,HS2.violet);hWaves(g,10,22,6,-1,1,'rgba(106,106,152,.5)');hKatana(g,10,22,0,58,{c:'#848c9a'})},
+'絶・鬼哭啾啾':g=>{hBg(g,['#0e0d12','#2a2a44']);hSmoke(g,37,44,8,'#2a2a44','#3e3e66',44);hKatana(g,6,38,-.55,58);hFlash(g,6,40,70,6,'106,106,152')},
+'覚醒・修羅道':g=>{hBg(g,HS2.blood);hKi(g,37,22,24);hSmoke(g,37,44,6,'#5a1e1c','#3a1414',40);hKatana(g,37,42,-1.57,40)},
+'無限・百鬼夜行':g=>{hBg(g,HS2.violet);for(let i=0;i<7;i++){hFlash(g,4+i*9,40,14+i*9,2,'106,106,152')}hKatana(g,6,30,-.3,40)},
+'深淵・影喰らい':g=>{hBg(g,['#0e0d12','#2a2a44']);hSmoke(g,37,44,8,'#17151e','#2a2a44',44);hKatana(g,8,36,-.45,56,{c:'#6a6a98'})},
+'神速・無拍子':g=>{hBg(g,HS2.night);for(let i=3;i>=0;i--){g.globalAlpha=i?.18:1;hKatana(g,8+i*6,32-i*2,-.35,52)}g.globalAlpha=1},
+'終焉・黒き月':g=>{hBg(g,['#0e0d12','#17151e','#2a2a44']);g.fillStyle='#0e0d12';g.beginPath();g.arc(37,16,12,0,7);g.fill();g.strokeStyle='#6a6a98';g.lineWidth=1;g.beginPath();g.arc(37,16,12.5,0,7);g.stroke();g.strokeStyle='rgba(226,204,174,.6)';g.lineWidth=1.4;g.beginPath();g.ellipse(37,34,34,6,0,3.2,6.2);g.stroke();hKatana(g,4,34,-.05,64)},
+'一刀・魔断':g=>{hBg(g,['#0e0d12','#3a1414']);hFlash(g,0,44,74,0);hFlash(g,2,44,74,2,'200,88,58');hSaya(g,6,40,-.6,26);hKatana(g,34,22,-.6,40)},
+'剣聖の心得':g=>{hBg(g,HS2.gold);hRays(g,37,22,10,'226,204,174',.12,40);hKatana(g,37,42,-1.57,40);hSaya(g,26,42,-1.45,36)},
+'血脈・因果応報':g=>{hBg(g,HS2.blood);g.strokeStyle='#7e2a24';g.lineWidth=1.4;g.beginPath();g.arc(37,22,14,0,5.6);g.stroke();hP(g,[[51,18],[54,24],[48,23]],'#7e2a24');hKatana(g,20,30,-.5,34);hKi(g,37,22,10)},
+'絶界・無明の闇':g=>{hBg(g,['#0e0d12','#0e0d12','#211e2a']);hKatana(g,37,42,-1.57,40);g.strokeStyle='rgba(106,106,152,.5)';g.lineWidth=1;g.beginPath();g.arc(37,24,20,0,7);g.stroke()},
+'神殺し・天叢雲':g=>{hBg(g,HS2.violet);for(let i=0;i<4;i++){g.fillStyle='rgba(78,66,80,.8)';g.beginPath();g.ellipse(10+i*18,8,14,5,0,0,7);g.fill()}hBolt(g,40,0,36,16);hKatana(g,12,40,-.75,58);hKi(g,52,10,10)},
+'居合・返し':g=>{hBg(g,HS2.night);hSaya(g,10,30,0,40);hKatana(g,40,32,-.3,30);hFlash(g,36,36,72,20)},
+'気の盾':g=>{hBg(g,HS2.ki);hKi(g,37,22,22);g.strokeStyle='#86a0a4';g.lineWidth=1.2;g.beginPath();g.arc(37,22,16,3.4,6.0);g.stroke();hKatana(g,20,38,-.9,30)},
+'練気':g=>{hBg(g,HS2.ki);hKi(g,37,22,18);hKi(g,37,22,10)},
+'残心の構え':g=>{hBg(g,HS2.dusk);hKatana(g,10,32,-.25,56);hG(g,58,18,8,'220,222,224',.3)},
+'影打ち':g=>{hBg(g,HS2.violet);g.globalAlpha=.35;hKatana(g,12,34,-.4,52,{c:'#6a6a98'});g.globalAlpha=1;hKatana(g,18,38,-.5,52)},
+'静と動':g=>{hBg(g,HS2.ki);g.fillStyle='#283a40';g.fillRect(0,0,37,44);hKatana(g,6,22,0,28);hKatana(g,40,32,-.6,30);hFlash(g,44,30,70,8)},
+'気の巡り':g=>{hBg(g,HS2.ki);for(let i=0;i<3;i++){g.strokeStyle='rgba(134,160,164,'+(.6-i*.15)+')';g.lineWidth=1;g.beginPath();g.arc(37,22,8+i*6,i,i+4.6);g.stroke()}hG(g,37,22,6,'134,160,164',.6)},
+'見切り・逆風':g=>{hBg(g,HS2.night);hSpeed(g,[8,14,20,26],40,74,'rgba(134,160,164,.4)');hKatana(g,30,36,-1.0,34)},
+'斬り返し':g=>{hBg(g,HS2.dusk);hKatana(g,70,8,2.7,30,{c:'#848c9a'});hKatana(g,8,30,-.35,46);hSpk(g,44,20,7,5);g.strokeStyle='rgba(200,168,136,.5)';g.lineWidth=.8;g.beginPath();g.arc(44,20,10,2,3.8);g.stroke()},
+'無刀取り':g=>{hBg(g,HS2.dusk);g.save();g.translate(44,16);g.rotate(1.1);hKatana(g,-14,0,0,28,{c:'#848c9a'});g.restore();hP(g,[[20,30],[32,26],[36,32],[24,36]],'#a8846c');hP(g,[[44,30],[56,26],[58,32],[46,36]],'#a8846c')},
+'鞘走り':g=>{hBg(g,HS2.night);hSaya(g,8,26,-.1,52);hFlash(g,16,24,66,18)},
+'心眼':g=>{hBg(g,['#0e0d12','#17151e']);g.strokeStyle='#86a0a4';g.lineWidth=1;g.beginPath();g.ellipse(37,22,14,6,0,0,7);g.stroke();hG(g,37,22,6,'134,160,164',.7);g.fillStyle='#dcdee0';g.fillRect(36,21,2,2)},
+'斬鉄剣':g=>{hBg(g,HS2.night);for(const[x,y,a]of[[30,18,-.5],[46,28,.4]]){g.save();g.translate(x,y);g.rotate(a);hP(g,[[-8,-6],[8,-6],[8,6],[-8,6]],'#5a6272');g.fillStyle='#848c9a';g.fillRect(-8,-6,16,1.2);g.restore()}hFlash(g,4,40,70,4);hKatana(g,4,42,-.55,30)},
+'一騎当千':g=>{hBg(g,HS2.dusk);for(let i=0;i<8;i++){const x=8+i*8;hL(g,x,44,x+2,30,'#3a3442',1.2)}hKatana(g,20,40,-.9,44);hG(g,44,8,10,'226,204,174',.4)},
+'明鏡の極み':g=>{hBg(g,['#17151e','#283a40','#3a5058']);hP(g,[[20,6],[54,6],[56,38],[18,38]],'#5a7078');hP(g,[[22,8],[52,8],[54,36],[20,36]],'#86a0a4');hKatana(g,24,32,-.5,28);hFlash(g,40,30,70,10)},
+'剣鬼':g=>{hBg(g,HS2.blood);hSmoke(g,37,44,7,'#5a1e1c','#3a1414',40);hKatana(g,6,38,-.5,58,{c:'#a8846c'});hKi(g,50,14,8)},
+'奥義・無間':g=>{hBg(g,HS2.ki);for(let i=0;i<8;i++){const a=i/8*6.283;hFlash(g,37,22,37+Math.cos(a)*30,22+Math.sin(a)*20,'134,160,164')}hG(g,37,22,8,'226,204,174',.6)},
+'刹那・時止め':g=>{hBg(g,['#0e0d12','#283a40']);g.strokeStyle='#86a0a4';g.lineWidth=1;g.beginPath();g.arc(37,22,14,0,7);g.stroke();hL(g,37,22,37,11,'#86a0a4',1);hL(g,37,22,45,22,'#86a0a4',1);hKatana(g,6,40,-.5,30);for(let i=0;i<5;i++){g.fillStyle='#86a0a4';g.fillRect(14+i*12,6+((i*7)%30),1,1)}},
+'鍛錬':g=>{hBg(g,HS2.fire);hAnvil(g,30,30);hKatana(g,16,28,0,40,{c:'#d88a48'});hHammer(g,60,6,2.2);hSpk(g,40,28,6,5,'#e8b070',-2.6,2.2)},
+'火入れ':g=>{hBg(g,HS2.fire);hFlame(g,37,44,40,28,5);hKatana(g,8,24,-.1,58,{c:'#d88a48'})},
+'焼き入れ':g=>{hBg(g,['#17151e','#283a40','#3a5058']);g.fillStyle='#283a40';g.fillRect(0,30,74,14);hKatana(g,20,10,.6,40,{c:'#c8583a'});for(let i=0;i<5;i++){g.fillStyle='rgba(200,206,210,.4)';g.beginPath();g.ellipse(44+i*3,30-i*4,4,2,0,0,7);g.fill()}},
+'余韻の構え':g=>{hBg(g,HS2.dusk);hKatana(g,10,30,-.2,56);for(let i=0;i<3;i++){g.strokeStyle='rgba(200,168,136,'+(.4-i*.1)+')';g.lineWidth=.7;g.beginPath();g.arc(62,18,4+i*4,0,7);g.stroke()}},
+'刃の帰還':g=>{hBg(g,HS2.gold);g.strokeStyle='rgba(200,168,136,.5)';g.lineWidth=1;g.beginPath();g.arc(37,24,18,-2.6,1.6);g.stroke();hP(g,[[37,42],[33,38],[40,38]],'#c8a888');hKatana(g,18,20,-.1,40)},
+'研ぎ澄ます':g=>{hBg(g,HS2.dusk);hP(g,[[10,32],[62,28],[64,34],[12,38]],'#4e4250');hKatana(g,14,24,-.08,52);hSpk(g,40,26,6,5,'#dcdee0',-1.5,1.4)},
+'天の気':g=>{hBg(g,HS2.gold);hRays(g,37,0,9,'226,204,174',.14,48);hKi(g,37,26,16)},
+'流星斬':g=>{hBg(g,HS2.night);for(let i=0;i<3;i++)hFlash(g,70-i*6,0,30-i*8,30+i*4);hKatana(g,10,40,-.7,34)},
+'星落とし':g=>{hBg(g,HS2.night);for(let i=0;i<6;i++){hFlash(g,10+i*11,0,4+i*11,30+(i%2)*6,'200,168,136')}hGround(g,38,'#17151e','#211e2a')},
+'鍛造の構え':g=>{hBg(g,HS2.fire);hAnvil(g,44,28);hHammer(g,18,30,-.6);hKatana(g,30,26,0,30,{c:'#d88a48'})},
+'鍛冶の神':g=>{hBg(g,HS2.gold);hRays(g,37,30,10,'232,176,112',.16,40);hAnvil(g,37,30);hHammer(g,48,4,2.0);hKatana(g,22,28,0,32,{c:'#e8b070'})},
+'王者の一閃':g=>{hBg(g,HS2.gold);hFlash(g,0,40,74,4,'232,176,112');hKatana(g,6,40,-.55,60,{c:'#e8b070'});hG(g,54,12,12,'232,176,112',.5)}};
+// 名無しのカードの絵（細かさ2）。魔導書・頁・魔法・老人の手・杖・破滅
+function hBook(g,x,y,s,glow){g.save();g.translate(x,y);g.scale(s,s);hP(g,[[-16,2],[0,5],[16,2],[16,6],[0,9],[-16,6]],'#4a3220');hP(g,[[-15,-8],[0,-5],[0,5],[-15,2]],'#c8a888');hP(g,[[0,-5],[15,-8],[15,2],[0,5]],'#a8846c');for(let i=0;i<4;i++){hL(g,-12,-4+i*2.2,-3,-2+i*2.2,'#6a5458',.5);hL(g,3,-2+i*2.2,12,-4+i*2.2,'#6a5458',.5)}g.restore();if(glow)hG(g,x,y-6*s,12*s,glow,.5)}
+function hPage(g,x,y,r,s){g.save();g.translate(x,y);g.rotate(r||0);g.scale(s||1,s||1);hP(g,[[-5,-6],[5,-6],[5,6],[-5,6]],'#c8a888');g.fillStyle='#a8846c';g.fillRect(-5,-6,1,12);for(let i=0;i<4;i++){g.fillStyle='#6a5458';g.fillRect(-3,-4+i*2.6,7,.6)}g.restore()}
+function hOrb(g,x,y,r,rgb,core){hG(g,x,y,r*2.2,rgb,.5);g.fillStyle=core;g.beginPath();g.arc(x,y,r,0,7);g.fill();g.fillStyle='rgba(226,204,174,.6)';g.beginPath();g.arc(x-r*.3,y-r*.3,r*.35,0,7);g.fill()}
+function hIce(g,x,y,a,L){g.save();g.translate(x,y);g.rotate(a);hP(g,[[0,-2.2],[L-5,-1.6],[L,0],[L-5,1.6],[0,2.2]],'#5a7078');hP(g,[[0,-2.2],[L-5,-1.6],[L,0],[0,0]],'#86a0a4');g.fillStyle='#dcdee0';g.fillRect(3,-1.6,L*.5,.6);g.restore()}
+function hStaffW(g,x,y,a,L){g.save();g.translate(x,y);g.rotate(a);hP(g,[[0,-1.3],[L,-1.6],[L+2,0],[L,1.6],[0,1.3]],'#4a3220');g.fillStyle='#6a4a30';g.fillRect(0,-1.3,L,.6);for(const k of[L*.3,L*.6])g.fillRect(k,-2,2,4);hP(g,[[L-2,-3.5],[L+3,-3],[L+4,0],[L+3,3],[L-2,3.5]],'#5a3a24');g.restore()}
+function hOldHand(g,x,y,s,r){g.save();g.translate(x,y);g.rotate(r||0);g.scale(s,s);hP(g,[[-14,-4],[0,-4],[4,-6],[10,-5],[11,-3],[6,-2],[12,-1],[12,1],[6,2],[10,4],[9,6],[2,5],[-14,5]],'#a8846c');g.fillStyle='#8a6a5e';for(const[a,b]of[[-6,-1],[-2,2],[4,0]])g.fillRect(a,b,3,.6);hP(g,[[-22,-5],[-14,-5],[-14,6],[-22,6]],'#4e4250');g.restore()}
+function hDoom(g,x,y,r){hRune(g,x,y,r,'#3e3e66');hG(g,x,y,r*.6,'62,62,102',.6);g.fillStyle='#17151e';hP(g,[[x-3,y-6],[x+3,y-6],[x,y],[x+3,y+6],[x-3,y+6],[x,y]],'#6a6a98')}
+function hBottle(g,x,y,s,r,c){g.save();g.translate(x,y);g.rotate(r||0);g.scale(s,s);hP(g,[[-1.6,-12],[1.6,-12],[1.6,-6],[4,-3],[4,9],[-4,9],[-4,-3],[-1.6,-6]],'#3a5058');if(c)hP(g,[[-4,1],[4,1],[4,9],[-4,9]],c);g.fillStyle='rgba(220,222,224,.35)';g.fillRect(-3,-2,1,9);g.restore()}
+const S3={tome:['#17151e','#2a2a44','#3e3e66'],ember:['#17151e','#3a1414','#7e2a24'],frost:['#0e0d12','#283a40','#3a5058'],storm:['#0e0d12','#2a2a44','#4e4250'],mist:['#17151e','#2a3426','#3e4a34'],alley:['#17151e','#2c2836','#4e4250'],doom:['#0e0d12','#17151e','#2a2a44'],gold:['#17151e','#3a3442','#5a4424']};
+const hSp3=(g,bg,fx)=>{hBg(g,bg);hBook(g,37,36,1,'200,168,136');fx(g)};
+const HMC3={
+'杖で殴る':g=>{hBg(g,S3.alley);hStaffW(g,8,40,-.7,48);hHit(g,50,8,8)},
+'身を屈める':g=>{hBg(g,S3.alley);g.fillStyle='#3a3442';g.beginPath();g.ellipse(37,30,22,12,0,3.14,6.28);g.fill();g.fillStyle='#4e4250';g.beginPath();g.ellipse(37,30,22,12,0,3.4,5.0);g.fill();hStaffW(g,10,40,-1.3,36)},
+'火球の頁':g=>hSp3(g,S3.ember,g=>{hOrb(g,37,14,6,'216,138,72','#c8583a');hFlame(g,37,12,10,8,2)}),
+'頁をめくる':g=>{hBg(g,S3.tome);hBook(g,37,34,1.2);hPage(g,44,16,.5,1.3);hG(g,40,18,10,'200,168,136',.3)},
+'空き瓶':g=>{hBg(g,S3.alley);hBottle(g,30,26,1.3,.4);hSpeed(g,[16,20],46,70);hHit(g,58,14,6)},
+'杖の連打':g=>{hBg(g,S3.alley);g.globalAlpha=.35;hStaffW(g,10,40,-.9,44);g.globalAlpha=1;hStaffW(g,10,40,-.6,46);hHit(g,52,14,6);hHit(g,58,22,5)},
+'睨みつける':g=>{hBg(g,S3.doom);hWaves(g,10,22,5,-.9,.9,'rgba(106,106,152,.5)');hStaffW(g,10,40,-.4,30);hG(g,46,16,8,'106,106,152',.5)},
+'氷槍の頁':g=>hSp3(g,S3.frost,g=>{hIce(g,24,26,-.6,40)}),
+'雷鳴の頁':g=>hSp3(g,S3.storm,g=>{hBolt(g,30,0,40,26);hBolt(g,50,0,44,22)}),
+'毒霧の頁':g=>hSp3(g,S3.mist,g=>{hPC(g,37,14,14,.7)}),
+'障壁の頁':g=>hSp3(g,S3.frost,g=>{g.strokeStyle='#86a0a4';g.lineWidth=1.2;g.beginPath();g.arc(37,24,20,3.3,6.1);g.stroke();hG(g,37,14,14,'134,160,164',.3)}),
+'物乞い':g=>{hBg(g,S3.alley);hP(g,[[24,30],[50,30],[46,38],[28,38]],'#6a5458');hCoin(g,34,30,3);hCoin(g,40,31,3);hOldHand(g,22,22,1,.3)},
+'焚き火':g=>{hBg(g,S3.alley);hFlame(g,37,40,22,22,6);hL(g,24,40,50,36,'#4a3220',2);hL(g,24,36,50,40,'#4a3220',2)},
+'独り言':g=>{hBg(g,S3.alley);for(let i=0;i<5;i++){g.fillStyle='rgba(200,168,136,'+(.5-i*.08)+')';g.fillRect(20+i*8,14-i*2,4,1.5)}hStaffW(g,10,40,-1.2,40)},
+'魔弾の頁':g=>hSp3(g,S3.tome,g=>{hOrb(g,50,12,3.5,'134,160,164','#86a0a4');hSpeed(g,[11,13],22,46,'rgba(134,160,164,.4)')}),
+'杖払い':g=>{hBg(g,S3.alley);hArc(g,37,30,30,3.3,6.1,5,.4);hStaffW(g,6,32,-.05,60)},
+'炎嵐の頁':g=>hSp3(g,S3.ember,g=>{for(let i=0;i<5;i++)hFlame(g,10+i*13,30,14,22,i+2)}),
+'呪詛の頁':g=>hSp3(g,S3.doom,g=>{hSmoke(g,37,30,6,'#3e3e66','#2a2a44',30)}),
+'吸命の頁':g=>hSp3(g,S3.ember,g=>{for(let i=0;i<5;i++)hDrop(g,20+i*8,10+(i%2)*4,.9);hG(g,37,12,10,'166,58,44',.4)}),
+'読み上げ':g=>{hBg(g,S3.tome);hBook(g,30,32,1.1,'200,168,136');for(let i=0;i<4;i++)hPage(g,44+i*7,12+i*3,.4+i*.2,.8)},
+'安酒':g=>{hBg(g,S3.alley);hBottle(g,37,24,1.6,-.2,'#8a6c34');hG(g,37,30,10,'184,152,78',.3)},
+'老骨の意地':g=>{hBg(g,S3.alley);hOldHand(g,32,24,1.4,-.3);hStaffW(g,52,42,-1.57,40);hG(g,32,24,14,'134,160,164',.3)},
+'魔を込めた杖':g=>{hBg(g,S3.tome);hStaffW(g,10,40,-.7,46);hOrb(g,46,10,4,'106,106,152','#6a6a98');hHit(g,56,8,6)},
+'星屑の頁':g=>hSp3(g,S3.tome,g=>{for(let i=0;i<8;i++){g.fillStyle='#e2ccae';g.fillRect(10+i*8,4+((i*7)%16),1.4,1.4);hG(g,10+i*8,4+((i*7)%16),3,'226,204,174',.4)}}),
+'栞を挟む':g=>{hBg(g,S3.tome);hBook(g,37,30,1.3);hP(g,[[40,4],[44,4],[44,28],[42,25],[40,28]],'#7e2a24')},
+'独り言の癖':g=>{hBg(g,S3.tome);for(let i=0;i<3;i++){g.strokeStyle='rgba(200,168,136,'+(.5-i*.12)+')';g.lineWidth=.8;g.beginPath();g.arc(37,22,8+i*7,-.6,.6);g.stroke()}hBook(g,24,30,.8)},
+'頁の護り':g=>{hBg(g,S3.frost);for(let i=0;i<6;i++){const a=i/6*6.283;hPage(g,37+Math.cos(a)*18,22+Math.sin(a)*12,a,.9)}hG(g,37,22,10,'134,160,164',.4)},
+'写本':g=>{hBg(g,S3.tome);hBook(g,22,30,.9);hBook(g,52,30,.9);g.strokeStyle='rgba(200,168,136,.5)';g.lineWidth=.8;g.beginPath();g.moveTo(26,22);g.quadraticCurveTo(37,10,48,22);g.stroke()},
+'禁書・終焉の頁':g=>{hBg(g,['#0e0d12','#3a1414','#5a1e1c']);hBook(g,37,36,1.2,'200,88,58');hRune(g,37,14,26,'#a63a2c');hOrb(g,37,14,5,'200,88,58','#a63a2c')},
+'魔導の残響':g=>{hBg(g,S3.tome);hBook(g,37,34,1);for(let i=0;i<3;i++){g.strokeStyle='rgba(106,106,152,'+(.6-i*.15)+')';g.lineWidth=1;g.beginPath();g.arc(37,16,6+i*6,0,7);g.stroke()}},
+'路地裏の王':g=>{hBg(g,S3.gold);hP(g,[[24,24],[26,14],[31,20],[37,12],[43,20],[48,14],[50,24]],'#8a6c34');g.fillStyle='#b8984e';g.fillRect(24,22,26,2);hStaffW(g,10,42,-1.2,38)},
+'時渡りの頁':g=>hSp3(g,S3.tome,g=>{g.strokeStyle='#86a0a4';g.lineWidth=1;g.beginPath();g.arc(37,14,10,0,7);g.stroke();hL(g,37,14,37,7,'#86a0a4',1);hL(g,37,14,42,16,'#86a0a4',1)}),
+'隕星の頁':g=>hSp3(g,S3.ember,g=>{hSpeed(g,[2,4,6],50,74,'rgba(216,138,72,.4)');hOrb(g,40,16,6,'216,138,72','#7e2a24');hFlame(g,40,16,10,8,4)}),
+'最後の一服':g=>{hBg(g,S3.alley);hL(g,20,30,50,22,'#c8a888',2);g.fillStyle='#c8583a';g.fillRect(49,21,2,2);hSmoke(g,52,20,4,'#6a5458','#4e4250',20)},
+'速記':g=>{hBg(g,S3.tome);hPage(g,30,22,-.2,2);hSpeed(g,[16,20,24,28],38,66);hL(g,46,12,58,30,'#4a3220',1.4)},
+'再読':g=>{hBg(g,S3.tome);hBook(g,37,30,1.2);g.strokeStyle='rgba(200,168,136,.6)';g.lineWidth=1;g.beginPath();g.arc(37,16,10,-2.6,2);g.stroke();hP(g,[[46,22],[42,22],[45,18]],'#c8a888')},
+'魔力の盾':g=>{hBg(g,S3.tome);hG(g,37,22,20,'106,106,152',.45);g.strokeStyle='#6a6a98';g.lineWidth=1.4;g.beginPath();g.arc(37,24,16,3.3,6.1);g.stroke();hBook(g,37,34,.8)},
+'増築':g=>{hBg(g,S3.tome);for(let i=0;i<4;i++)hBook(g,37,38-i*8,.8)},
+'頁の結界':g=>{hBg(g,S3.frost);for(let i=0;i<8;i++){const a=i/8*6.283;hPage(g,37+Math.cos(a)*24,22+Math.sin(a)*14,a,.7)}g.strokeStyle='rgba(134,160,164,.5)';g.lineWidth=.8;g.beginPath();g.ellipse(37,22,24,14,0,0,7);g.stroke()},
+'連鎖の頁':g=>hSp3(g,S3.tome,g=>{for(let i=0;i<3;i++)hOrb(g,20+i*16,12+(i%2)*4,3,'134,160,164','#86a0a4');hL(g,20,12,36,16,'#86a0a4',.6);hL(g,36,16,52,12,'#86a0a4',.6)}),
+'遠雷の頁':g=>hSp3(g,S3.storm,g=>{for(let i=0;i<4;i++){g.fillStyle='rgba(78,66,80,.8)';g.beginPath();g.ellipse(10+i*18,6,12,4,0,0,7);g.fill()}hBolt(g,58,6,62,24)}),
+'貯めた小銭':g=>{hBg(g,S3.gold);for(let i=0;i<6;i++)hCoin(g,37,36-i*4,6);hCoin(g,22,36,4);hCoin(g,52,36,4)},
+'路地裏の喧嘩':g=>{hBg(g,S3.alley);hOldHand(g,30,22,1.2,-.1);hHit(g,52,20,8)},
+'物乞いの知恵':g=>{hBg(g,S3.gold);hOldHand(g,30,26,1.2,-.4);hCoin(g,46,14,4);hG(g,46,14,8,'184,152,78',.4)},
+'反射の頁':g=>hSp3(g,S3.frost,g=>{g.strokeStyle='#86a0a4';g.lineWidth=1.2;g.beginPath();g.moveTo(14,6);g.lineTo(37,22);g.lineTo(60,6);g.stroke()}),
+'吸魔の頁':g=>hSp3(g,S3.doom,g=>{for(let i=0;i<5;i++){g.strokeStyle='rgba(106,106,152,'+(.6-i*.1)+')';g.lineWidth=.8;g.beginPath();g.arc(37,12,4+i*4,0,7);g.stroke()}}),
+'停滞の頁':g=>hSp3(g,S3.frost,g=>{g.strokeStyle='#86a0a4';g.lineWidth=1;g.beginPath();g.arc(37,13,9,0,7);g.stroke();hL(g,37,13,37,6,'#86a0a4',1);for(let i=0;i<6;i++){g.fillStyle='#86a0a4';g.fillRect(12+i*10,4+(i%2)*6,1,1)}}),
+'終わらない詠唱':g=>{hBg(g,S3.tome);hBook(g,37,36,1);g.strokeStyle='rgba(200,168,136,.6)';g.lineWidth=1;g.beginPath();g.ellipse(37,14,16,6,0,0,7);g.stroke();g.beginPath();g.ellipse(37,14,16,6,1.2,0,7);g.stroke()},
+'魔力爆縮':g=>{hBg(g,S3.tome);hWaves(g,37,22,5,0,6.283,'rgba(106,106,152,.5)');hOrb(g,37,22,5,'106,106,152','#3e3e66')},
+'時渡りの書架':g=>{hBg(g,S3.tome);for(let r=0;r<3;r++){g.fillStyle='#4a3220';g.fillRect(10,14+r*10,54,1.5);for(let i=0;i<9;i++){g.fillStyle=['#7e2a24','#3e3e66','#3e4a34','#5a4424'][(i+r)%4];g.fillRect(12+i*5.6,6+r*10,4,8)}}},
+'頁の嵐':g=>{hBg(g,S3.storm);for(let i=0;i<14;i++){const a=i*.9,R=6+i*1.6;hPage(g,37+Math.cos(a)*R,22+Math.sin(a)*R*.6,a,.7)}},
+'老人の昔話':g=>{hBg(g,S3.alley);hFlame(g,20,40,12,12,3);hBook(g,46,34,.9);hOldHand(g,40,18,1,.6)},
+'魔導書の目覚め':g=>{hBg(g,S3.tome);hRays(g,37,24,10,'200,168,136',.14,40);hBook(g,37,28,1.4,'200,168,136')},
+'破滅の囁き':g=>{hBg(g,S3.doom);hDoom(g,37,24,24);hSmoke(g,37,44,4,'#2a2a44','#3e3e66',20)},
+'呪いの指先':g=>{hBg(g,S3.doom);hOldHand(g,26,26,1.3,-.2);hG(g,50,22,8,'106,106,152',.6);hDoom(g,54,22,10)},
+'破滅の盾':g=>{hBg(g,S3.doom);hDoom(g,37,24,26);g.strokeStyle='#6a6a98';g.lineWidth=1.2;g.beginPath();g.arc(37,24,16,3.3,6.1);g.stroke()},
+'呪縛の頁':g=>hSp3(g,S3.doom,g=>{hChains(g,10,14,64,14);hDoom(g,37,14,10)}),
+'呪詛返し':g=>{hBg(g,S3.doom);for(let i=0;i<3;i++)hOrb(g,20+i*16,14+i*6,3,'106,106,152','#3e3e66');g.strokeStyle='rgba(106,106,152,.5)';g.lineWidth=.8;g.beginPath();g.arc(37,22,18,1,3.6);g.stroke()},
+'終末の鐘':g=>{hBg(g,S3.doom);hP(g,[[28,8],[46,8],[52,30],[22,30]],'#5a4424');hP(g,[[28,8],[37,8],[37,30],[22,30]],'#8a6c34');g.fillStyle='#3a3442';g.fillRect(35,30,4,4);hWaves(g,37,20,4,0,6.283,'rgba(106,106,152,.4)')},
+'刈り取り':g=>{hBg(g,S3.doom);hStaffW(g,10,42,-.9,42);g.fillStyle='#848c9a';g.beginPath();g.moveTo(40,8);g.quadraticCurveTo(60,4,66,18);g.quadraticCurveTo(56,10,42,12);g.fill();hDoom(g,54,30,8)},
+'本の追撃':g=>{hBg(g,S3.tome);hBook(g,30,24,1.1,'106,106,152');hSpeed(g,[18,22,26],46,72,'rgba(106,106,152,.4)')},
+'終焉の宣告':g=>{hBg(g,['#0e0d12','#0e0d12','#2a2a44']);hDoom(g,37,22,30);hDoom(g,37,22,16)},
+'魂の収穫':g=>{hBg(g,S3.doom);for(let i=0;i<5;i++){hG(g,12+i*12,14+(i%2)*10,4,'134,160,164',.6);g.fillStyle='#dcdee0';g.fillRect(12+i*12,14+(i%2)*10,1,1)}hDoom(g,37,36,12)},
+'終焉の儀':g=>{hBg(g,['#0e0d12','#2a2a44','#3e3e66']);hRune(g,37,30,32,'#6a6a98');for(const x of[10,24,50,64])hCandle(g,x,36,8);hDoom(g,37,16,10)},
+'冥府の頁':g=>hSp3(g,S3.doom,g=>{hSmoke(g,37,28,6,'#17151e','#2a2a44',28);hDoom(g,37,12,10)})};
+// ホーリー大輔のカードの絵（細かさ2）。緑に光る杖・筋トレ・眠り・ボクシング・スカンク
+function hStaffG(g,x,y,a,L){g.save();g.translate(x,y);g.rotate(a);hP(g,[[0,-1.2],[L,-1.2],[L,1.2],[0,1.2]],'#6a4a30');g.fillStyle='#8a6a5e';g.fillRect(0,-1.2,L,.5);hP(g,[[L-1,-3],[L+2,-2],[L+2,2],[L-1,3]],'#5a4424');g.restore();const ex=x+Math.cos(a)*(L+5),ey=y+Math.sin(a)*(L+5);hG(g,ex,ey,9,'154,168,96',.6);g.fillStyle='#7a8a48';g.beginPath();g.arc(ex,ey,3.6,0,7);g.fill();g.fillStyle='#9aa860';g.beginPath();g.arc(ex-1,ey-1,1.6,0,7);g.fill()}
+function hDumb(g,x,y,a,s){g.save();g.translate(x,y);g.rotate(a||0);g.scale(s||1,s||1);hP(g,[[-10,-1],[10,-1],[10,1],[-10,1]],'#848c9a');for(const d of[-1,1]){hP(g,[[d*8-2,-6],[d*8+2,-6],[d*8+2,6],[d*8-2,6]],'#3c4450');hP(g,[[d*11-2,-4],[d*11+1,-4],[d*11+1,4],[d*11-2,4]],'#2a3038');g.fillStyle='#5a6272';g.fillRect(d*8-2,-6,4,1)}g.restore()}
+function hGlove(g,x,y,s,r){g.save();g.translate(x,y);g.rotate(r||0);g.scale(s,s);g.fillStyle='#5a1e1c';g.beginPath();g.ellipse(2,0,9,7.5,0,0,7);g.fill();g.fillStyle='#7e2a24';g.beginPath();g.ellipse(2,-1,8,6.3,0,0,7);g.fill();g.fillStyle='#a63a2c';g.beginPath();g.ellipse(4,-3,4,2,0,0,7);g.fill();g.fillStyle='#5a1e1c';g.beginPath();g.ellipse(-2,3,4,2.6,-.4,0,7);g.fill();hP(g,[[-10,-5],[-5,-6],[-5,6],[-10,5]],'#c8a888');g.fillStyle='#a8846c';g.fillRect(-10,-1,5,1);g.restore()}
+function hStars(g,n,seed){let s=seed||5;const r=()=>(s=s*16807%2147483647)/2147483647;for(let i=0;i<n;i++){const x=r()*74,y=r()*28;g.fillStyle=r()<.3?'#e2ccae':'#a8846c';g.fillRect(x,y,1,1)}}
+function hEyeMask(g,x,y,s){g.save();g.translate(x,y);g.scale(s,s);hP(g,[[-14,-4],[-4,-6],[0,-3],[4,-6],[14,-4],[13,4],[4,5],[0,2],[-4,5],[-13,4]],'#17151e');g.fillStyle='#2c2836';g.fillRect(-12,-3,10,1);g.fillRect(2,-3,10,1);hL(g,-14,0,-24,-2,'#2c2836',1.2);hL(g,14,0,24,-2,'#2c2836',1.2);g.restore()}
+function hClock(g,x,y,r){g.fillStyle='#4e4250';g.beginPath();g.arc(x,y,r+1.5,0,7);g.fill();g.fillStyle='#c8a888';g.beginPath();g.arc(x,y,r,0,7);g.fill();for(let i=0;i<12;i++){const a=i/12*6.283;g.fillStyle='#4e4250';g.fillRect(x+Math.cos(a)*(r-1.6)-.4,y+Math.sin(a)*(r-1.6)-.4,.8,.8)}hL(g,x,y,x,y-r*.7,'#2c2836',1);hL(g,x,y,x+r*.5,y+r*.1,'#2c2836',1)}
+function hShaker(g,x,y,s){g.save();g.translate(x,y);g.scale(s,s);hP(g,[[-6,-8],[6,-8],[5,10],[-5,10]],'#848c9a');hP(g,[[-5,-1],[5,-1],[4.6,9],[-4.6,9]],'#a8846c');hP(g,[[-6,-12],[6,-12],[6,-8],[-6,-8]],'#3c4450');hP(g,[[-2,-15],[2,-15],[2,-12],[-2,-12]],'#2a3038');g.restore()}
+function hSkunk(g,x,y,s){g.save();g.translate(x,y);g.scale(s,s);g.fillStyle='#17151e';g.beginPath();g.moveTo(-14,10);g.quadraticCurveTo(-20,-10,0,-14);g.quadraticCurveTo(16,-14,10,0);g.quadraticCurveTo(4,8,-2,10);g.fill();g.strokeStyle='#c8ccce';g.lineWidth=2.4;g.beginPath();g.moveTo(-10,8);g.quadraticCurveTo(-14,-8,0,-11);g.quadraticCurveTo(10,-11,8,-2);g.stroke();g.restore()}
+function hSunrise(g){hBg(g,['#2a2a44','#6a5458','#d88a48']);g.fillStyle='#e8b070';g.beginPath();g.arc(37,40,12,3.14,6.28);g.fill();hRays(g,37,40,10,'232,176,112',.15,40);g.fillStyle='#211e2a';g.fillRect(0,38,74,6)}
+const S4={gym:['#17151e','#2c2836','#3a3442'],night:['#0e0d12','#17151e','#2a2a44'],green:['#0e0d12','#2a3426','#3e4a34'],ring:['#17151e','#3a1414','#5a1e1c'],gold:['#17151e','#3a3442','#5a4424']};
+const sleepy=(g)=>{hBg(g,S4.night);hStars(g,16,3);hMoon(g,58,10,6)};
+const HMC4={
+'杖打ち':g=>{hBg(g,S4.green);hStaffG(g,8,40,-.65,42);hHit(g,52,10,7)},
+'受け身':g=>{hBg(g,S4.gym);hGround(g,34,'#2c2836','#3a3442');g.fillStyle='#4e4250';g.beginPath();g.ellipse(37,30,20,8,0,3.14,6.28);g.fill();hArc(g,37,34,20,3.4,6,3,.5);hDust(g,37,34,10,40)},
+'マイクロスリープ':g=>{sleepy(g);hEyeMask(g,37,26,1.3)},
+'腕立て伏せ':g=>{hBg(g,S4.gym);hGround(g,34,'#2c2836','#3a3442');hP(g,[[10,24],[60,22],[60,26],[10,28]],'#5a6a48');hArm(g,24,34,-1.4,10);hArm(g,50,33,-1.4,10)},
+'腹筋':g=>{hBg(g,S4.gym);g.fillStyle='#a8846c';g.fillRect(24,8,26,30);g.fillStyle='#8a6a5e';for(let r=0;r<3;r++){g.fillRect(36,10+r*9,2,8);g.fillRect(26,17+r*9,22,1.4)}hG(g,37,22,16,'232,176,112',.3)},
+'朝の一撃':g=>{hSunrise(g);hStaffG(g,10,36,-.6,40);hHit(g,52,8,7)},
+'仮眠':g=>{sleepy(g);g.fillStyle='#4e4250';g.beginPath();g.ellipse(37,32,22,7,0,0,7);g.fill();g.fillStyle='#6a5458';g.beginPath();g.ellipse(36,30,20,5,0,0,7);g.fill()},
+'早起き':g=>{hSunrise(g);hClock(g,20,14,7)},
+'デッドリフト':g=>{hBg(g,S4.gym);hGround(g,36,'#2c2836','#3a3442');hL(g,6,26,68,26,'#848c9a',1.6);for(const x of[10,16,58,64]){hP(g,[[x-2,14],[x+2,14],[x+2,38],[x-2,38]],'#3c4450');g.fillStyle='#5a6272';g.fillRect(x-2,14,4,1)}hArm(g,30,26,-1.4,14);hArm(g,44,26,-1.4,14)},
+'プロテイン':g=>{hBg(g,S4.gym);hShaker(g,37,24,1.4);hG(g,37,24,14,'232,176,112',.25)},
+'45分睡眠':g=>{sleepy(g);hClock(g,37,24,12)},
+'ショートスリーパー':g=>{sleepy(g);hEyeMask(g,37,28,1);hClock(g,16,12,6)},
+'筋肥大':g=>{hBg(g,S4.gym);hDumb(g,37,22,-.3,1.4);hG(g,37,22,16,'232,176,112',.25)},
+'ベンチプレス':g=>{hBg(g,S4.gym);hL(g,4,14,70,14,'#848c9a',1.6);for(const x of[8,14,60,66]){hP(g,[[x-2,4],[x+2,4],[x+2,24],[x-2,24]],'#3c4450')}hP(g,[[14,30],[60,30],[60,34],[14,34]],'#3a3442');hArm(g,30,15,1.57,12);hArm(g,44,15,1.57,12)},
+'覚醒の杖':g=>{hBg(g,S4.green);hRays(g,50,10,10,'154,168,96',.12,40);hStaffG(g,12,40,-.75,40)},
+'早朝の瞑想':g=>{hSunrise(g);hG(g,37,30,14,'232,176,112',.4);g.fillStyle='#3a3442';g.beginPath();g.ellipse(37,36,14,4,0,0,7);g.fill()},
+'パワーナップ':g=>{sleepy(g);hEyeMask(g,30,26,1);hDumb(g,54,30,.2,.8)},
+'緑光の嵐':g=>{hBg(g,S4.green);for(let i=0;i<4;i++){g.strokeStyle='rgba(154,168,96,'+(.6-i*.1)+')';g.lineWidth=1.4;g.beginPath();g.ellipse(37,22,30-i*6,10-i*2,i*.3,0,5.4);g.stroke()}hStaffG(g,37,40,-1.57,22)},
+'不眠不休':g=>{hBg(g,S4.night);hClock(g,37,22,14);hStars(g,10,7)},
+'マッスルガード':g=>{hBg(g,S4.gym);hArm(g,48,22,-.3,30);hArm(g,26,26,-2.8,24);hG(g,37,22,16,'134,160,164',.3)},
+'クイヤ':g=>{hBg(g,S4.green);hGround(g,36,'#2a3426','#3e4a34');hSkunk(g,20,26,1.2);hPC(g,50,20,14,.65);g.fillStyle='#2e1e14';g.beginPath();g.ellipse(20,38,12,3,0,0,7);g.fill()},
+'ショートスリープの極意':g=>{sleepy(g);hRays(g,37,22,10,'226,204,174',.1,40);hEyeMask(g,37,24,1.4)},
+'超回復':g=>{hBg(g,S4.gold);hRays(g,37,22,10,'232,176,112',.14,40);hDumb(g,37,22,0,1.3);hG(g,37,22,14,'154,168,96',.3)},
+'徹夜明けの覚醒':g=>{hSunrise(g);hEyeMask(g,24,14,.7);hClock(g,52,14,7)},
+'発光の杖・極':g=>{hBg(g,S4.green);hRays(g,37,10,14,'154,168,96',.16,50);hStaffG(g,37,44,-1.57,30)},
+'タイムアタック':g=>{hBg(g,S4.gym);hClock(g,30,22,14);hSpeed(g,[14,22,30],46,72)},
+'仮眠の極意':g=>{sleepy(g);hEyeMask(g,37,30,.9);hG(g,37,30,12,'134,160,164',.3)},
+'反復練習':g=>{hBg(g,S4.gym);for(let i=0;i<3;i++){g.globalAlpha=.3+i*.35;hDumb(g,20+i*16,22,-.4+i*.2,.8)}g.globalAlpha=1},
+'モーニングルーティン':g=>{hSunrise(g);hShaker(g,20,24,.8);hDumb(g,50,26,.2,.8)},
+'寝起きの一撃':g=>{sleepy(g);hStaffG(g,10,40,-.6,40);hHit(g,50,10,7)},
+'体内時計':g=>{hBg(g,S4.night);hClock(g,37,22,15);hWaves(g,37,22,5,0,6.283,'rgba(134,160,164,.3)')},
+'超回復の理論':g=>{hBg(g,S4.gym);hP(g,[[14,6],[60,6],[60,38],[14,38]],'#c8a888');for(let i=0;i<5;i++)hL(g,18,12+i*5,56,12+i*5,'#6a5458',.6);hL(g,18,34,30,26,'#7e2a24',1);hL(g,30,26,40,30,'#7e2a24',1);hL(g,40,30,56,14,'#7e2a24',1)},
+'睡眠負債':g=>{sleepy(g);for(let i=0;i<4;i++)hCoin(g,20+i*10,34,4);hEyeMask(g,37,18,.8)},
+'眠気覚まし':g=>{hBg(g,S4.gym);hP(g,[[28,14],[46,14],[44,36],[30,36]],'#c8a888');hP(g,[[46,18],[52,20],[52,28],[45,30]],'#c8a888');g.fillStyle='#4a3220';g.fillRect(30,16,14,3);hSmoke(g,37,12,3,'#6a5458','#4e4250',12)},
+'光る杖の祈り':g=>{hBg(g,S4.green);hStaffG(g,37,44,-1.57,26);hRays(g,37,13,10,'154,168,96',.12,30)},
+'朝焼けの瞑想':g=>{hSunrise(g);g.fillStyle='#3a3442';g.beginPath();g.ellipse(37,38,16,4,0,0,7);g.fill();hG(g,37,30,10,'232,176,112',.4)},
+'クイヤの穴':g=>{hBg(g,S4.green);hGround(g,30,'#2a3426','#3e4a34');g.fillStyle='#17151e';g.beginPath();g.ellipse(37,34,16,5,0,0,7);g.fill();hSkunk(g,37,24,.8);hDust(g,37,32,8,30)},
+'寝る子は育つ':g=>{sleepy(g);hEyeMask(g,28,28,.8);hDumb(g,52,26,-.3,.9)},
+'徹夜の果て':g=>{hBg(g,['#0e0d12','#2a2a44','#3a1414']);hClock(g,37,22,14);hCrack(g,37,22,[.5,2.4,4.2],12)},
+'肉体言語':g=>{hBg(g,S4.ring);hGlove(g,24,22,1.2,0);hGlove(g,50,22,1.2,3.14);hHit(g,37,22,8)},
+'リセット':g=>{hBg(g,S4.gym);for(let i=0;i<5;i++)hCard(g,16+i*10,24,-.4+i*.2,1.3,i===2);g.strokeStyle='rgba(200,168,136,.6)';g.lineWidth=1;g.beginPath();g.arc(37,24,20,-2.8,1.6);g.stroke()},
+'短眠の極地':g=>{sleepy(g);hRays(g,37,24,12,'226,204,174',.12,40);hClock(g,37,24,9)},
+'寝言':g=>{sleepy(g);for(let i=0;i<4;i++){g.fillStyle='rgba(200,168,136,'+(.6-i*.1)+')';g.beginPath();g.arc(30+i*7,26-i*4,1.5+i*.6,0,7);g.fill()}hCard(g,58,8,.3,1.1,1)},
+'ジャブ':g=>{hBg(g,S4.ring);hGlove(g,30,22,1.2,0);hSpeed(g,[18,22,26],2,18);hHit(g,46,20,6)},
+'ワンツー':g=>{hBg(g,S4.ring);hGlove(g,24,16,1,0);hGlove(g,32,30,1.1,0);hHit(g,44,14,5);hHit(g,52,28,6)},
+'プランク':g=>{hBg(g,S4.gym);hGround(g,34,'#2c2836','#3a3442');hP(g,[[10,24],[62,20],[62,25],[10,29]],'#5a6a48');hArm(g,58,34,-1.57,10)},
+'サーキット':g=>{hBg(g,S4.gym);g.strokeStyle='rgba(200,168,136,.5)';g.lineWidth=1;g.beginPath();g.ellipse(37,22,26,14,0,0,7);g.stroke();hDumb(g,14,22,0,.6);hShaker(g,37,10,.6);hGlove(g,60,22,.7,0);hClock(g,37,34,5)},
+'レストポーズ':g=>{hBg(g,S4.gym);hDumb(g,37,34,0,1.2);hClock(g,52,12,6)},
+'カフェイン':g=>{hBg(g,S4.gym);hP(g,[[28,12],[46,12],[44,36],[30,36]],'#4e4250');g.fillStyle='#2e1e14';g.fillRect(30,14,14,3);hSmoke(g,37,10,3,'#6a5458','#4e4250',10);hBolt(g,56,6,52,24)},
+'全力スイング':g=>{hBg(g,S4.green);hArc(g,37,40,32,3.4,6.0,6);hStaffG(g,8,36,-.3,50)},
+'HIIT':g=>{hBg(g,S4.ring);for(let i=0;i<4;i++){g.fillStyle=i%2?'#7e2a24':'#5a1e1c';g.fillRect(6+i*16,30,14,6)}hGlove(g,37,16,1,0)},
+'アップテンポ':g=>{hBg(g,S4.gym);for(let i=0;i<5;i++){g.fillStyle='#a63a2c';g.fillRect(12+i*11,30-i*5,6,6+i*5)}hSpeed(g,[8,12],40,70)},
+'爆発的瞬発力':g=>{hBg(g,S4.ring);hGlove(g,30,22,1.4,0);hWaves(g,46,22,4,-1.2,1.2,'rgba(226,204,174,.5)');hHit(g,48,22,10)},
+'オーバーワーク':g=>{hBg(g,S4.ring);hDumb(g,37,22,-.2,1.3);hSmoke(g,37,44,6,'#5a1e1c','#3a1414',30);for(let i=0;i<4;i++){g.fillStyle='#86a0a4';g.beginPath();g.ellipse(14+i*16,10+(i%2)*6,1,1.6,0,0,7);g.fill()}},
+'鍛え抜かれた拳':g=>{hBg(g,S4.gold);hRays(g,37,22,10,'232,176,112',.12,40);hGlove(g,37,22,1.5,0)},
+'シャドーボクシング':g=>{hBg(g,S4.night);g.globalAlpha=.35;hGlove(g,26,20,1.1,0);g.globalAlpha=1;hGlove(g,40,22,1.1,0);hSpeed(g,[18,22],8,24,'rgba(106,106,152,.4)')},
+'ステップイン':g=>{hBg(g,S4.gym);hGround(g,36,'#2c2836','#3a3442');hSpeed(g,[30,34],2,30);hGlove(g,46,18,1,0)},
+'ボディブロー':g=>{hBg(g,S4.ring);hGlove(g,30,28,1.2,-.4);hHit(g,46,20,7)},
+'ミット打ち':g=>{hBg(g,S4.gym);g.fillStyle='#4a3220';g.beginPath();g.ellipse(52,20,9,11,0,0,7);g.fill();g.fillStyle='#c8a888';g.beginPath();g.ellipse(52,20,5,6,0,0,7);g.fill();hGlove(g,28,22,1.1,0);hHit(g,44,20,5)},
+'コンビネーション':g=>{hBg(g,S4.ring);for(let i=0;i<3;i++)hGlove(g,18+i*14,12+i*9,.9,i%2?.3:-.2);hHit(g,58,22,7)},
+'ラッシュ':g=>{hBg(g,S4.ring);for(let i=0;i<5;i++){g.globalAlpha=.25+i*.18;hGlove(g,16+i*7,10+((i*9)%24),.8,0)}g.globalAlpha=1},
+'ファイティングポーズ':g=>{hBg(g,S4.ring);hGlove(g,28,24,1.2,-1.3);hGlove(g,46,22,1.2,-1.8)},
+'デンプシーロール':g=>{hBg(g,S4.ring);g.strokeStyle='rgba(226,204,174,.5)';g.lineWidth=1.2;g.beginPath();g.moveTo(10,22);for(let i=0;i<=20;i++)g.lineTo(10+i*2.8,22+Math.sin(i*.6)*10);g.stroke();hGlove(g,58,20,1.1,0);hHit(g,66,18,6)}};
+// ネブラのカードの絵（細かさ2）。小クラゲ（雷・氷・闇・プラズマ・ガラス）・触手・泡・光線
+const JC={L:['#8a6c34','#c8b060','200,176,96'],F:['#3a5058','#86a0a4','134,160,164'],D:['#2a2a44','#6a6a98','106,106,152'],P:['#7e2a24','#d88a48','216,138,72'],G:['#5a7078','#c8ccce','220,222,224']};
+function hJelly(g,x,y,s,k){const c=JC[k]||JC.L;g.save();g.translate(x,y);g.scale(s,s);hG(g,0,0,12,c[2],.45);for(let i=0;i<5;i++){g.strokeStyle=c[0];g.lineWidth=.8;g.beginPath();g.moveTo(-5+i*2.5,2);g.quadraticCurveTo(-6+i*2.5+(i%2?2:-2),8,-5+i*2.5,13);g.stroke()}g.fillStyle=c[0];g.beginPath();g.ellipse(0,0,7,6,0,3.14,6.28);g.fill();g.fillRect(-7,-.5,14,2.5);g.fillStyle=c[1];g.beginPath();g.ellipse(-1,-1.5,5,4,0,3.14,6.28);g.fill();g.fillStyle='rgba(226,204,174,.5)';g.fillRect(-3,-4,2,1);g.restore()}
+function hTent(g,x1,y1,x2,y2,w){g.strokeStyle='#3a5058';g.lineWidth=w||4;g.lineCap='round';g.beginPath();g.moveTo(x1,y1);g.bezierCurveTo(x1+(x2-x1)*.3,y1-12,x1+(x2-x1)*.7,y2+12,x2,y2);g.stroke();g.strokeStyle='#5a7078';g.lineWidth=(w||4)*.4;g.stroke();for(let i=1;i<6;i++){const t=i/6,X=x1+(x2-x1)*t,Y=y1+(y2-y1)*t;g.fillStyle='#86a0a4';g.fillRect(X,Y+((i%2)?-2:2),1,1)}}
+function hBub(g,n,seed){let s=seed||7;const r=()=>(s=s*16807%2147483647)/2147483647;for(let i=0;i<n;i++){const x=r()*74,y=r()*44,R=1+r()*2;g.strokeStyle='rgba(134,160,164,.6)';g.lineWidth=.6;g.beginPath();g.arc(x,y,R,0,7);g.stroke()}}
+const S6={deep:['#0e0d12','#17202a','#283a40'],storm:['#0e0d12','#2a2a44','#3a3442'],ice:['#0e0d12','#283a40','#3a5058'],dark:['#0e0d12','#17151e','#2a2a44'],ember:['#17151e','#3a1414','#5a1e1c']};
+const jRow=(g,ks,y,s)=>{ks.forEach((k,i)=>hJelly(g,37+(i-(ks.length-1)/2)*15,y||20,s||1,k))};
+const HMC6={
+'触手打ち':g=>{hBg(g,S6.deep);hBub(g,8,1);hTent(g,4,40,60,10,5);hHit(g,62,10,7)},
+'泡の膜':g=>{hBg(g,S6.deep);hBub(g,10,2);g.strokeStyle='rgba(134,160,164,.7)';g.lineWidth=1.2;g.beginPath();g.arc(37,22,17,0,7);g.stroke();hG(g,37,22,17,'134,160,164',.25);g.fillStyle='rgba(220,222,224,.5)';g.fillRect(28,12,4,1.5)},
+'放電':g=>{hBg(g,S6.storm);hJelly(g,37,18,1.6,'L');hBolt(g,30,30,22,44);hBolt(g,44,30,52,44)},
+'二連放出':g=>{hBg(g,S6.storm);hJelly(g,22,20,1.2,'L');hBolt(g,30,20,70,10);hBolt(g,30,22,70,32)},
+'球電':g=>{hBg(g,S6.storm);hOrb(g,46,20,6,'200,176,96','#c8b060');hJelly(g,18,26,1,'L');hSpeed(g,[18,22],26,38,'rgba(200,176,96,.4)')},
+'凍てつく触手':g=>{hBg(g,S6.ice);hTent(g,4,40,60,10,5);hIce(g,40,14,-.4,20);hJelly(g,58,30,.9,'F')},
+'掃射光線':g=>{hBg(g,S6.deep);hJelly(g,12,22,1,'G');g.fillStyle='rgba(220,222,224,.4)';g.beginPath();g.moveTo(16,20);g.lineTo(74,4);g.lineTo(74,40);g.lineTo(16,24);g.fill();hL(g,16,22,74,22,'#e2ccae',1)},
+'連続発光':g=>{hBg(g,S6.storm);for(let i=0;i<4;i++)hG(g,14+i*15,22,7,'200,176,96',.5);hJelly(g,37,22,1.1,'L')},
+'帯電爪':g=>{hBg(g,S6.storm);hClaw(g,16,8,.9,36,3);hBolt(g,50,4,56,30)},
+'狙い撃ち':g=>{hBg(g,S6.deep);g.strokeStyle='#86a0a4';g.lineWidth=.8;g.beginPath();g.arc(52,20,9,0,7);g.stroke();hL(g,52,8,52,32,'#86a0a4',.6);hL(g,40,20,64,20,'#86a0a4',.6);hJelly(g,16,24,1,'G');hL(g,20,22,50,20,'#e2ccae',.7)},
+'冷却':g=>{hBg(g,S6.ice);hJelly(g,37,20,1.6,'F');for(let i=0;i<8;i++){g.fillStyle='#dcdee0';g.fillRect(8+i*8,6+((i*7)%30),1,1)}},
+'跳躍':g=>{hBg(g,S6.deep);hBub(g,14,3);hJelly(g,37,14,1.4,'G');hSpeed(g,[30,34,38],30,44,'rgba(134,160,164,.4)')},
+'蓄電':g=>{hBg(g,S6.storm);hJelly(g,37,20,1.4,'L');g.strokeStyle='rgba(200,176,96,.5)';g.lineWidth=1;g.beginPath();g.arc(37,20,16,0,7);g.stroke()},
+'再帰':g=>{hBg(g,S6.deep);hJelly(g,37,18,1.2,'L');g.strokeStyle='rgba(200,168,136,.5)';g.lineWidth=1;g.beginPath();g.arc(37,22,16,-2.4,1.8);g.stroke()},
+'投影':g=>{hBg(g,S6.deep);hJelly(g,24,22,1.1,'G');g.globalAlpha=.4;hJelly(g,50,22,1.1,'G');g.globalAlpha=1;hL(g,30,20,44,20,'rgba(220,222,224,.4)',2)},
+'光束':g=>{hBg(g,S6.deep);hJelly(g,12,22,1,'G');hL(g,18,22,72,18,'rgba(220,222,224,.4)',3);hL(g,18,22,72,18,'#e2ccae',1)},
+'圧縮演算':g=>{hBg(g,S6.storm);for(let i=0;i<4;i++){g.strokeStyle='rgba(134,160,164,'+(.6-i*.12)+')';g.lineWidth=.7;g.strokeRect(37-4-i*5,22-3-i*4,8+i*10,6+i*8)}hOrb(g,37,22,3,'134,160,164','#86a0a4')},
+'流線':g=>{hBg(g,S6.deep);for(let i=0;i<5;i++){g.strokeStyle='rgba(134,160,164,'+(.5-i*.08)+')';g.lineWidth=1;g.beginPath();g.moveTo(0,10+i*6);g.quadraticCurveTo(37,4+i*6,74,14+i*6);g.stroke()}hJelly(g,54,20,1,'F')},
+'加速':g=>{hBg(g,S6.storm);hSpeed(g,[8,14,20,26,32],0,40,'rgba(200,176,96,.4)');hJelly(g,52,20,1.1,'L')},
+'闇を呼ぶ':g=>{hBg(g,S6.dark);hSmoke(g,37,44,6,'#17151e','#2a2a44',30);hJelly(g,37,18,1.6,'D')},
+'硝子の殻':g=>{hBg(g,S6.deep);hJelly(g,37,22,1.5,'G');g.strokeStyle='rgba(220,222,224,.6)';g.lineWidth=.8;g.beginPath();g.arc(37,22,15,0,7);g.stroke()},
+'氷河':g=>{hBg(g,S6.ice);for(let i=0;i<5;i++)hP(g,[[6+i*14,44],[12+i*14,22+(i%2)*6],[18+i*14,44]],'#5a7078');jRow(g,['F','F'],14,1)},
+'融合':g=>{hBg(g,S6.ember);hJelly(g,37,18,1.7,'P');hFlame(g,37,40,16,12,4)},
+'最適化':g=>{hBg(g,S6.storm);for(let i=0;i<3;i++){g.strokeStyle='rgba(134,160,164,.6)';g.lineWidth=.6;g.beginPath();g.moveTo(10,10+i*12);g.lineTo(30,10+i*12);g.lineTo(37,22);g.stroke();g.beginPath();g.moveTo(64,10+i*12);g.lineTo(44,10+i*12);g.lineTo(37,22);g.stroke()}hOrb(g,37,22,4,'134,160,164','#86a0a4')},
+'容量拡張':g=>{hBg(g,S6.deep);for(let i=0;i<5;i++){g.strokeStyle='rgba(134,160,164,.5)';g.lineWidth=.7;g.beginPath();g.arc(10+i*13.5,22,5,0,7);g.stroke()}jRow(g,['L','F'],22,.8)},
+'静電放出':g=>{hBg(g,S6.storm);hJelly(g,37,16,1.3,'L');for(const a of[.6,1.6,2.6])hBolt(g,37,22,37+Math.cos(a)*30,22+Math.sin(a)*24)},
+'循環':g=>{hBg(g,S6.deep);g.strokeStyle='rgba(134,160,164,.5)';g.lineWidth=1;g.beginPath();g.ellipse(37,22,26,12,0,0,7);g.stroke();for(let i=0;i<4;i++){const a=i/4*6.283;hJelly(g,37+Math.cos(a)*26,22+Math.sin(a)*12,.6,'LFDP'[i])}},
+'雷雲':g=>{hBg(g,S6.storm);for(let i=0;i<4;i++){g.fillStyle='rgba(78,66,80,.9)';g.beginPath();g.ellipse(12+i*16,10,12,6,0,0,7);g.fill()}hBolt(g,30,14,26,40);hJelly(g,52,30,.8,'L')},
+'過負荷':g=>{hBg(g,S6.ember);hJelly(g,37,18,1.3,'L');hFlame(g,37,44,30,16,7);hCrack(g,37,18,[.5,2.6],8)},
+'自己修復':g=>{hBg(g,S6.deep);hJelly(g,37,20,1.4,'G');hG(g,37,20,14,'154,168,96',.35);for(let i=0;i<5;i++){g.fillStyle='#9aa860';g.fillRect(24+i*6,34-i*2,1.4,1.4)}},
+'雷嵐':g=>{hBg(g,S6.storm);for(let i=0;i<5;i++)hJelly(g,8+i*14.5,14+((i%2)*10),.7,'L');hBolt(g,20,0,24,44);hBolt(g,52,0,48,44)},
+'混沌':g=>{hBg(g,S6.dark);for(let i=0;i<5;i++)hJelly(g,10+i*13,10+((i*13)%26),.6,'LFDPG'[i]);g.strokeStyle='rgba(200,168,136,.4)';g.lineWidth=.6;g.beginPath();g.arc(37,22,18,0,5);g.stroke()},
+'消散':g=>{hBg(g,S6.deep);g.globalAlpha=.4;hJelly(g,24,22,1,'F');g.globalAlpha=1;hJelly(g,48,22,1.2,'G');for(let i=0;i<8;i++){g.fillStyle='#86a0a4';g.fillRect(14+i*3,14+((i*5)%16),1,1)}},
+'均衡':g=>{hBg(g,S6.deep);hL(g,10,24,64,24,'#848c9a',1.2);hL(g,37,24,37,40,'#848c9a',1.2);hJelly(g,14,18,.8,'F');hJelly(g,60,18,.8,'P')},
+'闇の帳':g=>{hBg(g,S6.dark);g.fillStyle='#2a2a44';g.beginPath();g.moveTo(0,0);g.quadraticCurveTo(37,30,74,0);g.lineTo(74,44);g.lineTo(0,44);g.fill();hJelly(g,37,14,1.2,'D')},
+'冷気放出':g=>{hBg(g,S6.ice);hJelly(g,37,16,1.3,'F');for(let i=0;i<6;i++)hIce(g,37,22,.5+i*.4,16)},
+'乱れ撃ち':g=>{hBg(g,S6.deep);hJelly(g,14,22,1,'G');for(const a of[-.4,0,.35])hL(g,18,22,18+Math.cos(a)*56,22+Math.sin(a)*56,'#e2ccae',.8)},
+'多重放出':g=>{hBg(g,S6.storm);jRow(g,['L','L','L'],12,.8);for(let i=0;i<3;i++)hBolt(g,22+i*15,18,22+i*15,44)},
+'偏った思考':g=>{hBg(g,S6.dark);hOrb(g,37,22,7,'106,106,152','#3e3e66');for(let i=0;i<6;i++){const a=i/6*6.283;hL(g,37+Math.cos(a)*10,22+Math.sin(a)*10,37+Math.cos(a)*22,22+Math.sin(a)*18,'rgba(106,106,152,.6)',.8)}},
+'創造回路':g=>{hBg(g,S6.deep);for(let i=0;i<6;i++){hL(g,10+i*10,8,10+i*10,36,'rgba(134,160,164,.4)',.6);hL(g,6,10+i*5,68,10+i*5,'rgba(134,160,164,.2)',.5)}hOrb(g,37,22,4,'200,176,96','#c8b060')},
+'電磁律動':g=>{hBg(g,S6.storm);g.strokeStyle='#c8b060';g.lineWidth=1;g.beginPath();g.moveTo(0,22);for(let i=0;i<=24;i++)g.lineTo(i*3.1,22+Math.sin(i*1.1)*10*(i%2?1:-.6));g.stroke();hJelly(g,37,14,.9,'L')},
+'流星':g=>{hBg(g,S6.ember);hSpeed(g,[4,6,8],44,74,'rgba(216,138,72,.4)');hJelly(g,34,22,1.4,'P');hFlame(g,46,20,10,12,3)},
+'分裂':g=>{hBg(g,S6.deep);hJelly(g,37,22,1.8,'G');for(let i=0;i<4;i++)hJelly(g,8+i*20,38,.5,'LFDP'[i])},
+'再起動':g=>{hBg(g,S6.deep);g.strokeStyle='#86a0a4';g.lineWidth=1.4;g.beginPath();g.arc(37,22,14,-1.2,4.4);g.stroke();hL(g,37,6,37,18,'#86a0a4',1.6)},
+'虹':g=>{hBg(g,S6.deep);for(let i=0;i<4;i++){g.strokeStyle=JC['LFDP'[i]][1];g.lineWidth=1.6;g.beginPath();g.arc(37,46,30-i*3,3.4,6.0);g.stroke()}jRow(g,['L','F','D'],32,.6)},
+'雷霆':g=>{hBg(g,S6.storm);hBolt(g,37,0,37,44);hBolt(g,20,0,28,44);hBolt(g,54,0,46,44);hJelly(g,37,16,1,'L')},
+'潮汐反転':g=>{hBg(g,S6.deep);for(let i=0;i<3;i++){g.strokeStyle='rgba(134,160,164,'+(.5-i*.1)+')';g.lineWidth=1;g.beginPath();g.moveTo(0,14+i*8);g.quadraticCurveTo(37,30+i*8,74,14+i*8);g.stroke()}hJelly(g,20,16,.7,'F');hJelly(g,54,16,.7,'L')},
+'捕食':g=>{hBg(g,S6.deep);hTent(g,6,40,40,20,5);hJelly(g,48,18,.8,'P');for(let i=0;i<5;i++){g.fillStyle='#d88a48';g.fillRect(40+i*2,22+i,1,1)}},
+'触手絡め':g=>{hBg(g,S6.deep);for(let i=0;i<3;i++)hTent(g,4,30+i*5,64,14+i*6,3);hHit(g,64,18,6)},
+'出芽':g=>{hBg(g,S6.deep);hJelly(g,30,22,1.3,'F');hJelly(g,52,26,.7,'F');hL(g,36,24,48,26,'rgba(134,160,164,.5)',.8)},
+'変色':g=>{hBg(g,S6.dark);jRow(g,['L','D','P','F'],22,.9);g.strokeStyle='rgba(200,168,136,.4)';g.lineWidth=.6;g.beginPath();g.moveTo(10,32);g.lineTo(64,32);g.stroke()},
+'深海の圧':g=>{hBg(g,['#0e0d12','#0e0d12','#17202a']);hWaves(g,37,0,6,.3,2.84,'rgba(58,80,88,.6)');hBub(g,10,5)},
+'群れの共鳴':g=>{hBg(g,S6.deep);jRow(g,['F','F','F'],22,1);for(let i=0;i<3;i++){g.strokeStyle='rgba(134,160,164,.4)';g.lineWidth=.8;g.beginPath();g.arc(37,22,10+i*8,0,7);g.stroke()}},
+'核の暴走':g=>{hBg(g,S6.ember);hWaves(g,37,22,6,0,6.283,'rgba(216,138,72,.4)');hOrb(g,37,22,6,'216,138,72','#c8583a');hCrack(g,37,22,[0,2,4],10)},
+'宇宙の傘':g=>{hBg(g,['#0e0d12','#17151e','#2a2a44']);hStars(g,20,9);hJelly(g,37,22,2,'D');jRow(g,['L','F','P'],38,.45)},
+'漂う群れ':g=>{hBg(g,S6.deep);hBub(g,12,4);for(let i=0;i<6;i++)hJelly(g,8+i*12,12+((i*11)%24),.55,'LFDPGL'[i])}};
+// 無色・協力カードの絵（細かさ2）
+const HMC5={
+'応急手当':g=>{hBg(g,['#17151e','#2c2836','#3a3442']);hP(g,[[18,14],[56,14],[56,32],[18,32]],'#c8a888');g.fillStyle='#7e2a24';g.fillRect(34,17,6,12);g.fillRect(31,20,12,6);hBArm(g,60,34,-2.6,16)},
+'目くらまし':g=>{hBg(g,['#17151e','#3a3442','#6a5458']);hRays(g,37,22,14,'226,204,174',.2,50);hG(g,37,22,16,'226,204,174',.7)},
+'直感':g=>{hBg(g,SKY.violet);hRays(g,37,22,8,'200,168,136',.12,40);for(let i=0;i<3;i++)hCard(g,25+i*12,22,-.25+i*.25,1.4,i===1)},
+'計算された一撃':g=>{hBg(g,SKY.steel);for(let i=0;i<4;i++)hL(g,6,8+i*8,30,8+i*8,'rgba(134,160,164,.4)',.6);hSword(g,10,40,-.6,56,2.2);hHit(g,52,10,6)},
+'予知':g=>{hBg(g,SKY.violet);hOrb(g,37,22,8,'134,160,164','#5a7078');g.fillStyle='#4a3220';g.fillRect(26,32,22,4)},
+'奇跡':g=>{hBg(g,SKY.gold);hRays(g,37,0,12,'232,176,112',.18,50);hG(g,37,14,16,'232,176,112',.6)},
+'賄賂':g=>{hBg(g,SKY.gold);for(let i=0;i<8;i++)hCoin(g,22+((i*9)%30),34-((i*5)%14),4);hOldHand(g,58,18,.9,2.8)},
+'初動':g=>{hBg(g,SKY.dusk);hSpeed(g,[14,20,26,32],0,40);hCard(g,52,22,.2,1.6,1)},
+'落雷':g=>{hBg(g,SKY.violet);for(let i=0;i<5;i++)hBolt(g,8+i*14,0,10+i*14,40)},
+'万能薬':g=>{hBg(g,SKY.moss);hVial(g,37,24,1.5,0,'#a63a2c');hG(g,37,26,12,'166,58,44',.3)},
+'貯金箱':g=>{hBg(g,SKY.gold);hP(g,[[20,16],[54,16],[56,36],[18,36]],'#8a6a5e');g.fillStyle='#17151e';g.fillRect(32,16,10,2);hCoin(g,37,10,4)},
+'刻印':g=>{hBg(g,SKY.gold);hRune(g,37,26,28,'#b8984e');for(let i=0;i<3;i++)hCard(g,25+i*12,18,-.2+i*.2,1.2,1)},
+'大逆転':g=>{hBg(g,SKY.blood);g.strokeStyle='#a63a2c';g.lineWidth=1.6;g.beginPath();g.arc(37,22,14,-.6,4.2);g.stroke();hP(g,[[47,8],[52,14],[44,14]],'#a63a2c');hSword(g,10,40,-.7,40,2)},
+'天啓':g=>{hBg(g,SKY.gold);hRays(g,37,4,12,'232,176,112',.18,50);hOrb(g,37,14,4,'232,176,112','#e8b070')},
+'鏡の盾':g=>{hBg(g,SKY.steel);hShield(g,37,22,1,.1,{t:.6,plain:1,f:'#86a0a4'});hL(g,30,10,44,34,'rgba(220,222,224,.5)',1.4)},
+'写し身':g=>{hBg(g,SKY.violet);hCard(g,30,22,-.15,1.8,1);g.globalAlpha=.4;hCard(g,44,22,.15,1.8,1);g.globalAlpha=1}};
+const HMC7={
+'援護':g=>{hBg(g,SKY.steel);hShield(g,26,22,.9,-.2,{t:.6});hShield(g,48,22,.9,.2,{t:.6})},
+'鼓舞':g=>{hBg(g,SKY.gold);hL(g,24,40,28,2,'#4a3220',1.6);hP(g,[[28,3],[52,6],[46,11],[52,16],[28,17]],'#7e2a24');hRays(g,40,10,8,'232,176,112',.1,40)},
+'連携攻撃':g=>{hBg(g,SKY.dusk);hSword(g,8,40,-.6,50,2.2);hSword(g,66,40,-2.54,50,2.2);hHit(g,37,16,8)},
+'分け前':g=>{hBg(g,SKY.moss);for(const x of[24,50])hVial(g,x,24,1,0,'#a63a2c');hL(g,30,20,44,20,'rgba(200,168,136,.5)',.8)},
+'声援':g=>{hBg(g,SKY.dusk);hHorn(g,10,30,1.1,-.3);hWaves(g,40,16,4,-1,1);hCard(g,60,30,.3,1,1)},
+'囮':g=>{hBg(g,SKY.ash);hP(g,[[30,10],[44,10],[46,38],[28,38]],'#6a4a30');hP(g,[[34,4],[40,4],[40,10],[34,10]],'#a8846c');g.strokeStyle='#7e2a24';g.lineWidth=1;g.beginPath();g.arc(37,22,6,0,7);g.stroke();g.beginPath();g.arc(37,22,2,0,7);g.stroke()},
+'共鳴':g=>{hBg(g,SKY.violet);for(let i=0;i<4;i++){g.strokeStyle='rgba(200,168,136,'+(.6-i*.1)+')';g.lineWidth=1;g.beginPath();g.arc(16+i*14,22,6,0,7);g.stroke()}hWaves(g,37,22,4,0,6.283,'rgba(200,168,136,.3)')},
+'蘇生の祈り':g=>{hBg(g,SKY.gold);hRays(g,37,0,12,'232,176,112',.16,48);for(const d of[-1,1])hP(g,[[37+d*2,40],[37+d*10,20],[37+d*6,14],[37+d*1,30]],'#c8a888');hG(g,37,16,10,'232,176,112',.5)}};
+for(const T of[HMC0,HMC1,HMC2,HMC3,HMC4,HMC5,HMC6,HMC7])for(const k in T)if(!HART[k])HART[k]=()=>hmMk(T[k]);
 function card(x,y,o,dim,gl,pv){card0(x,y,o,dim,gl,pv);if(o&&o.en&&ENC[o.en])enBadge(x+73,y+28,o.en,o.en==='sharp'||o.en==='nimble'?o.ev:null)}
 function card0(x,y,o,dim,gl,pv){{const m=ctx.getTransform();LPC.push({x:(m.a*x+m.c*y+m.e)/K,y:(m.b*x+m.d*y+m.f)/K,w:84*m.a/K,h:106*m.d/K,o})}if(C[o.i]&&C[o.i].fa){cardFA(x,y,o,dim,gl,pv);return}const c=cd(o),rare=c.r===2,bk=c.t>=3,col=bk?(c.t===4?'#7a3a8a':'#5a5a66'):c.k===5||c.r===-2?'#a8a8b8':TC[c.t],parts=dl(c,pv),ls=[],lc=[],PL=parts.map((p,i)=>[p,parts.cl[i]||(p==='廃棄'?'#ffd23f':'#e8e4ff')]);PL.sort((a,b)=>(a[0]==='廃棄')-(b[0]==='廃棄'));PL.forEach(([p,cl])=>{for(const l of wrap(p,8)){ls.push(l);lc.push(cl)}});const ah=AH(ls.length);
 if(rare&&gl){const a=.5+.25*Math.sin(T*3+x*.05);ctx.save();ctx.shadowColor='rgba(255,196,80,'+a+')';ctx.shadowBlur=12*K;ctx.fillStyle='#ffd070';ctx.fillRect(x-2,y-2,88,110);ctx.restore()}

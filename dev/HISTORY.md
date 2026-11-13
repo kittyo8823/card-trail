@@ -322,3 +322,4 @@
 - Ver3.16 ユウキングのカードの絵で、正面向きの盾・兜を多くを斜め（3/4）向きに（ユーザー指定：正面ばかりは違和感、数枚は正面でよい）。hShield に o.t（斜め具合）、hSqHelm に q（斜め向き）。堅牢・血の代償・威嚇・狂戦士の血は正面のまま。カードの枠ごと全部並べる撮影 tests/card_sheet.js。
 - Ver3.17 兜だけ（顔に見える）の絵をやめた（ユーザー指定）：威嚇＝向けた切っ先と赤い圧の波／雄叫び＝戦旗と音の波／血の叫び＝血のしたたる拳／狂戦士の血＝血まみれの斧／憤怒＝炎をまとった拳／不死身＝ひびから金の光が漏れる胸当て。頭突きは兜同士の衝突なので残した。
 - Ver3.18 坂井のカード65枚の絵を細かさ2に（HMC1）。部品を追加：短剣 hKnife・毒の小瓶 hVial・毒の雲 hPC・包帯の腕 hBArm・舞うカード hCard・針 hNeedle・外套 hCloak。色の表に毒の緑2色。カードを枠ごと並べる tests/card_sheet.js を画像の直接書き出しに直し、キャラ番号を引数に。
+- Ver3.19 残り全キャラのカードの絵を細かさ2に（ユーザー指定「全キャラ続けて」）：坪内丸 HMC2（刀 hKatana・鞘 hSaya・気 hKi・一閃 hFlash・花びら hPetal・金床 hAnvil・槌 hHammer・月 hMoon・雷 hBolt）、名無し HMC3（魔導書 hBook・頁 hPage・魔法の玉 hOrb・氷の槍 hIce・ねじれた杖 hStaffW・老人の手 hOldHand・破滅の印 hDoom・瓶 hBottle）、ホーリー大輔 HMC4（緑の杖 hStaffG・ダンベル hDumb・グローブ hGlove・星 hStars・アイマスク hEyeMask・時計 hClock・シェイカー hShaker・スカンク hSkunk・朝焼け hSunrise）、ネブラ HMC6（クラゲ hJelly＝雷L・氷F・闇D・プラズマP・ガラスG、触手 hTent、泡 hBub）、無色 HMC5・協力 HMC7。色の表に桜色と雷の色を追加。これで全カード（状態異常・呪い・古の版・古の者のカードを除く）が細かさ2の絵になった。
