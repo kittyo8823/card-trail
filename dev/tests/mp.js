@@ -13,7 +13,7 @@ const BOT=`window.__bot=setInterval(()=>{try{
   for(let i=0;i<b.hand.length;i++){const c=cd(b.hand[i]);if(!c.un&&(c.X||b.me>=c.c)&&!b.hand[i].sld&&!(c.ms&&b.pl>0)&&!(c.solo&&b.hand.length>1)&&!(c.pay&&P.gold<c.pay)&&b.pl<cLim()&&!(c.hp&&P.hp<=c.hp+5)){const al=alive();play(i,b.en.indexOf(al[(i+b.turn)%al.length]));return}}
   if(P.pot.length&&Math.random()<.05){usePot(0);return}endTurn();return}
  if(S==='reward'){if(RW.pot)givePot(RW.pot);if(RW.cards&&RW.cards.length)P.deck.push({i:RW.cards[0],u:0});after();return}
- if(S==='btr'){if(BT.pick<0){BT.pick=0;BT.t0=T;gain(BT.rs[0])}btNext();return}
+ if(S==='btr'){if(BT.pick<0){BT.pick=0;BT.t0=T;if(BT.anc!=null){if(anDo(BT.rs[0]))return}else gain(BT.rs[0])}btNext();return}
  if(S==='act'){startAct();return}
  if(S==='rest'){P.hp=Math.min(P.mhp,P.hp+Math.floor(P.mhp*.3));go('map');return}
  if(S==='shop'){go('map');return}
