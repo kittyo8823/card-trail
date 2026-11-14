@@ -280,10 +280,10 @@ Playwright（chromium）入りの環境なら、ページを開いて `page.eval
 - 見た目だけの小さな変更は、自動プレイのテストを省いてスクリーンショットの確認だけにしている（Ver2.61〜）。ゲームの仕組みに触る変更では smoke.js を回す。
 
 ## やりたいことリスト（ユーザーが後でやる予定。終わったら消す）
-（今は無し）
+- 【次の会話ですぐやる】スレスパ2のザコ敵とエリートの見た目と行動パターンを正確に調べてまとめる（ユーザー依頼）。作業環境「card-trail」（mobalytics.gg・brokenbuilds.gg・sts2.untapped.gg を許可済み）で開いた会話で、https://mobalytics.gg/slay-the-spire-2/encounters/monsters ・ /encounters/elites ・ https://sts2.untapped.gg/en/guides/elites-intro ・ brokenbuilds.gg/slay-the-spire-2/encounters/<名前> を読む。層・道（1a 草木 Overgrowth／1b 地下の船着き場 Underdocks／2 Hive／3 Glory）ごとに、名前・HP・特性・行動と数値・行動の順番・見た目・出てくる組み合わせ。早期アクセスなので数値は変わりうる。検索でわかっていた分：1a エリート Bygone Effigy（HP127）・Byrdonis（HP81〜84、縄張り＝毎ターン筋力）・Phrog Parasite（感染3枚と4×4の鞭打ちを交互）、1b エリート Phantasmal Gardener・Skulking Colony・Terror Eel。
 
-## 次の会話への引き継ぎ（Ver3.25 作業版）
-- 公開版（GitHub Pages）は Ver3.27（控え index47 = Ver3.26）。dev も Ver3.27。
+## 次の会話への引き継ぎ（Ver3.36 作業版）
+- 公開版（GitHub Pages）は Ver3.27（控え index47 = Ver3.26）。dev は Ver3.36（アーティファクトのみ公開。Ver3.28〜3.36 は GitHub Pages 未反映）。
 - 戦闘で説明が長い（4〜5行）カードは下が切れる。案1（長い時だけ絵の窓を小さくする）・案2（手札を8px上げる：`y=sel…?232:250`）・案3（触ると全文）を出したが、ユーザーは「一旦いい」（保留）。5行のカードは案2だけでは収まらない。
 - 初期カード「斬撃」「防御」を命刈りの鎌と同じ細かさ（HART、148×88・1px）で描いた見本：`dev/mock/hart_basic.js`（`artStrike`／`artDefend`）、撮影 `node dev/mock/hart_basic_shot.js 出力先`。ユーザー指定で「描くだけ」（ゲームには入れていない）。その2（本家の描き方を参考：主役1つを大きく斜めに・平塗り＋2〜3段の影・背景は大きな色の形・主役に暗い縁取り。構図はまねしない）は `dev/mock/hart_basic2.js`（`artStrike2`／`artDefend2`）、撮影 `node dev/mock/hart_basic2_shot.js 出力先`。細かさ「2」（1＝今の粗いドット、3＝本家風の見本その2の間。74×44 で描いて2倍の 2px ドット、くすんだ色の表に寄せる・ディザあり）は `dev/mock/hart_mid.js`（`artStrikeM`／`artDefendM`、剣を大きく手前に寄せた斬撃 `artStrikeM2`）、撮影 `node dev/mock/hart_mid_shot.js 出力先`。5枚の見本（兜割り・鉄壁・大回転・粉砕・魔の力）は `dev/mock/hart_mid5.js`、撮影 `node dev/mock/hart_mid5_shot.js 出力先`（返事待ち）。ユーザーの考え：斬撃は剣をでかでかと描く、他の攻撃カードはキャラが剣を振る絵もあり（本家2のアイアンクラッドのように）。返事待ち。本家の絵は slay-the-spire.fandom.com の api.php（imageinfo）で画像の場所を取れる（環境で許可済み。ページ本体は確認画面で止まる）。
 - 地図のマスのアイコンを細かく（8×8・倍率3 → 12×12・倍率2）する見本：`dev/mock/map_icons.py`（形と色。実行すると `map_icons.js` を作る）、撮影 `node dev/mock/map_icons_shot.js 出力先`。2回目（テカテカさせない・丸い形にしない・黒い輪郭を付けない）も見たうえで、ユーザーは今のままを選んだ（入れない）。
