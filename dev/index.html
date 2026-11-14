@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.28';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.29';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -5344,7 +5344,7 @@ relup:['昇華の儀','',''],ac0:['','',''],ac1:['','',''],ac2:['','',''],ac3:['
 // エンチャントを付けられるカードの説明（ENC の条件と同じ内容）
 const ENCT={sharp:'攻撃カード',glam:'Xコスト以外のカード',spiral:'Xコスト以外のカード',imbued:'パワーとXコスト以外のカード',sown:'状態異常・呪い以外のカード',royal:'状態異常・呪い以外のカード'};
 const ANEN={eshp:['sharp',0],egla:['glam',3],espi:['spiral',1],eimb:['imbued',2],esow:['sown',3],eroy:['royal',2]},anEL=k=>dkL((o,c)=>!o.en&&c.t<3&&ENC[ANEN[k][0]][3](o.u?up(c):c)),ACN=['千年の灯','骨鯨の歌声','時呑み','灰燼の翼','晶樹の実り','万象の頁'];
-function anTxt(k){if(k==='relup'){const a=CH[P.cls].rel,b=RLUP[a]||'burn2',A=RL[a]||RL.burn;return['昇華の儀','「'+A[0]+'」を「'+RL[b][0]+'」に変える','初期レリック「'+A[0]+'」（'+A[1]+'）が、上位の「'+RL[b][0]+'」（'+RL[b][1]+'）に変わる。']}if(/^ac\d$/.test(k)){const c=C[CI(ACN[+k[2]])];return['「'+c.n+'」','フルアートカード「'+c.n+'」を得る','古の者の姿を写した特別なカード。'+dl(c).join('・')+'。']}if(k==='fang'){const f=FAN[P.cls]||['',''];return['古の牙','「'+f[0]+'」を古の版「'+f[1]+'」に変える','初期カード「'+f[0]+'」1枚が、古の版「'+f[1]+'」に変わる。古の版は普通の強化よりさらに強い。強化してあれば強化も引き継ぐ。']}return ANGT[k]||[RL[k][0],RL[k][1],RL[k][1]]}
+function anTxt(k){if(k==='relup'){const a=CH[P.cls].rel,b=RLUP[a]||'burn2',A=RL[a]||RL.burn;return['昇華の儀','「'+A[0]+'」を「'+RL[b][0]+'」に変える','初期レリック「'+A[0]+'」（'+A[1]+'）が、上位の「'+RL[b][0]+'」（'+RL[b][1]+'）に変わる。']}if(/^ac\d$/.test(k)){const c=C[CI(ACN[+k[2]])];return['「'+c.n+'」','カード「'+c.n+'」を得る','古の者の姿を写した特別なカード。'+dl(c).join('・')+'。']}if(k==='fang'){const f=FAN[P.cls]||['',''];return['古の牙','「'+f[0]+'」を古の版「'+f[1]+'」に変える','初期カード「'+f[0]+'」1枚が、古の版「'+f[1]+'」に変わる。古の版は普通の強化よりさらに強い。強化してあれば強化も引き継ぐ。']}return ANGT[k]||[RL[k][0],RL[k][1],RL[k][1]]}
 const anIco=k=>ANIC[k]||(k==='relup'?rIcon(RLUP[CH[P.cls].rel]||'burn2'):ANEN[k]?enIcon(ANEN[k][0]):/^ac\d$/.test(k)?ANIC.acard:rIcon(k));
 function anOk(k){if(k==='fang')return faTgt()>=0;if(k==='relup'){const a=CH[P.cls]&&CH[P.cls].rel;return!!(RLUP[a]&&has(a))}if(ANEN[k])return anEL(k).length>0;if(k==='ash'||k==='sand')return P.deck.length>4;if(ANGT[k])return true;return!!RL[k]&&!has(k)}
 function openBossChest(){const seen=P.ancS||[],l=[0,1,2,3,4,5].filter(i=>!seen.includes(i)),a=shuf(l.length?l:[0,1,2,3,4,5])[0];P.ancS=seen.concat([a]);const ok=ANC[a].pool.filter(anOk),gf=shuf(ok.filter(k=>ANGT[k]||k==='fang')),rl=shuf(ok.filter(k=>!ANGT[k]&&k!=='fang')),nr=rl.length&&(gf.length<3||Math.random()<.35)?1:0,rs=shuf(gf.slice(0,3-nr).concat(rl.slice(0,nr)));if(!rs.length){startAct();return}BT={anc:a,rs,pick:-1,t0:T,cf:0,sel:null,lp:null};go('btr')}
