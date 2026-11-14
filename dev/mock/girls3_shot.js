@@ -30,6 +30,16 @@ window.WFX2=[
  // 石突きの下：光の割れ目
  for(const[dx,dy,w]of[[-8,0,6],[3,1,7],[-3,-1,5]])L('#5a9aff',.7,()=>e.fillRect(x+dx,yb+dy,w,1));L('#a8d8ff',.6,()=>{e.beginPath();e.ellipse(x,yb,10,2,0,0,6.3);e.fill()});
  e.globalCompositeOperation='source-over'},
+// 槍2.5 三叉（中くらいの描き込み）：光の柄、三日月の口金、反った両刃と中央の刃。にじみは控えめ、節と粒は無し
+({e,X,Y,T})=>{const x=Math.round(X(46)/2),yb=Math.round(232/2),yt=Math.round(Y(3)/2),L=(c,a,f)=>{e.globalAlpha=a;e.fillStyle=c;f();e.globalAlpha=1},P=(pts,c,a)=>L(c,a,()=>{e.beginPath();for(const[u,v]of pts)e.lineTo(u,v);e.fill()});
+ e.globalCompositeOperation='lighter';
+ L('#3a7ae8',.14,()=>{e.beginPath();e.ellipse(x,yt-6,9,11,0,0,6.3);e.fill()});
+ L('#3a7ae8',.5,()=>e.fillRect(x-1,yt,4,yb-yt));L('#8ac4ff',.9,()=>e.fillRect(x,yt,2,yb-yt));
+ P([[x-7,yt-1],[x,yt+2],[x+8,yt-1],[x,yt]],'#7ab8ff',.95);
+ for(const sg of[-1,1])P([[x+sg*5,yt-1],[x+sg*9,yt-6],[x+sg*9.4,yt-14],[x+sg*7.4,yt-8],[x+sg*3,yt-2]],'#7ab8ff',.95);
+ P([[x+.5,yt-24],[x+2.6,yt-12],[x+1.6,yt-1],[x-.6,yt-1],[x-1.6,yt-12]],'#8ac4ff',.95);L('#f0faff',.9,()=>e.fillRect(x,yt-20,1,18));
+ L('#8ac4ff',.5,()=>{e.beginPath();e.ellipse(x,yb,7,1.6,0,0,6.3);e.fill()});
+ e.globalCompositeOperation='source-over'},
 // 槍4 光の輪：穂先のまわりを光の輪が回り、足元に光の陣
 ({e,X,Y,T})=>{const x=X(46),c=['#2a6ad8','#7ab8ff','#e0f4ff'];SPR_(e,x,232,Y(-8),T,c);const hx=x/2,hy=Y(-8)/2;e.globalCompositeOperation='lighter';e.fillStyle='#b8e0ff';e.beginPath();e.moveTo(hx,hy-12);e.lineTo(hx+3,hy-1);e.lineTo(hx-3,hy-1);e.fill();e.globalAlpha=.8;e.strokeStyle='#7ab8ff';e.lineWidth=1;e.beginPath();e.ellipse(hx,hy-4,8,2.6,Math.sin(T)*.3,0,6.3);e.stroke();e.globalAlpha=.5;e.strokeStyle='#5aa0ff';e.beginPath();e.ellipse(hx,232/2,14,3,0,0,6.3);e.stroke();e.beginPath();e.ellipse(hx,232/2,9,2,0,0,6.3);e.stroke();e.globalAlpha=1;e.globalCompositeOperation='source-over'}];
 window.WFX=[
@@ -59,7 +69,7 @@ const NK=Math.max(process.argv[3]?process.argv[3].split(',').length:3,process.ar
  g.drawImage(KI,kx,ky);
  const U=3,X=a=>kx+a*U+2,Y=b=>ky+(b+4)*U+2;
  flm(X(24),Y(13),14,0);flm(X(33),Y(13),10,1.3);flm(X(14),Y(13),9,2.1);flm(X(38.6),Y(20),9,.7);flm(X(23),Y(36),12,1.9);flm(X(31),Y(36),10,2.7);flm(X(13),Y(35),9,3.4);
- {const W_=window.WSET==='spear'?WFX2:window.WSET==='spear3'?[WFX2[2]]:WFX;if(W_&&W_[window.CUR])W_[window.CUR]({e,X,Y,T,flm,kx,ky})}g.imageSmoothingEnabled=false;g.drawImage(E,0,0,480,260);glow(X(30),Y(6.4),16,'rgba(140,210,255,.7)');
+ {const W_=window.WSET==='spear'?WFX2:window.WSET==='spear3'?[WFX2[2]]:window.WSET==='spear25'?[WFX2[3]]:WFX;if(W_&&W_[window.CUR])W_[window.CUR]({e,X,Y,T,flm,kx,ky})}g.imageSmoothingEnabled=false;g.drawImage(E,0,0,480,260);glow(X(30),Y(6.4),16,'rgba(140,210,255,.7)');
  for(let k=0;k<10;k++){const u=(k/10+T/6.283*.6)%1,x=kx+40+((k*37)%90),y=ky+130-u*120;g.globalAlpha=(1-u)*.8;g.fillStyle='#9ad0ff';g.fillRect(Math.round(x),Math.round(y),2,2)}g.globalAlpha=1},f);
  await p.locator('#sh').screenshot({path:path.join(tmp,'g'+n+'.png')})}
 await b.close();execSync(`python3 -c "
