@@ -284,9 +284,9 @@ Playwright（chromium）入りの環境なら、ページを開いて `page.eval
 ## やりたいことリスト（ユーザーが後でやる予定。終わったら消す）
 （今は無し）
 
-## 次の会話への引き継ぎ（Ver3.38 作業版）
+## 次の会話への引き継ぎ（Ver3.39 作業版）
 - スレスパ2のザコ敵・エリートの見た目と行動パターンを調べた結果は `dev/sts2_enemies.md`（層・道ごと。出典は sts2.untapped.gg の敵ページ。mobalytics は確認画面で読めない）。敵の絵は sts2.untapped.gg の `/_next/image?url=https%3A%2F%2Fsts2json.untapped.gg%2Fart%2Fenemies%2F<名前>.png&w=384&q=70` で取れる（q は70でないと断られる）。ユーザーの返事待ち（これを元に何を作るか）。
-- 公開版（GitHub Pages）は Ver3.27（控え index47 = Ver3.26）。dev は Ver3.38（アーティファクトのみ公開。Ver3.28〜3.38 は GitHub Pages 未反映）。
+- 公開版（GitHub Pages）は Ver3.27（控え index47 = Ver3.26）。dev は Ver3.39（アーティファクトのみ公開。Ver3.28〜3.39 は GitHub Pages 未反映）。
 - 戦闘で説明が長い（4〜5行）カードは下が切れる。案1（長い時だけ絵の窓を小さくする）・案2（手札を8px上げる：`y=sel…?232:250`）・案3（触ると全文）を出したが、ユーザーは「一旦いい」（保留）。5行のカードは案2だけでは収まらない。
 - 初期カード「斬撃」「防御」を命刈りの鎌と同じ細かさ（HART、148×88・1px）で描いた見本：`dev/mock/hart_basic.js`（`artStrike`／`artDefend`）、撮影 `node dev/mock/hart_basic_shot.js 出力先`。ユーザー指定で「描くだけ」（ゲームには入れていない）。その2（本家の描き方を参考：主役1つを大きく斜めに・平塗り＋2〜3段の影・背景は大きな色の形・主役に暗い縁取り。構図はまねしない）は `dev/mock/hart_basic2.js`（`artStrike2`／`artDefend2`）、撮影 `node dev/mock/hart_basic2_shot.js 出力先`。細かさ「2」（1＝今の粗いドット、3＝本家風の見本その2の間。74×44 で描いて2倍の 2px ドット、くすんだ色の表に寄せる・ディザあり）は `dev/mock/hart_mid.js`（`artStrikeM`／`artDefendM`、剣を大きく手前に寄せた斬撃 `artStrikeM2`）、撮影 `node dev/mock/hart_mid_shot.js 出力先`。5枚の見本（兜割り・鉄壁・大回転・粉砕・魔の力）は `dev/mock/hart_mid5.js`、撮影 `node dev/mock/hart_mid5_shot.js 出力先`（返事待ち）。ユーザーの考え：斬撃は剣をでかでかと描く、他の攻撃カードはキャラが剣を振る絵もあり（本家2のアイアンクラッドのように）。返事待ち。本家の絵は slay-the-spire.fandom.com の api.php（imageinfo）で画像の場所を取れる（環境で許可済み。ページ本体は確認画面で止まる）。
 - 地図のマスのアイコンを細かく（8×8・倍率3 → 12×12・倍率2）する見本：`dev/mock/map_icons.py`（形と色。実行すると `map_icons.js` を作る）、撮影 `node dev/mock/map_icons_shot.js 出力先`。2回目（テカテカさせない・丸い形にしない・黒い輪郭を付けない）も見たうえで、ユーザーは今のままを選んだ（入れない）。

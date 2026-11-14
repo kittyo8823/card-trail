@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.38';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.39';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -3985,7 +3985,7 @@ Object.assign(E,{shroom:{n:'胞子茸',hp:[26,30],rnd:1,mv:[{a:5,fr:2,cd:2},{vu:
  pill:{n:'鉄甲の団子虫',hp:[46,52],cur:12,mv:[{a:7,fr:2},{b:12,st:3,lb:'丸まる'},{a:12}]},
  rscroll:{n:'咬む記録板',hp:[16,19],ppc:1,rnd:1,mv:[{a:9,nr:1},{st:2,nr:1,lb:'牙を研ぐ'},{a:3,h:2,r2:1}]},
  mowl:{n:'審判の機梟',hp:[64,70],mv:[{a:11},{a:3,h:5},{sor:1,b:8,lb:'飛翔'},{a:24,vu:2,sx:1}]},
- bshield:{n:'障壁の機獣',hp:[34,38],mv:[{a:5,ab:14}],alo:{a:14,st:3}},
+ bshield:{n:'障壁の機獣',hp:[34,38],fw:1,mv:[{a:5,ab:14}],alo:{a:14,st:3}},
  gunner:{n:'掃射砲台',hp:[24,28],mv:[{a:2,h:5},{a:2,h:5},{st:2,lb:'装填'}]},
  sculpt:{n:'祈祷機',hp:[70,76],lp:1,mv:[{rt:3,lb:'禁じられた祈り'},{a:9}]},
  // Ver3.38 産む敵（スレスパ2の Ovicopter・Fabricator を参考）。smn に配列を渡すとその中から選び、sn 体まで呼ぶ（空きの枠がなければブロック12）。hch は別の敵にかえる
@@ -4189,15 +4189,17 @@ function eX(e){const d=E[e.k];if(!d||e.xd)return;e.xd=1;for(const k of['slp','ht
 function rPk(e,f){const M=e.mv,c=e.rcd||(e.rcd={}),L=[];let sm=0;for(let j=0;j<M.length;j++){const m=M[j];if(m.o||c[j]>0||(m.on&&e.ron&&e.ron[j]))continue;if(!f&&e.rl===j&&(m.nr||(m.r2&&e.rc>=2)))continue;L.push(j);sm+=m.w||1}
  for(const j in c)if(c[j]>0)c[j]--;if(!L.length)return Math.max(0,e.rl);let r=R()*sm,k=L[0];for(const j of L){r-=M[j].w||1;if(r<0){k=j;break}}
  if(M[k].cd)c[k]=M[k].cd;if(M[k].on)(e.ron||(e.ron={}))[k]=1;e.rc=e.rl===k?(e.rc||1)+1:1;e.rl=k;return k}
-function hatchE(e,k){const d=E[k],hp=Math.round((d.hp[0]+RI(d.hp[1]-d.hp[0]+1))*(MPB?mpHpM(MPB.np):1)*1.75*(Aa(2)?1.1:1)*(P.act===3?1.25:1));Object.assign(e,{k,n:d.n,mv:d.mv,i:0,it:d.mv[0],hp,mh:hp,xd:0,fl:.6});eX(e);pop(e,'孵化','#e8e0b0');sfx('bm')}
+function hatchE(e,k){const d=E[k],hp=Math.round((d.hp[0]+RI(d.hp[1]-d.hp[0]+1))*(MPB?mpHpM(MPB.np):1)*1.75*(Aa(2)?1.1:1)*(P.act===3?1.25:1));Object.assign(e,{k,n:d.n,mv:d.mv,i:0,it:d.mv[0],hp,mh:hp,xd:0,fl:.6});eX(e);sortE();pop(e,'孵化','#e8e0b0');sfx('bm')}
 // 連結（rat）：倒れても他の灯が残っていれば rtc ターン後に再結合。残りが無ければ崩れている灯もまとめて倒れる
 function ratE(e){if(!e.rat)return 0;const o=B.en.filter(x=>x!==e&&x.rat&&!x.dead&&!x.rtc);if(o.length){e.hp=0;e.rtc=2;e.blk=0;e.poison=0;e.weak=e.vuln=0;e.str=0;e.it={lb:'崩れている'};pop(e,'崩れた','#8ac8b8');sfx('bm');return 1}for(const x of B.en)if(x!==e&&x.rat&&!x.dead&&x.rtc){x.rtc=0;x.dead=1;x.hp=0;x.dT=T;pop(x,'消えた','#8ac8b8')}return 0}
+// Ver3.39 並び（ユーザー指定）：小さい敵を前（自分に近い左）、大きい敵を後ろに。ボス戦以外。fw は大きくても前（盾役）。敵ターンの途中でも行動の順 B.eo を並べ替えに合わせる
+function sortE(){if(!B||!B.en||B.kind===2||B.en.length<2)return;const sz=e=>{const im=SPR[e.k];return E[e.k]&&E[e.k].fw?-1:im?im.width*im.height:0},eo=B.eo&&B.eo.map(i=>B.en[i]);B.en=B.en.map((e,i)=>[e,i]).sort((a,b)=>sz(a[0])-sz(b[0])||a[1]-b[1]).map(a=>a[0]);if(eo)B.eo=eo.map(e=>B.en.indexOf(e)).filter(i=>i>=0)}
 function fleeE(e){e.dead=1;e.hp=0;e.dT=T;e.dS='flee';e.fled=1;pop(e,'逃げ去った','#c8c8d8');sfx('cl');chk()}
 const bkF=v=>PS&&PS.frl>0?Math.floor(v*.75):v;
 function fight(ks,kind){XF=[];SPR.eye2=SPR.eye;BFX.eye2=BFX.eye;if(MPON()&&!(MPB&&MPB.init)&&!ks.includes('eye'))return mpFight(ks,kind);if(P.act===4)BGB=BGBV;else if(BGB!==BGBV)BGB=bgPick(kind);PS={orb:[],osl:3,foc:0,nwd:0,mig:0,sdc:0,lop:0,stm:0,shr:0,cai:0,eld:0,bcg:0,clwBk:0,forge:0,fnp:0,hlD:0,dsDr:0,fgT:0,fgAt:0,grA:0,dmP:0,strL:0,z0D:0,clwT:0,slyA:0,dbT:0,z0E:0,atKi:0,str:0,weak:0,vuln:0,poison:0,met:0,dem:0,rage:0,barr:0,comb:0,brut:0,tmp:0,dex:0,thn:0,nox:0,ibl:0,aft:0,cut:0,ki:0,cnt:0,kig:0,iai:0,zan:0,dd:0,mana:0,mgt:0,chs:0,pg:0,echo:0,arc:0,rgn:0,itg:0,sls:0,blkd:0,egy:0,psn:0,hpb:0,bers:0,udy:0,ftw:0,a3e:0,svb:0,dsd:0,pmul:0,fz:0,kdr:0,ct2:0,ksd:0,vamp:0,kfst:0,slot:0,chb:0,rech:0,chD:0,msd:0,stb:0,ms2:0,msf:0,qyp:0,gw:0,shvd:0,zt:0,mirT:0};
 B={en:MPB&&MPB.sen?MPB.sen:ks.map(k=>{const d=E[k],hp=Math.round((d.hp[0]+RI(d.hp[1]-d.hp[0]+1))*(MPB?mpHpM(MPB.np):1)*(d.el===1?(Aa(3)?1.15:1):d.el===2?(Aa(4)?1.1:1):d.mn?1:1.75*(Aa(2)?1.1:1)*(P.act===3?1.25:1)));return{k,n:d.n,hp,mh:hp,i:0,str:0,weak:0,vuln:0,poison:0,blk:0,mv:d.mv,el:d.el||0,enr:d.en,sl:d.sl||0,sb:d.sb||0,seal:d.seal||0,lim:d.lim||0,tf:d.tf||0,beat:d.beat||0,gz:d.gz||0,gzd:d.gzd||0,gzc:0,fly:d.fly||0,thr:d.thr||0,ph:d.ph||0,spl:d.spl||0,inv:d.inv||0,mn:d.mn||0,ld:d.ld||0,pr:d.pr||0,pt:d.pt||0,rv:d.rv||0,pst:d.pst||0,cap:d.cap?Math.round(d.cap*(MPB?mpHpM(MPB.np):1)):0,lost:0,dsp:d.dsp||0,dmp:d.dmp||0,hex:d.hex||0,rit:d.rit||0,avg:d.avg||0,fl:0,sh:0,lg:0,dead:0,it:d.mv[0]}}),
 hand:[],dr:shuf(P.deck.map(o=>({...o}))),dis:[],ex:[],me:3,blk:0,turn:0,ph:'p',sel:-1,kind,boss:kind===2,bi:null,tut:kind===0&&!MPON()&&!tutDone()?{s:0,t0:T}:null,atks:0,vt:0,et:0,ei:0,lg:0,sh:0,dsc:0,bn:null,pl:0,fa:0,ch:[],g1:0,bkt:-9,fly:[],nd:0,lt:0};
-for(const e of B.en)eX(e);if(!(MPB&&MPB.sen))eStag(B.en,kind);
+for(const e of B.en)eX(e);if(!(MPB&&MPB.sen))sortE();if(!(MPB&&MPB.sen))eStag(B.en,kind);
 {B.dr=pfTop(B.dr);const isI=o=>C[o.i].inn||o.en==='royal',inn=B.dr.filter(isI);B.dr=B.dr.filter(o=>!isI(o)).concat(inn)}if(has('philo'))for(const e of B.en)e.str+=1;if(has('seye')){for(let k=0;k<2;k++)B.dr.push({i:CI('目眩'),u:0});shuf(B.dr)}if(has('mpain')){for(let k=0;k<2;k++)B.dr.push({i:CI('負傷'),u:0});shuf(B.dr)}if(has('dumb'))PS.str+=1;if(has('ring'))PS.str+=2;if(has('anchor'))B.blk=10;if(has('sya'))PS.ki+=2;if(has('sya2'))PS.ki+=5;if(P.cls===2&&!P.hintK){P.hintK=1;say('気と居合の説明は「？説明」→「坪内丸」を参照')}if(P.cls===3&&!P.hintM){P.hintM=1;say('詠唱と魔力の説明は「？説明」→「名無し」を参照')}if(has('lens'))PS.mana+=2;B.lch=0;if(has('ddisk'))PS.foc+=1;if(has('rcap'))PS.osl+=3;if(has('ccore'))oChan('L');if(has('ccore2')){oChan('L');oChan('L')}if(has('svir'))oChan('D');if(has('nbat'))oChan('P');if(P.cls===6&&!P.hintN){P.hintN=1;say('小クラゲの説明は「？説明」→「ネブラ」を参照')}if(has('dice'))PS.str+=RI(3);
 B.nbE=0;if(P.nb>0){P.nb--;B.nbE=1}const hx=P.hx>0;if(hx)P.hx--;
 for(const e of B.en){if(hx)e.str+=2;if(!(MPB&&MPB.sen)){if(e.el===1&&Aa(3))e.str+=1;if(Aa(7))e.str+=1;if(e.el===2&&Aa(10))e.str+=2;if(e.sl)e.blk=e.sb}if(has('marble')){e.vuln+=1;pop(e,'弱体+1','#ff9a6a')}if(has('ember')){e.poison+=3;pop(e,'毒+3','#7dff9a')}if(has('ruby')){e.weak+=1;pop(e,'脆弱+1','#c9a0ff')}if(has('bomb'))hitE(e,8,.5,0,0)}
@@ -4356,7 +4358,7 @@ if(e.ld)for(const x of B.en)if(x.mn&&!x.dead){x.dead=1;x.hp=0;x.dT=T;x.dS='flee'
 // Ver2.97 眼のHPが半分以下になったら、次の敵ターンの始めに血の魔導結晶を眼の左に呼ぶ（1戦1回。出たターンは行動しない）
 function eyeSpawn(){const ey=B.en.find(e=>e.k==='eye2'&&!e.dead);if(!ey||ey.smd||ey.hp>ey.mh/2)return;ey.smd=1;const d=E.eyeC,hp=Math.round(d.hp[0]*(MPB?mpHpM(MPB.np):1)*(Aa(4)?1.1:1)),o={k:'eyeC',n:d.n,hp,mh:hp,i:0,str:0,weak:0,vuln:0,poison:0,blk:0,mv:d.mv,el:1,fl:.5,sh:0,lg:0,dead:0,it:d.mv[0],sl:0,sb:0,seal:0,lim:0,tf:0,thr:0,ph:0,spl:0,inv:0,cap:0,lost:0,dsp:0,dmp:0,hex:0,rit:0,avg:0,fly:d.fly,nw:1};B.en.unshift(o);pop(o,'出現','#ff4a6a');if(!QT){sfx('bm');shk=Math.max(shk,8);const E2=XEP(ey),C=XEP(o);xBurst(C.x,C.y,'#c01020',18,0,4);xGlow(C.x,C.y,60,'rgba(255,30,60,1)',0,.8);xLash(E2.x-E2.w*.3,E2.y,C.x,C.y,'#8a0a18',4,0,.8,6)}}
 function spawnE(k){const d=E[k],hp=Math.round((d.hp[0]+RI(d.hp[1]-d.hp[0]+1))*(MPB?mpHpM(MPB.np):1)*1.75*(Aa(2)?1.1:1)*(P.act===3?1.25:1)),o={k,n:d.n,hp,mh:hp,i:0,str:0,weak:0,vuln:0,poison:0,blk:0,mv:d.mv,el:0,fl:.5,sh:0,lg:0,dead:0,it:d.mv[0],sl:0,sb:0,seal:0,lim:0,tf:0,thr:d.thr||0,ph:0,spl:0,inv:0,cap:0,lost:0,dsp:0,dmp:0,hex:0,rit:d.rit||0,avg:d.avg||0,nw:1};
- eX(o);const i=B.en.findIndex(x=>x.dead&&!x.reb);if(i>=0)B.en[i]=o;else if(B.en.length<3)B.en.push(o);else return null;pop(o,'出現','#5ff6ff');return o}
+ eX(o);const i=B.en.findIndex(x=>x.dead&&!x.reb);if(i>=0)B.en[i]=o;else if(B.en.length<3)B.en.push(o);else return null;sortE();pop(o,'出現','#5ff6ff');return o}
 function dspE(e){const k=e.dsp,d=E[k],mk=()=>{const hp=Math.round((d.hp[0]+RI(d.hp[1]-d.hp[0]+1))*(MPB?mpHpM(MPB.np):1));return{k,n:d.n,hp,mh:hp,i:0,str:0,weak:0,vuln:0,poison:0,blk:0,mv:d.mv,el:0,fl:.4,sh:0,lg:0,dead:0,it:d.mv[0],sl:0,sb:0,seal:0,lim:0,tf:0,thr:0,ph:0,spl:0,inv:0,cap:0,lost:0,dsp:0,dmp:0,hex:0,rit:d.rit||0,avg:d.avg||0}};
  const a=mk();for(const x in e)if(!(x in a))delete e[x];Object.assign(e,a,{dspd:1,stn:1});if(B.en.length<3){const b2=mk();b2.stn=1;B.en.push(b2)}pop(e,'寄生虫が這い出た（混乱）','#9aff6a');sfx('bm');shk=Math.max(shk,6)}
 // 多段攻撃は、HPバーの表示も1発ずつ減らす（B.vq：まだ表示に反映していないダメージと、その時刻）
