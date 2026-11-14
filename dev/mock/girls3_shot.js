@@ -2,7 +2,18 @@
 const {chromium}=require('playwright'),path=require('path'),fs=require('fs'),{execSync}=require('child_process');
 (async()=>{const out=process.argv[2]||'dknight2.gif',tmp=fs.mkdtempSync('/tmp/claude-0/dk');const b=await chromium.launch();const p=await b.newPage({viewport:{width:480,height:260},deviceScaleFactor:2});const er=[];p.on('pageerror',e=>er.push(e.message));
 await p.route('**/fonts.googleapis.com/**',r=>r.abort());await p.goto('file://'+path.resolve(__dirname,'../index.html'));await p.waitForTimeout(500);
-await p.evaluate(([code,ks,kk])=>{window.GKS=ks;window.KKS=kk;eval(code);window.WFX=[
+await p.evaluate(([code,ks,kk,ws])=>{window.WSET=ws;window.GKS=ks;window.KKS=kk;eval(code);
+window.SPR_=(e,x,y0,y1,T,c)=>{x/=2;y0/=2;y1/=2;e.globalCompositeOperation='lighter';e.globalAlpha=.35;e.fillStyle=c[0];e.fillRect(Math.round(x)-2,Math.round(y1),5,Math.round(y0-y1));e.globalAlpha=.85;e.fillStyle=c[1];e.fillRect(Math.round(x)-1,Math.round(y1),3,Math.round(y0-y1));e.fillStyle=c[2];e.fillRect(Math.round(x),Math.round(y1),1,Math.round(y0-y1));e.globalAlpha=1;e.globalCompositeOperation='source-over'};
+window.WFX2=[
+// 槍1 菱形の穂先：まっすぐ立てた細い光の槍
+({e,X,Y,T})=>{const x=X(46),c=['#2a6ad8','#7ab8ff','#e0f4ff'];SPR_(e,x,232,Y(-8),T,c);const hx=x/2,hy=Y(-8)/2;e.globalCompositeOperation='lighter';e.globalAlpha=.9;e.fillStyle='#7ab8ff';e.beginPath();e.moveTo(hx,hy-14);e.lineTo(hx+4,hy-2);e.lineTo(hx,hy+3);e.lineTo(hx-4,hy-2);e.fill();e.fillStyle='#e8f8ff';e.beginPath();e.moveTo(hx,hy-11);e.lineTo(hx+1.6,hy-2);e.lineTo(hx,hy+1);e.lineTo(hx-1.6,hy-2);e.fill();e.globalAlpha=.5;e.fillStyle='#5aa0ff';e.fillRect(Math.round(hx)-3,Math.round(232/2)-1,7,2);e.globalAlpha=1;e.globalCompositeOperation='source-over'},
+// 槍2 光の旗：穂先の下から光の帯がなびく
+({e,X,Y,T})=>{const x=X(46),c=['#2a6ad8','#7ab8ff','#e0f4ff'];SPR_(e,x,232,Y(-8),T,c);const hx=x/2,hy=Y(-8)/2;e.globalCompositeOperation='lighter';e.fillStyle='#a8d8ff';e.beginPath();e.moveTo(hx,hy-12);e.lineTo(hx+3,hy-1);e.lineTo(hx-3,hy-1);e.fill();for(let k=0;k<3;k++){const sh_=k*1.6;e.globalAlpha=[.4,.55,.75][k];e.fillStyle=['#2a5ac8','#4a8ae8','#9ad0ff'][k];e.beginPath();for(let j=0;j<=8;j++){const u=j/8;e.lineTo(hx-1-u*20,hy+1+sh_+Math.sin(T*2+u*4)*2*u)}e.lineTo(hx-24,hy+8+Math.sin(T*2+4)*2);e.lineTo(hx-19,hy+12-sh_+Math.sin(T*2+4)*2);for(let j=8;j>=0;j--){const u=j/8;e.lineTo(hx-1-u*20,hy+16-sh_+Math.sin(T*2+u*4)*2*u)}e.fill()}e.globalAlpha=1;e.globalCompositeOperation='source-over'},
+// 槍3 三叉の穂先：先が三つに分かれた光の槍
+({e,X,Y,T})=>{const x=X(46),c=['#2a6ad8','#7ab8ff','#e0f4ff'];SPR_(e,x,232,Y(-4),T,c);const hx=x/2,hy=Y(-4)/2;e.globalCompositeOperation='lighter';e.fillStyle='#9ad0ff';e.fillRect(Math.round(hx)-6,Math.round(hy)-1,13,2);for(const[dx,h]of[[-6,8],[0,13],[6,8]]){e.globalAlpha=.9;e.fillStyle='#7ab8ff';e.beginPath();e.moveTo(hx+dx,hy-h);e.lineTo(hx+dx+2,hy-1);e.lineTo(hx+dx-2,hy-1);e.fill();e.fillStyle='#e8f8ff';e.fillRect(Math.round(hx+dx),Math.round(hy-h+3),1,h-4)}e.globalAlpha=1;e.globalCompositeOperation='source-over'},
+// 槍4 光の輪：穂先のまわりを光の輪が回り、足元に光の陣
+({e,X,Y,T})=>{const x=X(46),c=['#2a6ad8','#7ab8ff','#e0f4ff'];SPR_(e,x,232,Y(-8),T,c);const hx=x/2,hy=Y(-8)/2;e.globalCompositeOperation='lighter';e.fillStyle='#b8e0ff';e.beginPath();e.moveTo(hx,hy-12);e.lineTo(hx+3,hy-1);e.lineTo(hx-3,hy-1);e.fill();e.globalAlpha=.8;e.strokeStyle='#7ab8ff';e.lineWidth=1;e.beginPath();e.ellipse(hx,hy-4,8,2.6,Math.sin(T)*.3,0,6.3);e.stroke();e.globalAlpha=.5;e.strokeStyle='#5aa0ff';e.beginPath();e.ellipse(hx,232/2,14,3,0,0,6.3);e.stroke();e.beginPath();e.ellipse(hx,232/2,9,2,0,0,6.3);e.stroke();e.globalAlpha=1;e.globalCompositeOperation='source-over'}];
+window.WFX=[
 
 // 霊炎の大剣：手から前へ伸びる青い炎の刃
 ({e,X,Y,T,flm})=>{const x0=X(45),y0=Y(24);for(let j=0;j<12;j++){const u=j/11,x=x0+u*60,y=y0+u*44;flm(x,y,16*(1-u*.5),j*.7)}e.globalCompositeOperation='lighter';e.globalAlpha=.6;e.fillStyle='#d8f0ff';e.beginPath();e.moveTo(x0/2,y0/2);e.lineTo((x0+62)/2,(y0+46)/2);e.lineTo((x0+4)/2,(y0-3)/2);e.fill();e.globalAlpha=1;e.globalCompositeOperation='source-over'},
@@ -13,7 +24,7 @@ await p.evaluate(([code,ks,kk])=>{window.GKS=ks;window.KKS=kk;eval(code);window.
 // 鬼火の球と光の盾：手のひらに青い炎の球、奥の手に六角の光の盾
 ({e,X,Y,T,flm})=>{for(let k=0;k<3;k++){const a=T+k*2.1;flm(X(52)+Math.cos(a)*16,Y(22)+Math.sin(a)*12,14,k)}const cx=X(4)/2,cy=Y(20)/2;e.globalAlpha=.45;e.fillStyle='#5aa0ff';e.beginPath();for(let k=0;k<6;k++){const a=k/6*6.283;e.lineTo(cx+Math.cos(a)*14,cy+Math.sin(a)*17)}e.fill();e.globalAlpha=.8;e.strokeStyle='#c8e8ff';e.lineWidth=1;e.stroke();e.globalAlpha=1}
 ];const P=k=>paint(SD[k][0],SD[k][1],SD[k][3],SD[k][2]);window.GS=(window.GKS||['ga','gb','gc']).map(P);window.GI=GS[0];window.KS=(window.KKS||['k3']).map(P);window.KI=KS[0];
- const cv=document.createElement('canvas');cv.width=480;cv.height=260;cv.id='sh';cv.style.cssText='position:fixed;left:0;top:0;width:480px;height:260px;z-index:99;image-rendering:pixelated';document.body.appendChild(cv);window.G2=cv.getContext('2d');G2.imageSmoothingEnabled=false},[fs.readFileSync(path.join(__dirname,'dknight.js'),'utf8')+fs.readFileSync(path.join(__dirname,'girls3.js'),'utf8'),process.argv[3]?process.argv[3].split(','):null,process.argv[5]?process.argv[5].split(','):null]);
+ const cv=document.createElement('canvas');cv.width=480;cv.height=260;cv.id='sh';cv.style.cssText='position:fixed;left:0;top:0;width:480px;height:260px;z-index:99;image-rendering:pixelated';document.body.appendChild(cv);window.G2=cv.getContext('2d');G2.imageSmoothingEnabled=false},[fs.readFileSync(path.join(__dirname,'dknight.js'),'utf8')+fs.readFileSync(path.join(__dirname,'girls3.js'),'utf8'),process.argv[3]?process.argv[3].split(','):null,process.argv[5]?process.argv[5].split(','):null,process.argv[6]||null]);
 const NK=Math.max(process.argv[3]?process.argv[3].split(',').length:3,process.argv[5]?process.argv[5].split(',').length:1);for(let n=0;n<NK;n++){const f=4;await p.evaluate(n=>{GI=GS[n%GS.length];KI=KS[n%KS.length];window.CUR=n},n);await p.evaluate(f=>{const g=G2,T=f/16*6.283,GY=232;g.drawImage(BGB1,-60,-8,640,260);
  const glow=(x,y,r,c)=>{const gg=g.createRadialGradient(x,y,0,x,y,r);gg.addColorStop(0,c);gg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gg;g.fillRect(x-r,y-r,r*2,r*2)};
  g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(80,GY,22,5,0,0,7);g.fill();g.drawImage(GI,30,GY-GI.height);
@@ -29,7 +40,7 @@ const NK=Math.max(process.argv[3]?process.argv[3].split(',').length:3,process.ar
  g.drawImage(KI,kx,ky);
  const U=3,X=a=>kx+a*U+2,Y=b=>ky+(b+4)*U+2;
  flm(X(24),Y(13),14,0);flm(X(33),Y(13),10,1.3);flm(X(14),Y(13),9,2.1);flm(X(38.6),Y(20),9,.7);flm(X(23),Y(36),12,1.9);flm(X(31),Y(36),10,2.7);flm(X(13),Y(35),9,3.4);
- if(window.WFX&&WFX[window.CUR])WFX[window.CUR]({e,X,Y,T,flm,kx,ky});g.imageSmoothingEnabled=false;g.drawImage(E,0,0,480,260);glow(X(30),Y(6.4),16,'rgba(140,210,255,.7)');
+ {const W_=window.WSET==='spear'?WFX2:WFX;if(W_&&W_[window.CUR])W_[window.CUR]({e,X,Y,T,flm,kx,ky})}g.imageSmoothingEnabled=false;g.drawImage(E,0,0,480,260);glow(X(30),Y(6.4),16,'rgba(140,210,255,.7)');
  for(let k=0;k<10;k++){const u=(k/10+T/6.283*.6)%1,x=kx+40+((k*37)%90),y=ky+130-u*120;g.globalAlpha=(1-u)*.8;g.fillStyle='#9ad0ff';g.fillRect(Math.round(x),Math.round(y),2,2)}g.globalAlpha=1},f);
  await p.locator('#sh').screenshot({path:path.join(tmp,'g'+n+'.png')})}
 await b.close();execSync(`python3 -c "
