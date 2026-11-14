@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.30';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.31';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -308,7 +308,8 @@ function xenv(g,t,v,a,d,rl){g.gain.setValueAtTime(0,t);g.gain.linearRampToValueA
 function xNz(d,v,fc,t,q,ty){const b=AC.createBuffer(1,Math.ceil(AC.sampleRate*d),AC.sampleRate),a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=b;f.type=ty||'bandpass';f.frequency.value=fc;f.Q.value=q||1;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.002);g.gain.exponentialRampToValueAtTime(.0005,t+d);g.gain.linearRampToValueAtTime(0,t+d+.005);s.connect(f);f.connect(g);g.connect(xbus());s.start(t);s.stop(t+d+.01)}
 function xSnare(t,v){const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.setValueAtTime(220,t);o.frequency.exponentialRampToValueAtTime(160,t+.08);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v*.45,t+.002);g.gain.exponentialRampToValueAtTime(.0005,t+.14);g.gain.linearRampToValueAtTime(0,t+.15);o.connect(g);g.connect(xbus());o.start(t);o.stop(t+.16);xNz(.2,v*.5,1900,t,.8);xNz(.12,v*.2,4200,t,.7)}
 function xTom(m,t,v){const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.setValueAtTime(mf(m)*1.5,t);o.frequency.exponentialRampToValueAtTime(mf(m),t+.08);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.003);g.gain.exponentialRampToValueAtTime(.0005,t+.4);g.gain.linearRampToValueAtTime(0,t+.41);o.connect(g);g.connect(xbus());o.start(t);o.stop(t+.42)}
-function xBass(m,t,d,v){const f=AC.createBiquadFilter(),g=AC.createGain(),sh=AC.createWaveShaper(),N=1024,c=new Float32Array(N);for(let i=0;i<N;i++){const x=i/(N-1)*2-1;c[i]=Math.tanh(x*3)}sh.curve=c;f.type='lowpass';f.frequency.setValueAtTime(900,t);f.frequency.exponentialRampToValueAtTime(320,t+Math.min(d,.2));f.Q.value=2;
+// Ver3.31 眼の曲が重くスマホで音が途切れたため、歪みの曲線を使い回し、精度の倍率を下げた
+let XBC=null;function xBass(m,t,d,v){const f=AC.createBiquadFilter(),g=AC.createGain(),sh=AC.createWaveShaper();if(!XBC||XBC.ctx!==AC){const N=1024,c=new Float32Array(N);for(let i=0;i<N;i++){const x=i/(N-1)*2-1;c[i]=Math.tanh(x*3)}XBC={ctx:AC,c}}sh.curve=XBC.c;f.type='lowpass';f.frequency.setValueAtTime(900,t);f.frequency.exponentialRampToValueAtTime(320,t+Math.min(d,.2));f.Q.value=2;
  xenv(g,t,v,.006,d,.02);f.connect(sh);sh.connect(g);g.connect(xbus());for(const dt of[-12,12]){const o=AC.createOscillator();o.type='sawtooth';o.frequency.value=mf(m);o.detune.value=dt;o.connect(f);o.start(t);o.stop(t+d+.01)}
  const so=AC.createOscillator(),sg=AC.createGain();so.type='sine';so.frequency.value=mf(m-12);xenv(sg,t,v*1.3,.006,d,.02);so.connect(sg);sg.connect(xbus());so.start(t);so.stop(t+d+.01)}
 function xRise(t,d,v){const b=AC.createBuffer(1,Math.ceil(AC.sampleRate*d),AC.sampleRate),a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=b;f.type='lowpass';f.frequency.setValueAtTime(200,t);f.frequency.exponentialRampToValueAtTime(3000,t+d);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+d*.95);g.gain.linearRampToValueAtTime(0,t+d);s.connect(f);f.connect(g);g.connect(xbus());s.start(t);s.stop(t+d+.01)}
@@ -319,7 +320,7 @@ function xSub(m,t,d,v){v*=1.5;const o=AC.createOscillator(),g=AC.createGain();o.
 let GCV2=null;function gCurve2(k){if(!GCV2||GCV2.ctx!==AC)GCV2={ctx:AC};if(GCV2[k])return GCV2[k];const N=2048,c=new Float32Array(N);for(let i=0;i<N;i++){const x=i/(N-1)*2-1;c[i]=Math.tanh(x*k)/Math.tanh(k)}return GCV2[k]=c}
 function gC(ms,t,d,v,o){o=o||{};const hp=AC.createBiquadFilter(),pre=AC.createBiquadFilter(),sh=AC.createWaveShaper(),cab=AC.createBiquadFilter(),pk=AC.createBiquadFilter(),g=AC.createGain();
  hp.type='highpass';hp.frequency.value=o.lead?200:110;pre.type='lowpass';pre.Q.value=1;if(o.pm){pre.frequency.value=800}else{pre.frequency.setValueAtTime(o.lead?4600:3800,t);pre.frequency.exponentialRampToValueAtTime(o.lead?2500:2300,t+.08)}
- sh.curve=gCurve2(o.drv||16);sh.oversample='4x';cab.type='lowpass';cab.frequency.value=o.pm?2300:(o.lead?4600:4200);pk.type='peaking';pk.frequency.value=o.lead?2100:1500;pk.gain.value=o.lead?3:1.5;pk.Q.value=1;
+ sh.curve=gCurve2(o.drv||16);sh.oversample=o.lead?'2x':'none';cab.type='lowpass';cab.frequency.value=o.pm?2300:(o.lead?4600:4200);pk.type='peaking';pk.frequency.value=o.lead?2100:1500;pk.gain.value=o.lead?3:1.5;pk.Q.value=1;
  const rl=Math.min(.025,d*.3);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.003);g.gain.setValueAtTime(v*(o.pm?.55:.85),t+Math.max(.004,d-rl));g.gain.linearRampToValueAtTime(0,t+d);
  hp.connect(pre);pre.connect(sh);sh.connect(cab);cab.connect(pk);pk.connect(g);g.connect(xbus());
  for(const m of ms){for(const[ty,a,dt]of o.lead?[['sawtooth',1,0],['square',.28,0]]:[['sawtooth',1,-7],['sawtooth',1,7]]){const os=AC.createOscillator(),og=AC.createGain();os.type=ty;os.frequency.value=mf(m);os.detune.value=dt;og.gain.value=a;
@@ -363,7 +364,7 @@ function auStep(n,t){const i=n%112,lp=Math.floor(n/112)%2,bar=Math.floor(i/7),s=
  for(const q of AUM)if(q[0]===bar&&q[1]===s){aBell(q[2]-12,t,.045);aBell(q[2]-11.7,t+.03,.018)}
  if(s===0&&(bar===4||bar===12))auGl(r+36,r+30,t,bsp*7,.02);if(s===2&&bar===8)auGl(r+31,r+37,t,bsp*5,.018);
  if(bar===15&&s===0)auRv(r,t,bsp*7,.05);if(bar===7&&s===3)aTimp(r-12,t,.08)}
-function bgm(n,sp){const v=sp||({au:60/96/2,gk:.2,e2:60/175/4,b:.2,x:.115,t:60/76/2,b2:.19,b3:.13,x3:.17,v:.45,b1s:.15,b1x:.105})[n]||.3;if(cb===n&&bsp===v)return;if(cb==='v'&&n!=='v'&&VDK.vg&&AC){try{VDK.vg.gain.setTargetAtTime(0,AC.currentTime,.3)}catch(e){}VDK.ac=null}cb=n;bsp=v;if(!AC)return;if(!BG){BG=AC.createGain();BG.connect(MG)}bst=0;bnext=AC.currentTime+.1;clearInterval(btm);btm=setInterval(bgmTick,80)}
+function bgm(n,sp){const v=sp||({au:60/96/2,gk:.2,e2:60/175/4,b:.2,x:.115,t:60/76/2,b2:.19,b3:.13,x3:.17,v:.45,b1s:.15,b1x:.105})[n]||.3;if(cb===n&&bsp===v)return;if(cb==='v'&&n!=='v'&&VDK.vg&&AC){try{VDK.vg.gain.setTargetAtTime(0,AC.currentTime,.3)}catch(e){}VDK.ac=null}const fr=cb==='e2'&&n!=='e2';cb=n;bsp=v;if(!AC)return;if(fr){newAC();return}if(!BG){BG=AC.createGain();BG.connect(MG)}bst=0;bnext=AC.currentTime+.1;clearInterval(btm);btm=setInterval(bgmTick,80)}
 /* ===== 描画ヘルパー ===== */
 function mk(rows,pal,s){const h=rows.length,w=rows[0].length,c=document.createElement('canvas');c.width=w*s;c.height=h*s;const x=c.getContext('2d');rows.forEach((r,j)=>{for(let i=0;i<w;i++){const k=r[i];if(pal[k]){x.fillStyle=pal[k];x.fillRect(i*s,j*s,s,s)}}});return c}
 function txt(s,x,y,c,al,sz){ctx.font=(sz||12)+'px DotGothic16,sans-serif';ctx.textAlign=al||'left';ctx.fillStyle='#000';ctx.fillText(s,x+1,y+1);ctx.fillStyle=c||'#fff';ctx.fillText(s,x,y)}
@@ -3803,7 +3804,9 @@ else if(tt===2){shopGen();go('shop')}else if(tt===3)go('rest');else if(tt===4)ev
 // Ver2.40 ？マスの中身（ユーザー指定：本家1作目と同じ仕組み）。戦闘10%・ショップ3%・宝箱2%から始め、残りはイベント。出た種類はその初めの確率に戻り、出なかった種類は戦闘+10%・ショップ+3%・宝箱+2%ずつ上がる。確率は P.qc に持つ（幕をまたいでも続く）。R() を使うのでマルチでも全員同じ結果
 function qRoll(){const q=P.qc||(P.qc={m:10,s:3,t:2}),r=R()*100;let k=4;if(r<q.m)k=0;else if(r<q.m+q.s)k=2;else if(r<q.m+q.s+q.t)k=5;
  q.m=k===0?10:q.m+10;q.s=k===2?3:q.s+3;q.t=k===5?2:q.t+2;return k}
-function relicPick(boss){const l=Object.keys(RL).filter(k=>!has(k)&&(RL[k][3]===undefined||RL[k][3]===P.cls)&&(boss?RL[k][2]===1||RL[k][2]===2:RL[k][2]<=1));return l.length?pk(l):null}
+// Ver3.31 中身が分からずに手に入るレリック（？？？・イベント・宝箱など）からは代償のあるものを除く（ユーザー指定）
+const DRW=['ring','ecto','sozu','choker','ckey','philo','seye','pandora','calling','gaunt','pumpkin','mpain','dome','crown'];
+function relicPick(boss){const l=Object.keys(RL).filter(k=>!has(k)&&!DRW.includes(k)&&(RL[k][3]===undefined||RL[k][3]===P.cls)&&(boss?RL[k][2]===1||RL[k][2]===2:RL[k][2]<=1));return l.length?pk(l):null}
 const pick3=f=>{const o=[];for(let k=0;k<30&&o.length<3;k++){const i=f();if(!o.includes(i))o.push(i)}while(o.length<3)o.push(f());return o};
 const cPick=()=>{const r=R()<.2?2:1;return pk(C.map((c,i)=>[c,i]).filter(a=>(a[0].k===5||(MPON()&&a[0].k===7))&&a[0].r===r))[1]};
 function cardPick(el){if(MPON()&&R()<.12){const l=C.map((c,i)=>[c,i]).filter(a=>a[0].k===7);return pk(l)[1]}const rr=R(),r=rr<(el?.4:.6)?0:rr<(el?.9:.95)?1:2,l=C.map((c,i)=>[c,i]).filter(a=>a[0].r===r&&(a[0].k||0)===P.cls);return pk(l)[1]}
@@ -4440,7 +4443,7 @@ const risk=[
 ['【代償】最大HP-10 ＋ レアなレリック',()=>{P.mhp-=10;P.hp=Math.min(P.hp,P.mhp);const k=relicPick(true);if(k)gain(k);go('map')}],
 ['【代償】HP-12 ＋ ゴールド250',()=>{P.hp=Math.max(1,P.hp-12);P.gold+=250;sfx('pk');go('map')}],
 ['【代償】ゴールドを全部 ＋ レアカード2枚',()=>{P.gold=0;P.deck.push({i:rareCard(),u:0},{i:rareCard(),u:0});sfx('pk');go('map')}],
-['【代償】HPが半分 ＋ ランダムなボスレリック',()=>{P.hp=Math.max(1,Math.floor(P.hp/2));const l=Object.keys(RL).filter(k=>RL[k][2]===4&&!has(k));if(l.length)gain(pk(l));go('map')}],
+['【代償】HPが半分 ＋ ランダムなボスレリック',()=>{P.hp=Math.max(1,Math.floor(P.hp/2));const l=Object.keys(RL).filter(k=>RL[k][2]===4&&!has(k)&&!DRW.includes(k));if(l.length)gain(pk(l));go('map')}],
 ['【代償】最大HP-20 ＋ デッキのカードをすべて強化',()=>{P.mhp-=20;P.hp=Math.min(P.hp,P.mhp);P.deck.forEach(o=>{if(canUp(o))o.u=1});sfx('bf');go('map')}],
 ['【代償】次の3回の戦闘で敵の筋力+2 ＋ 300ゴールド',()=>{P.hx=3;P.gold+=300;sfx('pk');go('map')}],
 ['【代償】呪いを2枚 ＋ レアカード3枚から1枚選ぶ',()=>{P.deck.push({i:randCurse(),u:0},{i:randCurse(),u:0});RW={g:0,rel:null,pot:null,title:'レアカードを選択',cards:rare3(),boss:false};go('reward')}]];
@@ -4473,7 +4476,7 @@ const EVS=[
 {t:'未練の亡霊',im:'ghost',x:['亡霊がカードを差し出している。','「これを…手放してくれ…」'],ch:[['カードを消す（最大HP-3）',()=>{openPick('消すカードを選択',P.deck.map((_,i)=>i),i=>{P.mhp-=3;P.hp=Math.min(P.hp,P.mhp);P.deck.splice(i,1);EV={t:'未練の亡霊',im:'ghost',x:['亡霊は安らかに消えた。'],ch:[['次へ',()=>go('map')]]};go('event')},1);return null}],['立ち去る',()=>'亡霊は泣きながら消えた。']]}];
 // ===== スレスパ2風のイベント（Ver2.08、名前・文章・絵はオリジナル）。a＝出る層（0はどこでも）。evGen は8割でこちらから選ぶ
 const evD=(t,im,m)=>{EV={t,im,x:[m],ch:[['次へ',()=>go('map')]]};go('event')},dkL=f=>P.deck.map((o,i)=>i).filter(i=>f(P.deck[i],C[P.deck[i].i])),upR=n=>{const l=shuf(P.deck.filter(canUp)).slice(0,n);l.forEach(o=>o.u=1);return l.length};
-const rpR=r=>{const l=Object.keys(RL).filter(k=>!has(k)&&(RL[k][3]===undefined||RL[k][3]===P.cls)&&RL[k][2]===r);return l.length?pk(l):relicPick()},gR=k=>{if(!k)return'何も見つからなかった。';gain(k);return'「'+RL[k][0]+'」を手に入れた。'};
+const rpR=r=>{const l=Object.keys(RL).filter(k=>!has(k)&&(RL[k][3]===undefined||RL[k][3]===P.cls)&&RL[k][2]===r&&!DRW.includes(k));return l.length?pk(l):relicPick()},gR=k=>{if(!k)return'何も見つからなかった。';gain(k);return'「'+RL[k][0]+'」を手に入れた。'};
 const loseRel=()=>{const l=P.relics.filter(k=>RL[k]&&RL[k][2]!==3);if(!l.length)return null;const k=pk(l);P.relics.splice(P.relics.indexOf(k),1);return k};
 function encPick(t,im,k,v,f,pre){const l=dkL((o,c)=>!o.en&&c.t<3&&ENC[k][3](o.u?up(c):c)&&(!f||f(o,c)));if(!l.length)return'エンチャントできるカードが無い。';openPick('「'+ENC[k][0]+'」を付けるカードを選択',l,i=>{if(pre)pre();ench(P.deck[i],k,v);sfx('bf');evD(t,im,'「'+C[P.deck[i].i].n+'」に「'+ENC[k][0]+'」が宿った。')});return null}
 function rmPick(t,im,pre){const l=dkL(o=>o.en!=='ember');if(!l.length)return'消せるカードが無い。';openPick('消すカードを選択',l,i=>{if(pre)pre();P.deck.splice(i,1);evD(t,im,'カードが消えた。')},1);return null}
