@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.33';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.34';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -294,7 +294,11 @@ function gkStep(n,t){const i=n%128,bar=i>>4,s=i&15,r=GKR[bar],ch=GKT[r],lp=Math.
  if(s===0){aOrgan(ch.map(x=>x-12),t,bsp*16,.013);aChoir(ch,t,bsp*16,lp?.024:.018);uNote(r-24,t,bsp*16,'sine',.12,200,0,.3);uNote(r-12,t,bsp*16,'sawtooth',.03,320,-6,.4);if(bar%2===0)bell(r+24,t)}
  if(s===0||s===3)uKick(t,s?.32:.55);if(s===8)uTom(r-12,t,.14);if(bar===7&&s>=8&&s%2===0)uTom(r-12+(s-8),t,.1);
  for(const q of GKM)if(q[0]===bar&&q[1]===s){aPiano(q[2],t,.05);if(lp)aFlute(q[2]-12,t,bsp*6,.035)}
- if(s===12&&lp)aHarpsi(ch[2]+12,t,.012)}
+ if(s===12&&lp)aHarpsi(ch[2]+12,t,.012);
+ // Ver3.34 少し豪華に（ユーザー指定：今の雰囲気のまま）：弦の持続音・チェロ・後半のホルン・2周目は弦が主題を低くなぞる・小節頭のティンパニ・周の終わりの連打とシンバル
+ if(s===0){aStrO(ch,t,bsp*16,lp?.011:.008);aStrO([r-12],t,bsp*16,.012);if(bar>=4)aBrass(r-12,t,bsp*15,lp?.022:.016);aTimp(r-12,t,bar===0?.12:.06)}
+ if(lp)for(const q of GKM)if(q[0]===bar&&q[1]===s){const nx=GKM.find(z=>z[0]*16+z[1]>bar*16+s),ln=nx?(nx[0]*16+nx[1])-(bar*16+s):16;aStrO([q[2]-12],t,bsp*Math.min(16,ln),.01)}
+ if(bar===7&&s>=8){aTimp(r-12,t,.03+(s-8)*.012);if(s===8)mnoise(bsp*8,lp?.07:.05,6500,t)}}
 // Ver2.91 弱まった虚空の眼の曲（ユーザー採用「エレキ案1・改」）：高速エレキが主役。ホ短調（和声的短音階 g3）・175BPM・32小節で1周。
 // A 0-3 タッピング風の分散和音／4-11 刻みの上でリードの主旋律（8小節目からハモり）／12-15 ツインリード／16-19 静かな区間と盛り上げ直し／20-27 一撃から速弾きソロ・16分のキック／28-31 キメと駆け下り。
 // リード gC は粒がはっきりするよう、しゃくり上げ・ずらし重ねは無し。出口 xbus は低い帯域（130Hz未満）を圧縮も歪みも通さず別に流し、上の帯域だけ軽くまとめて5kHz以上を少し下げる（キンキンせず重低音が潰れない）
