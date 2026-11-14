@@ -10,7 +10,7 @@ await p.evaluate(code=>{eval(code);const W=paint(SD.witch[0],SD.witch[1],SD.witc
  // 悪魔は魔女の前に立ち、敵へ腕を伸ばす
  const gr=g.createRadialGradient(215,150,6,215,150,110);gr.addColorStop(0,'rgba(70,30,110,.4)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(90,0,260,240);
  g.fillStyle='rgba(0,0,0,.3)';g.beginPath();g.ellipse(100,208,26,5,0,0,7);g.fill();
- g.drawImage(W,60,208-W.height);g.globalAlpha=.94;g.drawImage(D,130,200-D.height);g.globalAlpha=1;
+ g.drawImage(W,60,208-W.height);{const x=60+21.6*3+2,y=208-W.height+(12.6+6)*3+2,gg=g.createRadialGradient(x,y,0,x,y,14);gg.addColorStop(0,'rgba(120,150,255,.55)');gg.addColorStop(1,'rgba(60,80,255,0)');g.fillStyle=gg;g.fillRect(x-14,y-14,28,28)}g.globalAlpha=.94;g.drawImage(D,130,200-D.height);g.globalAlpha=1;
  for(const k of['imp','knight']){const im=SPR[k];g.drawImage(im,k==='imp'?420:520,208-im.height)}
 },fs.readFileSync(path.join(__dirname,'witch.js'),'utf8'));
 await p.locator('#sh').screenshot({path:out});console.log(er);await b.close()})();
