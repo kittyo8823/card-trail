@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.26';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.27';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -3821,9 +3821,17 @@ for(const k of MUTE1)for(const n of Object.keys(SPR))if(n===k||n===k+'_z'||n.sta
 // 飛ぶ雑魚：本当に宙に浮かせ、種類ごとに凝った飛び方（eMot の flyIdle）。h 浮く高さ・tr 残像
 const FLYP={ulens:{h:22,k:'drone'},bat:{h:30,k:'bat'},gargoyle:{h:20,k:'garg'},wisp:{h:26,k:'wisp',tr:1},drone:{h:24,k:'drone'},seraph:{h:18,k:'ser'},mothF:{h:22,k:'moth'},mothF2:{h:22,k:'moth'}};for(const k in FLYP)if(E[k])E[k].fly=FLYP[k].h;
 
+// Ver3.27 敵が2体以上の時、行動の開始位置をずらす（ユーザー指定：全員一斉に攻撃・全員一斉に防御のような極端なターンを避ける）。最初の6ターンで「全員が攻撃」「誰も攻撃しない」ターンと、同じ敵が同じ行動をそろえるのを減らす組を選ぶ。ボス・睡眠・連動の腕などは動かさない。乱数は R()（マルチで全員一致）
+function eStag(en,kind){const L=en.filter(e=>!e.sl&&!e.pr&&!e.ld&&!e.mn&&e.mv&&e.mv.length>1&&!['eye','eye2','maiden','scales'].includes(e.k));if(kind===2||L.length<2)return;
+ const atk=m=>!!(m&&(m.a>0||m.aa>0)),n=L.length;let best=null,bs=1e9;const tot=L.reduce((p,e)=>p*e.mv.length,1),tries=Math.min(tot,240);
+ for(let t=0;t<tries;t++){const off=L.map(e=>tot<=240?0:RI(e.mv.length));if(tot<=240){let r=t;for(let k=0;k<n;k++){off[k]=r%L[k].mv.length;r=Math.floor(r/L[k].mv.length)}}
+  let sc=0;for(let u=0;u<6;u++){let a=0;for(let k=0;k<n;k++)if(atk(L[k].mv[(off[k]+u)%L[k].mv.length]))a++;if(a===n)sc+=u===0?5:3;if(a===0)sc+=2}
+  for(let k=0;k<n;k++)for(let q=k+1;q<n;q++)if(L[k].k===L[q].k&&off[k]===off[q])sc+=4;sc+=R()*.5;if(sc<bs){bs=sc;best=off}}
+ L.forEach((e,k)=>{e.i=best[k];e.it=xIt(e)})}
 function fight(ks,kind){XF=[];SPR.eye2=SPR.eye;BFX.eye2=BFX.eye;if(MPON()&&!(MPB&&MPB.init)&&!ks.includes('eye'))return mpFight(ks,kind);if(P.act===4)BGB=BGBV;else if(BGB!==BGBV)BGB=bgPick(kind);PS={orb:[],osl:3,foc:0,nwd:0,mig:0,sdc:0,lop:0,stm:0,shr:0,cai:0,eld:0,bcg:0,clwBk:0,forge:0,fnp:0,hlD:0,dsDr:0,fgT:0,fgAt:0,grA:0,dmP:0,strL:0,z0D:0,clwT:0,slyA:0,dbT:0,z0E:0,atKi:0,str:0,weak:0,vuln:0,poison:0,met:0,dem:0,rage:0,barr:0,comb:0,brut:0,tmp:0,dex:0,thn:0,nox:0,ibl:0,aft:0,cut:0,ki:0,cnt:0,kig:0,iai:0,zan:0,dd:0,mana:0,mgt:0,chs:0,pg:0,echo:0,arc:0,rgn:0,itg:0,sls:0,blkd:0,egy:0,psn:0,hpb:0,bers:0,udy:0,ftw:0,a3e:0,svb:0,dsd:0,pmul:0,fz:0,kdr:0,ct2:0,ksd:0,vamp:0,kfst:0,slot:0,chb:0,rech:0,chD:0,msd:0,stb:0,ms2:0,msf:0,qyp:0,gw:0,shvd:0,zt:0,mirT:0};
 B={en:MPB&&MPB.sen?MPB.sen:ks.map(k=>{const d=E[k],hp=Math.round((d.hp[0]+RI(d.hp[1]-d.hp[0]+1))*(MPB?mpHpM(MPB.np):1)*(d.el===1?(Aa(3)?1.15:1):d.el===2?(Aa(4)?1.1:1):d.mn?1:1.75*(Aa(2)?1.1:1)*(P.act===3?1.25:1)));return{k,n:d.n,hp,mh:hp,i:0,str:0,weak:0,vuln:0,poison:0,blk:0,mv:d.mv,el:d.el||0,enr:d.en,sl:d.sl||0,sb:d.sb||0,seal:d.seal||0,lim:d.lim||0,tf:d.tf||0,beat:d.beat||0,gz:d.gz||0,gzd:d.gzd||0,gzc:0,fly:d.fly||0,thr:d.thr||0,ph:d.ph||0,spl:d.spl||0,inv:d.inv||0,mn:d.mn||0,ld:d.ld||0,pr:d.pr||0,pt:d.pt||0,rv:d.rv||0,pst:d.pst||0,cap:d.cap?Math.round(d.cap*(MPB?mpHpM(MPB.np):1)):0,lost:0,dsp:d.dsp||0,dmp:d.dmp||0,hex:d.hex||0,rit:d.rit||0,avg:d.avg||0,fl:0,sh:0,lg:0,dead:0,it:d.mv[0]}}),
 hand:[],dr:shuf(P.deck.map(o=>({...o}))),dis:[],ex:[],me:3,blk:0,turn:0,ph:'p',sel:-1,kind,boss:kind===2,bi:null,tut:kind===0&&!MPON()&&!tutDone()?{s:0,t0:T}:null,atks:0,vt:0,et:0,ei:0,lg:0,sh:0,dsc:0,bn:null,pl:0,fa:0,ch:[],g1:0,bkt:-9,fly:[],nd:0,lt:0};
+if(!(MPB&&MPB.sen))eStag(B.en,kind);
 {B.dr=pfTop(B.dr);const isI=o=>C[o.i].inn||o.en==='royal',inn=B.dr.filter(isI);B.dr=B.dr.filter(o=>!isI(o)).concat(inn)}if(has('philo'))for(const e of B.en)e.str+=1;if(has('seye')){for(let k=0;k<2;k++)B.dr.push({i:CI('目眩'),u:0});shuf(B.dr)}if(has('mpain')){for(let k=0;k<2;k++)B.dr.push({i:CI('負傷'),u:0});shuf(B.dr)}if(has('dumb'))PS.str+=1;if(has('ring'))PS.str+=2;if(has('anchor'))B.blk=10;if(has('sya'))PS.ki+=2;if(has('sya2'))PS.ki+=5;if(P.cls===2&&!P.hintK){P.hintK=1;say('気と居合の説明は「？説明」→「坪内丸」を参照')}if(P.cls===3&&!P.hintM){P.hintM=1;say('詠唱と魔力の説明は「？説明」→「名無し」を参照')}if(has('lens'))PS.mana+=2;B.lch=0;if(has('ddisk'))PS.foc+=1;if(has('rcap'))PS.osl+=3;if(has('ccore'))oChan('L');if(has('ccore2')){oChan('L');oChan('L')}if(has('svir'))oChan('D');if(has('nbat'))oChan('P');if(P.cls===6&&!P.hintN){P.hintN=1;say('小クラゲの説明は「？説明」→「ネブラ」を参照')}if(has('dice'))PS.str+=RI(3);
 B.nbE=0;if(P.nb>0){P.nb--;B.nbE=1}const hx=P.hx>0;if(hx)P.hx--;
 for(const e of B.en){if(hx)e.str+=2;if(!(MPB&&MPB.sen)){if(e.el===1&&Aa(3))e.str+=1;if(Aa(7))e.str+=1;if(e.el===2&&Aa(10))e.str+=2;if(e.sl)e.blk=e.sb}if(has('marble')){e.vuln+=1;pop(e,'弱体+1','#ff9a6a')}if(has('ember')){e.poison+=3;pop(e,'毒+3','#7dff9a')}if(has('ruby')){e.weak+=1;pop(e,'脆弱+1','#c9a0ff')}if(has('bomb'))hitE(e,8,.5,0,0)}
