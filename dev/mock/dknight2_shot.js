@@ -10,7 +10,7 @@ const N=16;for(let f=0;f<N;f++){await p.evaluate(f=>{const g=G2,T=f/16*6.283,GY=
  const fy=Math.round(Math.sin(T)*3),kx=150,ky=GY-178+fy;
  // 効果は半分の解像度の別キャンバスに描いて2倍に引き伸ばす（ドット絵の粗さにそろえる）
  const E=window.EC||(window.EC=document.createElement('canvas'));E.width=240;E.height=130;const e=E.getContext('2d');e.clearRect(0,0,240,130);
- const flm=(x,y,s,ph,dn)=>{x/=2;y/=2;s=s*1.6/2;e.globalCompositeOperation='lighter';for(let k=0;k<3;k++){const h=s*(1-k*.25)*(1+.3*Math.sin(T*2+ph+k))*(dn?-1:1),w=s*.7*(1-k*.25);e.globalAlpha=[.35,.45,.6][k];e.fillStyle=['#1a4ab8','#3a8aff','#a8d8ff'][k];e.beginPath();e.moveTo(x-w,y);e.quadraticCurveTo(x-w*.6+Math.sin(T*2+ph)*1.5,y-h*.6,x+Math.sin(T*2.4+ph)*2,y-h);e.quadraticCurveTo(x+w*.6+Math.sin(T*2+ph)*1.5,y-h*.6,x+w,y);e.closePath();e.fill()}e.globalAlpha=1;e.globalCompositeOperation='source-over'};
+ const flm=(x,y,s,ph,dn)=>{x/=2;y/=2;s=s*1.6/2;e.globalCompositeOperation=dn?'source-over':'lighter';for(let k=0;k<3;k++){const h=s*(1-k*.25)*(1+.3*Math.sin(T*2+ph+k))*(dn?-1:1),w=s*.7*(1-k*.25);e.globalAlpha=dn?[.55,.6,.45][k]:[.35,.45,.6][k];e.fillStyle=dn?['#1a3488','#2a5ec8','#5a96e8'][k]:['#1a4ab8','#3a8aff','#a8d8ff'][k];e.beginPath();e.moveTo(x-w,y);e.quadraticCurveTo(x-w*.6+Math.sin(T*2+ph)*1.5,y-h*.6,x+Math.sin(T*2.4+ph)*2,y-h);e.quadraticCurveTo(x+w*.6+Math.sin(T*2+ph)*1.5,y-h*.6,x+w,y);e.closePath();e.fill()}e.globalAlpha=1;e.globalCompositeOperation='source-over'};
  g.fillStyle='rgba(20,40,90,.25)';g.beginPath();g.ellipse(kx+66,GY,34,5,0,0,7);g.fill();
  // 下半身：下向きの炎を背骨に沿って重ね、先へいくほど細く、左右にゆらめく
  for(let j=0;j<9;j++){const u=j/8,sx=kx+70+Math.sin(T*1.5+u*4)*(3+u*10)+(j%2?-1:1)*(10*(1-u)),sy=ky+120+u*62;flm(sx,sy,22*(1-u*.65),j*.9,1)}
