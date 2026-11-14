@@ -7,9 +7,10 @@ await p.evaluate(code=>{eval(code);const W=paint(SD.witch[0],SD.witch[1],SD.witc
  g.drawImage(BGB2,0,0);
  // 影の悪魔の足元の暗いにじみ
  // 悪魔は魔女の後ろ（左上）に浮かび、腕を前へ回す。足元に紫のにじみ
- const gr=g.createRadialGradient(95,120,6,95,120,110);gr.addColorStop(0,'rgba(70,30,110,.4)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,260,240);
- g.fillStyle='rgba(0,0,0,.3)';g.beginPath();g.ellipse(124,208,26,5,0,0,7);g.fill();
- g.globalAlpha=.92;g.drawImage(D,-6,188-D.height);g.globalAlpha=1;g.drawImage(W,98,208-W.height);
+ // 悪魔は魔女の前に立ち、敵へ腕を伸ばす
+ const gr=g.createRadialGradient(215,150,6,215,150,110);gr.addColorStop(0,'rgba(70,30,110,.4)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(90,0,260,240);
+ g.fillStyle='rgba(0,0,0,.3)';g.beginPath();g.ellipse(100,208,26,5,0,0,7);g.fill();
+ g.drawImage(W,60,208-W.height);g.globalAlpha=.94;g.drawImage(D,130,200-D.height);g.globalAlpha=1;
  for(const k of['imp','knight']){const im=SPR[k];g.drawImage(im,k==='imp'?420:520,208-im.height)}
 },fs.readFileSync(path.join(__dirname,'witch.js'),'utf8'));
 await p.locator('#sh').screenshot({path:out});console.log(er);await b.close()})();
