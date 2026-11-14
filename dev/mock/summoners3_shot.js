@@ -1,0 +1,14 @@
+// 新キャラ案3つ（その3）を1枚に並べて撮る: node dev/mock/summoners3_shot.js 出力先.png
+const {chromium}=require('playwright'),path=require('path'),fs=require('fs');
+(async()=>{const out=process.argv[2]||'summoners3.png';const b=await chromium.launch();const p=await b.newPage({viewport:{width:960,height:420},deviceScaleFactor:2});const er=[];p.on('pageerror',e=>er.push(e.message));
+await p.route('**/fonts.googleapis.com/**',r=>r.abort());await p.goto('file://'+path.resolve(__dirname,'../index.html'));await p.waitForTimeout(500);
+await p.evaluate(code=>{eval(code);const P=k=>paint(SD[k][0],SD[k][1],SD[k][3],SD[k][2]);
+ const cv=document.createElement('canvas');cv.width=960;cv.height=280;cv.id='sh';cv.style.cssText='position:fixed;left:0;top:0;width:960px;height:280px;z-index:99;image-rendering:pixelated';document.body.appendChild(cv);const g=cv.getContext('2d');g.imageSmoothingEnabled=false;
+ const bgs=[BGB1,BGB2,BGB3];const glow=(x,y,r,c)=>{const gg=g.createRadialGradient(x,y,0,x,y,r);gg.addColorStop(0,c);gg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gg;g.fillRect(x-r,y-r,r*2,r*2)};
+ const panel=(i,f,ttl)=>{g.save();g.beginPath();g.rect(i*320,0,318,280);g.clip();g.drawImage(bgs[i],i*320-40,10,640,240);g.translate(i*320,0);f();g.restore();g.fillStyle='rgba(8,6,16,.85)';g.fillRect(i*320,250,318,30);g.fillStyle='#f0e8d8';g.font='16px DotGothic16,sans-serif';g.textAlign='center';g.fillText(ttl,i*320+160,271)};
+ const G=218,sd=(x,w)=>{g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(x,G,w,5,0,0,7);g.fill()};
+ panel(0,()=>{const K=P('lkeep'),W=P('lwhale');glow(160,90,100,'rgba(120,190,255,.3)');g.globalAlpha=.75;g.drawImage(W,92,40);g.globalAlpha=1;for(const[x,y]of[[150,60],[210,50],[250,100],[130,110],[190,130]]){glow(x,y,10,'rgba(200,240,255,.7)')}sd(70,22);g.drawImage(K,12,G-K.height);glow(12+29.3*3,G-K.height+(28+2)*3,22,'rgba(255,200,90,.55)')},'案G 灯台守と光の鯨');
+ panel(1,()=>{const S=P('sgirl'),B=P('ibear');glow(175,G-90,90,'rgba(150,210,255,.25)');g.globalAlpha=.85;g.drawImage(B,110,G-B.height);g.globalAlpha=1;sd(175,40);sd(70,22);g.drawImage(S,12,G-S.height);for(let k=0;k<30;k++){g.fillStyle='rgba(230,245,255,.8)';g.fillRect((k*53)%300+5,(k*37)%220+10,2,2)}},'案H 雪国の少女と氷の大熊');
+ panel(2,()=>{const M=P('pupm'),K=P('pupk');sd(70,22);sd(175,30);g.drawImage(K,125,G-K.height);g.drawImage(M,12,G-M.height);const hx=12+31.6*3,hy=G-M.height+(10+2)*3;g.strokeStyle='rgba(230,220,255,.75)';g.lineWidth=1;for(const[tx,ty]of[[125+17*3,G-K.height+4*3],[125+6*3,G-K.height+30*3],[125+29*3,G-K.height+28*3],[125+13*3,G-K.height+33*3]]){g.beginPath();g.moveTo(hx,hy);g.quadraticCurveTo((hx+tx)/2,Math.min(hy,ty)-30,tx,ty);g.stroke()}glow(hx,hy,10,'rgba(230,220,255,.6)')},'案I 人形師と騎士の人形');
+},fs.readFileSync(path.join(__dirname,'summoners3.js'),'utf8'));
+await p.locator('#sh').screenshot({path:out});console.log(er);await b.close()})();
