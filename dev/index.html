@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.29';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.30';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2260,7 +2260,7 @@ const C=[
 {n:'雷撃',t:0,c:1,r:0,aa:4,vuA:1},{n:'突き上げ',t:0,c:2,r:1,a:13,wk:1,vu:1},{n:'血の刃',t:0,c:1,r:0,a:14,hp:2},
 {n:'体当たり',t:0,c:1,r:1,bs:1},{n:'百裂拳',t:0,c:1,r:1,a:2,h:4,x:1},{n:'大鉈',t:0,c:2,r:1,a:20,x:1},
 {n:'粉砕',t:0,c:3,r:2,a:32},{n:'業火',t:0,c:3,r:1,aa:21},{n:'旋風',t:0,X:1,c:-1,r:1,aa:5},
-{n:'命刈りの鎌',t:0,c:2,r:2,aa:4,lf:1,x:1},{n:'貪食',t:0,c:1,r:2,a:10,fd:1,x:1},{n:'骨砕き',t:0,c:1,r:0,a:8,wk:1},
+{n:'命刈りの鎌',t:0,c:2,r:2,aa:4,lf:4,x:1},{n:'貪食',t:0,c:1,r:2,a:10,fd:1,x:1},{n:'骨砕き',t:0,c:1,r:0,a:8,wk:1},
 {n:'爪痕',t:0,c:0,r:0,a:3,vu:1},{n:'毒塗り',t:1,c:1,r:0,k:8,ps:5},{n:'紙一重',t:1,c:1,r:0,b:8,dr:1},
 {n:'堅牢',t:1,c:2,r:1,b:30,x:1},{n:'力溜め',t:1,c:0,r:0,ts:2},{n:'生贄',t:1,c:0,r:1,hp:6,en:2,dr:3,x:1},
 {n:'血の取引',t:1,c:0,r:0,hp:3,en:2},{n:'威嚇',t:1,c:0,r:0,wkA:1,x:1},{n:'武装解除',t:1,c:1,r:1,ds:2,x:1},
@@ -2288,7 +2288,7 @@ const C=[
 {n:'縮地・風切り',t:1,c:1,r:0,k:2,b:5,dr:2},{n:'紅蓮・焔舞',t:0,c:1,r:0,k:2,aa:6,vuA:1},{n:'影縫い・縛',t:0,c:1,r:0,k:2,a:7,wk:1,vu:1},{n:'瞬閃・雷切',t:0,c:1,r:0,k:2,a:9,ia:5},
 {n:'奥義・天翔龍閃',t:0,c:2,r:1,k:2,a:6,kx:4,kc:1},{n:'修羅・千手観音',t:0,c:2,r:1,k:2,a:3,h:6},{n:'破軍・星堕とし',t:0,c:2,r:1,k:2,a:18,ke:1},{n:'残心・落花',t:0,c:1,r:1,k:2,a:8,kd:2},
 {n:'絶影・鏡花水月',t:1,c:1,r:1,k:2,b:10,ct:6},{n:'禁忌・血盟の契',t:1,c:0,r:1,k:2,hp:4,kg:3,en:1},{n:'睨み・威圧の眼',t:1,c:1,r:1,k:2,wkA:1,vuA:1,x:1},{n:'絶・鬼哭啾啾',t:0,c:2,r:1,k:2,a:14,wk:2,vu:2},
-{n:'覚醒・修羅道',t:2,c:1,r:1,k:2,pw:'kig',v:2},{n:'無限・百鬼夜行',t:0,X:1,c:-1,r:1,k:2,aa:7},{n:'深淵・影喰らい',t:0,c:2,r:1,k:2,aa:6,lf:1,x:1},
+{n:'覚醒・修羅道',t:2,c:1,r:1,k:2,pw:'kig',v:2},{n:'無限・百鬼夜行',t:0,X:1,c:-1,r:1,k:2,aa:7},{n:'深淵・影喰らい',t:0,c:2,r:1,k:2,aa:6,lf:4,x:1},
 {n:'神速・無拍子',t:2,c:2,r:2,k:2,pw:'dd',v:1},{n:'終焉・黒き月',t:0,c:3,r:2,k:2,aa:18,kx:2,kc:1},{n:'一刀・魔断',t:0,c:2,r:2,k:2,a:26,ia:12},{n:'剣聖の心得',t:2,c:1,r:2,k:2,pw:'iai',v:6},
 {n:'血脈・因果応報',t:2,c:1,r:2,k:2,pw:'zan',v:1},{n:'絶界・無明の闇',t:1,c:2,r:2,k:2,b:20,ct:10,x:1},{n:'神殺し・天叢雲',t:0,c:3,r:2,k:2,a:30,kx:2,kc:1},
 {n:'目眩',t:3,c:0,r:-3,k:9,un:1,eth:1,art:'swirl'},{n:'負傷',t:3,c:0,r:-3,k:9,un:1,art:'blood'},{n:'火傷',t:3,c:0,r:-3,k:9,un:1,bn:2,art:'flame'},{n:'粘液',t:3,c:1,r:-3,k:9,x:1,art:'drop'},
@@ -2297,7 +2297,7 @@ const C=[
 {n:'空き瓶',t:0,c:0,r:0,k:3,a:3,qk:1},{n:'杖の連打',t:0,c:1,r:0,k:3,a:4,h:2,mg:1},{n:'睨みつける',t:1,c:0,r:0,k:3,wk:1,mg:1},{n:'氷槍の頁',t:0,c:1,r:0,k:3,sp:1,a:10,wk:1},
 {n:'雷鳴の頁',t:0,c:2,r:0,k:3,sp:1,aa:13},{n:'毒霧の頁',t:1,c:1,r:0,k:3,sp:1,psA:5},{n:'障壁の頁',t:1,c:1,r:0,k:3,sp:1,b:13},{n:'物乞い',t:1,c:1,r:0,k:3,dr:2,mg:1},
 {n:'焚き火',t:1,c:1,r:0,k:3,b:7,mg:1},{n:'独り言',t:1,c:0,r:0,k:3,mg:1,dr:1},{n:'魔弾の頁',t:0,c:1,r:0,k:3,sp:1,a:7,mx:2},{n:'杖払い',t:0,c:1,r:0,k:3,aa:5,mg:1},
-{n:'炎嵐の頁',t:0,c:3,r:1,k:3,sp:2,aa:24},{n:'呪詛の頁',t:1,c:1,r:1,k:3,sp:1,vuA:2,wkA:1},{n:'吸命の頁',t:0,c:2,r:1,k:3,sp:1,a:13,lf:1,x:1},{n:'読み上げ',t:1,c:1,r:1,k:3,qk:2,dr:1},
+{n:'炎嵐の頁',t:0,c:3,r:1,k:3,sp:2,aa:24},{n:'呪詛の頁',t:1,c:1,r:1,k:3,sp:1,vuA:2,wkA:1},{n:'吸命の頁',t:0,c:2,r:1,k:3,sp:1,a:13,lf:6,x:1},{n:'読み上げ',t:1,c:1,r:1,k:3,qk:2,dr:1},
 {n:'安酒',t:1,c:0,r:1,k:3,hp:2,en:1,mg:2},{n:'老骨の意地',t:1,c:2,r:1,k:3,b:13,mg:2},{n:'魔を込めた杖',t:0,c:1,r:1,k:3,a:5,mx:3},{n:'星屑の頁',t:0,c:1,r:1,k:3,sp:1,a:3,h:4},
 {n:'栞を挟む',t:1,c:1,r:1,k:3,b:7,dr:1},{n:'独り言の癖',t:2,c:1,r:1,k:3,pw:'mgt',v:1},{n:'頁の護り',t:2,c:1,r:1,k:3,pw:'chs',v:3},{n:'写本',t:2,c:1,r:1,k:3,pw:'pg',v:1},
 {n:'禁書・終焉の頁',t:0,c:3,r:2,k:3,sp:2,aa:40},{n:'魔導の残響',t:2,c:3,r:2,k:3,pw:'echo',v:1},{n:'路地裏の王',t:2,c:2,r:2,k:3,pw:'arc',v:1},{n:'時渡りの頁',t:1,c:1,r:2,k:3,qk:9,dr:2,x:1},
@@ -2327,7 +2327,7 @@ const C=[
 {n:'奥義・無間',t:0,c:3,r:2,k:2,kh:4},{n:'刹那・時止め',t:1,c:2,r:2,k:2,stn:1,x:1},{n:'血桜の構え',t:2,c:2,r:2,k:8,pw:'vamp',v:2},
 {n:'速記',t:1,c:0,r:1,k:3,hst:1},{n:'再読',t:1,c:1,r:1,k:3,rec:1},{n:'魔力の盾',t:1,c:1,r:1,k:3,mb:2},{n:'増築',t:2,c:1,r:1,k:3,pw:'slot',v:1},
 {n:'頁の結界',t:2,c:1,r:1,k:3,pw:'chb',v:3},{n:'連鎖の頁',t:0,c:1,r:1,k:3,sp:1,a:6,csp:6},{n:'遠雷の頁',t:0,c:2,r:1,k:3,sp:3,aa:24},{n:'貯めた小銭',t:1,c:0,r:1,k:3,mdr:1},
-{n:'路地裏の喧嘩',t:0,c:1,r:1,k:3,a:3,hpm:1},{n:'物乞いの知恵',t:1,c:0,r:1,k:3,gg:12,x:1},{n:'反射の頁',t:1,c:1,r:1,k:3,sp:1,ct:8,b:4},{n:'吸魔の頁',t:0,c:1,r:1,k:3,sp:1,a:8,lf:1,mg:2,x:1},
+{n:'路地裏の喧嘩',t:0,c:1,r:1,k:3,a:3,hpm:1},{n:'物乞いの知恵',t:1,c:0,r:1,k:3,gg:12,x:1},{n:'反射の頁',t:1,c:1,r:1,k:3,sp:1,ct:8,b:4},{n:'吸魔の頁',t:0,c:1,r:1,k:3,sp:1,a:8,lf:4,mg:2,x:1},
 {n:'停滞の頁',t:1,c:2,r:2,k:3,sp:1,vuA:3,wkA:3,b:10},{n:'終わらない詠唱',t:2,c:3,r:2,k:3,pw:'rech',v:1},{n:'魔力爆縮',t:0,c:1,r:2,k:3,mxA:5},{n:'時渡りの書架',t:2,c:2,r:2,k:3,pw:'chD',v:1},
 {n:'頁の嵐',t:1,c:2,r:2,k:3,qkb:1},{n:'老人の昔話',t:1,c:1,r:2,k:3,rcl:2},{n:'魔導書の目覚め',t:1,c:1,r:2,k:3,fsp:2,x:1},
 {n:'タイムアタック',t:0,c:1,r:1,k:4,tm:1},{n:'仮眠の極意',t:1,c:2,r:1,k:4,msx:1,x:1},{n:'反復練習',t:0,c:1,r:1,k:4,a:4,gr:3},{n:'モーニングルーティン',t:1,c:1,r:1,k:4,inn:1,ts:3,dr:1},
@@ -2395,7 +2395,7 @@ function encApply(o,d){const v=o.ev||0,A=n=>{if(d.a)d.a+=n;else if(d.aa)d.aa+=n}
  case'goopy':d.x=1;d.b=(d.b||0)+v;break;case'inky':A(1);d.wk=(d.wk||0)+1;break;case'instinct':if(d.a)d.a*=2;if(d.aa)d.aa*=2;break;case'momentum':A(o.mo||0);break;case'royal':d.inn=1;d.rt=1;break;case'steady':d.rt=1;break;case'souls':d.x=0;break;
  case'ember':d.c=0;A(3);break;case'slither':if(o.sc!=null)d.c=o.sc;break;case'slumb':if(o.sl1)d.c=Math.max(0,d.c-o.sl1);break}}
 const cd=o=>{const fb=cdB(),c=o.u&&!(fb&1)?up(C[o.i]):C[o.i],gt=c.t===2&&c.c>=0&&has('gaunt'),hx=fb&2&&o.hxe&&c.t<3&&!c.eth;if(c.fin&&B&&B.dr&&B.dr.length&&B.en)return{...c,un:1};if(!(o.f0||o.g||o.cm||gt||hx||o.sly||o.en||o.e1))return c;const d={...c};if(o.en&&ENC[o.en])encApply(o,d);if(o.e1&&B&&o.e1===B.turn&&d.c>1)d.c=1;if(o.sly)d.sly=1;if(gt)d.c++;if(hx)d.eth=1;if(o.f0)d.c=0;if(o.cm&&d.c>0)d.c=Math.max(0,d.c-o.cm);if(o.g){if(d.a)d.a+=o.g;else if(d.aa)d.aa+=o.g;else if(d.b)d.b+=o.g}return d};
-function dl(c,pv){const p=[],cl=(v,b)=>{if(pv&&b!=null&&v!==b)p.cl[p.length-1]=v>b?'#7dff9a':'#ff6a6a'};p.cl={};if(c.ms)p.push('立ったまま眠る','HP+'+(4+4*c.ms)+'・筋力+'+(c.ms+1),'次ターンエナ+1','2枚多く引く');if(c.sp)p.push('詠唱'+c.sp);if(c.X&&c.chX==null&&c.evX==null)p.push('X回');if(c.a||c.bs&&pv){const v=pv?pv.a:c.a;p.push(v+'ダメージ'+(c.h>1?'×'+c.h:''));cl(v,c.bs?null:c.a)}if(c.sm)p.push('筋力×'+c.sm);if(c.bs&&!pv)p.push('ブロック分ダメージ');if(c.aa){const v=pv?pv.aa:c.aa;p.push('全体'+v+'ダメージ'+(c.h>1?'×'+c.h:''));cl(v,c.aa)}if(c.lf)p.push('HP吸収');
+function dl(c,pv){const p=[],cl=(v,b)=>{if(pv&&b!=null&&v!==b)p.cl[p.length-1]=v>b?'#7dff9a':'#ff6a6a'};p.cl={};if(c.ms)p.push('立ったまま眠る','HP+'+(4+4*c.ms)+'・筋力+'+(c.ms+1),'次ターンエナ+1','2枚多く引く');if(c.sp)p.push('詠唱'+c.sp);if(c.X&&c.chX==null&&c.evX==null)p.push('X回');if(c.a||c.bs&&pv){const v=pv?pv.a:c.a;p.push(v+'ダメージ'+(c.h>1?'×'+c.h:''));cl(v,c.bs?null:c.a)}if(c.sm)p.push('筋力×'+c.sm);if(c.bs&&!pv)p.push('ブロック分ダメージ');if(c.aa){const v=pv?pv.aa:c.aa;p.push('全体'+v+'ダメージ'+(c.h>1?'×'+c.h:''));cl(v,c.aa)}if(c.lf)p.push((c.aa?'1体につきHP+':'HP+')+c.lf);
 if(c.b){const v=pv&&pv.b!=null?pv.b:c.b;p.push('ブロック'+v);cl(v,c.b)}if(c.db)p.push('ブロック2倍');if(c.dr)p.push(c.dr+'枚引く');if(c.en)p.push('エナジー+'+c.en);
 if(c.vu)p.push('弱体'+c.vu);if(c.wk)p.push('脆弱'+c.wk);if(c.vuA)p.push('全体弱体'+c.vuA);if(c.wkA)p.push('全体脆弱'+c.wkA);
 if(c.ps)p.push('毒'+c.ps);if(c.cat)p.push('毒2倍');if(c.ds)p.push('敵の筋力-'+c.ds);
@@ -3964,7 +3964,7 @@ if((has('grim')&&!B.g1)||(has('grim2')&&(B.g1||0)<2)){B.g1=(B.g1||0)+1;castSp(q)
 function castSp(q,mul){const c=q.c;let tg=B.en[q.ti];if(!tg||tg.dead)tg=alive()[0];if(!tg)return;B.bkt=T;B.lastSp=c;const M=mul||1,col=SPC(c),bon=(c.mx?PS.mana*c.mx:0)+PS.arc*PS.mana+(c.csp?B.ch.length*c.csp:0);if(c.mx)PS.mana=0;if(c.ct){PS.cnt+=c.ct;nmb(110,118,'反撃'+c.ct,'#ffd23f')}if(PS.rech&&!q.re&&B.ch.length<3+PS.slot)B.ch.push({c,ti:q.ti,n:c.sp,re:1});
 say('魔導書が「'+c.n.replace(/(の頁)?\+?$/,'')+'」を放った');sfx('rr');sfx('mcast');const el=SPE(c),big=(c.a||c.aa||0)>=14;
 for(let r=0;r<=PS.echo;r++){const dl=r*.5;fxs('mcs',110,110,{d:.55,dl,c:col,s:el});if(c.aa)fxs('mga',455,208,{d:1,dl:dl+.15,c:col,s:el});if(c.b)fxs('mbk',110,166,{d:.8,dl:dl+.2,c:col,s:el});if(!c.a&&!c.aa&&(c.psA||c.vuA||c.wkA)){fxs('mga',455,208,{d:1,dl:dl+.15,c:col,s:el});fxs('snd',0,0,{d:.05,dl:dl+.6,s:SPS[el]});for(const e of alive()){const p=ePos(B.en.indexOf(e));fxs('mi',p.x,p.y-(e.fly||0)-SPR[e.k].height/2,{d:.7,dl:dl+.6,c:col,s:el})}}
- if(c.a){const p=ePos(B.en.indexOf(tg)),ty=p.y-(tg.fly||0)-SPR[tg.k].height/2;fxs('mb',p.x,ty,{d:.4,dl:dl+.12,c:col,s:el});for(let k=0;k<(c.h||1);k++){fxs('mi',p.x,ty,{d:.7,dl:dl+.52+k*.12,c:col,s:el,b:big});fxs('snd',0,0,{d:.05,dl:dl+.52+k*.12,s:SPS[el]});if(tg.dead)break;const a=hitE(tg,Math.floor(calcE(c.a+bon,tg)*M),dl+.52+k*.12,c.a>=14,0);if(c.lf)P.hp=Math.min(P.mhp,P.hp+a)}
+ if(c.a){const p=ePos(B.en.indexOf(tg)),ty=p.y-(tg.fly||0)-SPR[tg.k].height/2;fxs('mb',p.x,ty,{d:.4,dl:dl+.12,c:col,s:el});for(let k=0;k<(c.h||1);k++){fxs('mi',p.x,ty,{d:.7,dl:dl+.52+k*.12,c:col,s:el,b:big});fxs('snd',0,0,{d:.05,dl:dl+.52+k*.12,s:SPS[el]});if(tg.dead)break;const a=hitE(tg,Math.floor(calcE(c.a+bon,tg)*M),dl+.52+k*.12,c.a>=14,0);if(c.lf&&a>0)P.hp=Math.min(P.mhp,P.hp+c.lf)}
   if(!tg.dead){if(c.vu){tg.vuln+=c.vu;pop(tg,'弱体+'+c.vu,'#ff9a6a')}if(c.wk){tg.weak+=c.wk;pop(tg,'脆弱+'+c.wk,'#c9a0ff')}if(c.ps){tg.poison+=c.ps;pop(tg,'毒+'+c.ps,'#7dff9a')}}}
  if(c.aa){fxs('snd',0,0,{d:.05,dl:dl+.6,s:SPS[el]});for(const e of alive()){const p=ePos(B.en.indexOf(e)),ty=p.y-(e.fly||0)-SPR[e.k].height/2;fxs('mi',p.x,ty,{d:.7,dl:dl+.6,c:col,s:el,b:big});hitE(e,Math.floor(calcE(c.aa+bon,e)*M),dl+.6,c.aa>=14,0)}}
  for(const e of alive()){if(c.vuA){e.vuln+=c.vuA;pop(e,'弱体+'+c.vuA,'#ff9a6a')}if(c.wkA){e.weak+=c.wkA;pop(e,'脆弱+'+c.wkA,'#c9a0ff')}if(c.psA){e.poison+=c.psA;pop(e,'毒+'+c.psA,'#7dff9a')}}
@@ -4275,7 +4275,7 @@ if((c.a||c.bs||c.sm||c.lhx||c.tm||c.tmE||c.kh||c.pct||c.rv||c.bsm)&&tg){let base
 for(let k=0;k<h;k++){const t2=c.rnd?pk(alive()):tg;if(!t2||(t2.dead&&k>0))break;let d=calcE(base,t2,c.sm?c.sm:1)*xMul(c,t2);if(dbl)d*=2;const sb=t2.blk;if(c.pc)t2.blk=0;hitE(t2,d,k*(B.pa&&B.pa.t0===T&&B.pa.k==='fl'?.16:.12)+(c.qy?.65:0)+(B.pa&&B.pa.t0===T?B.pa.hd||0:0),d>=14||c.bs,1);if(c.pc&&!t2.dead)t2.blk=sb;if(c.fd&&t2.dead){P.mhp+=3;P.hp+=3}}
 if(c.bsm)B.blk=0;if(c.kh){PS.ki=0;if(PS.kdr)drawC(PS.kdr)}}
 if(tg&&tg.dead){if(c.ke){B.me+=c.ke;nmb(34,225,'エナジー+'+c.ke,'#7ec8ff')}if(c.kd)drawC(c.kd);if(c.gd){P.gold+=c.gd;nmb(tg?ePos(B.en.indexOf(tg)).x:450,120,'+'+c.gd+'G','#ffd23f')}if(c.kef)B.me=Math.max(B.me,MXE());if(c.kr)o.kr2=1}
-if(c.aa||c.saa||c.mxA){const n=(c.X?x:(c.h||1))*hm*(c.aaP&&MPB?mpAct().filter(k=>PL[k].B&&!PL[k].B.down).length:1);for(let k=0;k<n;k++)for(const e of alive()){let d=c.saa?calcE(strB()*(c.saa-1),e):c.mxA?Math.floor(PS.mana*c.mxA*(PS.weak>0?.75:1)*(e.vuln>0?1.5:1)):calcE(c.aa+bon+X2-(c.dmB&&tg?(tg.doom||0)*c.dmB:0)+(c.dmB?(e.doom||0)*c.dmB:0),e);if(dbl)d*=2;if(PS.dbT&&c.t===0)d*=2;if(B.dbn&&c.t===0)d*=2;const a=hitE(e,d,k*.15+(B.pa&&B.pa.t0===T?B.pa.hd||0:0),0,1);if(c.lf){P.hp=Math.min(P.mhp,P.hp+a)}}
+if(c.aa||c.saa||c.mxA){const n=(c.X?x:(c.h||1))*hm*(c.aaP&&MPB?mpAct().filter(k=>PL[k].B&&!PL[k].B.down).length:1);for(let k=0;k<n;k++)for(const e of alive()){let d=c.saa?calcE(strB()*(c.saa-1),e):c.mxA?Math.floor(PS.mana*c.mxA*(PS.weak>0?.75:1)*(e.vuln>0?1.5:1)):calcE(c.aa+bon+X2-(c.dmB&&tg?(tg.doom||0)*c.dmB:0)+(c.dmB?(e.doom||0)*c.dmB:0),e);if(dbl)d*=2;if(PS.dbT&&c.t===0)d*=2;if(B.dbn&&c.t===0)d*=2;const a=hitE(e,d,k*.15+(B.pa&&B.pa.t0===T?B.pa.hd||0:0),0,1);if(c.lf&&a>0){P.hp=Math.min(P.mhp,P.hp+c.lf)}}
 if(n>0)for(const e of alive()){const p=ePos(B.en.indexOf(e));fxs('rg',p.x,p.y-30,{d:.4,c:'#ffb02e'})}if(c.mxA)PS.mana=0}
 if(c.mx)PS.mana=0;if(c.mg){PS.mana=(PS.mana+c.mg);nmb(110,118,'魔力+'+c.mg,'#c9a0ff');sfx('bf')}if(c.qk)for(let k=0;k<c.qk&&B.ch.length;k++)castSp(B.ch.shift());
 if(c.kc&&PS.ki>0){if(has('sakura')){P.hp=Math.min(P.mhp,P.hp+2);fxs('ar',110,160,{s:'＋',c:'#7dff9a',d:.7})}PS.ki=0;if(PS.kdr)drawC(PS.kdr)}if(c.kg){PS.ki=(PS.ki+c.kg);nmb(110,118,'気+'+c.kg,'#4aa8ff');sfx('bf')}if(c.ct){PS.cnt+=c.ct;nmb(110,118,'反撃'+c.ct,'#ffd23f')}
