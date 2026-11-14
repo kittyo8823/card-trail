@@ -8,16 +8,18 @@ const N=16;for(let f=0;f<N;f++){await p.evaluate(f=>{const g=G2,T=f/16*6.283,GY=
  const glow=(x,y,r,c)=>{const gg=g.createRadialGradient(x,y,0,x,y,r);gg.addColorStop(0,c);gg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gg;g.fillRect(x-r,y-r,r*2,r*2)};
  g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(80,GY,22,5,0,0,7);g.fill();g.drawImage(GI,30,GY-GI.height);
  const fy=Math.round(Math.sin(T)*3),kx=150,ky=GY-178+fy;
- // 浮く幽霊の下半身：青く透ける尾が下へ細くなり、ゆらめく
+ // 効果は半分の解像度の別キャンバスに描いて2倍に引き伸ばす（ドット絵の粗さにそろえる）
+ const E=window.EC||(window.EC=document.createElement('canvas'));E.width=240;E.height=130;const e=E.getContext('2d');e.clearRect(0,0,240,130);
+ const flm=(x,y,s,ph,dn)=>{x/=2;y/=2;s=s*1.6/2;e.globalCompositeOperation='lighter';for(let k=0;k<3;k++){const h=s*(1-k*.25)*(1+.3*Math.sin(T*2+ph+k))*(dn?-1:1),w=s*.7*(1-k*.25);e.globalAlpha=[.35,.45,.6][k];e.fillStyle=['#1a4ab8','#3a8aff','#a8d8ff'][k];e.beginPath();e.moveTo(x-w,y);e.quadraticCurveTo(x-w*.6+Math.sin(T*2+ph)*1.5,y-h*.6,x+Math.sin(T*2.4+ph)*2,y-h);e.quadraticCurveTo(x+w*.6+Math.sin(T*2+ph)*1.5,y-h*.6,x+w,y);e.closePath();e.fill()}e.globalAlpha=1;e.globalCompositeOperation='source-over'};
  g.fillStyle='rgba(20,40,90,.25)';g.beginPath();g.ellipse(kx+66,GY,34,5,0,0,7);g.fill();
- g.filter='blur(1px)';for(let k=0;k<3;k++){g.globalAlpha=[.45,.6,.8][k];g.fillStyle=['#2a6ad8','#4a9aff','#b8e0ff'][k];g.beginPath();const w=[44,32,18][k];g.moveTo(kx+66-w,ky+112);for(let j=0;j<=10;j++){const u=j/10,y=ky+108+u*(78-k*8),x=kx+66+Math.sin(T*1.5+u*4+k)*(4+u*8)-w*(1-u)*(1-u*.3);g.lineTo(x,y)}for(let j=10;j>=0;j--){const u=j/10,y=ky+108+u*(78-k*8),x=kx+66+Math.sin(T*1.5+u*4+k)*(4+u*8)+w*(1-u)*(1-u*.3);g.lineTo(x,y)}g.closePath();g.fill()}g.globalAlpha=1;g.filter='none';
- glow(kx+75,ky+80,95,'rgba(70,150,255,.4)');
+ // 下半身：下向きの炎を背骨に沿って重ね、先へいくほど細く、左右にゆらめく
+ for(let j=0;j<9;j++){const u=j/8,sx=kx+70+Math.sin(T*1.5+u*4)*(3+u*10)+(j%2?-1:1)*(10*(1-u)),sy=ky+120+u*62;flm(sx,sy,22*(1-u*.65),j*.9,1)}
+ for(let j=0;j<5;j++){const u=j/4;flm(kx+70+Math.sin(T*1.5+u*4)*(3+u*10),ky+118+u*50,30*(1-u*.6),j*1.7+3,1)}
+ g.imageSmoothingEnabled=false;g.drawImage(E,0,0,480,260);e.clearRect(0,0,240,130);
  g.drawImage(KI,kx,ky);
- // 鎧の隙間からはみ出る青いオーラ（首・肩・肘・腰・面頬）
- const flm=(x,y,s,ph)=>{s*=1.6;g.globalCompositeOperation='lighter';g.filter='blur(2px)';for(let k=0;k<3;k++){const h=s*(1-k*.25)*(1+.3*Math.sin(T*2+ph+k)),w=s*.7*(1-k*.25);g.globalAlpha=[.35,.45,.55][k];g.fillStyle=['#1a4ab8','#3a8aff','#a8d8ff'][k];g.beginPath();g.moveTo(x-w,y);g.quadraticCurveTo(x-w*.6+Math.sin(T*2+ph)*3,y-h*.6,x+Math.sin(T*2.4+ph)*4,y-h);g.quadraticCurveTo(x+w*.6+Math.sin(T*2+ph)*3,y-h*.6,x+w,y);g.closePath();g.fill()}g.globalAlpha=1;g.filter='none';g.globalCompositeOperation='source-over'};
  const U=3,X=a=>kx+a*U+2,Y=b=>ky+(b+4)*U+2;
  flm(X(24),Y(13),14,0);flm(X(33),Y(13),10,1.3);flm(X(14),Y(13),9,2.1);flm(X(38.6),Y(20),9,.7);flm(X(23),Y(36),12,1.9);flm(X(31),Y(36),10,2.7);flm(X(13),Y(35),9,3.4);
- glow(X(30),Y(6.4),16,'rgba(140,210,255,.7)');
+ g.imageSmoothingEnabled=false;g.drawImage(E,0,0,480,260);glow(X(30),Y(6.4),16,'rgba(140,210,255,.7)');
  for(let k=0;k<10;k++){const u=(k/10+T/6.283*.6)%1,x=kx+40+((k*37)%90),y=ky+130-u*120;g.globalAlpha=(1-u)*.8;g.fillStyle='#9ad0ff';g.fillRect(Math.round(x),Math.round(y),2,2)}g.globalAlpha=1},f);
  await p.locator('#sh').screenshot({path:path.join(tmp,'f'+String(f).padStart(2,'0')+'.png')})}
 await b.close();execSync(`python3 -c "
