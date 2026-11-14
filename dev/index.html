@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.27';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.28';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -3208,6 +3208,7 @@ const S={
  dumbbell:(g,r,c,a)=>T(g,37,24,a??-.4,1.5,()=>{g.fillStyle='#848c9a';g.fillRect(-10,-1.4,20,2.8);for(const d of[-1,1]){P(g,[[d*10-2.4,-7],[d*10+2.4,-7],[d*10+2.4,7],[d*10-2.4,7]],'#3c4450');P(g,[[d*14-2,-5],[d*14+2,-5],[d*14+2,5],[d*14-2,5]],'#5a6272');L(g,d*10-2.4,-7,d*10+2.4,-7,'#b4b8c0',1)}}),
  shaker:(g,r)=>T(g,37,24,-.25,1.4,()=>{P(g,[[-7,-10],[7,-10],[8,14],[-8,14]],'#dcdee0');P(g,[[1,-10],[7,-10],[8,14],[1,14]],'#b4b8c0');g.fillStyle='#4a7a34';g.fillRect(-8,-15,16,5.4);g.fillStyle='#2e5a2a';g.fillRect(0,-15,8,5.4);g.fillStyle='#e2ccae';g.fillRect(-7,0,14,7)}),
  pillow:(g,r)=>T(g,37,26,-.12,1.4,()=>{g.fillStyle='#dcdee0';g.beginPath();g.moveTo(-18,-8);g.quadraticCurveTo(0,-12,18,-8);g.quadraticCurveTo(21,0,18,8);g.quadraticCurveTo(0,12,-18,8);g.quadraticCurveTo(-21,0,-18,-8);g.fill();g.fillStyle='#b4b8c0';g.beginPath();g.moveTo(0,9);g.quadraticCurveTo(10,10,18,8);g.quadraticCurveTo(21,0,18,-8);g.quadraticCurveTo(12,0,0,9);g.fill();E(g,-4,-2,6,3,'#c8ccd4')}),
+ egg:(g,r)=>{B(g,37,24,26,20,0,'250,236,200',.6);T(g,37,24,-.25,1.3,()=>{g.beginPath();g.ellipse(0,0,11,14,0,0,7);g.fillStyle='#e2ccae';g.fill();g.beginPath();g.ellipse(3,2,8,11,0,0,7);g.fillStyle='#c8a888';g.fill();E(g,-4,-6,3,4,'#f2dccc');for(const[x,y]of[[-2,4],[4,-4],[5,6],[-6,0],[1,-9]])E(g,x,y,1.4,1,'#8a6a5e')})},
  mask:(g,r)=>T(g,37,22,-.15,1.5,()=>{g.fillStyle='#1e2a5a';g.fillRect(-24,-1.4,48,2.8);P(g,[[-15,-5],[-2,-6],[0,-2],[-2,5],[-15,5],[-18,0]],'#2e4486');P(g,[[15,-5],[2,-6],[0,-2],[2,5],[15,5],[18,0]],'#2e4486');P(g,[[-15,-5],[-2,-6],[-1,-3],[-15,-2]],'#5a78b0');P(g,[[2,-6],[15,-5],[15,-2],[1,-3]],'#5a78b0');L(g,-12,1,-5,1,'#dcdee0',.8);L(g,5,1,12,1,'#dcdee0',.8)}),
  zz:(g,r)=>{for(let i=0;i<3;i++){const x=40+i*10,y=26-i*9,s=4+i*2.4;g.fillStyle='rgba(242,236,226,'+(1-i*.2)+')';P(g,[[x-s,y-s],[x+s,y-s],[x+s,y-s*.6],[x-s*.3,y+s*.6],[x+s,y+s*.6],[x+s,y+s],[x-s,y+s],[x-s,y+s*.6],[x+s*.3,y-s*.6],[x-s,y-s*.6]],'rgba(242,236,226,'+(1-i*.2)+')')}},
  sun:(g,r)=>{B(g,37,40,36,24,0,'255,220,150',.8);for(let i=0;i<9;i++){const a=Math.PI+i/8*Math.PI;P(g,[[37+Math.cos(a-.08)*14,40+Math.sin(a-.08)*14],[37+Math.cos(a)*34,40+Math.sin(a)*30],[37+Math.cos(a+.08)*14,40+Math.sin(a+.08)*14]],'rgba(255,236,190,.6)')}E(g,37,40,13,13,'#e8b070');E(g,37,40,9,9,'#f2dccc')},
@@ -3260,6 +3261,8 @@ Object.assign(BOS,{
 '援護':'W,light+shield','鼓舞':'G,rings+horn','連携攻撃':'R,xcres','分け前':'G,coins+cup','声援':'D,rings','囮':'K,arrows+shield','共鳴':'G,light+rings','蘇生の祈り':'G,light+souls,y',
 // 状態異常・呪い
 '目眩':'P,swirl,p','負傷':'B,shock+blood','火傷':'E,flame','粘液':'V,drops,g','呪い・苦悩':'P,chains+eye,p','呪い・迷い':'K,smoke+swirl,w','呪い・不器用':'K,broken','呪い・痛み':'B,needles,r','寄生卵':'V,jelly,g','呪い・罪悪感':'K,smoke+chains','呪い・強欲':'G,coins+eye,y','呪い・腐敗':'V,smoke+skull,g','呪い・不運':'K,shards+moon,k',
+// 生成・イベントのカード
+'小ナイフ':'K,streak+knife,,-.2','鍛えし刃':'G,spk+katana,,-.3','巨鳥の卵':'W,egg','啄み':'W,birds+burst','環の守り':'C,rings+shield','悟り':'G,light+eye,y',
 });
 // スレスパ2寄りの見本（追加しない）：主役1つを大きく斜めに・背景は2色の流れと大きなぼかしの形・明るさの順番・色は2〜3色・勢いは大きな形・輪郭なし（縁の光で浮かせる）
 const BD={};
