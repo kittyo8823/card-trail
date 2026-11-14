@@ -1,5 +1,5 @@
 // 自動プレイによる動作確認: node tests/smoke.js [ラン数/キャラ]
-// 3キャラそれぞれでランを最後まで進め、JSエラー・進行不能がないかを調べる。
+// 各キャラでランを最後まで進め、JSエラー・進行不能がないかを調べる。
 // 戦闘画面のスクリーンショットを tests/out/battle.png に保存する。
 const {chromium}=require('playwright'),path=require('path'),fs=require('fs');
 const URL='file://'+path.resolve(__dirname,'../index.html'),OUT=path.join(__dirname,'out'),RUNS=+process.argv[2]||3;
@@ -7,7 +7,7 @@ const URL='file://'+path.resolve(__dirname,'../index.html'),OUT=path.join(__dirn
 const errs=[];pg.on('pageerror',e=>errs.push(e.message));
 await pg.route('**/fonts.googleapis.com/**',r=>r.abort());
 await pg.goto(URL);await pg.waitForTimeout(300);let bad=0;
-for(const cl of[0,1,2,3,4,6])for(let run=0;run<RUNS;run++){
+for(const cl of[0,1,2,3,4,6,10])for(let run=0;run<RUNS;run++){
 const res=await pg.evaluate(async cl=>{const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 newRun(cl);P.mhp=P.hp=400;NE.opts[0][1]();if(S==='pick'){PICK.cb&&PICK.cb(PICK.list[0])}if(S==='conf'){P.deck[CONF.i].u=1;CONF.done()}if(S==='reward'){P.deck.push({i:RW.cards[0],u:0});after()}
 let steps=0,stuck=0,lastSig='';
