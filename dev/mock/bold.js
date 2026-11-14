@@ -139,7 +139,12 @@ const BOS={
 '粉骨砕身':'K,skull+shock','無痛':'S,arrows+armor','業火の誓い':'E,flame+psword','燃え尽きる魂':'E,soul+ash','血の契約':'B,scroll+blood','灰の王':'E,crown+ash','突き上げ':'W,cres+greatsword,,-1.3',
 };
 Object.assign(BOS,{
-'霊槍の突き':'N,streak+beam,,-.5','祈りの守り':'S,shield+light','霊騎士召喚':'M,ghost+aura','光の三叉':'N,beam+burst,,-.6','三叉の薙ぎ':'N,hcres+beam','鎮魂の祈り':'W,light+rings','霊の盾':'M,shield+ghost','呼び声':'M,souls+aura','二連の突き':'N,xcres+beam','灯火':'D,lanterns',
+'光の礫':'W,light+shards','祈りの刃':'W,knife+light,,-.4','騎士の守り':'S,armor+shield','光の薙ぎ':'W,hcres+light','頭巾の影':'K,smoke+cards','槍の柄打ち':'N,beam+shock,,-1','灯の導き':'D,lanterns+cards','鎧の守り':'S,armor+heart',
+'霊騎士の突進':'M,streak+beam,,-.4','白光の連弾':'W,multi+light','祈りの盾':'S,shield+rings','霊光の刃':'C,cres+light','魂の器':'M,cup+souls','鎮めの歌':'W,ripple+light','光の楔':'W,spk+light,,-.6','騎士の咆哮':'M,rings+helm','再起の祈り':'M,armor+light','光の帳':'C,light+shield',
+'槍の旋回':'N,whirl+beam','霊光の奔流':'C,beam+swirl','守りの誓約':'S,circle+armor','霊光の巡り':'C,swirl+cards','光の加護':'W,aura+shield','騎士の一閃':'N,streak+cres,,-.3','涙の祈り':'W,drops+heart','光の鎖':'W,chains+light','騎士の献身':'M,ghost+light',
+'天の三叉':'N,beam+stars+burst,,-.7','白き奇跡':'I,ghost+light+aura','光の嵐':'W,arrows+light','魂の共鳴':'M,souls+rings','夜明けの灯':'D,sun+lanterns','天穿つ槍':'N,beam+meteor,,-.8','聖女の祈り':'I,light+circle','白銀の鎧':'I,armor+aura','最後の祈り':'W,candles+light','光の審判':'I,beam+eye'});
+Object.assign(BOS,{
+'白い光':'W,light+streak,,-.5','祈りの守り':'S,shield+light','霊騎士召喚':'M,ghost+aura','光の三叉':'N,beam+burst,,-.6','三叉の薙ぎ':'N,hcres+beam','鎮魂の祈り':'W,light+rings','霊の盾':'M,shield+ghost','呼び声':'M,souls+aura','二連の突き':'N,xcres+beam','灯火':'D,lanterns',
 '白き誓い':'W,shield+aura','槍の構え':'S,beam+shield,,-.8','霊光の矢':'N,arrow1+light','慈悲':'W,heart+light','光の三叉槍':'N,beam+shock,,-.7','鎮めの鐘':'M,bell+ripple','守護の契り':'W,circle+ghost','霊の反撃':'M,ghost+burst','魂の灯':'D,soul+lanterns','霊光の結界':'C,circle+shield',
 '騎士の帰還':'M,armor+aura','貫く光':'N,beam+streak,,-.2','祈り重ね':'W,rings+light','霊騎士の極光':'D,beam+light+burst','魂の解放':'M,souls+boom','不滅の誓い':'W,ghost+circle','白銀の聖域':'I,circle+light','光の雨':'N,needles+light'});
 Object.assign(BOS,{
