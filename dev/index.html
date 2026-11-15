@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.50';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.51';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -1866,8 +1866,8 @@ function knPaint(sp,cp,hf,an){an=an||{};if(!KN.c){KN.c=MKC(KN.W,KN.H);KN.e=MKC(K
  return KN.c}
 // 今の霊騎士の見え方 [霊の濃さ, 崩れ具合, 被弾の光, 突きの前進]。bb.kuT 召喚（立ち上がる）時刻、bb.kdT 崩れた時刻、bb.khr 被弾、bb.kat 突き
 function knS(ps,bb){if(!ps||!(ps.knm>0))return null;const ku=bb&&bb.kuT,kd=bb&&bb.kdT;let sp=1,cp=0;
- if(ps.kn>0&&!(ku!=null&&T<ku)){if(ku!=null&&T-ku<.8){const r=(T-ku)/.8;cp=1-Math.min(1,r/.6);sp=Math.max(0,(r-.4)/.6)}}
- else{const r=kd!=null?Math.max(0,Math.min(1,(T-kd)/.9)):1;cp=r;sp=Math.max(0,1-r*2.2)}
+ if(ps.kn>0&&!(ku!=null&&T<ku)){if(ku!=null&&T-ku<.6){const r=(T-ku)/.6;cp=1-Math.min(1,r/.6);sp=Math.max(0,(r-.4)/.6)}}
+ else{const r=kd!=null?Math.max(0,Math.min(1,(T-kd)/.65)):1;cp=r;sp=Math.max(0,1-r*2.2)}
  const hf=bb&&bb.khr!=null&&T>=bb.khr&&T-bb.khr<.25?1-(T-bb.khr)/.25:0,lg=bb&&bb.kat!=null&&T>=bb.kat&&T-bb.kat<.45?Math.sin((T-bb.kat)/.45*Math.PI)*34:0;return[sp,cp,hf,lg]}
 let SERX=64;
 // ===== セレスと霊騎士の動き（Ver3.43 ユーザー指定：様々なモーションを凝って） =====
@@ -1876,7 +1876,9 @@ let SERX=64;
 const SR={U:2.6,P:{}};for(const pp of['lb','lf','body','ab','hd','af']){PPART=pp;SR.P[pp]=paint(38,42,SD.seres[3],SR.U)}PPART=null;
 const srP=(a,b)=>[a*SR.U+2,(b+2)*SR.U+2],ezO=u=>u<=0?0:u>=1?1:1-(1-u)*(1-u),ezIO=u=>u<=0?0:u>=1?1:u<.5?2*u*u:1-2*(1-u)*(1-u);
 // 少女の姿勢
-function serGA(bb){const g={ab:Math.sin(T*1.3)*.05,af:[0,0,0],hd:0,bx:0,by:Math.round(Math.sin(T*1.7)*.8),gl:.25+.08*Math.sin(T*2.3)},a=bb&&bb.sa,lt=a?T-a.t0:9;
+// 動きの速さ（Ver3.51 ユーザー指定：鈍いので約1.7倍に）。B.sa/B.ka の時間はこの倍率で進む
+const SRS=1.7;
+function serGA(bb){const g={ab:Math.sin(T*1.3)*.05,af:[0,0,0],hd:0,bx:0,by:Math.round(Math.sin(T*1.7)*.8),gl:.25+.08*Math.sin(T*2.3)},a=bb&&bb.sa,lt=a?(T-a.t0)*SRS:9;
  if(a&&lt>=0&&lt<a.d){const u=lt/a.d,k=a.k,up=ezO(Math.min(1,lt/.18))*(1-ezIO(Math.max(0,(lt-a.d*.65)/(a.d*.35))));
   if(k==='orb'||k==='orbm'||k==='orbs'||k==='mark'){g.ab=-1.35*up+(k==='orbm'?Math.sin(lt*30)*.06*up:0);g.bx=2*up;g.hd=-.06*up;g.gl=.25+1.1*up}
   else if(k==='smn'){g.ab=-2.1*up;g.by-=Math.round(2*up);g.hd=-.12*up;g.gl=.3+1.4*up;g.af=[0,-2*up,-.1*up]}
@@ -1891,7 +1893,7 @@ function serGirl(cx,gy,g,bb){const im=SPR.seres,x0=Math.round(cx-im.width/2+g.bx
  const[sx,sy]=srP(15.6,15.4),v=[-1.4*SR.U,11*SR.U],c=Math.cos(g.ab),s=Math.sin(g.ab),lx=x0+sx+v[0]*c-v[1]*s,ly=y0+sy+v[0]*s+v[1]*c;
  if(bb){bb.lnx=lx;bb.lny=ly}const r=8+10*g.gl,gr=ctx.createRadialGradient(lx,ly,0,lx,ly,r);gr.addColorStop(0,'rgba(255,226,150,'+Math.min(.85,.35*g.gl+.15)+')');gr.addColorStop(1,'rgba(255,200,120,0)');ctx.save();ctx.globalCompositeOperation='lighter';ctx.fillStyle=gr;ctx.fillRect(lx-r,ly-r,r*2,r*2);ctx.restore()}
 // 騎士の姿勢（kx0＝騎士の絵の左端の画面座標。突きの踏み込みの距離を敵の位置から決める）
-function knA(bb,kx0){const a=bb&&bb.ka,lt=a?T-a.t0:9,o={};if(!a||lt<0||lt>a.d)return o;const u=lt,L=(KN.Y0+25.5*KU+2)-(KN.Y0+7*KU+2-48*KZ),tip=kx0+KN.X0+46*KU+2+L,dm=Math.max(0,Math.min(250,(a.tx||450)-tip-6));
+function knA(bb,kx0){const a=bb&&bb.ka,lt=a?(T-a.t0)*SRS:9,o={};if(!a||lt<0||lt>a.d)return o;const u=lt,L=(KN.Y0+25.5*KU+2)-(KN.Y0+7*KU+2-48*KZ),tip=kx0+KN.X0+46*KU+2+L,dm=Math.max(0,Math.min(250,(a.tx||450)-tip-6));
  if(a.k==='flr'){o.fl=Math.sin(u/a.d*Math.PI)*.9;o.ry=-Math.round(4*Math.sin(u/a.d*Math.PI));return o}
  const back=(f,e)=>{o.sa=-.35*e;o.ax=-6*e;o.ln=-.07*e;o.dash=-8*e},home=(e,s0)=>{for(const k in s0)o[k]=s0[k]*(1-e)};
  if(a.k==='thr'){if(u<.16)back(0,ezO(u/.16));else if(u<.28){const e=ezIO((u-.16)/.12);o.sa=-.35+(Math.PI/2+.35)*e;o.dash=-8+(dm+8)*e;o.ax=-6+18*e;o.ln=-.07+.17*e;o.sx=10*e;o.gh=[[o.dash-26*e,.22],[o.dash-52*e,.1]]}
@@ -1904,7 +1906,7 @@ function knA(bb,kx0){const a=bb&&bb.ka,lt=a?T-a.t0:9,o={};if(!a||lt<0||lt>a.d)re
   else if(u<.7){const e=(u-.5)/.2;o.ry=-6;o.sa=2.45;o.ln=.14;o.ax=12;o.dash=m;o.tr=[-1.05+3.2*e,2.45];o.fl=.7*(1-e)}else home(ezIO((u-.7)/(a.d-.7)),{ry:-6,sa:2.45,ln:.14,ax:12,dash:m});return o}
  return o}
 // 少女＋騎士。nob=1 で騎士のHPバーを出さない（キャラ選択画面）
-function serDraw(cx,gy,bb,ps,nob){bb=bb||{};const ga0=ctx.globalAlpha,g=serGA(bb),s=knS(ps,bb),gd=()=>serGirl(cx,gy,g,bb),a=bb.sa,lt=a?T-a.t0:9;
+function serDraw(cx,gy,bb,ps,nob){bb=bb||{};const ga0=ctx.globalAlpha,g=serGA(bb),s=knS(ps,bb),gd=()=>serGirl(cx,gy,g,bb),a=bb.sa,lt=a?(T-a.t0)*SRS:9;
  // 祈り：足元に回る光の陣／光の柱
  if(a&&lt>=0&&lt<a.d&&(a.k==='pray'||a.k==='pw')){const u=lt/a.d,al=Math.sin(u*Math.PI);ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=ga0*al;ctx.strokeStyle='#e8e4ff';ctx.lineWidth=1;for(let k=0;k<2;k++){ctx.beginPath();ctx.ellipse(cx+2,gy,26+k*8+u*6,5+k*2,0,0,6.3);ctx.stroke()}
   for(let k=0;k<8;k++){const t=k/8*6.283+T*(a.k==='pw'?2:1.2),x=cx+2+Math.cos(t)*30,y=gy+Math.sin(t)*6;ctx.fillStyle='#fff6d8';ctx.fillRect(Math.round(x),Math.round(y),2,2)}
@@ -1928,14 +1930,15 @@ function serDraw(cx,gy,bb,ps,nob){bb=bb||{};const ga0=ctx.globalAlpha,g=serGA(bb
  else if(SERL.hb===2)hpBar(kc-24,Math.round(gy-KN.GY+SERL.dy*sp+KN.Y0-14),48,kv,ps.knm,'#e8505b',0,0);
  else hpBar(Math.max(Math.round(cx+40),kc-26),gy+2,52,kv,ps.knm,'#e8505b',0,0)}
 // カードを使った時に動きを決める（xPre から。演出だけで、乱数は使わない）
-function serAnim(c,o,tg){if(QT||!B)return;const at=c.t===0,tp=tg?ePos(B.en.indexOf(tg)):{x:450,y:208},im=tg&&SPR[tg.k],th=im?im.height:60,tw=im?im.width:60,tx=tp.x-tw*.32,ty=tp.y-th*.5,all=alive().map(e=>{const q=ePos(B.en.indexOf(e)),m=SPR[e.k];return[q.x-(m?m.width*.25:15),q.y-(m?m.height*.5:30)]});let hd=0,mh=0;B.lg=0;
- if(at&&c.kt){const h=Math.max(1,(c.h||1)*(c.X?(B.lx||1):1)+(c.ratl?B.katN||0:0)),k=c.aa||c.vuA?'swp':h>1?'mh':'thr';B.ka={k,t0:T,h,tx,ty,d:k==='mh'?.26+.16*h+.32:k==='swp'?1:.8};hd=k==='swp'?.42:k==='mh'?.26:.28;mh=k==='mh';B.sfq=(B.sfq||[]).concat(k==='swp'?all.map(p=>({k:'arc',t0:T+.4,d:.45,x:p[0],y:p[1]})):Array.from({length:k==='mh'?h:1},(_,j)=>({k:'tip',t0:T+hd+j*.16,d:.32,x:tx,y:ty+(j%2?-6:6)*(k==='mh'?1:0)})));setTimeout(()=>sfx('wsw'),(hd-.06)*1000)}
+function serAnim(c,o,tg){if(QT||!B)return;const nq=(B.sfq||[]).length;const at=c.t===0,tp=tg?ePos(B.en.indexOf(tg)):{x:450,y:208},im=tg&&SPR[tg.k],th=im?im.height:60,tw=im?im.width:60,tx=tp.x-tw*.32,ty=tp.y-th*.5,all=alive().map(e=>{const q=ePos(B.en.indexOf(e)),m=SPR[e.k];return[q.x-(m?m.width*.25:15),q.y-(m?m.height*.5:30)]});let hd=0,mh=0;B.lg=0;
+ if(at&&c.kt){const h=Math.max(1,(c.h||1)*(c.X?(B.lx||1):1)+(c.ratl?B.katN||0:0)),k=c.aa||c.vuA?'swp':h>1?'mh':'thr';B.ka={k,t0:T,h,tx,ty,d:k==='mh'?.26+.16*h+.32:k==='swp'?1:.8};hd=k==='swp'?.42:k==='mh'?.26:.28;mh=k==='mh';B.sfq=(B.sfq||[]).concat(k==='swp'?all.map(p=>({k:'arc',t0:T+.4,d:.45,x:p[0],y:p[1]})):Array.from({length:k==='mh'?h:1},(_,j)=>({k:'tip',t0:T+hd+j*.16,d:.32,x:tx,y:ty+(j%2?-6:6)*(k==='mh'?1:0)})));setTimeout(()=>sfx('wsw'),Math.max(0,hd/SRS-.05)*1000)}
  else if(at){const n=c.aa?all.length:Math.max(1,c.h||1),k=c.aa?'orbs':n>1?'orbm':'orb';B.sa={k,t0:T,d:.42+.12*n+.3};hd=.48;mh=n>1;for(let j=0;j<n;j++){const p=c.aa?all[j]:[tx,ty];B.sfq=(B.sfq||[]).concat({k:'orb',t0:T+.3+(c.aa?0:j*.12),d:.18,x:p[0],y:p[1],j})}}
  else if(c.ksm||c.dirg||c.nks||c.knH){B.sa={k:'smn',t0:T,d:.9};B.ka={k:'flr',t0:T+.32,d:.7};B.sfq=(B.sfq||[]).concat([0,1,2].map(j=>({k:'smn',t0:T+.12+j*.07,d:.3,j})))}
  else if(c.t===2)B.sa={k:'pw',t0:T,d:1};
  else if(c.fu||c.fuA||c.obl||c.mis||c.hpL){B.sa={k:'mark',t0:T,d:.8};for(const p of c.fuA?all:[[tx,ty]])B.sfq=(B.sfq||[]).concat({k:'wisp',t0:T+.18,d:.36,x:p[0],y:p[1]})}
  else if(c.b)B.sa={k:'pray',t0:T,d:.85};else B.sa={k:'sk',t0:T,d:.6};
- if(at)B.pa={k:mh?'fl':'sr',t0:T,h:1,d:.8,hd,ev:{}}}
+ B.sfq=(B.sfq||[]).map((q,j)=>j<nq?q:{...q,t0:T+(q.t0-T)/SRS,d:q.d/SRS});
+ if(at)B.pa={k:mh?'fl':'sr',t0:T,h:1,d:.8/SRS,hd:hd/SRS,sp:(c.kt?.16:.12)/SRS,ev:{}}}
 // 敵側に出る演出（敵の絵より手前に描く。ひとりの時だけ）：光弾・穂先の閃き・薙ぎの衝撃・葬列の鬼火、葬列の印（敵の周りを回る白い火）
 function serFx(){if(MPB||!B||P.cls!==10)return;const b=B,L=b.sfq||[];if(b.kdf){b.kdf();b.kdf=null}b.sfq=L.filter(q=>T<q.t0+q.d+.4);ctx.save();ctx.globalCompositeOperation='lighter';
  const glow=(x,y,r,c,a)=>{const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,c.replace('A',a));g.addColorStop(1,c.replace('A',0));ctx.fillStyle=g;ctx.fillRect(x-r,y-r,r*2,r*2)},spk=(x,y,u,n,l)=>{ctx.strokeStyle='rgba(255,250,235,'+(1-u)+')';ctx.lineWidth=2;for(let k=0;k<n;k++){const t=k/n*6.283+.4,r0=6+u*l*.6,r1=r0+l*(1-u)*.8;ctx.beginPath();ctx.moveTo(x+Math.cos(t)*r0,y+Math.sin(t)*r0*.7);ctx.lineTo(x+Math.cos(t)*r1,y+Math.sin(t)*r1*.7);ctx.stroke()}};
@@ -4876,7 +4879,7 @@ if(c.t===1&&has('fan'))B.blk+=1;
 if(c.hp){P.hp-=c.hp;P.killer=c.n;hlInc();if(PS.hpb)PS.str+=PS.hpb;fxs('nm',110,150,{s:'-'+c.hp,c:'#ff6a6a',d:.9});sfx('ea');if(P.hp<=0){lose();if(B.ph==='L')return}}
 xPre(c,o,tg);const hl=B.hand.length,X2=xBon(c,o,tg,hl),hm=(c.cmb&&B.lastT===0?2:1)*(fa&&PS.ftw?2:1);
 if((c.a||c.bs||c.sm||c.lhx||c.tm||c.tmE||c.kh||c.pct||c.rv||c.bsm)&&tg){let base=(c.bs?B.blk:c.bsm?B.blk*c.bsm:c.a||0)+(o.i===SHIV?(has('sheath')?2:0)+PS.shvd:0)+bon+X2+(c.pct?Math.floor(tg.mh*c.pct/100):0);let h=c.X&&c.a?x:c.fl?B.hand.filter(q=>cd(q).t===1).length:c.kh?PS.ki:(c.h||1);h=xHit(c,h);if(c.kh)base=c.kh+bon+X2;if(c.pd&&tg.poison>0)h=2;if(c.hpm)h+=PS.mana;h*=hm;
-for(let k=0;k<h;k++){const t2=c.rnd?pk(alive()):tg;if(!t2||(t2.dead&&k>0))break;let d=Math.floor(calcE(base,t2,c.sm?c.sm:1)*xMul(c,t2));if(dbl)d*=2;const sb=t2.blk;if(c.pc)t2.blk=0;hitE(t2,d,k*(B.pa&&B.pa.t0===T&&B.pa.k==='fl'?.16:.12)+(c.qy?.65:0)+(B.pa&&B.pa.t0===T?B.pa.hd||0:0),d>=14||c.bs,1);if(c.pc&&!t2.dead)t2.blk=sb;if(c.fd&&t2.dead){P.mhp+=3;P.hp+=3}}
+for(let k=0;k<h;k++){const t2=c.rnd?pk(alive()):tg;if(!t2||(t2.dead&&k>0))break;let d=Math.floor(calcE(base,t2,c.sm?c.sm:1)*xMul(c,t2));if(dbl)d*=2;const sb=t2.blk;if(c.pc)t2.blk=0;hitE(t2,d,k*(B.pa&&B.pa.t0===T&&B.pa.sp?B.pa.sp:B.pa&&B.pa.t0===T&&B.pa.k==='fl'?.16:.12)+(c.qy?.65:0)+(B.pa&&B.pa.t0===T?B.pa.hd||0:0),d>=14||c.bs,1);if(c.pc&&!t2.dead)t2.blk=sb;if(c.fd&&t2.dead){P.mhp+=3;P.hp+=3}}
 if(c.bsm)B.blk=0;if(c.kh){tkPay(PS.ki);if(PS.kdr)drawC(PS.kdr)}}
 if(tg&&tg.dead){if(c.ke){B.me+=c.ke;nmb(34,225,'エナジー+'+c.ke,'#7ec8ff')}if(c.kd)drawC(c.kd);if(c.gd){P.gold+=c.gd;nmb(tg?ePos(B.en.indexOf(tg)).x:450,120,'+'+c.gd+'G','#ffd23f')}if(c.kef)B.me=Math.max(B.me,MXE());if(c.kr)o.kr2=1}
 if(c.aa||c.saa||c.mxA){const n=(c.X?x:(c.h||1))*hm*(c.aaP&&MPB?mpAct().filter(k=>PL[k].B&&!PL[k].B.down).length:1);for(let k=0;k<n;k++)for(const e of alive()){let d=c.saa?calcE(strB()*(c.saa-1),e):c.mxA?Math.floor(PS.mana*c.mxA*(PS.weak>0?.75:1)*(e.vuln>0?1.5:1)):calcE(c.aa+bon+X2-(c.dmB&&tg?(tg.doom||0)*c.dmB:0)+(c.dmB?(e.doom||0)*c.dmB:0),e);if(dbl)d*=2;if(PS.dbT&&c.t===0)d*=2;if(B.dbn&&c.t===0)d*=2;if(c.kt&&!(PS.kn>0))d=Math.floor(d/2);const a=hitE(e,d,k*.15+(B.pa&&B.pa.t0===T?B.pa.hd||0:0),0,1);if(c.lf&&a>0){P.hp=Math.min(P.mhp,P.hp+c.lf)}}
