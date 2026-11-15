@@ -1906,7 +1906,7 @@ function knA(bb,kx0){const a=bb&&bb.ka,lt=a?(T-a.t0)*SRS:9,o={};if(!a||lt<0||lt>
   else if(u<.7){const e=(u-.5)/.2;o.ry=-6;o.sa=2.45;o.ln=.14;o.ax=12;o.dash=m;o.tr=[-1.05+3.2*e,2.45];o.fl=.7*(1-e)}else home(ezIO((u-.7)/(a.d-.7)),{ry:-6,sa:2.45,ln:.14,ax:12,dash:m});return o}
  return o}
 // 少女＋騎士。nob=1 で騎士のHPバーを出さない（キャラ選択画面）
-function serDraw(cx,gy,bb,ps,nob){bb=bb||{};const ga0=ctx.globalAlpha,g=serGA(bb),s=knS(ps,bb),gd=()=>serGirl(cx,gy,g,bb),a=bb.sa,lt=a?(T-a.t0)*SRS:9;
+function serDraw(cx,gy,bb,ps,nob){bb=bb||{};const ga0=ctx.globalAlpha,g=serGA(bb),s=knS(ps,bb),gd=()=>{const z=SERL.gs||1;if(z===1)return serGirl(cx,gy,g,bb);ctx.save();ctx.translate(cx,gy);ctx.scale(z,z);ctx.translate(-cx,-gy);serGirl(cx,gy,g,bb);ctx.restore()},a=bb.sa,lt=a?(T-a.t0)*SRS:9;
  // 祈り：足元に回る光の陣／光の柱
  if(a&&lt>=0&&lt<a.d&&(a.k==='pray'||a.k==='pw')){const u=lt/a.d,al=Math.sin(u*Math.PI);ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=ga0*al;ctx.strokeStyle='#e8e4ff';ctx.lineWidth=1;for(let k=0;k<2;k++){ctx.beginPath();ctx.ellipse(cx+2,gy,26+k*8+u*6,5+k*2,0,0,6.3);ctx.stroke()}
   for(let k=0;k<8;k++){const t=k/8*6.283+T*(a.k==='pw'?2:1.2),x=cx+2+Math.cos(t)*30,y=gy+Math.sin(t)*6;ctx.fillStyle='#fff6d8';ctx.fillRect(Math.round(x),Math.round(y),2,2)}
