@@ -1825,7 +1825,7 @@ const KNF=A0=>{const A=SOFS(A0,4),{t,l,e,r,q,sh,pt}=A;const[S1,S2,S3,S4]=KNA.S,R
 // 騎士の倍率は2.5（Ver3.42 ユーザー採用の案C：少女が騎士の手前に寄り添う）で描く。崩れる演出のため部位（胴・兜・両腕）も別々に描いておく
 let KU=2.5,KZ=KU/3,KNk='wht';const KN={X0:4,P:{}};function knDim(){KN.W=Math.round(212*KZ)+80;KN.H=Math.round(240*KZ);KN.Y0=Math.round(37*KZ);KN.GY=KN.Y0+Math.round(178*KZ);KN.c=null}knDim();
 // 騎士の大きさを変える（倍率）。SERL：少女から見た騎士の位置 dx・高さ dy、bk=1 で騎士を少女の後ろに描く
-function knScale(u){KU=u;KZ=u/3;knDim();knSet(KNk)}const SERL={dx:-4,dy:-10,bk:1,hb:0,ky:-10,gs:.85,hs:1,o0:34,o1:45,ov:18};
+function knScale(u){KU=u;KZ=u/3;knDim();knSet(KNk)}const SERL={dx:-4,dy:-10,bk:1,hb:0,ky:-10,gs:.85,hs:1,o0:34,o1:45,ov:18,bg:61};
 function knSet(k){KNk=k;KNC=KNCS[k];KNA=KNAS[k];SPR.kn=paint(64,52,KNF,KU);for(const pp of['body','ab','hd','af']){PPART=pp;KN.P[pp]=paint(64,52,KNF,KU)}PPART=null}
 // 1コマ分の騎士（尾の炎・鎧・鎧の隙間の炎・光の槍）を描く。sp：霊の濃さ（0で中身が消える）、cp：崩れ具合（1で鎧が地面に散らばる）、hf：被弾の光
 // 霊騎士の中身（炎）と槍の色。t 尾の炎・a 鎧の隙間の炎（am 重ね方）・sh 足元の影・gl 兜の光・pt 昇る粒・s 槍［にじみ,柄,刃,芯］（sm 重ね方）
@@ -1906,8 +1906,9 @@ function knA(bb,kx0){const a=bb&&bb.ka,lt=a?(T-a.t0)*SRS:9,o={};if(!a||lt<0||lt>
   else if(u<.7){const e=(u-.5)/.2;o.ry=-6;o.sa=2.45;o.ln=.14;o.ax=12;o.dash=m;o.tr=[-1.05+3.2*e,2.45];o.fl=.7*(1-e)}else home(ezIO((u-.7)/(a.d-.7)),{ry:-6,sa:2.45,ln:.14,ax:12,dash:m});return o}
  return o}
 // 少女＋騎士。nob=1 で騎士のHPバーを出さない（キャラ選択画面）
-// 霊騎士の大きさ（Ver3.61 スレスパ2のオスティに倣い、HPで大きくなる。HP5以下で0.55倍、30以上で今の大きさ）
-function knSz(ps){return .55+.45*Math.max(0,Math.min(1,(Math.max(ps.kn,0)-5)/25))}
+// 霊騎士の大きさ（Ver3.61 スレスパ2のオスティに倣い、最大HPで大きくなる。最大HP5以下で0.55倍、100以上で1倍＝それ以上は大きくならない）。
+// 騎士の中心とHPバーの中心は同じ縦の線。騎士のバーはセレスのバーと触れない距離（SERL.bg）より左へは来ない
+function knSz(ps){return .55+.45*Math.max(0,Math.min(1,(Math.max(ps.knm||0,0)-5)/95))}
 function serDraw(cx,gy,bb,ps,nob){bb=bb||{};const ga0=ctx.globalAlpha,g=serGA(bb),s=knS(ps,bb),gd=()=>{const z=SERL.gs||1;if(z===1)return serGirl(cx,gy,g,bb);ctx.save();ctx.translate(cx,gy);ctx.scale(z,z);ctx.translate(-cx,-gy);serGirl(cx,gy,g,bb);ctx.restore()},a=bb.sa,lt=a?(T-a.t0)*SRS:9;
  // 祈り：足元に回る光の陣／光の柱
  if(a&&lt>=0&&lt<a.d&&(a.k==='pray'||a.k==='pw')){const u=lt/a.d,al=Math.sin(u*Math.PI);ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=ga0*al;ctx.strokeStyle='#e8e4ff';ctx.lineWidth=1;for(let k=0;k<2;k++){ctx.beginPath();ctx.ellipse(cx+2,gy,26+k*8+u*6,5+k*2,0,0,6.3);ctx.stroke()}
@@ -1915,7 +1916,7 @@ function serDraw(cx,gy,bb,ps,nob){bb=bb||{};const ga0=ctx.globalAlpha,g=serGA(bb
   if(a.k==='pw'){const w=34*al,gr=ctx.createLinearGradient(0,gy-150,0,gy);gr.addColorStop(0,'rgba(255,240,200,0)');gr.addColorStop(1,'rgba(255,240,210,.45)');ctx.fillStyle=gr;ctx.fillRect(cx+2-w/2,gy-150,w,150);for(let k=0;k<10;k++){const q=(k/10+lt*1.2)%1;ctx.fillStyle='#fff2c8';ctx.fillRect(Math.round(cx-14+((k*29)%30)),Math.round(gy-q*130),2,2)}}
   ctx.restore();ctx.globalAlpha=ga0}
  if(!s){gd();return}
- const ks=SERL.hs?knSz(ps):1,kco=KN.X0+26*KU,ox=SERL.hs?Math.round(SERL.o0+SERL.o1*ks-SERL.ov*(ks-.55)/.45-kco):SERL.dx,[sp,cp,hf]=s,kx0=cx+ox,an=knA(bb,kx0),c=knPaint(sp,cp,hf,{...an,brk:bb.kdM&&cp>0}),y=Math.round(gy-KN.GY+SERL.dy*sp+(an.ry||0)+(SERL.ky||0)),x=Math.round(kx0+(an.dash||0)+(hf>0?(Math.random()-.5)*6-8*hf:0));
+ const ks=SERL.hs?knSz(ps):1,kco=KN.X0+26*KU,ox=SERL.hs?Math.round(Math.max(SERL.bg||0,SERL.o0+SERL.o1*ks-SERL.ov*(ks-.55)/.45)-kco):SERL.dx,[sp,cp,hf]=s,kx0=cx+ox,an=knA(bb,kx0),c=knPaint(sp,cp,hf,{...an,brk:bb.kdM&&cp>0}),y=Math.round(gy-KN.GY+SERL.dy*sp+(an.ry||0)+(SERL.ky||0)),x=Math.round(kx0+(an.dash||0)+(hf>0?(Math.random()-.5)*6-8*hf:0));
  const fx=Math.round(kx0+kco),fy=gy+(SERL.ky||0);bb.kcx=fx+(x+kco-fx)*ks;bb.kcy=fy+(y+KN.Y0+20*KU-fy)*ks;
  // 立ち上がる時の光の柱
  if(bb.kuT!=null&&T>=bb.kuT&&T-bb.kuT<.9){const u=(T-bb.kuT)/.9,al=Math.sin(u*Math.PI),cx2=x+KN.X0+26*KU,w=50*al;ctx.save();ctx.globalCompositeOperation='lighter';const gr=ctx.createLinearGradient(0,y,0,gy);gr.addColorStop(0,'rgba(240,244,255,0)');gr.addColorStop(1,'rgba(240,244,255,'+(.5*al)+')');ctx.fillStyle=gr;ctx.globalAlpha=ga0;ctx.fillRect(cx2-w/2,y,w,gy-y);ctx.restore()}
