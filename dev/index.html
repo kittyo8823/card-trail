@@ -2828,7 +2828,26 @@ for(let i=0;i<90;i++){x.fillStyle=rn()<.5?'#2f8aa0':'#9af6ff';x.fillRect(Math.fl
 // Ver2.36 戦闘の背景は、層ごとに置き物の違う版を戦闘ごとに選ぶ（色・雰囲気は同じ）。ak は bgAnim 用の層の印
 BGB1.ak=1;BGB1S.ak='s';BGB2.ak=2;BGB3.ak=3;const BGVC={},BGVN={1:5,s:4,2:4,3:4};
 function bgVar(k,v){if(!v)return k==='s'?BGB1S:[0,BGB1,BGB2,BGB3][k];const id=k+'_'+v;if(!BGVC[id]){const c=k==='s'?bgSunk(v):k===1?bgForest(v):k===2?bgDungeon(v):bgTemple(v);c.ak=k;BGVC[id]=c}return BGVC[id]}
-function bgPick(kind){const a=Math.max(1,Math.min(3,P.act||1)),k=a===1&&P.v1==='s'?'s':a;if(kind===2)return bgVar(k,k===3?2:0);const h=Math.abs((a*131+(CUR?CUR.f:0)*37+(CUR?CUR.j:0)*11+(P.path?P.path.length:0)*7)*2654435761|0);if(k===3){const L=[0,1,3,4];return bgVar(3,L[h%L.length])}const n=BGVN[k];return bgVar(k,h%(n+1))}
+// Ver3.73 ボスごとの背景（ユーザー指定：層の雰囲気は残し、層の背景に合わないボスほど大きく変える）。BBG[ボスのキー](元の背景の複製の2D,元) で上から描き足す
+const BBG={},BBGC={};
+BBG.dragon=(x)=>{const W=640,H=360,R=(px,py,w,h,c)=>{x.fillStyle=c;x.fillRect(Math.round(px/2)*2,Math.round(py/2)*2,Math.ceil(w/2)*2,Math.ceil(h/2)*2)};
+ // 炎の照り返しで森全体を赤黒く
+ x.globalCompositeOperation='multiply';let g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#c0a0a0');g.addColorStop(.55,'#e0a890');g.addColorStop(1,'#a07070');x.fillStyle=g;x.fillRect(0,0,W,H);
+ x.globalCompositeOperation='screen';g=x.createLinearGradient(0,40,0,230);g.addColorStop(0,'rgba(120,20,10,0)');g.addColorStop(.7,'rgba(200,60,20,.18)');g.addColorStop(1,'rgba(255,120,40,.14)');x.fillStyle=g;x.fillRect(0,0,W,240);
+ for(const[cx,cy,r]of[[470,190,170],[120,200,120],[330,210,110]]){g=x.createRadialGradient(cx,cy,0,cx,cy,r);g.addColorStop(0,'rgba(255,120,40,.26)');g.addColorStop(1,'rgba(255,60,20,0)');x.fillStyle=g;x.fillRect(cx-r,cy-r,r*2,r*2)}
+ x.globalCompositeOperation='source-over';
+ // 遠くで燃える木々の炎の塊（地平線の上）
+ const rn=bgRng(77);for(let i=0;i<9;i++){const fx=rn()*W,fh=14+rn()*26,fw=8+rn()*10,by=200+rn()*8;for(let k=0;k<fh;k+=4){const t=k/fh,w=fw*(1-t)*(0.7+rn()*.5);R(fx-w/2+(rn()-.5)*4,by-k,w,4,t<.35?'rgba(255,170,80,.8)':t<.7?'rgba(220,90,40,.7)':'rgba(120,30,20,.6)')}}
+ // 焼け焦げて折れた木（手前の影）
+ for(const[tx,th,lean]of[[24,150,-.15],[600,170,.12],[250,90,.08]]){x.save();x.translate(tx,212);x.rotate(lean);R(-6,-th,12,th,'#1a0c0c');R(-6,-th,4,th,'#2a1412');for(let k=20;k<th-10;k+=26){const d=k%52?1:-1;R(d>0?6:-22,-k-4,16,4,'#1a0c0c')}R(-8,-th-6,16,6,'#1a0c0c');R(-2,-th-4,4,4,'#ff8a3a');x.restore()}
+ // 地面の溶岩の割れ目
+ for(let i=0;i<5;i++){let px=rn()*W,py=226+rn()*110;for(let k=0;k<7;k++){const nx=px+(rn()-.3)*26,ny=py+(rn()-.5)*8;x.strokeStyle=k%2?'#ff7a2a':'#ffb24a';x.lineWidth=2;x.beginPath();x.moveTo(Math.round(px/2)*2,Math.round(py/2)*2);x.lineTo(Math.round(nx/2)*2,Math.round(ny/2)*2);x.stroke();px=nx;py=ny}}
+ g=x.createLinearGradient(0,210,0,H);g.addColorStop(0,'rgba(255,90,30,.08)');g.addColorStop(1,'rgba(20,6,4,.2)');x.fillStyle=g;x.fillRect(0,210,W,H-210);
+ // 空を覆う煙
+ g=x.createLinearGradient(0,0,0,120);g.addColorStop(0,'rgba(20,8,8,.45)');g.addColorStop(1,'rgba(40,12,10,0)');x.fillStyle=g;x.fillRect(0,0,W,120);
+ for(let i=0;i<34;i++){R(rn()*W,rn()*200,2,2,rn()<.5?'rgba(255,176,80,.8)':'rgba(255,106,40,.7)')}};
+function bossBg(base,ks){const k=ks&&ks.find(q=>BBG[q]);if(!k)return base;const id=k+'_'+(base.ak||'');if(!BBGC[id]){const c=MKC(640,360),x=c.getContext('2d');x.imageSmoothingEnabled=false;x.drawImage(base,0,0);BBG[k](x,base);c.ak=base.ak;c.boss=k;BBGC[id]=c}return BBGC[id]}
+function bgPick(kind,ks){const a=Math.max(1,Math.min(3,P.act||1)),k=a===1&&P.v1==='s'?'s':a;if(kind===2)return bossBg(bgVar(k,k===3?2:0),ks);const h=Math.abs((a*131+(CUR?CUR.f:0)*37+(CUR?CUR.j:0)*11+(P.path?P.path.length:0)*7)*2654435761|0);if(k===3){const L=[0,1,3,4];return bgVar(3,L[h%L.length])}const n=BGVN[k];return bgVar(k,h%(n+1))}
 /* ===== データ ===== */
 const C=[
 {n:'斬撃',t:0,c:1,r:-1,a:6},{n:'防御',t:1,c:1,r:-1,b:5},{n:'強打',t:0,c:2,r:-1,a:8,vu:2},
@@ -4509,7 +4528,7 @@ function ratE(e){if(!e.rat)return 0;const o=B.en.filter(x=>x!==e&&x.rat&&!x.dead
 function sortE(){if(!B||!B.en||B.kind===2||B.en.length<2)return;const sz=e=>{const im=SPR[e.k];return E[e.k]&&E[e.k].fw?-1:im?im.width*im.height:0},eo=B.eo&&B.eo.map(i=>B.en[i]);B.en=B.en.map((e,i)=>[e,i]).sort((a,b)=>sz(a[0])-sz(b[0])||a[1]-b[1]).map(a=>a[0]);if(eo)B.eo=eo.map(e=>B.en.indexOf(e)).filter(i=>i>=0)}
 function fleeE(e){e.dead=1;e.hp=0;e.dT=T;e.dS='flee';e.fled=1;pop(e,'逃げ去った','#c8c8d8');sfx('cl');chk()}
 const bkF=v=>PS&&PS.frl>0?Math.floor(v*.75):v;
-function fight(ks,kind){XF=[];SPR.eye2=SPR.eye;BFX.eye2=BFX.eye;if(MPON()&&!(MPB&&MPB.init)&&!ks.includes('eye'))return mpFight(ks,kind);if(P.act===4)BGB=BGBV;else if(BGB!==BGBV)BGB=bgPick(kind);PS={orb:[],osl:3,foc:0,nwd:0,mig:0,sdc:0,lop:0,stm:0,shr:0,cai:0,eld:0,bcg:0,clwBk:0,forge:0,fnp:0,hlD:0,dsDr:0,fgT:0,fgAt:0,grA:0,dmP:0,strL:0,z0D:0,clwT:0,slyA:0,dbT:0,z0E:0,atKi:0,str:0,weak:0,vuln:0,poison:0,met:0,dem:0,rage:0,barr:0,comb:0,brut:0,tmp:0,dex:0,thn:0,nox:0,ibl:0,aft:0,cut:0,ki:0,cnt:0,kig:0,iai:0,zan:0,dd:0,mana:0,mgt:0,chs:0,pg:0,echo:0,arc:0,rgn:0,itg:0,sls:0,blkd:0,egy:0,psn:0,hpb:0,bers:0,udy:0,ftw:0,a3e:0,svb:0,dsd:0,pmul:0,fz:0,kdr:0,ct2:0,ksd:0,vamp:0,kfst:0,slot:0,chb:0,rech:0,chD:0,msd:0,stb:0,ms2:0,msf:0,qyp:0,gw:0,shvd:0,zt:0,mirT:0,kn:0,knm:0,rl:0,kreg:0,kth:0,kpr:0,kund:0,krb:0};
+function fight(ks,kind){XF=[];SPR.eye2=SPR.eye;BFX.eye2=BFX.eye;if(MPON()&&!(MPB&&MPB.init)&&!ks.includes('eye'))return mpFight(ks,kind);if(P.act===4)BGB=BGBV;else if(BGB!==BGBV)BGB=bgPick(kind,ks);PS={orb:[],osl:3,foc:0,nwd:0,mig:0,sdc:0,lop:0,stm:0,shr:0,cai:0,eld:0,bcg:0,clwBk:0,forge:0,fnp:0,hlD:0,dsDr:0,fgT:0,fgAt:0,grA:0,dmP:0,strL:0,z0D:0,clwT:0,slyA:0,dbT:0,z0E:0,atKi:0,str:0,weak:0,vuln:0,poison:0,met:0,dem:0,rage:0,barr:0,comb:0,brut:0,tmp:0,dex:0,thn:0,nox:0,ibl:0,aft:0,cut:0,ki:0,cnt:0,kig:0,iai:0,zan:0,dd:0,mana:0,mgt:0,chs:0,pg:0,echo:0,arc:0,rgn:0,itg:0,sls:0,blkd:0,egy:0,psn:0,hpb:0,bers:0,udy:0,ftw:0,a3e:0,svb:0,dsd:0,pmul:0,fz:0,kdr:0,ct2:0,ksd:0,vamp:0,kfst:0,slot:0,chb:0,rech:0,chD:0,msd:0,stb:0,ms2:0,msf:0,qyp:0,gw:0,shvd:0,zt:0,mirT:0,kn:0,knm:0,rl:0,kreg:0,kth:0,kpr:0,kund:0,krb:0};
 B={en:MPB&&MPB.sen?MPB.sen:ks.map(k=>{const d=E[k],hp=Math.round((d.hp[0]+RI(d.hp[1]-d.hp[0]+1))*(MPB?mpHpM(MPB.np):1)*(d.el===1?(Aa(3)?1.15:1):d.el===2?(Aa(4)?1.1:1):d.mn?1:1.75*(Aa(2)?1.1:1)*(P.act===3?1.25:1)));return{k,n:d.n,hp,mh:hp,i:0,str:0,weak:0,vuln:0,poison:0,blk:0,mv:d.mv,el:d.el||0,enr:d.en,sl:d.sl||0,sb:d.sb||0,seal:d.seal||0,lim:d.lim||0,tf:d.tf||0,beat:d.beat||0,gz:d.gz||0,gzd:d.gzd||0,gzc:0,fly:d.fly||0,thr:d.thr||0,ph:d.ph||0,spl:d.spl||0,inv:d.inv||0,mn:d.mn||0,ld:d.ld||0,pr:d.pr||0,pt:d.pt||0,rv:d.rv||0,pst:d.pst||0,cap:d.cap?Math.round(d.cap*(MPB?mpHpM(MPB.np):1)):0,lost:0,dsp:d.dsp||0,dmp:d.dmp||0,hex:d.hex||0,rit:d.rit||0,avg:d.avg||0,fl:0,sh:0,lg:0,dead:0,it:d.mv[0]}}),
 hand:[],dr:shuf(P.deck.map(o=>({...o}))),dis:[],ex:[],me:3,blk:0,turn:0,ph:'p',sel:-1,kind,boss:kind===2,bi:null,tut:kind===0&&!MPON()&&!tutDone()?{s:0,t0:T}:null,atks:0,vt:0,et:0,ei:0,lg:0,sh:0,dsc:0,bn:null,pl:0,fa:0,ch:[],g1:0,bkt:-9,fly:[],nd:0,lt:0};
 for(const e of B.en)eX(e);if(!(MPB&&MPB.sen))sortE();if(!(MPB&&MPB.sen))eStag(B.en,kind);
