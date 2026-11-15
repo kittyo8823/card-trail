@@ -1,0 +1,93 @@
+# スレスパ2 ネクロバインダーの全カード（slaythespire.wiki.gg の Cargo 表 Cards、Color=Necrobinder、2026-11-15 取得）
+# レア度	種類	コスト(-1=X)	名前	効果（(通常;強化後)、MP=マルチ専用、@NE=エナジー）
+Ancient	Power	2	Forbidden Grimoire	At the end of combat, you may remove a card from your Deck. Eternal.
+Ancient	Attack	1	Protector	Osty deals (10;15) damage. Deals additional damage equal to Osty's Max HP.
+Basic	Skill	1	Bodyguard	Summon (5;7).
+Basic	Skill	1	Defend (Necrobinder)	Gain (5;8) Block.
+Basic	Attack	1	Strike (Necrobinder)	Deal (6;9) damage.
+Basic	Attack	1	Unleash	Osty deals (6;9) damage. Deals additional damage equal to Osty's current HP.
+Common	Skill	1	Afterlife	Summon (6;9). Exhaust.
+Common	Attack	1	Blight Strike	Deal (8;10) damage. Apply Doom equal to damage dealt.
+Common	Attack	1	Defile	Ethereal. Deal (13;17) damage.
+Common	Skill	1	Defy	Ethereal. Gain (6;9) Block. Apply 1 Weak.
+Common	Attack	1	Drain Power	Deal (10;12) damage. Upgrade (2;3) random cards in your Discard Pile.
+Common	Attack	1	Fear	Ethereal. Deal (7;8) damage. Apply (1;2) Vulnerable.
+Common	Attack	2	Flatten	Osty deals (12;16) damage. This card costs 0 ⚡ if Osty has attacked this turn.
+Common	Skill	1	Grave Warden	Gain (8;11) Block. Add a Soul into your Draw Pile.
+Common	Attack	1	Graveblast	Deal (4;6) damage. Put a card from your Discard Pile into your Hand.( Exhaust.;)
+Common	Skill	1	Invoke	Next turn, Summon (2;3) and gain ⚡⚡(;⚡).
+Common	Skill	1	Negative Pulse	Gain (5;6) Block. Apply (7;11) Doom to ALL enemies.
+Common	Attack	0	Poke	Osty deals (6;9) damage.
+Common	Skill	2	Pull Aggro	Summon (4;5). Gain (7;9) Block.
+Common	Attack	3	Reap	Retain. Deal (27;33) damage.
+Common	Attack	1	Reave	Deal (10;13) damage. Add a Soul(;+) into your Draw Pile.
+Common	Skill	1	Scourge	Apply (13;16) Doom. Draw (1 card;2 cards).
+Common	Attack	1	Sculpting Strike	Deal (9;12) damage. Add Ethereal to a card in your Hand.
+Common	Attack	1	Snap	Osty deals (7;10) damage. Add Retain to a card in your Hand.
+Common	Attack	1	Sow	Retain. Deal (8;11) damage to ALL enemies.
+Common	Skill	0	Wisp	(;Retain. )Gain ⚡. Exhaust.
+Rare	Attack	9	Banshee's Cry	Deal 33 damage to ALL enemies. Costs ⚡⚡ less for each Ethereal card played this combat.
+Rare	Power	2	Cacophony	MP Every 33 cards drawn by ALL players, deal (66;99) damage to a random enemy.
+Rare	Power	1	Call of the Void	(;Innate.  )At the start of your turn, add 1 random card into your Hand. It gains Ethereal.
+Rare	Power	3	Demesne	Ethereal. At the start of your turn, gain ⚡ and draw 1 additional card.
+Rare	Power	1	Devour Life	Whenever you play a Soul, Summon (1;2).
+Rare	Skill	2	Eidolon	Play ALL Ethereal cards in your Exhaust Pile. Exhaust.
+Rare	Skill	3	End of Days	Apply (29;37) Doom to ALL enemies. Kill enemies with at least as much Doom as HP.
+Rare	Attack	-1	Eradicate	Retain. Deal (11;14) damage X times.
+Rare	Skill	1	Glimpse Beyond	MP ALL players add (3;4) Souls into their Draw Pile. Exhaust.
+Rare	Attack	1	Hang	Deal (10;13) damage. Double the damage ALL Hang cards deal to this enemy.
+Rare	Attack	0	Misery	(;Retain. )Deal (7;9) damage. Apply any debuffs on the enemy to ALL other enemies.
+Rare	Power	2	Necro Mastery	Summon (5;8). Whenever Osty loses HP, ALL enemies lose that much HP as well.
+Rare	Power	0	Neurosurge	Gain (⚡⚡⚡;4⚡). Draw 2 cards. At the start of your turn, apply 3 Doom to yourself.
+Rare	Skill	0	Oblivion	Whenever you play a card this turn, apply (3;4) Doom to the enemy.
+Rare	Skill	3	Reanimate	Summon (20;25). Exhaust.
+Rare	Power	3	Reaper Form	(;Retain. )Whenever Attacks deal damage, apply that much Doom.
+Rare	Skill	1	Sacrifice	Retain. If Osty is alive, he dies and you gain Block equal to triple his Max HP.
+Rare	Skill	1	Seance	Ethereal. Transform a card in your Draw Pile into Soul.
+Rare	Power	2	Sentry Mode	At the start of your turn, add 1 Sweeping Gaze into your Hand.
+Rare	Skill	0	Shared Fate	Lose 2 Strength. Enemy loses (2;3) Strength. Exhaust.
+Rare	Attack	1	Soul Storm	Deal 9 damage. Deals (4;6) additional damage for each Soul in your Exhaust Pile.
+Rare	Power	1	Spirit of Ash	Whenever you play an Ethereal card, gain (4;5) Block.
+Rare	Attack	3	Squeeze	Osty deals (25;30) damage. Deals (5;6) additional damage for ALL your other Osty Attacks.
+Rare	Attack	2	The Scythe	Deal 13 damage. Permanently increase this card's damage by (5;7). Exhaust.
+Rare	Attack	2	Time's Up	(;Retain. )Deal damage equal to the enemy's Doom.
+Rare	Skill	1	Transfigure	Add Replay to a card in your Hand. It costs an extra ⚡.( Exhaust.;)
+Rare	Skill	0	Undeath	Gain (7;9) Block. Add a copy of this card into your Discard Pile.
+Uncommon	Attack	1	Bone Shards	If Osty is alive, he deals (9;12) damage to ALL enemies and you gain (9;12) Block. Osty dies.
+Uncommon	Skill	1	Borrowed Time	Gain (4;6)⚡.  Cards cost an additional ⚡ this turn.
+Uncommon	Attack	4	Bury	Deal (52;63) damage.
+Uncommon	Power	1	Calcify	Osty's attacks deal (4;6) additional damage.
+Uncommon	Skill	1	Capture Spirit	Enemy loses (3;4) HP. Add (3;4) Souls into your Draw Pile.
+Uncommon	Skill	1	Cleanse	Summon (3;5). Exhaust 1 card from your Draw Pile.
+Uncommon	Power	1	Countdown	At the start of your turn, apply (6;9) Doom to a random enemy.
+Uncommon	Power	1	Danse Macabre	Whenever you play a card that costs ⚡⚡ or more, gain (4;6) Block.
+Uncommon	Attack	1	Death March	Deal (8;9) damage. Deals (4;6) additional damage for each card drawn during your turn.
+Uncommon	Skill	1	Death's Door	Gain (6;7) Block. If you applied Doom this turn, gain Block 2 additional times.
+Uncommon	Skill	2	Deathbringer	Apply (21;26) Doom and 1 Weak to ALL enemies.
+Uncommon	Attack	1	Debilitate	Deal (10;12) damage. Vulnerable and Weak are twice as effective against the enemy for the next (2;3) turns.
+Uncommon	Skill	2	Delay	Gain (11;13) Block. Next turn, gain ⚡(;⚡).
+Uncommon	Skill	-1	Dirge	Summon (3;4) X times. Add X Souls(;+) into your Draw Pile. Exhaust.
+Uncommon	Skill	1	Dredge	(;Retain. )Put 3 cards from your Discard Pile into your Hand. Exhaust.
+Uncommon	Skill	1	Enfeebling Touch	Ethereal. Enemy loses (8;11) Strength this turn.
+Uncommon	Attack	0	Fetch	Osty deals (3;6) damage. If this is the first time this card has been played this turn, draw 1 card.
+Uncommon	Power	1	Friendship	Lose (2;1) Strength. Gain ⚡ at the start of each turn.
+Uncommon	Power	1	Haunt	Whenever you play a Soul, a random enemy loses (7;9) HP.
+Uncommon	Attack	2	High Five	Osty deals (11;13) damage and applies (2;3) Vulnerable to ALL enemies.
+Uncommon	Skill	2	Legion of Bone	MP ALL players Summon (6;8).
+Uncommon	Power	1	Lethality	Ethereal. The first Attack each turn deals (50%;75%) additional damage.
+Uncommon	Skill	3	Melancholy	Gain (13;17) Block. Reduce this card's cost by ⚡ whenever ANYONE dies.
+Uncommon	Skill	1	No Escape	Apply (10;15) Doom, plus an additional 5 Doom for every 10 Doom already on this enemy.
+Uncommon	Power	1	Pagestorm	Whenever you draw an Ethereal card, draw 1 card.
+Uncommon	Skill	1	Parse	Ethereal. Draw (3;4) cards.
+Uncommon	Attack	1	Pull from Below	Deal (5;7) damage for each Ethereal card played this combat.
+Uncommon	Skill	1	Putrefy	Apply (2;3) Weak. Apply (2;3) Vulnerable. Exhaust.
+Uncommon	Attack	1	Rattle	Osty deals (7;9) damage. Hits an additional time for each other time he has attacked this turn.
+Uncommon	Attack	0	Right Hand Hand	Osty deals (4;6) damage. Whenever you play a card that costs ⚡⚡ or more, return this
+Uncommon	Attack	2	Severance	Deal (13;18) damage. Add a Soul into your Draw Pile, Hand, and Discard Pile.
+Uncommon	Power	1	Shroud	Whenever you apply Doom, gain (3;4) Block.
+Uncommon	Attack	1	Sic 'Em	Osty deals (5;6) damage. Whenever Osty hits this enemy this turn, Summon (3;4).
+Uncommon	Power	2	Sleight of Flesh	Whenever you apply a debuff to an enemy, they take (9;13) damage.
+Uncommon	Power	1	Soulbound	MP (;Innate. )Choose an ally. Whenever you create a Soul, add a Soul to their Draw Pile.
+Uncommon	Skill	1	Spur	Retain. Summon (3;5). Osty heals (5;7) HP.
+Uncommon	Skill	2	Underworld	MP Whenever other players deal attack damage this turn, apply that much Doom. (Exhaust.;)
+Uncommon	Attack	1	Veilpiercer	Deal (10;13) damage. The next Ethereal card you play costs 0 ⚡.
