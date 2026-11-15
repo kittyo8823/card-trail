@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.47';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.56';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -1866,8 +1866,8 @@ function knPaint(sp,cp,hf,an){an=an||{};if(!KN.c){KN.c=MKC(KN.W,KN.H);KN.e=MKC(K
  return KN.c}
 // 今の霊騎士の見え方 [霊の濃さ, 崩れ具合, 被弾の光, 突きの前進]。bb.kuT 召喚（立ち上がる）時刻、bb.kdT 崩れた時刻、bb.khr 被弾、bb.kat 突き
 function knS(ps,bb){if(!ps||!(ps.knm>0))return null;const ku=bb&&bb.kuT,kd=bb&&bb.kdT;let sp=1,cp=0;
- if(ps.kn>0&&!(ku!=null&&T<ku)){if(ku!=null&&T-ku<.8){const r=(T-ku)/.8;cp=1-Math.min(1,r/.6);sp=Math.max(0,(r-.4)/.6)}}
- else{const r=kd!=null?Math.max(0,Math.min(1,(T-kd)/.9)):1;cp=r;sp=Math.max(0,1-r*2.2)}
+ if(ps.kn>0&&!(ku!=null&&T<ku)){if(ku!=null&&T-ku<.6){const r=(T-ku)/.6;cp=1-Math.min(1,r/.6);sp=Math.max(0,(r-.4)/.6)}}
+ else{const r=kd!=null?Math.max(0,Math.min(1,(T-kd)/.65)):1;cp=r;sp=Math.max(0,1-r*2.2)}
  const hf=bb&&bb.khr!=null&&T>=bb.khr&&T-bb.khr<.25?1-(T-bb.khr)/.25:0,lg=bb&&bb.kat!=null&&T>=bb.kat&&T-bb.kat<.45?Math.sin((T-bb.kat)/.45*Math.PI)*34:0;return[sp,cp,hf,lg]}
 let SERX=64;
 // ===== セレスと霊騎士の動き（Ver3.43 ユーザー指定：様々なモーションを凝って） =====
@@ -1876,7 +1876,9 @@ let SERX=64;
 const SR={U:2.6,P:{}};for(const pp of['lb','lf','body','ab','hd','af']){PPART=pp;SR.P[pp]=paint(38,42,SD.seres[3],SR.U)}PPART=null;
 const srP=(a,b)=>[a*SR.U+2,(b+2)*SR.U+2],ezO=u=>u<=0?0:u>=1?1:1-(1-u)*(1-u),ezIO=u=>u<=0?0:u>=1?1:u<.5?2*u*u:1-2*(1-u)*(1-u);
 // 少女の姿勢
-function serGA(bb){const g={ab:Math.sin(T*1.3)*.05,af:[0,0,0],hd:0,bx:0,by:Math.round(Math.sin(T*1.7)*.8),gl:.25+.08*Math.sin(T*2.3)},a=bb&&bb.sa,lt=a?T-a.t0:9;
+// 動きの速さ（Ver3.51 ユーザー指定：鈍いので約1.7倍に）。B.sa/B.ka の時間はこの倍率で進む
+const SRS=1.7;
+function serGA(bb){const g={ab:Math.sin(T*1.3)*.05,af:[0,0,0],hd:0,bx:0,by:Math.round(Math.sin(T*1.7)*.8),gl:.25+.08*Math.sin(T*2.3)},a=bb&&bb.sa,lt=a?(T-a.t0)*SRS:9;
  if(a&&lt>=0&&lt<a.d){const u=lt/a.d,k=a.k,up=ezO(Math.min(1,lt/.18))*(1-ezIO(Math.max(0,(lt-a.d*.65)/(a.d*.35))));
   if(k==='orb'||k==='orbm'||k==='orbs'||k==='mark'){g.ab=-1.35*up+(k==='orbm'?Math.sin(lt*30)*.06*up:0);g.bx=2*up;g.hd=-.06*up;g.gl=.25+1.1*up}
   else if(k==='smn'){g.ab=-2.1*up;g.by-=Math.round(2*up);g.hd=-.12*up;g.gl=.3+1.4*up;g.af=[0,-2*up,-.1*up]}
@@ -1891,7 +1893,7 @@ function serGirl(cx,gy,g,bb){const im=SPR.seres,x0=Math.round(cx-im.width/2+g.bx
  const[sx,sy]=srP(15.6,15.4),v=[-1.4*SR.U,11*SR.U],c=Math.cos(g.ab),s=Math.sin(g.ab),lx=x0+sx+v[0]*c-v[1]*s,ly=y0+sy+v[0]*s+v[1]*c;
  if(bb){bb.lnx=lx;bb.lny=ly}const r=8+10*g.gl,gr=ctx.createRadialGradient(lx,ly,0,lx,ly,r);gr.addColorStop(0,'rgba(255,226,150,'+Math.min(.85,.35*g.gl+.15)+')');gr.addColorStop(1,'rgba(255,200,120,0)');ctx.save();ctx.globalCompositeOperation='lighter';ctx.fillStyle=gr;ctx.fillRect(lx-r,ly-r,r*2,r*2);ctx.restore()}
 // 騎士の姿勢（kx0＝騎士の絵の左端の画面座標。突きの踏み込みの距離を敵の位置から決める）
-function knA(bb,kx0){const a=bb&&bb.ka,lt=a?T-a.t0:9,o={};if(!a||lt<0||lt>a.d)return o;const u=lt,L=(KN.Y0+25.5*KU+2)-(KN.Y0+7*KU+2-48*KZ),tip=kx0+KN.X0+46*KU+2+L,dm=Math.max(0,Math.min(250,(a.tx||450)-tip-6));
+function knA(bb,kx0){const a=bb&&bb.ka,lt=a?(T-a.t0)*SRS:9,o={};if(!a||lt<0||lt>a.d)return o;const u=lt,L=(KN.Y0+25.5*KU+2)-(KN.Y0+7*KU+2-48*KZ),tip=kx0+KN.X0+46*KU+2+L,dm=Math.max(0,Math.min(250,(a.tx||450)-tip-6));
  if(a.k==='flr'){o.fl=Math.sin(u/a.d*Math.PI)*.9;o.ry=-Math.round(4*Math.sin(u/a.d*Math.PI));return o}
  const back=(f,e)=>{o.sa=-.35*e;o.ax=-6*e;o.ln=-.07*e;o.dash=-8*e},home=(e,s0)=>{for(const k in s0)o[k]=s0[k]*(1-e)};
  if(a.k==='thr'){if(u<.16)back(0,ezO(u/.16));else if(u<.28){const e=ezIO((u-.16)/.12);o.sa=-.35+(Math.PI/2+.35)*e;o.dash=-8+(dm+8)*e;o.ax=-6+18*e;o.ln=-.07+.17*e;o.sx=10*e;o.gh=[[o.dash-26*e,.22],[o.dash-52*e,.1]]}
@@ -1904,7 +1906,7 @@ function knA(bb,kx0){const a=bb&&bb.ka,lt=a?T-a.t0:9,o={};if(!a||lt<0||lt>a.d)re
   else if(u<.7){const e=(u-.5)/.2;o.ry=-6;o.sa=2.45;o.ln=.14;o.ax=12;o.dash=m;o.tr=[-1.05+3.2*e,2.45];o.fl=.7*(1-e)}else home(ezIO((u-.7)/(a.d-.7)),{ry:-6,sa:2.45,ln:.14,ax:12,dash:m});return o}
  return o}
 // 少女＋騎士。nob=1 で騎士のHPバーを出さない（キャラ選択画面）
-function serDraw(cx,gy,bb,ps,nob){bb=bb||{};const ga0=ctx.globalAlpha,g=serGA(bb),s=knS(ps,bb),gd=()=>serGirl(cx,gy,g,bb),a=bb.sa,lt=a?T-a.t0:9;
+function serDraw(cx,gy,bb,ps,nob){bb=bb||{};const ga0=ctx.globalAlpha,g=serGA(bb),s=knS(ps,bb),gd=()=>serGirl(cx,gy,g,bb),a=bb.sa,lt=a?(T-a.t0)*SRS:9;
  // 祈り：足元に回る光の陣／光の柱
  if(a&&lt>=0&&lt<a.d&&(a.k==='pray'||a.k==='pw')){const u=lt/a.d,al=Math.sin(u*Math.PI);ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=ga0*al;ctx.strokeStyle='#e8e4ff';ctx.lineWidth=1;for(let k=0;k<2;k++){ctx.beginPath();ctx.ellipse(cx+2,gy,26+k*8+u*6,5+k*2,0,0,6.3);ctx.stroke()}
   for(let k=0;k<8;k++){const t=k/8*6.283+T*(a.k==='pw'?2:1.2),x=cx+2+Math.cos(t)*30,y=gy+Math.sin(t)*6;ctx.fillStyle='#fff6d8';ctx.fillRect(Math.round(x),Math.round(y),2,2)}
@@ -1928,14 +1930,15 @@ function serDraw(cx,gy,bb,ps,nob){bb=bb||{};const ga0=ctx.globalAlpha,g=serGA(bb
  else if(SERL.hb===2)hpBar(kc-24,Math.round(gy-KN.GY+SERL.dy*sp+KN.Y0-14),48,kv,ps.knm,'#e8505b',0,0);
  else hpBar(Math.max(Math.round(cx+40),kc-26),gy+2,52,kv,ps.knm,'#e8505b',0,0)}
 // カードを使った時に動きを決める（xPre から。演出だけで、乱数は使わない）
-function serAnim(c,o,tg){if(QT||!B)return;const at=c.t===0,tp=tg?ePos(B.en.indexOf(tg)):{x:450,y:208},im=tg&&SPR[tg.k],th=im?im.height:60,tw=im?im.width:60,tx=tp.x-tw*.32,ty=tp.y-th*.5,all=alive().map(e=>{const q=ePos(B.en.indexOf(e)),m=SPR[e.k];return[q.x-(m?m.width*.25:15),q.y-(m?m.height*.5:30)]});let hd=0,mh=0;B.lg=0;
- if(at&&c.kt){const h=Math.max(1,(c.h||1)*(c.X?(B.lx||1):1)+(c.ratl?B.katN||0:0)),k=c.aa||c.vuA?'swp':h>1?'mh':'thr';B.ka={k,t0:T,h,tx,ty,d:k==='mh'?.26+.16*h+.32:k==='swp'?1:.8};hd=k==='swp'?.42:k==='mh'?.26:.28;mh=k==='mh';B.sfq=(B.sfq||[]).concat(k==='swp'?all.map(p=>({k:'arc',t0:T+.4,d:.45,x:p[0],y:p[1]})):Array.from({length:k==='mh'?h:1},(_,j)=>({k:'tip',t0:T+hd+j*.16,d:.32,x:tx,y:ty+(j%2?-6:6)*(k==='mh'?1:0)})));setTimeout(()=>sfx('wsw'),(hd-.06)*1000)}
+function serAnim(c,o,tg){if(QT||!B)return;const nq=(B.sfq||[]).length;const at=c.t===0,tp=tg?ePos(B.en.indexOf(tg)):{x:450,y:208},im=tg&&SPR[tg.k],th=im?im.height:60,tw=im?im.width:60,tx=tp.x-tw*.32,ty=tp.y-th*.5,all=alive().map(e=>{const q=ePos(B.en.indexOf(e)),m=SPR[e.k];return[q.x-(m?m.width*.25:15),q.y-(m?m.height*.5:30)]});let hd=0,mh=0;B.lg=0;
+ if(at&&c.kt){const h=Math.max(1,(c.h||1)*(c.X?(B.lx||1):1)+(c.ratl?B.katN||0:0)),k=c.aa||c.vuA?'swp':h>1?'mh':'thr';B.ka={k,t0:T,h,tx,ty,d:k==='mh'?.26+.16*h+.32:k==='swp'?1:.8};hd=k==='swp'?.42:k==='mh'?.26:.28;mh=k==='mh';B.sfq=(B.sfq||[]).concat(k==='swp'?all.map(p=>({k:'arc',t0:T+.4,d:.45,x:p[0],y:p[1]})):Array.from({length:k==='mh'?h:1},(_,j)=>({k:'tip',t0:T+hd+j*.16,d:.32,x:tx,y:ty+(j%2?-6:6)*(k==='mh'?1:0)})));setTimeout(()=>sfx('wsw'),Math.max(0,hd/SRS-.05)*1000)}
  else if(at){const n=c.aa?all.length:Math.max(1,c.h||1),k=c.aa?'orbs':n>1?'orbm':'orb';B.sa={k,t0:T,d:.42+.12*n+.3};hd=.48;mh=n>1;for(let j=0;j<n;j++){const p=c.aa?all[j]:[tx,ty];B.sfq=(B.sfq||[]).concat({k:'orb',t0:T+.3+(c.aa?0:j*.12),d:.18,x:p[0],y:p[1],j})}}
  else if(c.ksm||c.dirg||c.nks||c.knH){B.sa={k:'smn',t0:T,d:.9};B.ka={k:'flr',t0:T+.32,d:.7};B.sfq=(B.sfq||[]).concat([0,1,2].map(j=>({k:'smn',t0:T+.12+j*.07,d:.3,j})))}
  else if(c.t===2)B.sa={k:'pw',t0:T,d:1};
  else if(c.fu||c.fuA||c.obl||c.mis||c.hpL){B.sa={k:'mark',t0:T,d:.8};for(const p of c.fuA?all:[[tx,ty]])B.sfq=(B.sfq||[]).concat({k:'wisp',t0:T+.18,d:.36,x:p[0],y:p[1]})}
  else if(c.b)B.sa={k:'pray',t0:T,d:.85};else B.sa={k:'sk',t0:T,d:.6};
- if(at)B.pa={k:mh?'fl':'sr',t0:T,h:1,d:.8,hd,ev:{}}}
+ B.sfq=(B.sfq||[]).map((q,j)=>j<nq?q:{...q,t0:T+(q.t0-T)/SRS,d:q.d/SRS});
+ if(at)B.pa={k:mh?'fl':'sr',t0:T,h:1,d:.8/SRS,hd:hd/SRS,sp:(c.kt?.16:.12)/SRS,ev:{}}}
 // 敵側に出る演出（敵の絵より手前に描く。ひとりの時だけ）：光弾・穂先の閃き・薙ぎの衝撃・葬列の鬼火、葬列の印（敵の周りを回る白い火）
 function serFx(){if(MPB||!B||P.cls!==10)return;const b=B,L=b.sfq||[];if(b.kdf){b.kdf();b.kdf=null}b.sfq=L.filter(q=>T<q.t0+q.d+.4);ctx.save();ctx.globalCompositeOperation='lighter';
  const glow=(x,y,r,c,a)=>{const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,c.replace('A',a));g.addColorStop(1,c.replace('A',0));ctx.fillStyle=g;ctx.fillRect(x-r,y-r,r*2,r*2)},spk=(x,y,u,n,l)=>{ctx.strokeStyle='rgba(255,250,235,'+(1-u)+')';ctx.lineWidth=2;for(let k=0;k<n;k++){const t=k/n*6.283+.4,r0=6+u*l*.6,r1=r0+l*(1-u)*.8;ctx.beginPath();ctx.moveTo(x+Math.cos(t)*r0,y+Math.sin(t)*r0*.7);ctx.lineTo(x+Math.cos(t)*r1,y+Math.sin(t)*r1*.7);ctx.stroke()}};
@@ -1958,8 +1961,10 @@ function tkPay(n){if(!(n>0)||!PS)return;PS.ki=Math.max(0,PS.ki-n);nmb(110,118,'�
 // カードの刀魂コストの印（赤い刃の形）
 function tGem(x,y,v){ctx.fillStyle='#08060f';ctx.beginPath();ctx.moveTo(x,y-10);ctx.lineTo(x+8,y+1);ctx.lineTo(x,y+10);ctx.lineTo(x-8,y+1);ctx.fill();ctx.fillStyle='#c8342a';ctx.beginPath();ctx.moveTo(x,y-8);ctx.lineTo(x+6,y+1);ctx.lineTo(x,y+8);ctx.lineTo(x-6,y+1);ctx.fill();ctx.fillStyle='rgba(255,200,170,.5)';ctx.beginPath();ctx.moveTo(x,y-8);ctx.lineTo(x+6,y+1);ctx.lineTo(x,y+1);ctx.fill();txt(String(v),x,y+5,'#fff','center',11)}
 // 戦闘中の刀魂の数（エナジーの右上にくっつける。ユーザー指定で文字は出さない）。燃える刃の印と数字
-function tkOrb(x,y,v){const p=.5+.5*Math.sin(T*3),g=ctx.createRadialGradient(x,y,1,x,y,24);g.addColorStop(0,'rgba(255,120,80,'+(v>0?.35+.15*p:.1)+')');g.addColorStop(1,'rgba(255,90,60,0)');ctx.fillStyle=g;ctx.fillRect(x-24,y-24,48,48);
- ctx.fillStyle='#08060f';ctx.beginPath();ctx.moveTo(x,y-15);ctx.lineTo(x+11,y+2);ctx.lineTo(x,y+14);ctx.lineTo(x-11,y+2);ctx.fill();ctx.fillStyle=v>0?'#b82a22':'#4a3a3a';ctx.beginPath();ctx.moveTo(x,y-12);ctx.lineTo(x+8,y+2);ctx.lineTo(x,y+11);ctx.lineTo(x-8,y+2);ctx.fill();ctx.fillStyle='rgba(255,210,180,.45)';ctx.beginPath();ctx.moveTo(x,y-12);ctx.lineTo(x+8,y+2);ctx.lineTo(x,y+2);ctx.fill();txt(String(v),x,y+7,'#fff','center',13);hit(x-12,y-14,24,28,()=>say('刀魂 '+v+'：カードの左上の赤い印の数だけ払って使う（戦闘中は持続）'))}
+let TKO=1;function tkOrb(x,y,v){const p=.5+.5*Math.sin(T*3),g=ctx.createRadialGradient(x,y,1,x,y,24);g.addColorStop(0,'rgba(255,120,80,'+(v>0?.35+.15*p:.1)+')');g.addColorStop(1,'rgba(255,90,60,0)');ctx.fillStyle=g;ctx.fillRect(x-24,y-24,48,48);
+ const dm=(r,c)=>{ctx.fillStyle=c;ctx.beginPath();ctx.moveTo(x,y-12-r);ctx.lineTo(x+8+r*.75,y+2);ctx.lineTo(x,y+11+r);ctx.lineTo(x-8-r*.75,y+2);ctx.fill()};
+ // 縁 TKO：0=黒く太い（前）／1=細い暗い赤／2=エナジーと同じ金の細い縁／3=黒をやめて淡い光のにじみ
+ if(TKO===0)dm(3,'#08060f');else if(TKO===1)dm(1.4,'#4a120e');else if(TKO===2){dm(2.2,'rgba(8,6,15,.55)');dm(1.2,'#c89a28')}else{ctx.save();ctx.globalCompositeOperation='lighter';dm(2.6,'rgba(255,120,90,.25)');ctx.restore()}ctx.fillStyle=v>0?'#b82a22':'#4a3a3a';ctx.beginPath();ctx.moveTo(x,y-12);ctx.lineTo(x+8,y+2);ctx.lineTo(x,y+11);ctx.lineTo(x-8,y+2);ctx.fill();ctx.fillStyle='rgba(255,210,180,.45)';ctx.beginPath();ctx.moveTo(x,y-12);ctx.lineTo(x+8,y+2);ctx.lineTo(x,y+2);ctx.fill();txt(String(v),x,y+7,'#fff','center',13);hit(x-12,y-14,24,28,()=>say('刀魂 '+v+'：カードの左上の赤い印の数だけ払って使う（戦闘中は持続）'))}
 // ===== セレスの仕組み（Ver3.41 作り直し。スレスパ2のネクロバインダーのカードを手本に、破滅の代わりを「葬列」にした） =====
 // 霊騎士 PS.kn/PS.knm：敵の攻撃はブロックの後、セレスより先に騎士が受ける。0で崩れ、召喚 ksm でまた立つ（崩れている時は召喚の値が新しいHP）
 // 葬列 e.fun：攻撃を受けるたびダメージ+印の数（減らない）。倒れると半分（切り捨て）が残りの敵でHPの一番多い1体へ移る。移る先が無い時はその分だけ霊騎士を召喚
@@ -1985,7 +1990,7 @@ function selEff(c,o,tg){const al=alive();
  if(o&&o.i===SOUL){if(PS.hnt)hpLose(pk(alive()),PS.hnt);if(PS.dvl)ksmF(PS.dvl)}}
 function serTurn(){if(!PS)return;B.fuT=0;B.obl=0;B.katN=0;B.lthU=0;B.drN=0;B.drOn=1;if(has('whood')&&B.turn>1)ksmF(1);if(B.nks){ksmF(B.nks);B.nks=0}if(PS.pfu)fuAdd(pk(alive()),PS.pfu)}
 function serEnd(){B.drOn=0}
-function serDl(c,p){if(c.kt)p.push('霊騎士が攻撃');if(c.kcur)p.push('＋霊騎士の今のHP');if(c.ksm)p.push('霊騎士を召喚'+c.ksm);if(c.dirg)p.push('霊騎士を召喚'+c.dirg+'をX回','魂をX枚山札へ');if(c.knH)p.push('霊騎士のHP+'+c.knH);
+function serDl(c,p){if(c.kt)p.push('霊騎士が攻撃');if(c.kcur)p.push('＋霊騎士の今のHP');if(c.kcmx)p.push('＋霊騎士の最大HP');if(c.ksm)p.push('霊騎士を召喚'+c.ksm);if(c.dirg)p.push('霊騎士を召喚'+c.dirg+'をX回','魂をX枚山札へ');if(c.knH)p.push('霊騎士のHP+'+c.knH);
  if(c.fu)p.push('葬列'+c.fu);if(c.fuNE)p.push('さらに今の葬列の半分');if(c.fuA)p.push('全体に葬列'+c.fuA);if(c.hpL)p.push('敵のHP-'+c.hpL);if(c.mis)p.push('この敵の弱体・脆弱・毒・葬列を他の敵にも');if(c.hang)p.push('この敵への吊るすのダメージ2倍');
  if(c.sou)p.push('魂を'+c.sou+'枚山札へ');if(c.souA)p.push('魂を山札・手札・捨て札へ');if(c.upD)p.push('捨て札の'+c.upD+'枚を強化');if(c.nks)p.push('次ターン霊騎士を召喚'+c.nks);if(c.stL)p.push('筋力-'+c.stL);
  if(c.ddr)p.push('このターン葬列を付けていれば3回');if(c.obl)p.push('このターン使うカードごとに','葬列'+c.obl);if(c.kbr)p.push('霊騎士がいれば','全体'+c.kbr+'・ブロック'+c.kbr,'騎士は崩れる');if(c.ksb)p.push('霊騎士を崩し','最大HP×'+c.ksb+'のブロック');
@@ -2799,7 +2804,7 @@ const C=[
 {n:'命刈りの鎌',t:0,c:2,r:2,aa:4,lf:4,x:1},{n:'貪食',t:0,c:1,r:2,a:10,fd:1,x:1},{n:'骨砕き',t:0,c:1,r:0,a:8,wk:1},
 {n:'爪痕',t:0,c:0,r:0,a:3,vu:1},{n:'毒塗り',t:1,c:1,r:0,k:8,ps:5},{n:'紙一重',t:1,c:1,r:0,b:8,dr:1},
 {n:'堅牢',t:1,c:2,r:1,b:30,x:1},{n:'力溜め',t:1,c:0,r:0,ts:2},{n:'生贄',t:1,c:0,r:1,hp:6,en:2,dr:3,x:1},
-{n:'血の取引',t:1,c:0,r:0,hp:3,en:2},{n:'威嚇',t:1,c:0,r:0,wkA:1,x:1},{n:'武装解除',t:1,c:1,r:1,ds:2,x:1},
+{n:'血の取引',t:1,c:0,r:0,hp:4,en:1,dr:2},{n:'威嚇',t:1,c:0,r:0,wkA:1,x:1},{n:'武装解除',t:1,c:1,r:1,ds:2,x:1},
 {n:'踏ん張り',t:1,c:2,r:1,db:1},{n:'血の怒り',t:1,c:1,r:0,en:2,x:1},{n:'鬨の声',t:1,c:0,r:1,dr:3},
 {n:'毒の粉',t:1,c:1,r:1,k:8,cat:1,x:1},{n:'盾構え',t:1,c:1,r:0,b:7},{n:'癒しの祈り',t:1,c:2,r:1,heal:8,x:1},
 {n:'限界突破',t:1,c:1,r:1,dbl:1,x:1},
@@ -2820,10 +2825,10 @@ const C=[
 {n:'毒針',t:0,c:0,r:0,k:1,a:2,ps:2},{n:'影渡り',t:1,c:1,r:1,k:1,b:9,dsc:1,dr:1},{n:'毒の誘い',t:1,c:1,r:0,k:1,wk:1,ps:4},{n:'ナイフの雨',t:0,c:2,r:1,k:1,aa:5,h:3},{n:'闇討ち',t:0,c:0,r:1,k:1,a:9,x:1},{n:'誘いのナイフ',t:1,c:0,r:1,k:1,shv:2,x:1},
 {n:'一ノ太刀',t:0,c:1,r:-1,k:2,a:6},{n:'受け流し',t:1,c:1,r:-1,k:2,b:5},{n:'抜刀・閃華',t:0,c:0,tc:1,r:-1,k:2,a:5,ia:7},{n:'呼吸・凪',t:1,c:1,r:-1,k:2,kg:2},
 {n:'双牙・燕返し',t:0,c:1,r:0,k:2,a:5,h:2},{n:'月影・朧斬り',t:0,c:1,r:0,k:2,aa:8},{n:'見切り・無明剣',t:1,c:1,r:0,k:2,b:7,ct:4},{n:'明鏡止水',t:1,c:1,r:0,k:2,b:9,kg:1},
-{n:'無想の境地',t:1,c:1,r:0,k:2,kg:1,dr:1,nd:1},{n:'夜叉・血桜',t:0,c:1,r:0,k:2,a:12,hp:2},{n:'剣気・飛翔斬',t:0,c:1,tc:1,r:0,k:2,a:12,nd:2},{n:'刹那・飛燕',t:0,c:0,r:0,k:2,a:4,dr:1},
+{n:'無想の境地',t:1,c:1,r:0,k:2,kg:1,dr:1,nd:1},{n:'夜叉・血桜',t:0,c:1,r:0,k:2,a:12,hp:2},{n:'剣気・飛翔斬',t:0,c:0,tc:2,r:0,k:2,a:9,h:2},{n:'刹那・飛燕',t:0,c:0,r:0,k:2,a:4,dr:1},
 {n:'縮地・風切り',t:1,c:1,r:0,k:2,b:5,dr:2},{n:'紅蓮・焔舞',t:0,c:1,r:0,k:2,aa:6,vuA:1},{n:'影縫い・縛',t:0,c:1,r:0,k:2,a:7,wk:1,vu:1},{n:'瞬閃・雷切',t:0,c:1,r:0,k:2,a:9,ia:5},
 {n:'奥義・天翔龍閃',t:0,c:1,tc:4,r:1,k:2,a:35},{n:'修羅・千手観音',t:0,c:2,r:1,k:2,a:3,h:6},{n:'破軍・星堕とし',t:0,c:2,r:1,k:2,a:18,ke:1},{n:'残心・落花',t:0,c:1,r:1,k:2,a:8,kd:2},
-{n:'絶影・鏡花水月',t:1,c:1,r:1,k:2,b:10,ct:6},{n:'禁忌・血盟の契',t:1,c:0,r:1,k:2,hp:3,en:2},{n:'睨み・威圧の眼',t:1,c:1,r:1,k:2,wkA:1,vuA:1,x:1},{n:'絶・鬼哭啾啾',t:0,c:2,r:1,k:2,a:14,wk:2,vu:2},
+{n:'絶影・鏡花水月',t:1,c:1,r:1,k:2,b:10,ct:6},{n:'禁忌・血盟の契',t:1,c:0,r:1,k:2,hp:3,en:2,dr:1},{n:'睨み・威圧の眼',t:1,c:1,r:1,k:2,wkA:1,vuA:1,x:1},{n:'絶・鬼哭啾啾',t:0,c:2,r:1,k:2,a:14,wk:2,vu:2},
 {n:'覚醒・修羅道',t:2,c:1,r:1,k:2,pw:'kig',v:2},{n:'無限・百鬼夜行',t:0,X:1,c:-1,r:1,k:2,aa:7},{n:'深淵・影喰らい',t:0,c:2,r:1,k:2,aa:6,lf:4,x:1},
 {n:'神速・無拍子',t:2,c:2,r:2,k:2,pw:'dd',v:1},{n:'終焉・黒き月',t:0,c:2,tc:6,r:2,k:2,aa:6,h:5},{n:'一刀・魔断',t:0,c:2,r:2,k:2,a:26,ia:12},{n:'剣聖の心得',t:2,c:1,r:2,k:2,pw:'iai',v:6},
 {n:'血脈・因果応報',t:2,c:1,r:2,k:2,pw:'zan',v:1},{n:'絶界・無明の闇',t:1,c:2,r:2,k:2,b:20,ct:10,x:1},{n:'神殺し・天叢雲',t:0,c:0,tc:5,r:2,k:2,a:30,wk:3,vu:3},
@@ -2895,13 +2900,15 @@ const C=[
 {n:'アップテンポ',t:2,c:1,r:1,k:4,pw:'z0D',v:2},{n:'爆発的瞬発力',t:0,c:2,r:2,k:4,a:10,clwA:3},{n:'オーバーワーク',t:1,c:0,r:2,k:4,z0E:1,x:1},{n:'鍛え抜かれた拳',t:2,c:2,r:2,k:4,pw:'clwT',v:2},
 {n:'鍛えし刃',t:0,c:2,r:-2,k:2,a:10,fgA:1,rt:1},{n:'シャドーボクシング',t:1,c:0,r:0,k:4,clw:3,dr:1},{n:'ステップイン',t:0,c:0,r:0,k:4,a:2,clw:1,drC:1},{n:'ボディブロー',t:0,c:1,r:0,k:4,a:5,clw:2,clwW:2},{n:'ミット打ち',t:1,c:1,r:0,k:4,clwR:2},{n:'コンビネーション',t:0,c:2,r:1,k:4,cmbo:1},{n:'ラッシュ',t:0,c:1,r:1,k:4,a:1,clw:1,clwHt:4},{n:'ファイティングポーズ',t:2,c:1,r:1,k:4,pw:'clwBk',v:2},{n:'デンプシーロール',t:0,c:2,r:2,k:4,a:4,clw:2,clwD:1},{n:'触手打ち',t:0,c:1,r:-1,k:6,a:6},{n:'泡の膜',t:1,c:1,r:-1,k:6,b:5},{n:'放電',t:1,c:1,r:-1,k:6,ch:'L'},{n:'二連放出',t:1,c:1,r:-1,k:6,ev:2},{n:'球電',t:0,c:1,r:0,k:6,a:7,ch:'L'},{n:'凍てつく触手',t:0,c:1,r:0,k:6,a:6,ch:'F'},{n:'掃射光線',t:0,c:1,r:0,k:6,aa:6,dr:1},{n:'連続発光',t:0,c:1,r:0,k:6,a:4,ao:1},{n:'帯電爪',t:0,c:0,r:0,k:6,a:3,gr:2},{n:'狙い撃ち',t:0,c:0,r:0,k:6,a:3,wkI:1},{n:'冷却',t:1,c:1,r:0,k:6,ch:'F',dr:1},{n:'跳躍',t:1,c:1,r:0,k:6,b:9},{n:'蓄電',t:1,c:1,r:0,k:6,b:7,nt:1},{n:'再帰',t:1,c:1,r:0,k:6,rcO:1},{n:'投影',t:1,c:1,r:0,k:6,b:3,rcl:1,x:1},{n:'光束',t:0,c:0,r:0,k:6,a:3,vu:1},{n:'圧縮演算',t:0,c:1,r:0,k:6,a:7,dru:1},{n:'流線',t:0,c:2,r:0,k:6,a:15,cr:1},{n:'加速',t:1,c:0,r:0,k:6,en:2,sdis:['粘液',1]},{n:'闇を呼ぶ',t:1,c:1,r:0,k:6,ch:'D'},{n:'硝子の殻',t:1,c:1,r:0,k:6,b:5,ch:'G'},{n:'氷河',t:1,c:2,r:1,k:6,b:7,ch:'FF'},{n:'融合',t:1,c:2,r:1,k:6,ch:'P'},{n:'最適化',t:2,c:1,r:1,k:6,pw:'foc',v:1},{n:'容量拡張',t:2,c:1,r:1,k:6,pw:'osl',v:2},{n:'静電放出',t:2,c:1,r:1,k:6,pw:'sdc',v:1},{n:'循環',t:2,c:1,r:1,k:6,pw:'lop',v:1},{n:'雷雲',t:2,c:1,r:1,k:6,pw:'stm',v:1},{n:'過負荷',t:1,c:0,r:1,k:6,dr:2,sdis:['火傷',1]},{n:'自己修復',t:2,c:1,r:1,k:6,pw:'shr',v:7},{n:'雷嵐',t:1,c:-1,r:1,k:6,X:1,chX:0},{n:'混沌',t:1,c:1,r:1,k:6,chR:1},{n:'消散',t:1,c:2,r:1,k:6,focA:2,oslA:-1},{n:'均衡',t:1,c:2,r:1,k:6,b:13,rth:1},{n:'闇の帳',t:0,c:2,r:1,k:6,aa:10,ch:'D'},{n:'冷気放出',t:1,c:0,r:1,k:6,chE:'F',x:1},{n:'乱れ撃ち',t:0,c:1,r:1,k:6,a:7,h:2,rnd:1},{n:'多重放出',t:1,c:-1,r:2,k:6,X:1,evX:0},{n:'偏った思考',t:2,c:1,r:2,k:6,pw:'foc',v:4,bcg:1},{n:'創造回路',t:2,c:3,r:2,k:6,pw:'cai',v:1},{n:'電磁律動',t:2,c:2,r:2,k:6,pw:'eld',v:1,ch:'LLL'},{n:'流星',t:0,c:5,r:2,k:6,a:24,ch:'PPP'},{n:'分裂',t:1,c:0,r:2,k:6,fis:1,x:1},{n:'再起動',t:1,c:0,r:2,k:6,rbt:4,x:1},{n:'虹',t:1,c:2,r:2,k:6,ch:'LFD',x:1},{n:'雷霆',t:0,c:3,r:2,k:6,ths:7},{n:'巨鳥の卵',t:1,c:1,r:-3,k:9,x:1,mhpU:3},{n:'啄み',t:0,c:1,r:-3,k:9,a:3,h:3},{n:'環の守り',t:1,c:1,r:-3,k:9,b:6,nb:6},{n:'悟り',t:1,c:0,r:-3,k:9,enl:1,x:1},{n:'呪い・罪悪感',t:4,c:0,r:-4,k:9,un:1,bn:1,art:'skull'},{n:'呪い・強欲',t:4,c:0,r:-4,k:9,un:1,art:'skull'},{n:'呪い・腐敗',t:4,c:0,r:-4,k:9,un:1,bn:2,art:'skull'},{n:'呪い・不運',t:4,c:0,r:-4,k:9,un:1,eth:1,art:'skull'},{n:'潮汐反転',t:1,c:0,r:0,k:6,rvO:1,dr:1},{n:'捕食',t:1,c:0,r:0,k:6,eat:3},{n:'触手絡め',t:0,c:1,r:0,k:6,a:7,wkT:1},{n:'出芽',t:1,c:1,r:1,k:6,bud:1},{n:'変色',t:1,c:1,r:1,k:6,shf:1,dr:1},{n:'深海の圧',t:0,c:1,r:1,k:6,emp:4},{n:'群れの共鳴',t:1,c:1,r:1,k:6,res:1},{n:'核の暴走',t:0,c:2,r:2,k:6,sum:2},{n:'宇宙の傘',t:2,c:1,r:2,k:6,pw:'nwd',v:1},{n:'漂う群れ',t:2,c:2,r:2,k:6,pw:'mig',v:1},
 // Ver3.03 フルアートの古の版（古の者の「古の牙」で初期カードから変わる）と、？？？で得る無色の2枚。fa＝絵の名前
-{n:'砕月',t:0,c:1,r:-2,k:0,a:20,vu:5,fa:'sai'},{n:'痺霧',t:0,c:0,r:-2,k:1,aa:6,wkA:2,fa:'shibi'},{n:'抜刀・月閃',t:0,c:0,r:-2,k:2,a:9,ia:14,fa:'batto'},{n:'劫火の頁',t:0,c:1,r:-2,k:3,sp:1,aa:22,fa:'gouka'},{n:'深き眠り',t:1,c:0,r:-2,k:4,ms:3,fa:'nemu'},{n:'雷霆招来',t:1,c:1,r:-2,k:6,ch:'LLL',fa:'raitei'},
+{n:'砕月',t:0,c:1,r:-2,k:0,a:20,vu:5,fa:'sai'},{n:'痺霧',t:0,c:0,r:-2,k:1,aa:6,wkA:2,fa:'shibi'},{n:'抜刀・月閃',t:0,c:0,tc:1,r:-2,k:2,a:9,ia:14,tkK:3,fa:'batto'},{n:'劫火の頁',t:0,c:1,r:-2,k:3,sp:1,aa:22,fa:'gouka'},{n:'深き眠り',t:1,c:0,r:-2,k:4,ms:3,fa:'nemu'},{n:'雷霆招来',t:1,c:1,r:-2,k:6,ch:'LLL',fa:'raitei'},
 {n:'立方の干渉',t:1,c:1,r:-2,k:5,enl:1,dr:2,x:1,fa:'kansho'},{n:'観測の光',t:0,c:1,r:-2,k:5,aa:14,rbt:5,x:1,fa:'kansoku'},
 {n:'千年の灯',t:1,c:1,r:-2,k:5,b:20,dr:2,fa:'anc0'},{n:'骨鯨の歌声',t:2,c:2,r:-2,k:5,pw:'egy',v:1,fa:'anc1'},{n:'時呑み',t:1,c:1,r:-2,k:5,vuA:3,wkA:3,x:1,fa:'anc2'},{n:'灰燼の翼',t:0,c:2,r:-2,k:5,aa:28,fa:'anc3'},{n:'晶樹の実り',t:1,c:0,r:-2,k:5,en:2,dr:2,x:1,fa:'anc4'},{n:'万象の頁',t:0,c:2,r:-2,k:5,a:11,h:3,fa:'anc5'},
 // セレス（Ver3.41。C の末尾に足す）
-{n:'白い光',t:0,c:1,r:-1,k:10,a:6},{n:'祈りの守り',t:1,c:1,r:-1,k:10,b:5},{n:'霊騎士召喚',t:1,c:1,r:-1,k:10,ksm:5},{n:'霊槍の解放',t:0,c:1,r:-1,k:10,a:6,kt:1,kcur:1},{n:'葬送の一撃',t:0,c:1,r:0,k:10,a:7,fu:2},{n:'冥い波',t:1,c:1,r:0,k:10,b:5,fuA:1},{n:'葬鐘',t:1,c:1,r:0,k:10,fu:3,dr:1},{n:'穢れの刃',t:0,c:1,r:0,k:10,a:13,eth:1},{n:'拒絶',t:1,c:1,r:0,k:10,b:6,wk:1,eth:1},{n:'力の吸収',t:0,c:1,r:0,k:10,a:10,upD:2},{n:'畏れ',t:0,c:1,r:0,k:10,a:7,vu:1,eth:1},{n:'墓守',t:1,c:1,r:0,k:10,b:8,sou:1},{n:'掘り返す',t:0,c:1,r:0,k:10,a:4,rcl:1},{n:'呼び寄せ',t:1,c:1,r:0,k:10,nks:2,nt:2},{n:'槍の突き',t:0,c:0,r:0,k:10,a:6,kt:1},{n:'引きつけ',t:1,c:2,r:0,k:10,ksm:4,b:7},{n:'刈り取り',t:0,c:3,r:0,k:10,a:27,rt:1},{n:'魂を奪う',t:0,c:1,r:0,k:10,a:10,sou:1},{n:'葬列の刃',t:0,c:1,r:0,k:10,a:3,h:2,fu:1},{n:'槍の払い',t:0,c:1,r:0,k:10,a:7,kt:1,rt:1},{n:'蒔かれた光',t:0,c:1,r:0,k:10,aa:8,rt:1},{n:'鬼火',t:1,c:0,r:0,k:10,en:1,x:1},{n:'鎧の破片',t:0,c:1,r:1,k:10,kbr:9},{n:'埋葬',t:0,c:4,r:1,k:10,a:52},{n:'鎧の硬化',t:2,c:1,r:1,k:10,pw:'kcal',v:4},{n:'魂の捕縛',t:1,c:1,r:1,k:10,hpL:3,sou:3},{n:'数え歌',t:2,c:1,r:1,k:10,pw:'pfu',v:3},{n:'死の舞踏',t:2,c:1,r:1,k:10,pw:'dmc',v:4},{n:'死の行進',t:0,c:1,r:1,k:10,a:8,dmar:4},{n:'死の扉',t:1,c:1,r:1,k:10,b:6,ddr:1},{n:'葬列の宣告',t:1,c:2,r:1,k:10,fuA:4,wkA:1},{n:'先送り',t:1,c:2,r:1,k:10,b:11,nt:1},{n:'葬送歌',t:1,c:-1,X:1,r:1,k:10,dirg:3,x:1},{n:'衰えの手',t:1,c:1,r:1,k:10,ds:2,eth:1},{n:'槍の呼び戻し',t:0,c:0,r:1,k:10,a:3,kt:1,dr:1},{n:'騎士との誓い',t:2,c:1,r:1,k:10,pw:'egy',v:1,stL:2},{n:'憑く',t:2,c:1,r:1,k:10,pw:'hnt',v:7},{n:'槍の号令',t:0,c:2,r:1,k:10,a:11,kt:1,vuA:2},{n:'必殺の構え',t:2,c:1,r:1,k:10,pw:'leth',v:50,eth:1},{n:'逃げ場なし',t:1,c:1,r:1,k:10,fu:3,fuNE:1},{n:'読み解く',t:1,c:1,r:1,k:10,dr:3,eth:1},{n:'下からの手',t:0,c:1,r:1,k:10,a:5,ethA:1},{n:'腐らせる',t:1,c:1,r:1,k:10,wk:2,vu:2,x:1},{n:'鳴らす槍',t:0,c:1,r:1,k:10,a:7,kt:1,ratl:1},{n:'断絶',t:0,c:2,r:1,k:10,a:13,souA:1},{n:'帳',t:2,c:1,r:1,k:10,pw:'fub',v:3},{n:'けしかける',t:0,c:1,r:1,k:10,a:5,kt:1,ksm:3},{n:'葬列の棘',t:2,c:2,r:1,k:10,pw:'fud',v:5},{n:'拍車',t:1,c:1,r:1,k:10,rt:1,ksm:3,knH:5},{n:'来世',t:1,c:1,r:1,k:10,ksm:6,x:1},{n:'嘆きの叫び',t:0,c:9,r:2,k:10,aa:33,ethC:2},{n:'灰の霊',t:2,c:1,r:2,k:10,pw:'eab',v:4},{n:'命を喰らう',t:2,c:1,r:2,k:10,pw:'dvl',v:1},{n:'根絶',t:0,c:-1,X:1,r:2,k:10,a:11,rt:1},{n:'吊るす',t:0,c:1,r:2,k:10,a:10,hang:1},{n:'悲惨',t:0,c:0,r:2,k:10,a:7,mis:1},{n:'霊騎士の契約',t:2,c:2,r:2,k:10,pw:'kmas',v:1,ksm:5},{n:'忘却',t:1,c:0,r:2,k:10,obl:2},{n:'蘇生',t:1,c:3,r:2,k:10,ksm:20,x:1},{n:'死神の姿',t:2,c:3,r:2,k:10,pw:'rpf',v:1},{n:'犠牲',t:1,c:1,r:2,k:10,rt:1,ksb:3},{n:'魂の嵐',t:0,c:1,r:2,k:10,a:9,ssA:4},{n:'握り潰す',t:0,c:3,r:2,k:10,a:25,kt:1,sqz:5},{n:'時は満ちた',t:0,c:2,r:2,k:10,a:2,tup:3,rt:1},{n:'不死',t:1,c:0,r:2,k:10,b:7,cp:1},{n:'魂',t:1,c:0,r:-2,k:10,dr:2,x:1},
+{n:'白い光',t:0,c:1,r:-1,k:10,a:6},{n:'祈りの守り',t:1,c:1,r:-1,k:10,b:5},{n:'霊騎士召喚',t:1,c:1,r:-1,k:10,ksm:5},{n:'霊槍の解放',t:0,c:1,r:-1,k:10,a:6,kt:1,kcur:1},{n:'葬送の一撃',t:0,c:1,r:0,k:10,a:7,fu:2},{n:'冥い波',t:1,c:1,r:0,k:10,b:5,fuA:1},{n:'葬鐘',t:1,c:1,r:0,k:10,fu:3,dr:1},{n:'穢れの刃',t:0,c:1,r:0,k:10,a:13,eth:1},{n:'拒絶',t:1,c:1,r:0,k:10,b:6,wk:1,eth:1},{n:'力の吸収',t:0,c:1,r:0,k:10,a:10,upD:2},{n:'畏れ',t:0,c:1,r:0,k:10,a:7,vu:1,eth:1},{n:'墓守',t:1,c:1,r:0,k:10,b:8,sou:1},{n:'掘り返す',t:0,c:1,r:0,k:10,a:4,rcl:1},{n:'呼び寄せ',t:1,c:1,r:0,k:10,nks:2,nt:2},{n:'槍の突き',t:0,c:0,r:0,k:10,a:6,kt:1},{n:'引きつけ',t:1,c:2,r:0,k:10,ksm:4,b:7},{n:'刈り取り',t:0,c:3,r:0,k:10,a:27,rt:1},{n:'魂を奪う',t:0,c:1,r:0,k:10,a:10,sou:1},{n:'葬列の刃',t:0,c:1,r:0,k:10,a:3,h:2,fu:1},{n:'槍の払い',t:0,c:1,r:0,k:10,a:7,kt:1,rt:1},{n:'蒔かれた光',t:0,c:1,r:0,k:10,aa:8,rt:1},{n:'鬼火',t:1,c:0,r:0,k:10,en:1,x:1,rt:1},{n:'鎧の破片',t:0,c:1,r:1,k:10,kbr:9},{n:'埋葬',t:0,c:4,r:1,k:10,a:52},{n:'鎧の硬化',t:2,c:1,r:1,k:10,pw:'kcal',v:4},{n:'魂の捕縛',t:1,c:1,r:1,k:10,hpL:3,sou:3},{n:'数え歌',t:2,c:1,r:1,k:10,pw:'pfu',v:3},{n:'死の舞踏',t:2,c:1,r:1,k:10,pw:'dmc',v:4},{n:'死の行進',t:0,c:1,r:1,k:10,a:8,dmar:4},{n:'死の扉',t:1,c:1,r:1,k:10,b:6,ddr:1},{n:'葬列の宣告',t:1,c:2,r:1,k:10,fuA:4,wkA:1},{n:'先送り',t:1,c:2,r:1,k:10,b:11,nt:1},{n:'葬送歌',t:1,c:-1,X:1,r:1,k:10,dirg:3,x:1},{n:'衰えの手',t:1,c:1,r:1,k:10,ds:2,eth:1},{n:'槍の呼び戻し',t:0,c:0,r:1,k:10,a:3,kt:1,dr:1},{n:'騎士との誓い',t:2,c:1,r:1,k:10,pw:'egy',v:1,stL:2},{n:'憑く',t:2,c:1,r:1,k:10,pw:'hnt',v:7},{n:'槍の号令',t:0,c:2,r:1,k:10,a:11,kt:1,vuA:2},{n:'必殺の構え',t:2,c:1,r:1,k:10,pw:'leth',v:50,eth:1},{n:'逃げ場なし',t:1,c:1,r:1,k:10,fu:3,fuNE:1},{n:'読み解く',t:1,c:1,r:1,k:10,dr:3,eth:1},{n:'下からの手',t:0,c:1,r:1,k:10,a:5,ethA:1},{n:'腐らせる',t:1,c:1,r:1,k:10,wk:2,vu:2,x:1},{n:'鳴らす槍',t:0,c:1,r:1,k:10,a:7,kt:1,ratl:1},{n:'断絶',t:0,c:2,r:1,k:10,a:13,souA:1},{n:'帳',t:2,c:1,r:1,k:10,pw:'fub',v:3},{n:'けしかける',t:0,c:1,r:1,k:10,a:5,kt:1,ksm:3},{n:'葬列の棘',t:2,c:2,r:1,k:10,pw:'fud',v:5},{n:'拍車',t:1,c:1,r:1,k:10,rt:1,ksm:3,knH:5},{n:'来世',t:1,c:1,r:1,k:10,ksm:6,x:1},{n:'嘆きの叫び',t:0,c:9,r:2,k:10,aa:33,ethC:2},{n:'灰の霊',t:2,c:1,r:2,k:10,pw:'eab',v:4},{n:'命を喰らう',t:2,c:1,r:2,k:10,pw:'dvl',v:1},{n:'根絶',t:0,c:-1,X:1,r:2,k:10,a:11,rt:1},{n:'吊るす',t:0,c:1,r:2,k:10,a:10,hang:1},{n:'悲惨',t:0,c:0,r:2,k:10,a:7,mis:1},{n:'霊騎士の契約',t:2,c:2,r:2,k:10,pw:'kmas',v:1,ksm:5},{n:'忘却',t:1,c:0,r:2,k:10,obl:2},{n:'蘇生',t:1,c:3,r:2,k:10,ksm:20,x:1},{n:'死神の姿',t:2,c:3,r:2,k:10,pw:'rpf',v:1},{n:'犠牲',t:1,c:1,r:2,k:10,rt:1,ksb:3},{n:'魂の嵐',t:0,c:1,r:2,k:10,a:9,ssA:4},{n:'握り潰す',t:0,c:3,r:2,k:10,a:25,kt:1,sqz:5},{n:'時は満ちた',t:0,c:2,r:2,k:10,a:2,tup:3,rt:1},{n:'不死',t:1,c:0,r:2,k:10,b:7,cp:1},{n:'魂',t:1,c:0,r:-2,k:10,dr:2,x:1},
 // 坪内丸の刀魂のカード（Ver3.44。スレスパ2のリージェントを手本に）
-{n:'残月',t:0,c:1,r:0,k:2,a:9,kg:1},{n:'導きの一閃',t:0,c:1,tc:1,r:0,k:2,a:12,nd:2},{n:'斬光',t:0,c:1,tc:1,r:0,k:2,a:8,tcA:2},{n:'決戦の構え',t:1,c:1,r:1,k:2,nt:1,ntg:1,rtH:1},{n:'一撃必殺',t:0,c:3,r:1,k:2,a:30,tkK:5},{n:'剣圧',t:0,c:0,tc:3,r:1,k:2,a:13,wk:2,vu:2},{n:'共鳴の太刀',t:2,c:1,r:1,k:2,pw:'tkD',v:3},{n:'魂打ち',t:1,c:0,tc:5,r:1,k:2,kg:9,x:1},{n:'天眼',t:1,c:1,tc:3,r:1,k:2,b:15,mir:1},{n:'散華',t:0,c:1,tc:3,r:2,k:2,aa:9,wkA:2,eth:1},{n:'鍛冶神の槌',t:1,c:1,tc:4,r:2,k:2,fg:30}]
+{n:'残月',t:0,c:1,r:0,k:2,a:9,kg:1},{n:'導きの一閃',t:0,c:1,tc:1,r:0,k:2,a:12,nd:2},{n:'斬光',t:0,c:1,tc:1,r:0,k:2,a:8,tcA:2},{n:'決戦の構え',t:1,c:1,r:1,k:2,nt:1,ntg:1,rtH:1},{n:'一撃必殺',t:0,c:3,r:1,k:2,a:30,tkK:5},{n:'剣圧',t:0,c:0,tc:3,r:1,k:2,a:13,wk:2,vu:2},{n:'共鳴の太刀',t:2,c:1,r:1,k:2,pw:'tkD',v:3},{n:'魂打ち',t:1,c:0,tc:5,r:1,k:2,kg:9,x:1},{n:'天眼',t:1,c:1,tc:3,r:1,k:2,b:15,mir:1},{n:'散華',t:0,c:1,tc:3,r:2,k:2,aa:9,wkA:2,eth:1},{n:'鍛冶神の槌',t:1,c:1,tc:4,r:2,k:2,fg:30},
+// セレスの古の版（Ver3.54 ユーザー指定：霊騎士召喚の進化。召喚の数値を上げて1枚引く）
+{n:'霊騎士・降臨',t:1,c:1,r:-2,k:10,ksm:10,dr:1,fa:'kourin'}]
 const randCurse=()=>pk(C.map((c,i)=>[c,i]).filter(a=>a[0].t===4))[1],canUp=o=>!o.u&&C[o.i].t<3;;
 // 全カードの絵を一度だけ決める：手描きの絵（CRN）は最初の1枚だけ、残りは組み合わせが重ならないように割り当てる
 const GART={};{const used=new Set(),hs=s=>{let h=7;for(const ch of s)h=(h*31+ch.charCodeAt(0))%9973;return h},cls=[0,8,4,2,3,1];
@@ -3989,6 +3996,35 @@ FAA={sai:FAF_SAI(),
    g.strokeStyle='rgba(150,220,255,.8)';g.lineWidth=1;for(let k=-2;k<=2;k++){g.beginPath();g.moveTo(x+k*5*s,y+1);g.quadraticCurveTo(x+k*5*s+3,y+10*s,x+k*4*s,y+20*s);g.stroke()}
    g.fillStyle='#fff';g.fillRect(x-1,y-4*s,2,2)}
  },['#d8e0f4','#b0b8d8']),
+ kourin:AK(41,(g,r,poly,glow,sky,W,H)=>{sky(['#03030c','#0c1030','#0a0c1e','#020208']);
+  for(let i=0;i<60;i++){g.fillStyle='rgba(230,236,255,'+(.15+r()*.55)+')';g.fillRect(r()*W|0,r()*120|0,1,1)}
+  // 雲の切れ目から差す光（放射状の光の筋）
+  for(let k=0;k<9;k++){const a=-1.95+k*.17,l=180;g.fillStyle='rgba(200,215,255,'+(.05+r()*.06)+')';g.beginPath();g.moveTo(84,-8);g.lineTo(84+Math.cos(a)*l,-8-Math.sin(a)*l*-1);g.lineTo(84+Math.cos(a+.07)*l,-8-Math.sin(a+.07)*l*-1);g.closePath();g.fill()}
+  poly([[0,H],[0,146],[44,138],[96,146],[136,136],[W,142],[W,H]],'#05060f');
+  // 地面の光の陣（三重の楕円と刻み）
+  const cx=84,cy=128;glow(cx,cy,90,'rgba(200,215,255,A)',.45);
+  for(const[rx,ry,a,w]of[[66,15,.9,2],[52,11,.7,1.5],[34,7,.8,1]]){g.strokeStyle='rgba(230,236,255,'+a+')';g.lineWidth=w;g.beginPath();g.ellipse(cx,cy,rx,ry,0,0,7);g.stroke()}
+  for(let k=0;k<24;k++){const a=k/24*6.283;g.fillStyle=k%2?'#e8eeff':'#a8bcf0';g.fillRect(cx+Math.cos(a)*59|0,cy+Math.sin(a)*13|0,2,2)}
+  // 天から降りる光の柱
+  {const q=g.createLinearGradient(0,0,0,cy);q.addColorStop(0,'rgba(220,230,255,.04)');q.addColorStop(.7,'rgba(230,238,255,.42)');q.addColorStop(1,'rgba(255,255,255,.75)');g.fillStyle=q;g.beginPath();g.moveTo(cx-16,0);g.lineTo(cx+16,0);g.lineTo(cx+30,cy);g.lineTo(cx-30,cy);g.closePath();g.fill()}
+  // 突き立つ巨大な光の三叉槍（少し傾けて、穂先が陣の中心へ）
+  g.save();g.translate(cx+4,cy-2);g.rotate(.12);
+  const bar=(w,c,y0,y1)=>{g.fillStyle=c;g.fillRect(-w/2,y0,w,y1-y0)};glow(0,-60,60,'rgba(200,220,255,A)',.35);
+  bar(11,'rgba(30,40,100,.85)',-150,-26);bar(7,'#6a86e0',-150,-26);bar(3.5,'#c8d8ff',-150,-26);bar(1.4,'#ffffff',-150,-26);
+  for(let k=0;k<4;k++)bar(13,'rgba(220,230,255,.6)',-140+k*28,-137+k*28);
+  poly([[-16,-30],[-8,-24],[0,-22],[8,-24],[16,-30],[0,-27]],'#d8e2ff');
+  for(const sg of[-1,1]){poly([[sg*7,-26],[sg*15,-14],[sg*17,2],[sg*12,-8],[sg*4,-20]],'#c0d0ff');poly([[sg*8,-22],[sg*13,-12],[sg*14,-2],[sg*11,-10]],'#ffffff')}
+  poly([[-6,-26],[-2.5,10],[0,16],[2.5,10],[6,-26]],'#e0e8ff');poly([[-2.5,-24],[-1,10],[0,14],[1,10],[2.5,-24]],'#ffffff');
+  g.restore();
+  // 着いた所：強い光と、外へ広がる衝撃の輪、短い火花の線
+  glow(cx+6,cy+12,40,'rgba(255,255,255,A)',.95);
+  g.strokeStyle='rgba(240,244,255,.8)';g.lineWidth=2.5;g.beginPath();g.ellipse(cx+6,cy+12,30,7,0,3.3,6.1);g.stroke();
+  g.strokeStyle='#ffffff';g.lineWidth=1.6;for(let k=0;k<12;k++){const a=-3.14+k/11*3.14+(r()-.5)*.15,d0=12+r()*5,d1=d0+10+r()*18;g.beginPath();g.moveTo(cx+6+Math.cos(a)*d0,cy+12+Math.sin(a)*d0*.55);g.lineTo(cx+6+Math.cos(a)*d1,cy+12+Math.sin(a)*d1*.55);g.stroke()}
+  // 渦を巻いて立ちのぼる白い魂の炎（二重のらせん）
+  for(let s2=0;s2<2;s2++)for(let k=0;k<26;k++){const t=k/26,a=t*9+s2*Math.PI,x=cx+Math.cos(a)*(46-t*30),y=cy-4-t*118,R=3+(1-t)*5;glow(x,y,R*2.6,'rgba(225,232,255,A)',.35*(1-t*.5));g.fillStyle=Math.sin(a)>0?'#ffffff':'#b8c8f0';g.fillRect(x-R/2|0,y-R/2|0,Math.max(1,R*.6|0),Math.max(1,R*.6|0))}
+  // 舞い上がる光の粒
+  for(let i=0;i<40;i++){g.fillStyle=i%3?'#eef2ff':'#a8bcf0';g.fillRect(20+r()*128|0,10+r()*120|0,1,1+(i%2))}
+ },['#e4e8f8','#c8c8e8']),
 kansho:AK(31,(g,r,poly,glow,sky,W,H)=>{sky(['#02060c','#081a2a','#04101a','#010306']);
  for(let i=0;i<40;i++){g.fillStyle='rgba(120,240,255,'+(.1+r()*.3)+')';g.fillRect(r()*W|0,r()*110|0,1,1+(i%3))}
  // 浮かぶ立方体（面で塗り分け、ひびから光）
@@ -4167,9 +4203,9 @@ function faDraw(x,y,name,cost,type,lines,art,gem,nc){const t=T||0;
  // コストの宝石
  const ox=x+3,oy=y+4,oc=(rr)=>{ctx.beginPath();for(let i=0;i<8;i++){const a=Math.PI/8+i*Math.PI/4;ctx.lineTo(ox+Math.cos(a)*rr,oy+Math.sin(a)*rr)}ctx.closePath()};
  ctx.fillStyle='rgba(0,0,0,.5)';ctx.save();ctx.translate(1,2);oc(11);ctx.fill();ctx.restore();ctx.fillStyle='#050304';oc(11);ctx.fill();const og=ctx.createRadialGradient(ox-3,oy-4,1,ox,oy,11);const GM=gem||['#f8b880','#c04a1a','#4a0e06'];og.addColorStop(0,GM[0]);og.addColorStop(.35,GM[1]);og.addColorStop(1,GM[2]);ctx.fillStyle=og;oc(9.5);ctx.fill();ctx.strokeStyle='rgba(255,210,170,.45)';ctx.lineWidth=.6;ctx.stroke();txt(String(cost),ox,oy+4.5,'#fff','center',12)};
-const FAG={0:['#f8b880','#c04a1a','#4a0e06'],1:['#c8ffb0','#3a9a3a','#0a2a0a'],2:['#d0dcff','#4a6ad8','#0e1a4a'],3:['#e8c8ff','#8a4ad8','#2a0e4a'],4:['#d0ffd8','#3ac860','#0a3a14'],5:['#f4f4f8','#9a9aa8','#2a2a34'],6:['#d0f0ff','#3a9ae8','#0a2a4a']};
+const FAG={10:['#eef0ff','#8a96c8','#1a1e3a'],0:['#f8b880','#c04a1a','#4a0e06'],1:['#c8ffb0','#3a9a3a','#0a2a0a'],2:['#d0dcff','#4a6ad8','#0e1a4a'],3:['#e8c8ff','#8a4ad8','#2a0e4a'],4:['#d0ffd8','#3ac860','#0a3a14'],5:['#f4f4f8','#9a9aa8','#2a2a34'],6:['#d0f0ff','#3a9ae8','#0a2a4a']};
 function cardFA(x,y,o,dim,gl,pv){const c=cd(o),b=C[o.i],parts=dl(c,pv),mkL=n=>{const r=[],q=[];parts.forEach((p,i)=>{for(const l of wrap(p,n))(p==='廃棄'?q:r).push([l,parts.cl[i]||(p==='廃棄'?'#ffd23f':null)])});return r.concat(q)};let lines=null;for(const n of[8,9,10,11,12]){const L=mkL(n),ml=Math.max(...L.map(l=>l[0].length)),fz=Math.min(9,Math.floor(80/ml));if(fz>=7&&L.length<=(fz>=9?3:fz>=8?4:5)&&!L.some(l=>l[0].length<2)){L.fz=fz;lines=L;break}}if(!lines){lines=mkL(12);lines.fz=7}
- faDraw(x,y,c.n,c.X?'X':c.un?'—':c.c,TL[c.t],lines,faArt(b.fa),FAG[b.k||0],c.u?'#a0ffa8':null);if(dim){ctx.fillStyle='rgba(0,0,0,.5)';faRR(x-2,y-2,88,110,6);ctx.fill()}}
+ faDraw(x,y,c.n,c.X?'X':c.un?'—':c.c,TL[c.t],lines,faArt(b.fa),FAG[b.k||0],c.u?'#a0ffa8':null);if(c.tc)tGem(x+8,y+29,c.tc);if(dim){ctx.fillStyle='rgba(0,0,0,.5)';faRR(x-2,y-2,88,110,6);ctx.fill()}}
 const E={slime:{n:'スライム',hp:[16,20],mv:[{a:6},{a:4,wk:1,sc:['粘液',1]},{a:7}]},goblin:{n:'ゴブリン',hp:[18,22],mv:[{a:7},{b:6},{a:5,h:2}]},bat:{n:'コウモリ',hp:[11,15],mv:[{a:3,h:2},{a:5,vu:1}]},
 skel:{n:'骸骨兵',hp:[22,28],mv:[{b:8},{a:10},{a:6,wk:1}]},spider:{n:'毒蜘蛛',hp:[18,22],mv:[{a:6},{a:7},{b:6,wk:1}]},ghost:{n:'怨霊',hp:[24,30],mv:[{vu:2,wk:1,sc:['目眩',2]},{a:8},{a:5,h:2}]},
 ogre:{n:'オーク',hp:[40,46],mv:[{a:13},{st:3},{a:6,h:2,b:6}]},golem:{n:'岩のゴーレム',hp:[48,56],mv:[{b:16},{a:17},{a:8,wk:2}]},
@@ -4455,10 +4491,13 @@ if(PS.mgt)PS.mana=(PS.mana+PS.mgt);if(B.ch.length){for(const q of B.ch)q.n--;con
 function fxs(k,x,y,o){if(QT)return;if(MPB&&!'bz ez rx qy mb'.includes(k)&&x<200){if(CK!==LK&&y>=220)return;if(y<220){x+=PPX(CK)-110;y+=PPY(CK)-208}}fx.push({k,x,y,t:0,d:o?.d||.3,dl:o?.dl||0,c:o?.c||'#fff',b:o?.b,s:o?.s,v:o?.v,bl:o?.bl,pl:o?.pl,ex:o?.ex})}
 function nmb(x,y,s,c,dl){fxs('nm',x,y,{s,c,d:.9,dl})}
 function pop(e,s,c){if(typeof s==='string'&&s.startsWith('毒+')){const q=ePos(B.en.indexOf(e));fxs('pz',q.x,q.y-(SPR[e.k]?SPR[e.k].height/2:30),{d:.9})}const i=B.en.indexOf(e),p=ePos(i),h=SPR[e.k].height;fxs('nm',p.x,p.y-h-34,{s,c,d:1.3,dl:.1})}
+// 霊騎士の攻撃（c.kt）は別のキャラ扱い：セレスの筋力・脆弱は効かない（Ver3.52、本家のオスティと同じ。ユーザー指定）。敵の弱体などは効く
+function calcK(base,e){let d=base;if(e.vuln>0)d*=1.5;if(e.sor)d*=.5;return Math.max(0,Math.floor(d))}
+const calcC=(c,b,e,m)=>c.kt?calcK(b,e):calcE(b,e,m);
 function calcE(base,e,mult){let d=base+strB()*(mult||1);if(PS.weak>0)d*=.75;if(e.vuln>0)d*=1.5;if(e.sor)d*=.5;if(PS.bers&&P.hp<=P.mhp/2)d*=2;return Math.max(0,Math.floor(d))}
 const hzMin=()=>P.hz?Math.ceil(Math.max(0,P.hz-(MPB?MPB.now:Date.now()))/60000):0,hzEl=()=>P.hz?Math.floor((3600000-Math.max(0,P.hz-(MPB?MPB.now:Date.now())))/60000):0;
 // カード固有の上乗せ（play と pvw で共通）。hl＝このカード以外の手札の枚数
-function xBon(c,o,tg,hl){return(c.tcA&&P&&P.deck?P.deck.filter(q=>C[q.i]&&C[q.i].tc).length*c.tcA:0)+(c.tgR&&B?c.aa*((B.tkG||0)-1):0)+(c.kcur?Math.max(0,PS.kn||0):0)+(c.kt?PS.kcal||0:0)+(c.dmar&&B?(B.drN||0)*c.dmar:0)+(c.ethA&&B?c.a*((B.ethN||0)-1):0)+(c.sqz&&B?(B.katN||0)*c.sqz:0)+(c.tup&&tg?(tg.fun||0)*c.tup:0)+(c.ssA&&B&&B.ex?B.ex.filter(q=>q.i===SOUL).length*c.ssA:0)+(c.exB&&B?B.ex.length*c.exB:0)+(c.psB&&tg?(tg.poison||0)*c.psB:0)+(c.fgA?PS.forge:0)+(c.fgB?PS.forge*c.fgB:0)+(c.kxA?PS.ki*c.kxA:0)+(c.dmB&&tg?(tg.doom||0)*c.dmB:0)+(c.clw&&B?B.clw||0:0)+(c.clwA&&B?(B.clw||0)*c.clwA:0)+(c.hd?c.hd*hl:0)+(c.lh?Math.floor((P.mhp-P.hp)/c.lh):0)+(c.lhx?P.mhp-P.hp:0)+(c.tm?hzMin():0)+(c.tmE?hzEl()*c.tmE:0)+(c.lst&&hl===0?c.lst:0)+(c.csp?B.ch.length*c.csp:0)+(c.rv?B.lhurt||0:0)}
+function xBon(c,o,tg,hl){return(c.kcmx&&PS?Math.max(0,PS.knm||0)*c.kcmx:0)+(c.tcA&&P&&P.deck?P.deck.filter(q=>C[q.i]&&C[q.i].tc).length*c.tcA:0)+(c.tgR&&B?c.aa*((B.tkG||0)-1):0)+(c.kcur?Math.max(0,PS.kn||0):0)+(c.kt?PS.kcal||0:0)+(c.dmar&&B?(B.drN||0)*c.dmar:0)+(c.ethA&&B?c.a*((B.ethN||0)-1):0)+(c.sqz&&B?(B.katN||0)*c.sqz:0)+(c.tup&&tg?(tg.fun||0)*c.tup:0)+(c.ssA&&B&&B.ex?B.ex.filter(q=>q.i===SOUL).length*c.ssA:0)+(c.exB&&B?B.ex.length*c.exB:0)+(c.psB&&tg?(tg.poison||0)*c.psB:0)+(c.fgA?PS.forge:0)+(c.fgB?PS.forge*c.fgB:0)+(c.kxA?PS.ki*c.kxA:0)+(c.dmB&&tg?(tg.doom||0)*c.dmB:0)+(c.clw&&B?B.clw||0:0)+(c.clwA&&B?(B.clw||0)*c.clwA:0)+(c.hd?c.hd*hl:0)+(c.lh?Math.floor((P.mhp-P.hp)/c.lh):0)+(c.lhx?P.mhp-P.hp:0)+(c.tm?hzMin():0)+(c.tmE?hzEl()*c.tmE:0)+(c.lst&&hl===0?c.lst:0)+(c.csp?B.ch.length*c.csp:0)+(c.rv?B.lhurt||0:0)}
 
 // ===== 追加カードの仕組み（スレスパ2を参考）=====
 function exPush(o){B.ex.push(o);B.exT=(B.exT||0)+1;if(PS.fnp){B.blk+=PS.fnp;fxs('sh',110,175,{d:.4})}}
@@ -4571,8 +4610,8 @@ for(let r=0;r<=PS.echo;r++){const dl=r*.5;fxs('mcs',110,110,{d:.55,dl,c:col,s:el
  if(c.b){B.blk+=bkF(c.b+PS.dex);fxs('sh',110,175,{d:.4,dl});sfx('bk')}}
 if(PS.chs)B.blk+=PS.chs;if(has('quill'))for(const e of alive())hitE(e,2,.4,0,0);chk()}
 function pvw(o,tg){if(!B||!PS)return null;const c=cd(o),spc=c.lhx||c.tm||c.tmE||c.kh||c.pct||c.rv||c.bsm;if(!(c.a||c.bs||c.aa||c.b||spc||c.saa||c.mxA||c.kb||c.mb||c.lhb))return null;const fa=c.t===0&&!B.fa&&!c.sp,bon=(c.ia&&B.pl===0?c.ia:0)+(fa?PS.iai+((has('kensei')?4:0)+(has('stsw')?3:0)):0)+(c.kx?PS.ki*c.kx:0)+(c.mx?PS.mana*c.mx:0)+(c.sp?PS.arc*PS.mana:0)+xBon(c,o,tg,B.hand.length-1),db=c.t===0&&has('pen')&&((B.atks||0)+1)%10===0?2:1,r={},t0=tg||{vuln:0,hp:1,mh:1};
-if(c.a||c.bs||c.lhx||c.tm||c.tmE||c.pct||c.rv||c.bsm)r.a=calcE((c.bs?B.blk:c.bsm?B.blk*c.bsm:c.a||0)+(o.i===SHIV?(has('sheath')?2:0)+PS.shvd:0)+bon+(c.pct&&tg?Math.floor(tg.mh*c.pct/100):0),t0,c.sm||1)*db*xMul(c,t0);if(r.a!=null)r.a=Math.floor(r.a)+(c.t===0&&tg&&tg.fun?tg.fun:0);if(c.kh)r.a=calcE(c.kh+bon,t0)*xMul(c,t0);
-if(c.aa){const al=alive();r.aa=calcE(c.aa+bon,{vuln:al.length&&al.every(e=>e.vuln>0)?1:0})*db}if(c.saa){const al=alive();r.aa=calcE(strB()*(c.saa-1),{vuln:al.length&&al.every(e=>e.vuln>0)?1:0})}if(c.mxA){const al=alive();r.aa=Math.floor(PS.mana*c.mxA*(PS.weak>0?.75:1)*(al.length&&al.every(e=>e.vuln>0)?1.5:1))}if(c.b)r.b=Math.max(0,bkF(c.b+PS.dex));return r}
+if(c.a||c.bs||c.lhx||c.tm||c.tmE||c.pct||c.rv||c.bsm)r.a=calcC(c,(c.bs?B.blk:c.bsm?B.blk*c.bsm:c.a||0)+(o.i===SHIV?(has('sheath')?2:0)+PS.shvd:0)+bon+(c.pct&&tg?Math.floor(tg.mh*c.pct/100):0),t0,c.sm||1)*db*xMul(c,t0);if(r.a!=null)r.a=Math.floor(r.a)+(c.t===0&&tg&&tg.fun?tg.fun:0);if(c.kh)r.a=calcE(c.kh+bon,t0)*xMul(c,t0);
+if(c.aa){const al=alive();r.aa=calcC(c,c.aa+bon,{vuln:al.length&&al.every(e=>e.vuln>0)?1:0})*db}if(c.saa){const al=alive();r.aa=calcE(strB()*(c.saa-1),{vuln:al.length&&al.every(e=>e.vuln>0)?1:0})}if(c.mxA){const al=alive();r.aa=Math.floor(PS.mana*c.mxA*(PS.weak>0?.75:1)*(al.length&&al.every(e=>e.vuln>0)?1.5:1))}if(c.b)r.b=Math.max(0,bkF(c.b+PS.dex));return r}
 function calcP(e,base){let d=base+e.str;if(e.weak>0)d*=.75;if(PS.vuln>0)d*=1.5;return Math.max(0,Math.floor(d))}
 // 位相：ph=3 は3ターンごと（位相の影）、それ以外は奇数ターン（試作機神・完全体）
 const ePhOn=(e,t)=>!!e.ph&&(e.ph===3?t%3===0:t%2===1);
@@ -4790,7 +4829,7 @@ let LPC=[],LP=null,LPV=null;
 const KWD=[...Object.keys(ENC).map(k=>[c=>c.enk===k,ENC[k][0]+'（エンチャント）',ENC[k][2](ENC[k][4])+'。強化とは別に、カードに後から付く効果。'+(k==='clone'?'休憩所の「複製」で、このカードをもう1枚増やせる。':'')]),[c=>c.rvO||c.bud||c.shf||c.eat||c.wkT||c.sum||c.emp||c.res||c.pw==='nwd'||c.pw==='mig'||c.ch||c.chX!=null||c.chR||c.chE||c.ev||c.evX!=null||c.rcO||c.ao||c.dru||c.fis||c.ths||c.pw==='osl'||c.pw==='sdc'||c.pw==='lop'||c.pw==='stm'||c.pw==='eld','小クラゲ','ネブラの頭上に浮かぶ小さなクラゲ。「呼ぶ」と枠に加わり、ターン終了時に常時効果が発動する（プラズマはターン開始時）。枠がいっぱいで呼ぶと先頭（右端）が放たれる。「放つ」と先頭の放出効果が発動して消える。雷 常時3／放出8（ランダムな敵）、氷 常時ブロック2／放出5、闇 毎ターン放出の威力+6／放出は最もHPの低い敵へ、プラズマ ターン開始時エナジー+1／放出でエナジー+2、ガラス 常時 敵全体に4（毎回1減る）／放出でその2倍を敵全体。色の順番は 雷→氷→闇→プラズマ→ガラス→雷。'],[c=>c.pw==='foc'||c.focA||c.bcg,'集中','雷・氷・闇・ガラスの小クラゲの数値がこの値だけ増える。'],[c=>c.dmA||c.dmAA||c.dmM||c.dmMg||c.dmB||c.pw==='dmP','破滅','敵のターン開始時、その敵のHPが破滅の値以下なら倒れる。破滅は重ねがけできる。'],[c=>c.fg||c.fgX||c.fgA||c.fgB||c.bRet||c.pw==='fgT'||c.pw==='fgAt','鍛える','「鍛えし刃」のダメージを上げる。刃が無ければ手札に作る。刃は保留され、この戦闘のあいだ強くなり続ける。'],[c=>c.clw||c.clwA||c.clwB||c.clwR||c.drC||c.cmbo||c.pw==='clwT'||c.pw==='clwBk','連打','連打のカードを使うたび、この戦闘の連打の値が上がり、連打のカードすべてのダメージに加わる。'],[c=>c.sly||c.mpl||c.pw==='slyA','捨て発動','カードの効果で捨てたとき、エナジーを使わずに自動で使われる。'],[c=>c.x,'廃棄','使うと廃棄され、この戦闘ではもう使えない。'],[c=>c.eth,'エセリアル','ターン終了時に手札に残っていると廃棄される。'],[c=>c.vu||c.vuA,'弱体','受けるダメージが1.5倍になる。ターンごとに1減る。'],[c=>c.wk||c.wkA||c.cw,'脆弱','与えるダメージが0.75倍になる。ターンごとに1減る。'],[c=>c.ps||c.psA||c.pw==='psn'||c.pw==='nox',"毒",'敵は自分の行動時、自分はターン終了時に毒の値のダメージを受け、その後1減る。'],
  [c=>c.st||c.ts||c.pw==='str'||c.pw==='dem',"筋力",'攻撃のダメージが筋力の分だけ増える（一時的な筋力はターン終了まで）。'],[c=>c.b||c.pw==='met'||c.pw==='blkd',"ブロック",'次の自分のターンが始まるまで、受けるダメージをその分だけ防ぐ。'],[c=>c.dex||c.pw==='dex',"敏捷",'ブロックを得るカードのブロックが増える。'],[c=>c.rt,'保持','ターン終了時に捨てずに手札に残る。'],[c=>c.X,'X','残りのエナジーをすべて使い、使った数だけ効果が増える。'],
  [c=>c.shv||c.ibl||c.pw==='ibl'||/小ナイフ/.test(c.n),'小ナイフ','コスト0で4ダメージを与える攻撃。使うと廃棄される。'],[c=>c.sp,'詠唱','使うと詠唱に入り、表示のターン数のあとで魔法が発動する（最大3つ）。'],[c=>c.mg||c.mx||c.mxA||c.hpm,'魔力','名無しの力。魔法の威力を上げる（上限なし）。'],[c=>c.kg||c.kx||c.kc||c.kh||c.tc||c.ntg||c.tkK||c.tcA||c.tgR||['kig','zan','kfst','ksd','tkB','tkD'].includes(c.pw),'刀魂','坪内丸の力。カードで溜め、左上の赤い印の数だけ払って技を使う（エナジーとは別。ターンを越えて戦闘中は持続、上限なし）。'],[c=>c.ia,'居合','そのターン最初に使う攻撃なら威力が上がる。'],
- [c=>c.ct,'反撃','このターン、攻撃を受けるたびに相手へダメージを返す（弱体の影響は受けない）。'],[c=>c.un,'使用不可','手札から使えないカード。'],[c=>c.t===2,'パワー','使うと、この戦闘が終わるまで効果が続く。'],[c=>c.t===3,'状態異常','戦闘中だけ混ざる邪魔なカード。戦闘が終わると消える。'],[c=>c.t===4,'呪い','デッキに残り続ける邪魔なカード。'],[c=>c.dr,'引く','山札からカードを手札に加える。山札が尽きたら捨て札を混ぜて山札に戻す。'],[c=>c.kt||c.ksm||c.knH||c.kbr||c.ksb||c.dirg||c.nks||c.kcur||c.sqz||c.ratl||['kcal','kmas','dvl'].includes(c.pw),'霊騎士','セレスに従う幽霊の騎士。敵の攻撃をブロックの後、セレスより先に受け止める。HPが0になると鎧が崩れ落ちるが、召喚でまた立ち上がる（崩れている時は召喚の値が新しいHP）。「霊騎士が攻撃」のカードは、騎士が崩れていると威力が半分。'],[c=>c.fu||c.fuA||c.fuNE||c.tup||c.obl||c.mis||['pfu','fub','fud','rpf'].includes(c.pw),'葬列','敵に付ける印。攻撃を受けるたびダメージ+印の数（減らない）。その敵が倒れると、半分（切り捨て）がHPの一番多い他の敵へ移る。移る先が無い時は、その分だけ霊騎士を召喚する。'],[c=>c.sou||c.souA||c.dirg||c.ssA||c.n==='魂'||['hnt','dvl'].includes(c.pw),'魂','コスト0で2枚引くカード。使うと廃棄される。']];
+ [c=>c.ct,'反撃','このターン、攻撃を受けるたびに相手へダメージを返す（弱体の影響は受けない）。'],[c=>c.un,'使用不可','手札から使えないカード。'],[c=>c.t===2,'パワー','使うと、この戦闘が終わるまで効果が続く。'],[c=>c.t===3,'状態異常','戦闘中だけ混ざる邪魔なカード。戦闘が終わると消える。'],[c=>c.t===4,'呪い','デッキに残り続ける邪魔なカード。'],[c=>c.dr,'引く','山札からカードを手札に加える。山札が尽きたら捨て札を混ぜて山札に戻す。'],[c=>c.kt||c.ksm||c.knH||c.kbr||c.ksb||c.dirg||c.nks||c.kcur||c.sqz||c.ratl||['kcal','kmas','dvl'].includes(c.pw),'霊騎士','セレスに従う幽霊の騎士。敵の攻撃をブロックの後、セレスより先に受け止める。HPが0になると鎧が崩れ落ちるが、召喚でまた立ち上がる（崩れている時は召喚の値が新しいHP）。「霊騎士が攻撃」のカードは、騎士が崩れていると威力が半分。セレスの筋力・脆弱は騎士の攻撃に効かない。'],[c=>c.fu||c.fuA||c.fuNE||c.tup||c.obl||c.mis||['pfu','fub','fud','rpf'].includes(c.pw),'葬列','敵に付ける印。攻撃を受けるたびダメージ+印の数（減らない）。その敵が倒れると、半分（切り捨て）がHPの一番多い他の敵へ移る。移る先が無い時は、その分だけ霊騎士を召喚する。'],[c=>c.sou||c.souA||c.dirg||c.ssA||c.n==='魂'||['hnt','dvl'].includes(c.pw),'魂','コスト0で2枚引くカード。使うと廃棄される。']];
 function lpTick(){if(!LP||LP.m||LPV||performance.now()-LP.t<450)return;for(let i=LPC.length-1;i>=0;i--){const r=LPC[i];if(r.o&&LP.x>=r.x&&LP.x<=r.x+r.w&&LP.y>=r.y&&LP.y<=r.y+r.h){if(r.o.anc!=null){if(S==='btr'&&BT){BT.lp=r.o.anc;dg=null;drag=null;LP=null;sfx('cl')}return}LPV={o:r.o,t:T};dg=null;drag=null;LP=null;sfx('cl');return}}LP.m=1}
 // Ver2.33 カードが変化する時の演出（ユーザー指定：約1秒）。TFX={L:[[前,後]…],t0}。どの画面の上にも重ねて描く。0.3秒たてば押して飛ばせる
 let TFX=null;function tfFx(L){if(QT||!L||!L.length)return;TFX={L:L.slice(0,12),t0:T};sfx('cl')}
@@ -4874,10 +4913,10 @@ if(c.t===1&&has('fan'))B.blk+=1;
 if(c.hp){P.hp-=c.hp;P.killer=c.n;hlInc();if(PS.hpb)PS.str+=PS.hpb;fxs('nm',110,150,{s:'-'+c.hp,c:'#ff6a6a',d:.9});sfx('ea');if(P.hp<=0){lose();if(B.ph==='L')return}}
 xPre(c,o,tg);const hl=B.hand.length,X2=xBon(c,o,tg,hl),hm=(c.cmb&&B.lastT===0?2:1)*(fa&&PS.ftw?2:1);
 if((c.a||c.bs||c.sm||c.lhx||c.tm||c.tmE||c.kh||c.pct||c.rv||c.bsm)&&tg){let base=(c.bs?B.blk:c.bsm?B.blk*c.bsm:c.a||0)+(o.i===SHIV?(has('sheath')?2:0)+PS.shvd:0)+bon+X2+(c.pct?Math.floor(tg.mh*c.pct/100):0);let h=c.X&&c.a?x:c.fl?B.hand.filter(q=>cd(q).t===1).length:c.kh?PS.ki:(c.h||1);h=xHit(c,h);if(c.kh)base=c.kh+bon+X2;if(c.pd&&tg.poison>0)h=2;if(c.hpm)h+=PS.mana;h*=hm;
-for(let k=0;k<h;k++){const t2=c.rnd?pk(alive()):tg;if(!t2||(t2.dead&&k>0))break;let d=Math.floor(calcE(base,t2,c.sm?c.sm:1)*xMul(c,t2));if(dbl)d*=2;const sb=t2.blk;if(c.pc)t2.blk=0;hitE(t2,d,k*(B.pa&&B.pa.t0===T&&B.pa.k==='fl'?.16:.12)+(c.qy?.65:0)+(B.pa&&B.pa.t0===T?B.pa.hd||0:0),d>=14||c.bs,1);if(c.pc&&!t2.dead)t2.blk=sb;if(c.fd&&t2.dead){P.mhp+=3;P.hp+=3}}
+for(let k=0;k<h;k++){const t2=c.rnd?pk(alive()):tg;if(!t2||(t2.dead&&k>0))break;let d=Math.floor(calcC(c,base,t2,c.sm?c.sm:1)*xMul(c,t2));if(dbl)d*=2;const sb=t2.blk;if(c.pc)t2.blk=0;hitE(t2,d,k*(B.pa&&B.pa.t0===T&&B.pa.sp?B.pa.sp:B.pa&&B.pa.t0===T&&B.pa.k==='fl'?.16:.12)+(c.qy?.65:0)+(B.pa&&B.pa.t0===T?B.pa.hd||0:0),d>=14||c.bs,1);if(c.pc&&!t2.dead)t2.blk=sb;if(c.fd&&t2.dead){P.mhp+=3;P.hp+=3}}
 if(c.bsm)B.blk=0;if(c.kh){tkPay(PS.ki);if(PS.kdr)drawC(PS.kdr)}}
 if(tg&&tg.dead){if(c.ke){B.me+=c.ke;nmb(34,225,'エナジー+'+c.ke,'#7ec8ff')}if(c.kd)drawC(c.kd);if(c.gd){P.gold+=c.gd;nmb(tg?ePos(B.en.indexOf(tg)).x:450,120,'+'+c.gd+'G','#ffd23f')}if(c.kef)B.me=Math.max(B.me,MXE());if(c.kr)o.kr2=1}
-if(c.aa||c.saa||c.mxA){const n=(c.X?x:(c.h||1))*hm*(c.aaP&&MPB?mpAct().filter(k=>PL[k].B&&!PL[k].B.down).length:1);for(let k=0;k<n;k++)for(const e of alive()){let d=c.saa?calcE(strB()*(c.saa-1),e):c.mxA?Math.floor(PS.mana*c.mxA*(PS.weak>0?.75:1)*(e.vuln>0?1.5:1)):calcE(c.aa+bon+X2-(c.dmB&&tg?(tg.doom||0)*c.dmB:0)+(c.dmB?(e.doom||0)*c.dmB:0),e);if(dbl)d*=2;if(PS.dbT&&c.t===0)d*=2;if(B.dbn&&c.t===0)d*=2;if(c.kt&&!(PS.kn>0))d=Math.floor(d/2);const a=hitE(e,d,k*.15+(B.pa&&B.pa.t0===T?B.pa.hd||0:0),0,1);if(c.lf&&a>0){P.hp=Math.min(P.mhp,P.hp+c.lf)}}
+if(c.aa||c.saa||c.mxA){const n=(c.X?x:(c.h||1))*hm*(c.aaP&&MPB?mpAct().filter(k=>PL[k].B&&!PL[k].B.down).length:1);for(let k=0;k<n;k++)for(const e of alive()){let d=c.saa?calcE(strB()*(c.saa-1),e):c.mxA?Math.floor(PS.mana*c.mxA*(PS.weak>0?.75:1)*(e.vuln>0?1.5:1)):calcC(c,c.aa+bon+X2-(c.dmB&&tg?(tg.doom||0)*c.dmB:0)+(c.dmB?(e.doom||0)*c.dmB:0),e);if(dbl)d*=2;if(PS.dbT&&c.t===0)d*=2;if(B.dbn&&c.t===0)d*=2;if(c.kt&&!(PS.kn>0))d=Math.floor(d/2);const a=hitE(e,d,k*.15+(B.pa&&B.pa.t0===T?B.pa.hd||0:0),0,1);if(c.lf&&a>0){P.hp=Math.min(P.mhp,P.hp+c.lf)}}
 if(n>0)for(const e of alive()){const p=ePos(B.en.indexOf(e));fxs('rg',p.x,p.y-30,{d:.4,c:'#ffb02e'})}if(c.mxA)PS.mana=0}
 if(c.mx)PS.mana=0;if(c.mg){PS.mana=(PS.mana+c.mg);nmb(110,118,'魔力+'+c.mg,'#c9a0ff');sfx('bf')}if(c.qk)for(let k=0;k<c.qk&&B.ch.length;k++)castSp(B.ch.shift());
 if(c.kc&&PS.ki>0){tkPay(PS.ki);if(PS.kdr)drawC(PS.kdr)}if(c.kg){tkAdd(c.kg);sfx('bf')}if(c.ntg)B.ntg=(B.ntg||0)+c.ntg;if(c.rtH)B.rth=1;if(c.tkK&&tg&&tg.dead)tkAdd(c.tkK);if(c.ct){PS.cnt+=c.ct;nmb(110,118,'反撃'+c.ct,'#ffd23f')}
@@ -5940,7 +5979,7 @@ function anSoft(a,t){const A=ANC[a],cv=ctx.canvas;A.sc(t);if(ANOC.width!==cv.wid
 // 古の者ごとの選択肢の候補（恵み＋ボスレリック）。毎回この中から3つ
 [['fang','relup','ac0','eshp','pumpkin','pflesh','fruit','ckey'],['song','ac1','egla','relup','astro','sozu','rcube'],['sand','ac2','espi','fang','pyr','seye','ecto','choker','pandora'],['ash','ac3','eimb','relup','mpain','philo','gaunt','cage'],['ac4','esow','seed','relup','fruit','coffer','crown','bstar'],['ac5','eroy','page','fang','tome','drift','dome','calling']].forEach((l,i)=>ANC[i].pool=l);
 // キャラごとの古の版：元の初期カード → 古の版
-const FAN={0:['強打','砕月'],1:['しびれ薬','痺霧'],2:['抜刀・閃華','抜刀・月閃'],3:['火球の頁','劫火の頁'],4:['マイクロスリープ','深き眠り'],6:['放電','雷霆招来']};
+const FAN={10:['霊騎士召喚','霊騎士・降臨'],0:['強打','砕月'],1:['しびれ薬','痺霧'],2:['抜刀・閃華','抜刀・月閃'],3:['火球の頁','劫火の頁'],4:['マイクロスリープ','深き眠り'],6:['放電','雷霆招来']};
 const faTgt=()=>{const f=FAN[P.cls];if(!f)return -1;const j=CI(f[0]);return P.deck.findIndex(o=>o.i===j)};
 const ANGT={song:['骨鯨の歌','最大HP+20／休憩所の回復量が増える','最大HPが20増える。この冒険の間、休憩所で休んだ時の回復量が、最大HPの15%分増える。'],sand:['刻の砂','カード3枚をレアカードに変え、強化する','デッキからランダムに3枚（初期カードを優先）を、自分のキャラのレアカードに変えて強化する。'],ash:['灰の羽','カードを3枚選んで消す','デッキから好きなカードを3枚選び、取り除く。'],seed:['晶の種','レアカード3枚から1枚選んで得る','自分のキャラのレアカードが3枚出る。1枚選んでデッキに加える。'],page:['写しの頁','カード1枚を選んで複製する','デッキのカード1枚を選び、同じカード（強化・エンチャントも含む）をもう1枚加える。'],
 eshp:['鍛えの灯火','攻撃カードすべてに【鋭利3】','デッキの攻撃カード（エンチャントの無いもの）すべてに【鋭利3】が付く。ダメージ+3。'],egla:['響きの余韻','カード3枚に【華】','好きなカードを3枚選び【華】を付ける。1戦闘に1回、もう一度発動する。'],espi:['時の渦','カード1枚に【渦】','好きなカードを1枚選び【渦】を付ける。使うたび、もう一度発動する。'],eimb:['不滅の火種','カード2枚に【宿り】','好きなカードを2枚選び【宿り】を付ける。戦闘開始時に自動で発動する。'],esow:['晶の芽','カード3枚に【芽吹き】','好きなカードを3枚選び【芽吹き】を付ける。戦闘で最初に使うとエナジー+1。'],eroy:['王の綴じ紐','カード2枚に【御墨付き】','好きなカードを2枚選び【御墨付き】を付ける。必ず最初の手札に来て、ターン終了時に手札に残る。'],
@@ -6422,7 +6461,7 @@ const HELP_X=[[
 '【集中】雷・氷・闇・ガラスの数値がこの値だけ増える（プラズマは変わらない）。小クラゲの数値は頭上の小クラゲの下に出る。',
 '【定石】氷で守りを固め、雷と闇で削る。集中を上げるパワーを早めに置き、枠を増やして小クラゲの数で押し切る。'],[
 '【セレス】HP70。白い頭巾で目を隠した少女。亡き騎士の兜を抱き、白い幽霊となった騎士を従えて戦う。',
-'【霊騎士】召喚のカードで現れる（初期レリック「白い頭巾」：戦闘開始時に召喚6、2ターン目からは毎ターン召喚1）。敵の攻撃はブロックの後、セレスより先に霊騎士が受け止める。HPが0になると中身が消えて鎧が崩れ落ちるが、召喚のカードでまた立ち上がる。崩れている時に召喚すると、その数値が新しいHPになる。立っている時に召喚すると、HPと最大HPがその分増える。「霊騎士が攻撃」のカードは、騎士が崩れていると威力が半分。',
+'【霊騎士】召喚のカードで現れる（初期レリック「白い頭巾」：戦闘開始時に召喚6、2ターン目からは毎ターン召喚1）。敵の攻撃はブロックの後、セレスより先に霊騎士が受け止める。HPが0になると中身が消えて鎧が崩れ落ちるが、召喚のカードでまた立ち上がる。崩れている時に召喚すると、その数値が新しいHPになる。立っている時に召喚すると、HPと最大HPがその分増える。「霊騎士が攻撃」のカードは、騎士が崩れていると威力が半分。騎士は別のキャラ扱いなので、セレスの筋力・脆弱は騎士の攻撃に効かない。',
 '【葬列】敵に付ける印。その敵は攻撃を受けるたび、ダメージが印の数だけ増える（減らない）。その敵が倒れると、半分（切り捨て）がHPの一番多い他の敵へ移る。移る先が無い時は、その分だけ霊騎士を召喚する。',
 '【魂】コスト0で2枚引き、廃棄されるカード。いくつかのカードが山札に混ぜる。魂を使うたびに効くパワーもある。',
 '【エセリアル】ターンの終わりに手札に残っていると廃棄される。使ったエセリアルの枚数で強くなるカードがある。'],[
