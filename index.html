@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.61';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.62';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -6399,7 +6399,7 @@ const g=ctx.createRadialGradient(190,200,10,190,200,270);g.addColorStop(0,col+'6
 ctx.fillStyle='rgba(255,255,255,.05)';ctx.beginPath();ctx.moveTo(150,0);ctx.lineTo(230,0);ctx.lineTo(320,300);ctx.lineTo(60,300);ctx.fill();
 for(let k=0;k<16;k++){const t=(T*.15+hs(k))%1;ctx.globalAlpha=.6*Math.sin(t*3.14);sq(70+hs(k+3)*240,300-t*260,k%3?2:3,c.lt||'#fff')}ctx.globalAlpha=1;
 ctx.fillStyle='#000';ctx.globalAlpha=.5;ctx.beginPath();ctx.ellipse(190,298,90,14,0,0,6.3);ctx.fill();ctx.globalAlpha=a;
-const SK2=1.5,sx=Math.round(Math.min(190-(im.bw||im.width)*SK2/2-(im.ox||0)*SK2,372-im.width*SK2)+(1-a)*40),sy=Math.round(300-((im.fy||im.height)-(PFY[c.s]||0))*SK2+Math.sin(T*2)*2);ctx.save();ctx.beginPath();ctx.rect(0,0,352,360);ctx.clip();if(c.s==='neb'){ctx.translate(sx+60,sy+156);ctx.scale(SK2,SK2);nebPaint(ctx,0,0,T,{})}else if(c.s==='seres'){ctx.translate(Math.round(150+(1-a)*40),300+Math.round(Math.sin(T*2)*2));ctx.scale(1.1,1.1);serDraw(-20,0,{},{kn:1,knm:1},1)}else ctx.drawImage(im,sx,sy,im.width*SK2,im.height*SK2);ctx.restore();ctx.globalAlpha=1;
+const SK2=1.5,sx=Math.round(Math.min(190-(im.bw||im.width)*SK2/2-(im.ox||0)*SK2,372-im.width*SK2)+(1-a)*40),sy=Math.round(300-((im.fy||im.height)-(PFY[c.s]||0))*SK2+Math.sin(T*2)*2);ctx.save();ctx.beginPath();ctx.rect(0,0,352,360);ctx.clip();if(c.s==='neb'){ctx.translate(sx+60,sy+156);ctx.scale(SK2,SK2);nebPaint(ctx,0,0,T,{})}else if(c.s==='seres'){ctx.translate(Math.round(150+(1-a)*40),300+Math.round(Math.sin(T*2)*2));ctx.scale(1.1,1.1);serDraw(-20,0,{},{kn:100,knm:100},1)}else ctx.drawImage(im,sx,sy,im.width*SK2,im.height*SK2);ctx.restore();ctx.globalAlpha=1;
 if(N>1){const pu=Math.sin(T*5)*3;txt('◀',38-pu,190,c.lt,'center',26);txt('▶',342+pu,190,c.lt,'center',26);hit(14,150,50,80,()=>selGo(-1));hit(316,150,50,80,()=>selGo(1))}
 ctx.globalAlpha=a;txt('CHARACTER　'+(SEL+1)+' / '+N,372,56,col,'left',11);txt(c.n,372,88,'#fff','left',c.n.length>8?24:28);ctx.fillStyle=col;ctx.fillRect(372,98,248,2);
 txt('HP '+c.hp,372,120,'#ff9a9a','left',15);txt(c.key,446,120,'#d8d0f0','left',11);
