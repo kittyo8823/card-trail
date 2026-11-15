@@ -14,7 +14,7 @@ let steps=0,stuck=0,lastSig='';
 while(steps++<15000){if(S==='battle'&&B.ph==='lv'){startAct();continue}if(S==='over'||S==='win'||(S==='battle'&&B.ph==='L'))break;
  if(S==='map'){const a=avail();enter(a[a.length*Math.random()|0]);}
  else if(S==='battle'){const b=B;
-  if(b.ph==='p'&&!b.vt){if(b.dsc>0){discardCard(0)}else{let done=0;for(let i=0;i<b.hand.length;i++){const c=cd(b.hand[i]);if(!c.un&&(c.X||b.me>=c.c)&&!(has('choker')&&b.pl>=6)&&!b.hand[i].sld&&!(c.ms&&b.pl>0)&&!(c.solo&&b.hand.length>1)&&!(c.pay&&P.gold<c.pay)&&b.pl<cLim()&&!(c.hp&&P.hp<=c.hp+5)){const al=alive();play(i,b.en.indexOf(al[al.length*Math.random()|0]));done=1;break}}if(!done)endTurn()}}
+  if(b.ph==='p'&&!b.vt){if(b.dsc>0){discardCard(0)}else{let done=0;for(let i=0;i<b.hand.length;i++){const c=cd(b.hand[i]);if(!c.un&&(c.X||b.me>=c.c)&&!(c.tc&&PS.ki<c.tc)&&!(has('choker')&&b.pl>=6)&&!b.hand[i].sld&&!(c.ms&&b.pl>0)&&!(c.solo&&b.hand.length>1)&&!(c.pay&&P.gold<c.pay)&&b.pl<cLim()&&!(c.hp&&P.hp<=c.hp+5)){const al=alive();play(i,b.en.indexOf(al[al.length*Math.random()|0]));done=1;break}}if(!done)endTurn()}}
   update(0.05);if(Math.random()<.02&&P.pot.length&&b.ph==='p'&&!b.vt)usePot(0);if(B.turn>60){if(B.en.some(e=>e.k==='eye')){P.hp=0;lose()}else return{err:'60ターン以上つづく戦闘'}}}
  else if(S==='reward'){if(RW.pot)givePot(RW.pot);P.deck.push({i:RW.cards[0],u:0});after()}
  else if(S==='btr'){if(BT.pick<0){BT.pick=0;BT.t0=T;if(BT.anc!=null){if(anDo(BT.rs[0]))continue}else gain(BT.rs[0])}btNext()}
