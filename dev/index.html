@@ -1806,26 +1806,32 @@ SD.seres=[38,42,2.6,A0=>{const o={inn:'#1e1a24',inn2:'#2c2634',trim:1,ol:'#8a809
  if(o.hx)pt('hd',()=>{const c=2/3;r(20+c*.5,1+c,c*2,c*10,'#8a1626');r(20+c*.5-c*3,1+c*4,c*8,c*2,'#8a1626');r(20+c*.5,1+c,c,c*10,'#a82432');r(20+c*.5-c*3,1+c*4,c*8,c,'#a82432')});pt('hd',()=>{l(21.4,13.4,22.4,13.4,'#a8505a',.18)})}];
 for(const k in SD){const d=SD[k],im=paint(d[0],d[1],d[3],d[2]);SPR[k]=NOFL.test(k)?im:flipC(im)}
 // 霊騎士：上半身と兜だけが鎧、下は青い炎の尾で浮く。手前の手で光の三叉槍を地面に立てて持つ（k3 の胴＋kwS の腕）
-const KNF=A0=>{const A=SOFS(A0,4),{t,l,e,r,q,sh,pt}=A;const S1='#4a5468',S2='#64708a',S3='#8a96ae',S4='#b4c0d6',RD='#5a1a2a',RD2='#7a2434',GD='#9a8a5a';
+// 鎧の色の組（中身の色ごとに合わせる）。S 鎧4段・RD/RD2 外套・GD 縁取り・PL 兜の飾り2色・V 面頬の光
+const KNAS={pur:{S:['#4a5468','#64708a','#8a96ae','#b4c0d6'],RD:'#5a1a2a',RD2:'#7a2434',GD:'#9a8a5a',PL:['#2a4a7a','#3a6aa8'],V:'#d8b0ff'},
+ wht:{S:['#8a8ea0','#b4b8c8','#d8dce8','#f4f6fc'],RD:'#d8d0be',RD2:'#eee8da',GD:'#c8a850',PL:['#e0e0ea','#ffffff'],V:'#ffffff'},
+ red:{S:['#2e161a','#4e2026','#702e36','#94424a'],RD:'#160c10',RD2:'#26161c',GD:'#a8803a',PL:['#7a1020','#b82a36'],V:'#ff8a8a'},
+ blk:{S:['#1c1c24','#2c2c38','#42424f','#62626f'],RD:'#1e1626',RD2:'#2e2238',GD:'#8a8a9a',PL:['#101016','#2a2a36'],V:'#b8a8d0'}};
+let KNA=KNAS.pur;
+const KNF=A0=>{const A=SOFS(A0,4),{t,l,e,r,q,sh,pt}=A;const[S1,S2,S3,S4]=KNA.S,RD=KNA.RD,RD2=KNA.RD2,GD=KNA.GD;
  t([[10,12],[16,10],[14,24],[10,32],[6,36],[4,30],[6,20]],RD);t([[6,20],[10,12],[11,22],[7,30]],RD2);for(const[a,b]of[[4,30],[6,36],[9,33]])t([[a,b],[a+1.6,b-.4],[a+.4,b+2.4]],RD);
  pt('ab',()=>{t([[12,12],[16,11],[17,20],[13,22]],S1);t([[13,21],[17,20],[20,25],[16,27]],S2);t([[18,24],[22,23],[23.4,26],[19,27]],S1)});
  t([[14,12],[32,12],[34,20],[31,30],[15,30],[12,20]],S2);t([[14,12],[20,12],[17,22],[15,30],[12,20]],S3);t([[25,13],[31,13],[33,20],[30,29],[25,29]],S4);l(24.6,13,24.6,29,S1,.4);for(const y of[18,23])l(14,y,32,y-.4,S1,.3);t([[14,12],[32,12],[31,13.6],[15,13.6]],GD);
  t([[14,29],[32,29],[34,35],[12,35]],S1);for(let k=0;k<5;k++)t([[12.4+k*4.4,34.6],[16.4+k*4.4,34.6],[15+k*4.4,37.6],[13.4+k*4.4,37]],k%2?S1:S2);r(13.6,28.6,19,1.4,GD);
  pt('hd',()=>{t([[18,4],[24,0],[31,1],[34,5],[33,11],[27,13],[19,12],[17,8]],S2);t([[18,4],[24,0],[27,.4],[22,5],[18,9]],S3);t([[27,1],[31,1],[34,5],[33,10],[29,11]],S4);
   t([[24,6],[34,5.4],[33.6,7],[24.4,7.6]],'#0a1018');l(24,9,33,8.6,S1,.3);for(let k=0;k<3;k++)l(28+k*1.6,9.4,28+k*1.6,11.6,S1,.2);
-  t([[24,0],[20,-4],[14,-6],[19,-2.6],[22,1]],'#2a4a7a');t([[20,-4],[14,-6],[16,-3]],'#3a6aa8')});
+  t([[24,0],[20,-4],[14,-6],[19,-2.6],[22,1]],KNA.PL[0]);t([[20,-4],[14,-6],[16,-3]],KNA.PL[1])});
  pt('af',()=>{t([[31,12],[38,13],[39,19],[32,20]],S3);t([[33,19],[38,19],[44,22],[40,25]],S2);t([[43,19.6],[48,19.4],[48.6,23.6],[43.4,24]],S1);t([[44.4,20.4],[47.4,20.2],[47.6,23],[44.6,23.2]],S3)});
- sh();pt('hd',()=>{l(26,6.6,33,6.2,'#d8b0ff',.35)});for(const[a,b]of[[16,20],[30,20],[16,26],[30,25]])q(a,b,GD)};
+ sh();pt('hd',()=>{l(26,6.6,33,6.2,KNA.V,.35)});for(const[a,b]of[[16,20],[30,20],[16,26],[30,25]])q(a,b,GD)};
 // 騎士は少女より少し小さい倍率（2.1）で描く。崩れる演出のため部位（胴・兜・両腕）も別々に描いておく
 const KU=2.1,KZ=KU/3,KN={W:Math.round(212*KZ),H:Math.round(240*KZ),X0:4,Y0:Math.round(37*KZ),P:{}};KN.GY=KN.Y0+Math.round(178*KZ);
-SPR.kn=paint(64,52,KNF,KU);for(const pp of['body','ab','hd','af']){PPART=pp;KN.P[pp]=paint(64,52,KNF,KU)}PPART=null;
+function knSet(k){KNC=KNCS[k];KNA=KNAS[k];SPR.kn=paint(64,52,KNF,KU);for(const pp of['body','ab','hd','af']){PPART=pp;KN.P[pp]=paint(64,52,KNF,KU)}PPART=null}
 // 1コマ分の騎士（尾の炎・鎧・鎧の隙間の炎・光の槍）を描く。sp：霊の濃さ（0で中身が消える）、cp：崩れ具合（1で鎧が地面に散らばる）、hf：被弾の光
 // 霊騎士の中身（炎）と槍の色。t 尾の炎・a 鎧の隙間の炎（am 重ね方）・sh 足元の影・gl 兜の光・pt 昇る粒・s 槍［にじみ,柄,刃,芯］（sm 重ね方）
 const KNCS={pur:{t:['#3a1a88','#6a2ec8','#a070e8'],a:['#5a1ab8','#9a4aff','#d8b0ff'],am:'lighter',sh:'50,20,90',gl:'200,150,255',pt:'#c8a0ff',s:['#6a2ae8','#b08aff','#c8a8ff','#f6f0ff'],sm:'lighter'},
  wht:{t:['#8a90a8','#c8ccdc','#f4f6ff'],a:['#6a6a80','#b8b8cc','#ffffff'],am:'lighter',sh:'60,60,80',gl:'240,240,255',pt:'#f0f0ff',s:['#8a8aa0','#d8dcec','#e8ecf8','#ffffff'],sm:'lighter'},
  red:{t:['#6a0e18','#a81e2a','#e85a5a'],a:['#8a1020','#e8304a','#ffb0b0'],am:'lighter',sh:'90,20,30',gl:'255,120,120',pt:'#ff9a9a',s:['#c8303a','#ff6a6a','#ff8a8a','#fff0f0'],sm:'lighter'},
- blk:{t:['#050508','#14121c','#2a2634'],a:['#020204','#0e0c14','#24202e'],am:'source-over',sh:'0,0,0',gl:'90,80,110',pt:'#3a3446',s:['#000000','#0c0a12','#1e1a26','#4a4458'],sm:'source-over'}};
-let KNC=KNCS.pur;
+ blk:{t:['#08080c','#1c1a24','#3e3850'],a:['#0a0a10','#221e2c','#4e4660'],am:'source-over',sh:'0,0,0',gl:'120,105,150',pt:'#5a5070',s:['#000000','#16141c','#2a2634','#6a6080'],sm:'source-over'}};
+let KNC=KNCS.pur;knSet('pur');
 function knPaint(sp,cp,hf){if(!KN.c){KN.c=MKC(KN.W,KN.H);KN.e=MKC(KN.W/2,KN.H/2)}const g=KN.c.getContext('2d'),E=KN.e,e=E.getContext('2d'),Z=KZ,TT=T*4.4,kx=KN.X0,ky=KN.Y0+Math.round(Math.sin(TT)*2.4*sp),GY=KN.GY,X=a=>kx+a*KU+2,Y=b=>ky+(b+4)*KU+2;
  g.clearRect(0,0,KN.W,KN.H);e.clearRect(0,0,E.width,E.height);g.imageSmoothingEnabled=false;
  const flm=(x,y,s,ph,dn)=>{s*=sp*Z;if(s<.8)return;x/=2;y/=2;s=s*1.6/2;e.globalCompositeOperation=dn?'source-over':KNC.am;for(let k=0;k<3;k++){const h=s*(1-k*.25)*(1+.3*Math.sin(TT*2+ph+k))*(dn?-1:1),w=s*.7*(1-k*.25);e.globalAlpha=dn?[.55,.6,.45][k]:KNC.am==='lighter'?[.35,.45,.6][k]:[.75,.8,.7][k];e.fillStyle=(dn?KNC.t:KNC.a)[k];e.beginPath();e.moveTo(x-w,y);e.quadraticCurveTo(x-w*.6+Math.sin(TT*2+ph)*1.2,y-h*.6,x+Math.sin(TT*2.4+ph)*1.6,y-h);e.quadraticCurveTo(x+w*.6+Math.sin(TT*2+ph)*1.2,y-h*.6,x+w,y);e.closePath();e.fill()}e.globalAlpha=1;e.globalCompositeOperation='source-over'},
