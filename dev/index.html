@@ -3009,7 +3009,7 @@ if(c.dbn)p.push('次の攻撃が2倍');if(c.saa)p.push('筋力×'+c.saa+'全体�
 if(c.pay)p.push(c.pay+'ゴールド払う');if(c.pot)p.push('ポーションを得る');if(c.upH)p.push('手札を全て強化');if(c.mir)p.push('このターン','受けた分を返す');if(c.abk)p.push('他の味方に','ブロック'+c.abk);if(c.aen)p.push('他の味方の','エナジー+'+c.aen);if(c.cmbA)p.push('味方が攻撃済み','なら2倍');if(c.aheal)p.push('HPの低い味方','HP'+c.aheal+'回復');if(c.adr)p.push('他の味方も',c.adr+'枚引く');if(c.tnt)p.push('このターン','攻撃を引き受ける');if(c.aaP)p.push('×戦える味方の数');if(c.rev)p.push('倒れた味方を','HP30%で復活');if(c.rp)p.push('次のカードを2回');if(c.rt)p.push('保留');if(c.inn)p.push('初手に引く');
 dlX(c,p);if(c.x)p.push('廃棄');return p}
 function wrap(s,n){const o=[];for(let i=0;i<s.length;i+=n)o.push(s.slice(i,i+n));return o}
-const needT=c=>!!(c.a||c.vu||c.wk||c.ps||c.ds||c.bs||c.cat||c.dmA||c.dmM||c.dmMg)&&!c.aa;
+const needT=c=>!!(c.a||c.vu||c.wk||c.ps||c.ds||c.bs||c.cat||c.dmA||c.dmM||c.dmMg||c.fu||c.fuNE||c.hpL||c.ec||c.pz||c.tr||c.nat||c.sum)&&!c.aa;/* Ver3.67 敵1体に効くのに狙えなかったカード（葬列・魂の捕縛・道連れ・毒爆・影縫いの糸・無刀取り・核の暴走）も敵を選ぶ */
 const TC=['#e8505b','#4a8fe0','#b07cff'],RC=['#8a8fa0','#4aa8ff','#ffd23f'];
 const TD=['#3a0c14','#0c1a3a','#24103a','#1c1c24','#2a1030'],TL=['攻撃','スキル','パワー','状態異常','呪い'],AH=n=>n<=1?44:n===2?40:n===3?32:26;
 function cGem(x,y,v,rare,bk){ctx.fillStyle='#08060f';ctx.beginPath();ctx.moveTo(x,y-11);ctx.lineTo(x+11,y);ctx.lineTo(x,y+11);ctx.lineTo(x-11,y);ctx.fill();ctx.fillStyle=rare?'#ffd23f':bk?'#6a6a7a':'#4aa8ff';ctx.beginPath();ctx.moveTo(x,y-9);ctx.lineTo(x+9,y);ctx.lineTo(x,y+9);ctx.lineTo(x-9,y);ctx.fill();ctx.fillStyle='rgba(255,255,255,.35)';ctx.beginPath();ctx.moveTo(x,y-9);ctx.lineTo(x+9,y);ctx.lineTo(x,y);ctx.fill();txt(v,x,y+5,rare?'#3a2408':'#fff','center',12)}
@@ -5742,7 +5742,7 @@ pileOrbs(b.dr.length,b.dis.length);hit(4,312,66,48,()=>openPile('山札',b.dr,1)
 if(b.ex.length){txt('廃棄'+b.ex.length,632,330,'#ff9a9a','right',11);hit(570,316,70,16,()=>openPile('廃棄札',b.ex,0))}
 if(MPB&&(b.dn||b.dnp||b.down)&&b.ph==='p'){txt(b.down?'戦闘不能':'味方を',606,284,'#9ad8ff','center',11);if(!b.down)txt('待っている',606,300,'#9ad8ff','center',11)}else if(b.ph==='p'&&!b.vt&&!b.dsc){box(578,264,56,48,'#7a2a3a');txt('ターン',606,284,'#fff','center',13);txt('終了',606,302,'#fff','center',13);hit(578,264,56,48,endTurn)};
 const dt=Math.min(.05,Math.max(0,T-(b.lt||T)));b.lt=T;if(MPB)for(const q of b.hand)if(q.pend>0&&T-q.pend>5)q.pend=0;if(b.dnp&&(b.dn||b.ph!=='p'||T-b.dnp>5))b.dnp=0;const HV=b.hand.map((o,i)=>[o,i]).filter(a=>!(a[0].pend>0)),n=HV.length,sp=Math.min(92,(500-84)/Math.max(1,n-1)),x0=320-((n-1)*sp+84)/2;
-let ptg=alive().length===1?alive()[0]:null;if(dg&&dg.mv){for(const r of ER)if(dg.x>=r.x-14&&dg.x<=r.x+r.w+14&&dg.y>=r.y-14&&dg.y<=r.y+r.h+14){ptg=b.en[r.i];break}}
+let ptg=alive().length===1?alive()[0]:null;if(dg&&dg.mv){{const ri=erAt(dg.x,dg.y);if(ri>=0)ptg=b.en[ri]}}
 if(b.dsc>0){ctx.fillStyle='rgba(4,2,12,.66)';ctx.fillRect(0,30,640,330);ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,62,640,20);txt('捨てるカードを選択（残り'+b.dsc+'枚）',320,77,'#ff9a6a','center',14)}else if(b.sel>=0&&b.hand[b.sel]){const c=cd(b.hand[b.sel]);const s=c.n+'：'+dl(c,pvw(b.hand[b.sel],ptg)).join('、');ctx.font='12px DotGothic16,sans-serif';const w=ctx.measureText(s).width+20;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(320-w/2,62,w,20);txt(s,320,77,'#ffe14a','center',12)}
 /* Ver3.67 操作のヒントの文字は出さない（ユーザー指定） */
 HV.forEach(([o,i],j)=>{const c=cd(o),sk=o.sk&&T-o.sk<.32?Math.sin((T-o.sk)*70)*5*(1-(T-o.sk)/.32):0,x=Math.round(x0+j*sp+sk),sel=b.sel===i,ok=b.dsc>0||b.ph==='p'&&!c.un&&(c.X||(MPB?mpME():b.me)>=c.c)&&!(c.tc&&PS.ki<c.tc)&&!(has('choker')&&b.pl>=6)&&!o.sld&&b.pl<cLim()&&!(c.ms&&b.pl>0)&&!(c.solo&&n>1)&&!(c.pay&&P.gold<c.pay),y=sel&&!(dg&&dg.mv)?240:258;CR.push({i,x,y,w:j===n-1||sel?84:sp});if(dg&&dg.mv&&dg.i===i)return;
@@ -5750,7 +5750,7 @@ if(o.hx==null){if(o.ht!=null){o.hx=DP.x-42;o.hy=DP.y-53;o.hs=.2}else{o.hx=278;o.
 if(Math.abs(x-o.hx)<.6&&Math.abs(y-o.hy)<.6&&o.hs>.99){o.hx=x;o.hy=y;o.hs=1;card(x,y,o,!ok,0,pvw(o,ptg))}else cardAt(o,o.hx+42,o.hy+53,o.hs,(x-o.hx)*.002,1,!ok);if(o.sld)sealMk(Math.round(o.hx),Math.round(o.hy))});
 drawFly();
 if(dg&&dg.mv){const o=b.hand[dg.i];if(o){const c=cd(o);
-if(needT(c)){let t=-1;for(const r of ER)if(dg.x>=r.x-14&&dg.x<=r.x+r.w+14&&dg.y>=r.y-14&&dg.y<=r.y+r.h+14){t=r.i;break}
+if(needT(c)){let t=erAt(dg.x,dg.y);
 if(t<0&&alive().length===1&&dg.y<236)t=b.en.indexOf(alive()[0]);
 // 狙い：狙っている敵に四すみの照準（脈打ちながら寄る）、他の敵は薄い印
 for(const r of ER){const on=r.i===t,pu=on?Math.sin(T*10)*2:0,g=on?4-pu:8,L=on?12:7,x0=r.x-g,y0=r.y-g,x1=r.x+r.w+g,y1=r.y+r.h+g;ctx.fillStyle=on?'#ff4a3a':'rgba(255,255,255,.3)';const k=on?3:2;
@@ -7138,10 +7138,12 @@ B.dsc--;if(!B.hand.length||B.dsc<0)B.dsc=0;if((c.sly||PS.slyA)&&!c.un&&!B.vt&&al
 function tapCard(i){const b=B,o=b.hand[i],c=cd(o);sfx('cl');if(b.dsc>0){discardCard(i);return}if(b.sel!==i){b.sel=i;return}if(c.un){o.sk=T;say(c.od?'使用不可。捨てたときに効果が発動する':'このカードは使えない');return}
 if(!(c.X||b.me>=c.c)){sfx('no');say('エナジーが足りない');return}if(c.tc&&PS.ki<c.tc){sfx('no');say('刀魂が足りない');return}
 if(needT(c)&&alive().length>1){say('カードを敵へドラッグして使用');return}play(i,0)}
+// Ver3.67 狙う敵は、指の位置を含む敵のうち中心が一番近い敵（絵の枠が重なる時に先頭ばかり選ばれていた。ユーザー指摘）。崩れている敵は選ばない
+function erAt(x,y){let bi=-1,bd=1e9;for(const r of ER){const e=B.en[r.i];if(!e||e.rtc)continue;if(x>=r.x-14&&x<=r.x+r.w+14&&y>=r.y-14&&y<=r.y+r.h+14){const d=Math.abs(x-(r.x+r.w/2));if(d<bd){bd=d;bi=r.i}}}return bi}
 function dropCard(){const d=dg;dg=null;if(!B||B.ph!=='p'||B.vt)return;const o=B.hand[d.i];if(!o)return;
 if(!d.mv){tapCard(d.i);return}if(B.dsc>0)return;
 const c=cd(o);if(d.y>=236){B.sel=-1;return}
-if(needT(c)){let ti=-1;for(const r of ER)if(d.x>=r.x-14&&d.x<=r.x+r.w+14&&d.y>=r.y-14&&d.y<=r.y+r.h+14){ti=r.i;break}
+if(needT(c)){let ti=erAt(d.x,d.y);
 if(ti<0&&alive().length===1)ti=B.en.indexOf(alive()[0]);
 if(ti<0){say('敵の上で離して使用');B.sel=-1;o.sk=T;return}play(d.i,ti)}else play(d.i,0);if(B&&B.hand[d.i]===o&&!o.pend){o.sk=T;sfx('no')}}
 cv.addEventListener('pointerdown',e=>{initAudio();const p=pos(e);if(S==='btr'&&BT&&BT.lp!=null){BT.lp=null;LP=null;drag=null;sfx('cl');return}LP={x:p.x,y:p.y,t:performance.now(),m:0};if(LPV){const r=LPV.bt;if(r&&p.x>=r.x-6&&p.x<=r.x+r.w+6&&p.y>=r.y-6&&p.y<=r.y+r.h+6){LPV.up=!LPV.up;LP=null;drag=null;sfx('cl');return}LPV=null;drag=null;dg=null;LP=null;sfx('cl');return}drag={...p,sc:scr,ms:MSC,m:0};dg=null;
