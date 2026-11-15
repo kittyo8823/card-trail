@@ -1,0 +1,93 @@
+# スレスパ2 リージェントの全カード（slaythespire.wiki.gg の Cargo 表 Cards、Color=Regent、2026-11-15 取得）
+# レア度	種類	コスト	星コスト	名前	効果（(通常;強化後)、MP=マルチ専用、⚡=エナジー、★=星）
+Ancient	Attack	0	2	Meteor Shower	Deal (14;21) damage to ALL enemies.Apply 2 [[File:StS2 Icon Weak.png|[[Slay_the_Spire_2:Weak|Weak]] and [[File:StS2 Icon Vulnerable.png|[[Slay_the_Spire_2:Vulnerable|Vulnerable]] to ALL enemies.
+Ancient	Power	1	3	The Sealed Throne	Whenever you play a card, gain ★.
+Basic	Skill	1		Defend (Regent)	Gain (5;8) [[File:StS2 Intent Defend.png|[[Slay_the_Spire_2:Block|Block]].
+Basic	Attack	0	2	Falling Star	Deal (8;12) damage.Apply 1 [[File:StS2 Icon Weak.png|[[Slay_the_Spire_2:Weak|Weak]].Apply 1 [[File:StS2 Icon Vulnerable.png|[[Slay_the_Spire_2:Vulnerable|Vulnerable]].
+Basic	Attack	1		Strike (Regent)	Deal (6;9) damage.
+Basic	Skill	1		Venerate	Gain ★★(;★).
+Common	Attack	0	3	Astral Pulse	Deal (6;8) damage to ALL enemies twice.
+Common	Skill	1		BEGONE!	Choose a card in your [[Slay the Spire 2:Hand|Hand]] to [[Slay_the_Spire_2:Transform|Transform]] into [[File:ErrorImage.png|the Spire 2:Minion Strike]][[Slay the Spire 2:Minion Strike|Minion Strike]](;+).
+Common	Attack	2		Celestial Might	Deal 6 damage (3;4) times.
+Common	Skill	0	1	Cloak of Stars	Gain (7;10) [[File:StS2 Intent Defend.png|[[Slay_the_Spire_2:Block|Block]].
+Common	Attack	0		Collision Course	Deal (10;14) damage.Add a [[File:StS2 CardIcon Status.png|[[Slay_the_Spire_2:Debris|Debris]] into your [[Slay the Spire 2:Hand|Hand]].
+Common	Skill	1		Cosmic Indifference	Gain (6;9) [[File:StS2 Intent Defend.png|[[Slay_the_Spire_2:Block|Block]].Put a card from your [[sts2:Mechanics#Piles|Discard Pile]] on top of your [[Slay the Spire 2:Draw Pile|Draw Pile]].
+Common	Attack	1	1	Crescent Spear	Deal 8 damage.Deals (2;3) additional damage for ALL your cards that have a ★ cost.
+Common	Attack	1		Crush Under	Deal (8;9) damage to ALL enemies. All enemies lose (1;2) [[File:StS2 Icon Strength.png|[[Slay_the_Spire_2:Strength_(Power)|Strength]] this turn.
+Common	Skill	1		Gather Light	Gain (8;11) [[File:StS2 Intent Defend.png|[[Slay_the_Spire_2:Block|Block]].Gain ★.
+Common	Skill	2		Glitterstream	Gain (11;13) [[File:StS2 Intent Defend.png|[[Slay_the_Spire_2:Block|Block]].Next turn, gain (5;7) [[File:StS2 Intent Defend.png|[[Slay_the_Spire_2:Block|Block]].
+Common	Skill	1		Glow	Gain ★(;★).Draw 1 card. Next turn, draw 1 card.
+Common	Attack	1	1	Guiding Star	Deal (12;13) damage.Next turn, draw (2;3) cards.
+Common	Skill	1		Hidden Cache	Gain ★.Next turn, gain ★★★(;★).
+Common	Skill	0		Know Thy Place	Apply 1 [[File:StS2 Icon Weak.png|[[Slay_the_Spire_2:Weak|Weak]].Apply 1 [[File:StS2 Icon Vulnerable.png|[[Slay_the_Spire_2:Vulnerable|Vulnerable]].([[Slay_the_Spire_2:Exhaust|Exhaust]].;)
+Common	Skill	1		Patter	Gain (8;10) [[File:StS2 Intent Defend.png|[[Slay_the_Spire_2:Block|Block]].Gain (2;3) [[File:StS2 Icon Vigor.png|[[Slay_the_Spire_2:Vigor|Vigor]].
+Common	Attack	1		Photon Cut	Deal (10;13) damage.Draw (1 card;2 cards).Put 1 card from your [[Slay the Spire 2:Hand|Hand]] on top of your [[Slay the Spire 2:Draw Pile|Draw Pile]].
+Common	Skill	1		Refine Blade	[[Slay_the_Spire_2:Sovereign_Blade|Forge]] (8;12).Next turn, gain [[File:StS2_EnergyRegent.png|.
+Common	Attack	1		Solar Strike	Deal (9;10) damage.Gain ★(;★).
+Common	Skill	1		Spoils of Battle	[[Slay_the_Spire_2:Sovereign_Blade|Forge]] (6;9). Draw 2 cards.
+Common	Attack	1		Wrought in War	Deal (7;9) damage.[[Slay_the_Spire_2:Sovereign_Blade|Forge]] (7;9).
+Rare	Power	1		Arsenal	(;[[Slay_the_Spire_2:Innate|Innate]].)Whenever you create a card, gain 1 [[File:StS2 Icon Strength.png|[[Slay_the_Spire_2:Strength_(Power)|Strength]].
+Rare	Attack	1		Beat into Shape	Deal (5;7) damage.[[Slay_the_Spire_2:Sovereign_Blade|Forge]] (5;7).[[Slay_the_Spire_2:Sovereign_Blade|Forges]] an additional (5;7) for every other time you've hit the enemy this turn.
+Rare	Skill	0		Big Bang	(;[[Slay_the_Spire_2:Innate|Innate]].)Draw 1 card.Gain [[File:StS2_EnergyRegent.png|.Gain ★.[[Slay_the_Spire_2:Sovereign_Blade|Forge]] 5.[[Slay_the_Spire_2:Exhaust|Exhaust]].
+Rare	Attack	3		Bombardment	Deal (18;24) damage.At the start of your turn, if this is in your [[Slay_the_Spire_2:Exhaust|Exhaust]] [[sts2:Mechanics#Piles|Pile]],  play it.[[Slay_the_Spire_2:Exhaust|Exhaust]].
+Rare	Skill	1		Bundle of Joy	Add (3;4) random Colorless cards into your [[Slay the Spire 2:Hand|Hand]]. [[Slay_the_Spire_2:Exhaust|Exhaust]].
+Rare	Attack	0	5	Comet	Deal (33;44) damage.Apply 3 [[File:StS2 Icon Weak.png|[[Slay_the_Spire_2:Weak|Weak]].Apply 3 [[File:StS2 Icon Vulnerable.png|[[Slay_the_Spire_2:Vulnerable|Vulnerable]].
+Rare	Attack	1		Crash Landing	Deal (21;26) damage to ALL enemies.Fill your [[Slay the Spire 2:Hand|Hand]] with [[File:StS2 CardIcon Status.png|[[Slay_the_Spire_2:Debris|Debris]].
+Rare	Skill	0	6	Decisions, Decisions	Draw (3;5) cards.Choose a Skill in your [[Slay the Spire 2:Hand|Hand]] and play it 3 times.[[Slay_the_Spire_2:Exhaust|Exhaust]].
+Rare	Attack	1	3	Dying Star	[[Slay_the_Spire_2:Ethereal|Ethereal]].Deal (9;11) damage to ALL enemies. ALL enemies lose (9;11) [[File:StS2 Icon Strength.png|[[Slay_the_Spire_2:Strength_(Power)|Strength]] this turn.
+Rare	Skill	1		Foregone Conclusion	Next turn, put (2;3) cards from your [[Slay the Spire 2:Draw Pile|Draw Pile]] into your [[Slay the Spire 2:Hand|Hand]].
+Rare	Power	2		Genesis	At the start of your turn, gain ★★(;★).
+Rare	Skill	2		GUARDS!!!	[[Slay_the_Spire_2:Transform|Transform]] any number of cards in your [[Slay the Spire 2:Hand|Hand]] into [[File:ErrorImage.png|the Spire 2:Minion Sacrifice]][[Slay the Spire 2:Minion Sacrifice|Minion Sacrifice]](;+).[[Slay_the_Spire_2:Exhaust|Exhaust]].
+Rare	Power	2		Hammer Time	MP Whenever you [[Slay_the_Spire_2:Sovereign_Blade|Forge]], all allies [[Slay_the_Spire_2:Sovereign_Blade|Forge]] as well.
+Rare	Attack	-1		Heavenly Drill	Deal (8;10) damage X times.Double X if it's 4 or more.
+Rare	Attack	2		Heirloom Hammer	Deal (20;25) damage.Choose a Colorless card in your [[Slay the Spire 2:Hand|Hand]]. Add a copy of that card into your [[Slay the Spire 2:Hand|Hand]].
+Rare	Skill	1		I Am Invincible	Gain (10;13) [[File:StS2 Intent Defend.png|[[Slay_the_Spire_2:Block|Block]].At the end of your turn, if this is on top of your [[Slay the Spire 2:Draw Pile|Draw Pile]], play it.
+Rare	Attack	0		Make It So	Deal (6;9) damage.Every 3 Skills you play in a turn, put this into your [[Slay the Spire 2:Hand|Hand]].
+Rare	Power	2		Monarch's Gaze	Whenever you attack an enemy, it loses 1 [[File:StS2 Icon Strength.png|[[Slay_the_Spire_2:Strength_(Power)|Strength]] this turn.
+Rare	Power	1	5	Neutron Aegis	Gain (8;11) [[File:StS2_Icon_Plating.png|[[Slay_the_Spire_2:Plating|Plating]].
+Rare	Power	1		Royalties	At the end of combat, gain (30;40) [[File:StS2 Gold.png|[[Slay_the_Spire_2:Gold|Gold]].
+Rare	Power	1		Seeking Edge	[[Slay_the_Spire_2:Sovereign_Blade|Forge]] (7;11).[[File:StS2 CardIcon Colorless Attack Token.png|[[Slay_the_Spire_2:Sovereign_Blade|Sovereign Blade]] now deals damage to ALL enemies.
+Rare	Attack	2	7	Seven Stars	Deal 7 damage to ALL enemies 7 times.
+Rare	Power	2		Sword Sage	[[File:StS2 CardIcon Colorless Attack Token.png|[[Slay_the_Spire_2:Sovereign_Blade|Sovereign Blade]] gains [[Slay_the_Spire_2:Replay|Replay]] 1.
+Rare	Skill	1	4	The Smith	[[Slay_the_Spire_2:Sovereign_Blade|Forge]] (30;40).
+Rare	Skill	1		Tutor	MP Another player chooses a card in their Draw Pile to add into their Hand.
+Rare	Power	1		Tyranny	(;[[Slay_the_Spire_2:Innate|Innate]].)At the start of your turn, draw 1 card and [[Slay_the_Spire_2:Exhaust|Exhaust]] 1 card from your [[Slay the Spire 2:Hand|Hand]].
+Rare	Power	3		Void Form	([[Slay_the_Spire_2:Ethereal|Ethereal]].;)End your turn.The first 2 cards you play each turn are free to play.
+Uncommon	Skill	0	2	Alignment	Gain [[File:StS2_EnergyRegent.png|[[File:StS2_EnergyRegent.png|(;[[File:StS2_EnergyRegent.png|).
+Uncommon	Power	1		Black Hole	Whenever you spend or gain ★, deal (3;4) damage to ALL enemies.
+Uncommon	Skill	2		Bulwark	Gain (12;15) [[File:StS2 Intent Defend.png|[[Slay_the_Spire_2:Block|Block]].[[Slay_the_Spire_2:Sovereign_Blade|Forge]] (10;13).
+Uncommon	Skill	1		CHARGE!!	Choose 2 cards in your [[Slay the Spire 2:Draw Pile|Draw Pile]] to [[Slay_the_Spire_2:Transform|Transform]] into [[File:ErrorImage.png|the Spire 2:Minion Dive Bomb]][[Slay the Spire 2:Minion Dive Bomb|Minion Dive Bomb]](;+).
+Uncommon	Power	1		Child of the Stars	Whenever you spend ★ , gain (2;3) [[File:StS2 Intent Defend.png|[[Slay_the_Spire_2:Block|Block]] for each ★  spent.
+Uncommon	Skill	1		Conqueror	[[Slay_the_Spire_2:Sovereign_Blade|Forge]] (3;5).[[File:StS2 CardIcon Colorless Attack Token.png|[[Slay_the_Spire_2:Sovereign_Blade|Sovereign Blade]] deals double damage to the enemy this turn.
+Uncommon	Skill	0	2	Constellation	MP Another player draws 1 card, gains [[File:StS2_EnergyRegent.png|, and gains (9;12) [[File:StS2 Intent Defend.png|[[Slay_the_Spire_2:Block|Block]].
+Uncommon	Skill	1		Convergence	Next turn,gain [[File:StS2_EnergyRegent.png| and ★(;★).[[Slay_the_Spire_2:Retain|Retain]] your Hand this turn.
+Uncommon	Attack	1	4	Devastate	Deal (35;45) damage.
+Uncommon	Power	1		Furnace	At the start of your turn, [[Slay_the_Spire_2:Sovereign_Blade|Forge]] (5;7).
+Uncommon	Attack	0	3	Gamma Blast	Deal (13;18) damage.Apply 2 [[File:StS2 Icon Weak.png|[[Slay_the_Spire_2:Weak|Weak]].Apply 2 [[File:StS2 Icon Vulnerable.png|[[Slay_the_Spire_2:Vulnerable|Vulnerable]].
+Uncommon	Skill	1		Glimmer	Draw (3;4) cards.Put 1 card from your [[Slay the Spire 2:Hand|Hand]] on top of your [[Slay the Spire 2:Draw Pile|Draw Pile]].
+Uncommon	Attack	2		Hegemony	Deal (15;18) damage.Next turn, gain [[File:StS2_EnergyRegent.png|[[File:StS2_EnergyRegent.png|(;[[File:StS2_EnergyRegent.png|).
+Uncommon	Attack	4		Kingly Kick	Deal (27;35) damage.Whenever you draw this card, reduce its cost by 1.
+Uncommon	Attack	1		Kingly Punch	Deal (8;10) damage.Whenever you draw this card, increase its damage by (4;6) this combat.
+Uncommon	Attack	3		Knockout Blow	Deal (30;38) damage.If this kills an enemy, gain ★★★★★.
+Uncommon	Skill	0		Largesse	MP Another player adds 1 random(; [[Slay_the_Spire_2:Upgrade|Upgraded]]) Colorless card to their [[Slay the Spire 2:Hand|Hand]].
+Uncommon	Attack	0		Lunar Blast	Deal (4;5) damage for each Skill already played this turn.
+Uncommon	Skill	1		Manifest Authority	Gain (7;8) [[File:StS2 Intent Defend.png|[[Slay_the_Spire_2:Block|Block]].Add 1 random(; [[Slay_the_Spire_2:Upgrade|Upgraded]]) Colorless card into your [[Slay the Spire 2:Hand|Hand]].
+Uncommon	Skill	0		Monologue	(;[[Slay_the_Spire_2:Retain|Retain]].)Whenever you play a card this turn, gain 1 [[File:StS2 Icon Strength.png|[[Slay_the_Spire_2:Strength_(Power)|Strength]] this turn.
+Uncommon	Power	2		Orbit	Every 4 [[File:StS2_EnergyRegent.png| you spend,gain [[File:StS2_EnergyRegent.png|.
+Uncommon	Power	1		Pale Blue Dot	If you play 5 or more cards in a turn, draw (1 card;2 cards) at the start of your next turn.
+Uncommon	Power	1		Parry	[[File:StS2 CardIcon Colorless Attack Token.png|[[Slay_the_Spire_2:Sovereign_Blade|Sovereign Blade]] now gains  (10;14) [[File:StS2 Intent Defend.png|[[Slay_the_Spire_2:Block|Block]].
+Uncommon	Skill	0	2	Particle Wall	Gain (9;12) [[File:StS2 Intent Defend.png|[[Slay_the_Spire_2:Block|Block]].Return this card to your [[Slay the Spire 2:Hand|Hand]].
+Uncommon	Power	1		Pillar of Creation	Whenever you create a card, gain (2;3) [[File:StS2 Intent Defend.png|[[Slay_the_Spire_2:Block|Block]].
+Uncommon	Skill	1		Plot	MP Next turn, ALL players draw (2;3) cards.
+Uncommon	Skill	2		Prophesize	Draw (6;9) cards.
+Uncommon	Skill	0	2	Quasar	Choose 1 of 3 random(; [[Slay_the_Spire_2:Upgrade|Upgraded]]) Colorless cards to add into your [[Slay the Spire 2:Hand|Hand]].
+Uncommon	Attack	0		Radiate	Deal (3;4) damage to ALL enemies for each ★  gained this turn.
+Uncommon	Skill	1	3	Reflect	Gain (15;20) [[File:StS2 Intent Defend.png|[[Slay_the_Spire_2:Block|Block]].[[File:StS2 Intent Defend.png|[[Slay_the_Spire_2:Block|Blocked]] attack damage is reflected to your attacker this turn.
+Uncommon	Skill	1	2	Resonance	Gain (1;2) [[File:StS2 Icon Strength.png|[[Slay_the_Spire_2:Strength_(Power)|Strength]]. ALL enemies lose 1 [[File:StS2 Icon Strength.png|[[Slay_the_Spire_2:Strength_(Power)|Strength]].
+Uncommon	Skill	0	5	Royal Gamble	(;[[Slay_the_Spire_2:Retain|Retain]].)Gain 9 ★.[[Slay_the_Spire_2:Exhaust|Exhaust]].
+Uncommon	Attack	1		Shining Strike	Deal (8;11) damage.Gain ★★.Put this card on top of your [[Slay the Spire 2:Draw Pile|Draw Pile]].
+Uncommon	Power	2		Spectrum Shift	At the start of your turn, add 1 random Colorless card into your [[Slay the Spire 2:Hand|Hand]].
+Uncommon	Attack	0	-1	Stardust	Deal (5;7) damage to a random enemy X times.
+Uncommon	Skill	1		Summon Forth	Put [[File:StS2 CardIcon Colorless Attack Token.png|[[Slay_the_Spire_2:Sovereign_Blade|Sovereign Blade]] into your [[Slay the Spire 2:Hand|Hand]] from anywhere.  [[Slay_the_Spire_2:Sovereign_Blade|Forge]] (8;11).
+Uncommon	Attack	1		Supermassive	Deal 5 damage.Deals (3;4) additional damage for each card you created this combat.
+Uncommon	Skill	1		Terraforming	Gain (7;10) [[File:StS2 Icon Vigor.png|[[Slay_the_Spire_2:Vigor|Vigor]].
