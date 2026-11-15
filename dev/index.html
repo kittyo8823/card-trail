@@ -1825,7 +1825,7 @@ const KNF=A0=>{const A=SOFS(A0,4),{t,l,e,r,q,sh,pt}=A;const[S1,S2,S3,S4]=KNA.S,R
 // 騎士の倍率は2.5（Ver3.42 ユーザー採用の案C：少女が騎士の手前に寄り添う）で描く。崩れる演出のため部位（胴・兜・両腕）も別々に描いておく
 let KU=2.5,KZ=KU/3,KNk='wht';const KN={X0:4,P:{}};function knDim(){KN.W=Math.round(212*KZ)+80;KN.H=Math.round(240*KZ);KN.Y0=Math.round(37*KZ);KN.GY=KN.Y0+Math.round(178*KZ);KN.c=null}knDim();
 // 騎士の大きさを変える（倍率）。SERL：少女から見た騎士の位置 dx・高さ dy、bk=1 で騎士を少女の後ろに描く
-function knScale(u){KU=u;KZ=u/3;knDim();knSet(KNk)}const SERL={dx:-4,dy:-10,bk:1,hb:0};
+function knScale(u){KU=u;KZ=u/3;knDim();knSet(KNk)}const SERL={dx:-4,dy:-10,bk:1,hb:0,ky:-10};
 function knSet(k){KNk=k;KNC=KNCS[k];KNA=KNAS[k];SPR.kn=paint(64,52,KNF,KU);for(const pp of['body','ab','hd','af']){PPART=pp;KN.P[pp]=paint(64,52,KNF,KU)}PPART=null}
 // 1コマ分の騎士（尾の炎・鎧・鎧の隙間の炎・光の槍）を描く。sp：霊の濃さ（0で中身が消える）、cp：崩れ具合（1で鎧が地面に散らばる）、hf：被弾の光
 // 霊騎士の中身（炎）と槍の色。t 尾の炎・a 鎧の隙間の炎（am 重ね方）・sh 足元の影・gl 兜の光・pt 昇る粒・s 槍［にじみ,柄,刃,芯］（sm 重ね方）
