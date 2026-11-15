@@ -6065,9 +6065,12 @@ function drawAnc(){const a=BT.anc,A=ANC[a],op=BT.pick>=0,sel=BT.sel==null?-1:BT.
  if(!op)txt('長押しで詳しく',490,234,'#8a8478','right',9);
  txt(A.n,20,336,'#ece8e0','left',26);txt(A.sub,22,352,'#b0a898','left',10);
  if(!op&&sel>=0)btn(506,282,120,30,'これを選ぶ',()=>{const k=BT.rs[sel];BT.pick=sel;BT.t0=T-1;sfx('pk');sfx('bf');if(anDo(k))BT.done=1},'#6a4bd6',14);
- if(!op&&el>.6)btn(506,322,120,26,'受け取らない',()=>{sfx('cl');btNext()},'#3a3068',12);
+ if(!op&&el>.6)btn(506,322,120,26,'受け取らない',()=>{sfx('cl');BT.cf=1},'#3a3068',12);
  if(op&&!BT.done)btn(506,322,120,28,'次へ',btNext,'#6a4bd6',15);
- if(BT.lp!=null)drawAncLP()}
+ if(BT.lp!=null)drawAncLP();if(BT.cf)drawAncCf()}
+// Ver3.67 「受け取らない」は確かめてから（ユーザー指定：押し間違いが多い）
+function drawAncCf(){btns=[];ctx.fillStyle='rgba(6,4,14,.78)';ctx.fillRect(0,0,640,360);hit(0,0,640,360,()=>{});ctx.fillStyle='#0c0a18';ctx.fillRect(170,120,300,120);orn(170,120,300,120);txt('本当に受け取らない？',320,160,'#fff','center',16);txt('古の者の贈り物は、もう選べなくなる',320,184,'#b8b0d8','center',11);
+ btn(190,204,120,28,'受け取らない',()=>{BT.cf=0;sfx('cl');btNext()},'#7a2a3a',13);btn(330,204,120,28,'戻る',()=>{BT.cf=0;sfx('cl')},'#6a4bd6',13)}
 // 長押しの詳しい説明（カードの長押し画面と同じ作り）
 function drawAncLP(){btns=[];const A=ANC[BT.anc],k=BT.rs[BT.lp],isG=!!(ANGT[k]||k==='fang'),[nm,,ld]=anTxt(k);hit(0,0,640,360,()=>{BT.lp=null});
  ctx.globalAlpha=.88;ctx.fillStyle='#06040e';ctx.fillRect(0,0,640,360);ctx.globalAlpha=1;
