@@ -1823,8 +1823,10 @@ const KNF=A0=>{const A=SOFS(A0,4),{t,l,e,r,q,sh,pt}=A;const[S1,S2,S3,S4]=KNA.S,R
  pt('af',()=>{t([[31,12],[38,13],[39,19],[32,20]],S3);t([[33,19],[38,19],[44,22],[40,25]],S2);t([[43,19.6],[48,19.4],[48.6,23.6],[43.4,24]],S1);t([[44.4,20.4],[47.4,20.2],[47.6,23],[44.6,23.2]],S3)});
  sh();pt('hd',()=>{l(26,6.6,33,6.2,KNA.V,.35)});for(const[a,b]of[[16,20],[30,20],[16,26],[30,25]])q(a,b,GD)};
 // 騎士は少女より少し小さい倍率（2.1）で描く。崩れる演出のため部位（胴・兜・両腕）も別々に描いておく
-const KU=2.1,KZ=KU/3,KN={W:Math.round(212*KZ),H:Math.round(240*KZ),X0:4,Y0:Math.round(37*KZ),P:{}};KN.GY=KN.Y0+Math.round(178*KZ);
-function knSet(k){KNC=KNCS[k];KNA=KNAS[k];SPR.kn=paint(64,52,KNF,KU);for(const pp of['body','ab','hd','af']){PPART=pp;KN.P[pp]=paint(64,52,KNF,KU)}PPART=null}
+let KU=2.1,KZ=KU/3,KNk='wht';const KN={X0:4,P:{}};function knDim(){KN.W=Math.round(212*KZ);KN.H=Math.round(240*KZ);KN.Y0=Math.round(37*KZ);KN.GY=KN.Y0+Math.round(178*KZ);KN.c=null}knDim();
+// 騎士の大きさを変える（倍率）。SERL：少女から見た騎士の位置 dx・高さ dy、bk=1 で騎士を少女の後ろに描く
+function knScale(u){KU=u;KZ=u/3;knDim();knSet(KNk)}const SERL={dx:22,dy:0,bk:0};
+function knSet(k){KNk=k;KNC=KNCS[k];KNA=KNAS[k];SPR.kn=paint(64,52,KNF,KU);for(const pp of['body','ab','hd','af']){PPART=pp;KN.P[pp]=paint(64,52,KNF,KU)}PPART=null}
 // 1コマ分の騎士（尾の炎・鎧・鎧の隙間の炎・光の槍）を描く。sp：霊の濃さ（0で中身が消える）、cp：崩れ具合（1で鎧が地面に散らばる）、hf：被弾の光
 // 霊騎士の中身（炎）と槍の色。t 尾の炎・a 鎧の隙間の炎（am 重ね方）・sh 足元の影・gl 兜の光・pt 昇る粒・s 槍［にじみ,柄,刃,芯］（sm 重ね方）
 const KNCS={pur:{t:['#3a1a88','#6a2ec8','#a070e8'],a:['#5a1ab8','#9a4aff','#d8b0ff'],am:'lighter',sh:'50,20,90',gl:'200,150,255',pt:'#c8a0ff',s:['#6a2ae8','#b08aff','#c8a8ff','#f6f0ff'],sm:'lighter'},
@@ -1865,9 +1867,9 @@ function knS(ps,bb){if(!ps||!(ps.knm>0))return null;const ku=bb&&bb.kuT,kd=bb&&b
  else{const r=kd!=null?Math.max(0,Math.min(1,(T-kd)/.9)):1;cp=r;sp=Math.max(0,1-r*2.2)}
  const hf=bb&&bb.khr!=null&&T>=bb.khr&&T-bb.khr<.25?1-(T-bb.khr)/.25:0,lg=bb&&bb.kat!=null&&T>=bb.kat&&T-bb.kat<.45?Math.sin((T-bb.kat)/.45*Math.PI)*34:0;return[sp,cp,hf,lg]}
 // 少女（足元の中心 cx,gy）と、その前に浮かぶ霊騎士。nob=1 で騎士のHPバーを出さない（キャラ選択画面）
-const SERX=60;
-function serDraw(cx,gy,bb,ps,nob){const im=SPR.seres;ctx.drawImage(im,Math.round(cx-im.width/2),Math.round(gy-im.height+(PFY.seres||0)));const s=knS(ps,bb);if(!s)return;
- const ox=Math.round(22*KZ/.8),[sp,cp,hf,lg]=s,c=knPaint(sp,cp,hf),x=Math.round(cx+ox+lg+(hf>0?(Math.random()-.5)*6:0)),y=Math.round(gy-KN.GY);ctx.drawImage(c,x,y);
+let SERX=60;
+function serDraw(cx,gy,bb,ps,nob){const im=SPR.seres,gd=()=>ctx.drawImage(im,Math.round(cx-im.width/2),Math.round(gy-im.height+(PFY.seres||0))),s=knS(ps,bb);if(!s){gd();return}
+ const ox=SERL.dx,[sp,cp,hf,lg]=s,c=knPaint(sp,cp,hf),x=Math.round(cx+ox+lg+(hf>0?(Math.random()-.5)*6:0)),y=Math.round(gy-KN.GY+SERL.dy*sp);if(!SERL.bk)gd();ctx.drawImage(c,x,y);if(SERL.bk)gd();
  if(!nob)hpBar(Math.round(cx+ox+KN.X0+70*KZ-26),gy+2,52,Math.max(0,ps.kn),ps.knm,'#e8505b',0,0)}
 // ===== セレスの仕組み（Ver3.41 作り直し。スレスパ2のネクロバインダーのカードを手本に、破滅の代わりを「葬列」にした） =====
 // 霊騎士 PS.kn/PS.knm：敵の攻撃はブロックの後、セレスより先に騎士が受ける。0で崩れ、召喚 ksm でまた立つ（崩れている時は召喚の値が新しいHP）
