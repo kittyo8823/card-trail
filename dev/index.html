@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.71';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.72';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -5432,7 +5432,7 @@ function etDraw(b){const idle=!b.hand.some(o=>{const c=cd(o);return !c.un&&(c.X|
   ctx.fillStyle='#e8c890';ctx.fillRect(cx-7,cy-10,14,2);ctx.fillRect(cx-7,cy+8,14,2);P2([[cx-5,cy-8],[cx+5,cy-8],[cx+1,cy],[cx+5,cy+8],[cx-5,cy+8],[cx-1,cy]],'#f4ead0');const sd=(T*.25)%1;P2([[cx-4+sd*3,cy-7+sd*6],[cx+4-sd*3,cy-7+sd*6],[cx,cy-1]],'#e8a840');P2([[cx-4,cy+7],[cx+4,cy+7],[cx+3*sd,cy+7-5*sd],[cx-3*sd,cy+7-5*sd]],'#e8a840');txt('ターン終了',cx,y+h+2,'#ffe8e0','center',10)}
  else{P2([[x-4,y+8],[x+w-4,y+8],[x+w+6,y+24],[x+w-4,y+40],[x-4,y+40],[x+2,y+24]],'#5a1a24');P2([[x-4,y+8],[x+w-4,y+8],[x+w+6,y+24],[x+2,y+24]],'#6e2430');ctx.fillStyle='rgba(255,210,190,.3)';ctx.fillRect(x-2,y+9,w-6,1);txt('ターン終了',x+w/2+1,y+29,'#ffe8e0','center',11)}}
 // 敵の予告をアイコンで（案。IV：0 文字／1 アイコン＋数字／2 アイコンを菱形の札に）。輪郭は付けない
-let IV=0,ETV=0;
+let IV=0,ETV=9;/* Ver3.72 ターン終了ボタンは案F（右を向いた大きな赤い札、押せる範囲74×72。ユーザー採用） */
 function itIc(k,x,y,s,a){const R=(px,py,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(Math.round(x+px*s),Math.round(y+py*s),Math.ceil(w*s),Math.ceil(h*s))};
  if(k==='atk'||k==='atk2'||k==='atk3'){const L=k==='atk'?5:k==='atk2'?6:7;for(let i=0;i<L;i++){R(i-1,-i-1,2,2,i<2?'#e8ecf4':'#c8ccd8');R(i,-i-1,1,1,'#ffffff')}R(-3,0,4,1,'#d8a840');R(-2,-1,1,3,'#d8a840');R(-3,1,1,1,'#7a4a28');R(-4,2,1,1,'#7a4a28');if(k!=='atk'){ctx.globalAlpha=.35*a;R(-1,-L-1,L+1,L+1,'#ff6a5a');ctx.globalAlpha=a}}
  else if(k==='blk'){R(-3,-4,6,4,'#5a9ae8');R(-2,0,4,2,'#4a86d0');R(-1,2,2,1,'#3a6eb8');R(-3,-4,6,1,'#9ac8ff');R(-1,-3,2,4,'#bfe0ff')}
