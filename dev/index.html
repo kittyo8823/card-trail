@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.64';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.65';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -4934,7 +4934,8 @@ function hitP(e,d,dl){if(e&&!QT){const st=eSty(e);fxs('eh',110,166,{d:.4,dl:dl||
 fxs('sl',110,175,{c:'#ff6a6a',dl:dl||0});if(a>0){B.sh=.3+(dl||0);if(e)P.killer=e.n;hurtP(a,dl);if(e){e.imh=1;if(e.suk&&!e.dead){e.str+=e.suk;pop(e,'吸血 筋力+'+e.suk,'#ff6a6a')}if(e.ppc&&P.hp>0){P.mhp=Math.max(1,P.mhp-e.ppc);P.hp=Math.min(P.hp,P.mhp);nmb(110,96,'最大HP-'+e.ppc,'#ff9ad0')}}if(e&&e.pst&&P.hp>0){B.dis.push({i:CI('負傷'),u:0});nmb(110,96,'負傷+1','#c8c8d8')}if(PS.mirT&&e&&!e.dead)hitE(e,a,(dl||0)+.1,0,0)}else{sfx('bk');0}
 if(has('thorn')&&e&&!e.dead)hitE(e,3,dl||0,0,0);if(PS.thn&&e&&!e.dead)hitE(e,PS.thn,(dl||0)+.1,0,0);if(PS.cnt&&e&&!e.dead)hitE(e,PS.cnt*(PS.ct2?2:1),(dl||0)+.1,0,0);if(PS.zan)tkAdd(PS.zan);if(PS.zt&&e)tkAdd(1)}
 function lose(){if(B.ph==='L'||(MPB&&B.down))return;if(B.en.some(e=>e.k==='eye')){P.hp=0;B.ph='L';P.eyeEnd=1;P.bosses++;sfx('ls');setTimeout(()=>{if(S==='battle')go('win')},2200);return}if(PS&&PS.udy){PS.udy=0;P.hp=1;say('不死身：踏みとどまった');sfx('hl');fxs('ar',110,150,{s:'＋',c:'#ffd23f',d:.9});return}{const fi=P.pot.indexOf('fairy');if(fi>=0){P.pot.splice(fi,1);P.hp=Math.max(1,Math.floor(P.mhp*.3));say('妖精の小瓶：力尽きる寸前に救われた');sfx('hl');fxs('ar',110,150,{s:'＋',c:'#ff9ad0',d:.9});return}}if(has('amulet')&&!P.amu){P.amu=1;P.hp=Math.min(P.mhp,12);say('お守りが砕けた！HP12で復活');sfx('hl');fxs('ar',110,150,{s:'＋',c:'#7dff9a',d:.9});return}if(MPB){mpDown();return}B.ph='L';sfx('ls');setTimeout(()=>{if(S==='battle'||S==='mapv'||S==='help'){go('over')}},900)}
-function chk(){if(B.vt||B.ph==='L')return;if(!alive().length){B.vt=1;B.ph='V';sfx('wn')}}
+// Ver3.65 勝ちの音は最後の敵が倒れる瞬間に（葬列などで倒れる演出が遅れて来る時。ユーザー指摘）
+function chk(){if(B.vt||B.ph==='L')return;if(!alive().length){B.vt=1;B.ph='V';const w=Math.max(0,...B.en.filter(e=>e.dead&&e.dT!=null).map(e=>e.dT-T));if(w>0&&!QT){const b0=B;setTimeout(()=>{if(B===b0&&B.ph!=='L')sfx('wn')},w*1000)}else sfx('wn')}}
 function play(i,ti){if(MPB&&!MPB.ap){const o=B.hand[i];B.sel=-1;if(!o||o.pend||B.dn||B.down||B.dnp||B.ph!=='p'||B.vt||B.dsc)return;const c=cd(o);if(c.un||o.sld||(!c.X&&mpME()<c.c)){sfx('no');say(c.un?'このカードは使えない':o.sld?'封印されている：このターンは使えない':'エナジーが足りない');return}if(c.tc&&PS.ki<c.tc){sfx('no');say('刀魂が足りない');return}
  const vi=B.hand.filter(q=>!q.pend).indexOf(o);if(!MPR.host){mpIn(['p',vi,ti,o.i]);return}o.pend=T;o.pc=c.X?0:Math.max(0,c.c);cFly(o,c.t===2?'pw':c.x?'ex':'use',o.hx,o.hy);sfx('cl');mpIn(['p',vi,ti,o.i]);return}const o=B.hand[i];if(!o||B.ph!=='p'||B.vt||B.dsc||(MPB&&(B.dn||B.down)))return;const c=cd(o);
 if(c.un){sfx('no');say('このカードは使えない');return}
