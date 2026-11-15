@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.53';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.54';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2907,8 +2907,8 @@ const C=[
 {n:'白い光',t:0,c:1,r:-1,k:10,a:6},{n:'祈りの守り',t:1,c:1,r:-1,k:10,b:5},{n:'霊騎士召喚',t:1,c:1,r:-1,k:10,ksm:5},{n:'霊槍の解放',t:0,c:1,r:-1,k:10,a:6,kt:1,kcur:1},{n:'葬送の一撃',t:0,c:1,r:0,k:10,a:7,fu:2},{n:'冥い波',t:1,c:1,r:0,k:10,b:5,fuA:1},{n:'葬鐘',t:1,c:1,r:0,k:10,fu:3,dr:1},{n:'穢れの刃',t:0,c:1,r:0,k:10,a:13,eth:1},{n:'拒絶',t:1,c:1,r:0,k:10,b:6,wk:1,eth:1},{n:'力の吸収',t:0,c:1,r:0,k:10,a:10,upD:2},{n:'畏れ',t:0,c:1,r:0,k:10,a:7,vu:1,eth:1},{n:'墓守',t:1,c:1,r:0,k:10,b:8,sou:1},{n:'掘り返す',t:0,c:1,r:0,k:10,a:4,rcl:1},{n:'呼び寄せ',t:1,c:1,r:0,k:10,nks:2,nt:2},{n:'槍の突き',t:0,c:0,r:0,k:10,a:6,kt:1},{n:'引きつけ',t:1,c:2,r:0,k:10,ksm:4,b:7},{n:'刈り取り',t:0,c:3,r:0,k:10,a:27,rt:1},{n:'魂を奪う',t:0,c:1,r:0,k:10,a:10,sou:1},{n:'葬列の刃',t:0,c:1,r:0,k:10,a:3,h:2,fu:1},{n:'槍の払い',t:0,c:1,r:0,k:10,a:7,kt:1,rt:1},{n:'蒔かれた光',t:0,c:1,r:0,k:10,aa:8,rt:1},{n:'鬼火',t:1,c:0,r:0,k:10,en:1,x:1,rt:1},{n:'鎧の破片',t:0,c:1,r:1,k:10,kbr:9},{n:'埋葬',t:0,c:4,r:1,k:10,a:52},{n:'鎧の硬化',t:2,c:1,r:1,k:10,pw:'kcal',v:4},{n:'魂の捕縛',t:1,c:1,r:1,k:10,hpL:3,sou:3},{n:'数え歌',t:2,c:1,r:1,k:10,pw:'pfu',v:3},{n:'死の舞踏',t:2,c:1,r:1,k:10,pw:'dmc',v:4},{n:'死の行進',t:0,c:1,r:1,k:10,a:8,dmar:4},{n:'死の扉',t:1,c:1,r:1,k:10,b:6,ddr:1},{n:'葬列の宣告',t:1,c:2,r:1,k:10,fuA:4,wkA:1},{n:'先送り',t:1,c:2,r:1,k:10,b:11,nt:1},{n:'葬送歌',t:1,c:-1,X:1,r:1,k:10,dirg:3,x:1},{n:'衰えの手',t:1,c:1,r:1,k:10,ds:2,eth:1},{n:'槍の呼び戻し',t:0,c:0,r:1,k:10,a:3,kt:1,dr:1},{n:'騎士との誓い',t:2,c:1,r:1,k:10,pw:'egy',v:1,stL:2},{n:'憑く',t:2,c:1,r:1,k:10,pw:'hnt',v:7},{n:'槍の号令',t:0,c:2,r:1,k:10,a:11,kt:1,vuA:2},{n:'必殺の構え',t:2,c:1,r:1,k:10,pw:'leth',v:50,eth:1},{n:'逃げ場なし',t:1,c:1,r:1,k:10,fu:3,fuNE:1},{n:'読み解く',t:1,c:1,r:1,k:10,dr:3,eth:1},{n:'下からの手',t:0,c:1,r:1,k:10,a:5,ethA:1},{n:'腐らせる',t:1,c:1,r:1,k:10,wk:2,vu:2,x:1},{n:'鳴らす槍',t:0,c:1,r:1,k:10,a:7,kt:1,ratl:1},{n:'断絶',t:0,c:2,r:1,k:10,a:13,souA:1},{n:'帳',t:2,c:1,r:1,k:10,pw:'fub',v:3},{n:'けしかける',t:0,c:1,r:1,k:10,a:5,kt:1,ksm:3},{n:'葬列の棘',t:2,c:2,r:1,k:10,pw:'fud',v:5},{n:'拍車',t:1,c:1,r:1,k:10,rt:1,ksm:3,knH:5},{n:'来世',t:1,c:1,r:1,k:10,ksm:6,x:1},{n:'嘆きの叫び',t:0,c:9,r:2,k:10,aa:33,ethC:2},{n:'灰の霊',t:2,c:1,r:2,k:10,pw:'eab',v:4},{n:'命を喰らう',t:2,c:1,r:2,k:10,pw:'dvl',v:1},{n:'根絶',t:0,c:-1,X:1,r:2,k:10,a:11,rt:1},{n:'吊るす',t:0,c:1,r:2,k:10,a:10,hang:1},{n:'悲惨',t:0,c:0,r:2,k:10,a:7,mis:1},{n:'霊騎士の契約',t:2,c:2,r:2,k:10,pw:'kmas',v:1,ksm:5},{n:'忘却',t:1,c:0,r:2,k:10,obl:2},{n:'蘇生',t:1,c:3,r:2,k:10,ksm:20,x:1},{n:'死神の姿',t:2,c:3,r:2,k:10,pw:'rpf',v:1},{n:'犠牲',t:1,c:1,r:2,k:10,rt:1,ksb:3},{n:'魂の嵐',t:0,c:1,r:2,k:10,a:9,ssA:4},{n:'握り潰す',t:0,c:3,r:2,k:10,a:25,kt:1,sqz:5},{n:'時は満ちた',t:0,c:2,r:2,k:10,a:2,tup:3,rt:1},{n:'不死',t:1,c:0,r:2,k:10,b:7,cp:1},{n:'魂',t:1,c:0,r:-2,k:10,dr:2,x:1},
 // 坪内丸の刀魂のカード（Ver3.44。スレスパ2のリージェントを手本に）
 {n:'残月',t:0,c:1,r:0,k:2,a:9,kg:1},{n:'導きの一閃',t:0,c:1,tc:1,r:0,k:2,a:12,nd:2},{n:'斬光',t:0,c:1,tc:1,r:0,k:2,a:8,tcA:2},{n:'決戦の構え',t:1,c:1,r:1,k:2,nt:1,ntg:1,rtH:1},{n:'一撃必殺',t:0,c:3,r:1,k:2,a:30,tkK:5},{n:'剣圧',t:0,c:0,tc:3,r:1,k:2,a:13,wk:2,vu:2},{n:'共鳴の太刀',t:2,c:1,r:1,k:2,pw:'tkD',v:3},{n:'魂打ち',t:1,c:0,tc:5,r:1,k:2,kg:9,x:1},{n:'天眼',t:1,c:1,tc:3,r:1,k:2,b:15,mir:1},{n:'散華',t:0,c:1,tc:3,r:2,k:2,aa:9,wkA:2,eth:1},{n:'鍛冶神の槌',t:1,c:1,tc:4,r:2,k:2,fg:30},
-// セレスの古の版（Ver3.53）。霊槍の解放 → 霊槍・天解（騎士の最大HPを上乗せ。本家のオスティの Protector にならう）
-{n:'霊槍・天解',t:0,c:1,r:-2,k:10,a:10,kt:1,kcmx:1,fa:'tenkai'}]
+// セレスの古の版（Ver3.54 ユーザー指定：霊騎士召喚の進化。召喚の数値を上げて1枚引く）
+{n:'霊騎士・降臨',t:1,c:1,r:-2,k:10,ksm:10,dr:1,fa:'kourin'}]
 const randCurse=()=>pk(C.map((c,i)=>[c,i]).filter(a=>a[0].t===4))[1],canUp=o=>!o.u&&C[o.i].t<3;;
 // 全カードの絵を一度だけ決める：手描きの絵（CRN）は最初の1枚だけ、残りは組み合わせが重ならないように割り当てる
 const GART={};{const used=new Set(),hs=s=>{let h=7;for(const ch of s)h=(h*31+ch.charCodeAt(0))%9973;return h},cls=[0,8,4,2,3,1];
@@ -3996,29 +3996,31 @@ FAA={sai:FAF_SAI(),
    g.strokeStyle='rgba(150,220,255,.8)';g.lineWidth=1;for(let k=-2;k<=2;k++){g.beginPath();g.moveTo(x+k*5*s,y+1);g.quadraticCurveTo(x+k*5*s+3,y+10*s,x+k*4*s,y+20*s);g.stroke()}
    g.fillStyle='#fff';g.fillRect(x-1,y-4*s,2,2)}
  },['#d8e0f4','#b0b8d8']),
- tenkai:AK(37,(g,r,poly,glow,sky,W,H)=>{sky(['#04040e','#10142c','#0a0c1e','#020208']);
-  for(let i=0;i<46;i++){g.fillStyle='rgba(230,236,255,'+(.15+r()*.5)+')';g.fillRect(r()*W|0,r()*100|0,1,1)}
-  glow(40,58,24,'rgba(235,240,255,A)',.45);g.fillStyle='#eef0ff';g.beginPath();g.arc(40,58,10,0,7);g.fill();g.fillStyle='#10142c';g.beginPath();g.arc(45,55,9,0,7);g.fill();
-  poly([[0,H],[0,146],[34,138],[70,146],[116,134],[W,142],[W,H]],'#05060f');
-  // 槍：左下から右上へ（穂先が絵の真ん中より上に来るように）。光の柄（暗い縁→青白→白芯）
-  const A=-.66,ox=10,oy=168,L=150,ax=Math.cos(A),ay=Math.sin(A);
-  // 柄のまわりの白い霊の炎（やわらかいにじみを重ねる）
-  for(let k=0;k<14;k++){const d=16+k*8,x=ox+ax*d+(r()-.5)*6,y=oy+ay*d+(r()-.5)*6;glow(x,y,8+r()*8,'rgba(215,225,255,A)',.18+r()*.2)}
-  g.save();g.translate(ox,oy);g.rotate(A);glow(L-20,0,70,'rgba(190,210,255,A)',.3);
-  const bar=(w,c,x0,x1)=>{g.fillStyle=c;g.fillRect(x0,-w/2,x1-x0,w)};bar(9,'rgba(30,40,90,.85)',0,L-34);bar(6,'#6a86e0',0,L-34);bar(3,'#c8d8ff',0,L-34);bar(1.2,'#ffffff',0,L-34);
-  for(let k=0;k<4;k++)bar(10,'rgba(220,230,255,.55)',18+k*24,20+k*24);
-  // 三日月の口金と三叉の刃
-  const h=L-34;poly([[h-4,-13],[h+6,-6],[h+8,0],[h+6,6],[h-4,13],[h+2,0]],'#d8e2ff');
-  for(const sg of[-1,1]){poly([[h+4,sg*6],[h+16,sg*13],[h+32,sg*15],[h+22,sg*9],[h+8,sg*3]],'#c0d0ff');poly([[h+8,sg*6],[h+19,sg*11],[h+29,sg*13],[h+19,sg*8]],'#ffffff')}
-  poly([[h+6,-5],[L-2,-1.5],[L+6,0],[L-2,1.5],[h+6,5]],'#e0e8ff');poly([[h+9,-2],[L-2,-.6],[L+4,0],[L-2,.6],[h+9,2]],'#ffffff');
-  g.restore();
-  // 穂先の衝撃：光のにじみと輪、短い火花の線
-  const tx=ox+ax*(L+6),ty=oy+ay*(L+6);glow(tx,ty,44,'rgba(240,244,255,A)',.8);
-  g.strokeStyle='rgba(235,240,255,.75)';g.lineWidth=2;g.beginPath();g.ellipse(tx,ty,24,11,A,0,7);g.stroke();g.strokeStyle='rgba(180,200,255,.45)';g.lineWidth=1;g.beginPath();g.ellipse(tx,ty,36,17,A,0,7);g.stroke();
-  g.strokeStyle='#ffffff';g.lineWidth=1.5;for(let k=0;k<9;k++){const a=k/9*6.28+r()*.3,d0=13+r()*6,d1=d0+7+r()*12;g.beginPath();g.moveTo(tx+Math.cos(a)*d0,ty+Math.sin(a)*d0);g.lineTo(tx+Math.cos(a)*d1,ty+Math.sin(a)*d1);g.stroke()}
-  // 舞う鬼火と光の粒
-  for(let i=0;i<7;i++){const x=20+r()*130,y=70+r()*70;glow(x,y,7,'rgba(230,236,255,A)',.5);g.fillStyle='#f4f6ff';g.fillRect(x-1|0,y-1|0,2,3)}
-  for(let i=0;i<30;i++){g.fillStyle=i%3?'#e8eeff':'#b8c8ff';g.fillRect(r()*W|0,20+r()*120|0,1,1+(i%2))}
+ kourin:AK(41,(g,r,poly,glow,sky,W,H)=>{sky(['#04040e','#0e1230','#0a0c1e','#020208']);
+  for(let i=0;i<50;i++){g.fillStyle='rgba(230,236,255,'+(.15+r()*.5)+')';g.fillRect(r()*W|0,r()*110|0,1,1)}
+  poly([[0,H],[0,148],[40,140],[84,146],[128,138],[W,144],[W,H]],'#05060f');
+  // 天から降りる光の柱
+  {const q=g.createLinearGradient(0,0,0,150);q.addColorStop(0,'rgba(240,244,255,.05)');q.addColorStop(.6,'rgba(235,240,255,.55)');q.addColorStop(1,'rgba(255,255,255,.8)');g.fillStyle=q;poly([[64,0],[104,0],[118,150],[50,150]],'rgba(0,0,0,0)');g.beginPath();g.moveTo(66,0);g.lineTo(102,0);g.lineTo(116,150);g.lineTo(52,150);g.closePath();g.fill()}
+  glow(84,150,60,'rgba(240,244,255,A)',.7);
+  // 足元の光の陣（二重の楕円と粒）
+  g.strokeStyle='rgba(230,236,255,.8)';g.lineWidth=2;g.beginPath();g.ellipse(84,150,46,9,0,0,7);g.stroke();g.strokeStyle='rgba(180,200,255,.5)';g.lineWidth=1;g.beginPath();g.ellipse(84,150,58,12,0,0,7);g.stroke();
+  // 姿を現す霊騎士：兜・肩当て・胸当て（右向きの斜め）。下は白い霊の炎になって溶ける
+  g.globalAlpha=.94;const Y=24;
+  poly([[60,58+Y],[70,52+Y],[98,52+Y],[108,58+Y],[104,66+Y],[64,66+Y]],'#b8bfd4');poly([[60,58+Y],[70,52+Y],[78,52+Y],[70,60+Y],[64,66+Y]],'#d8dcea');
+  poly([[66,66+Y],[102,66+Y],[99,88+Y],[69,88+Y]],'#e4e8f4');poly([[66,66+Y],[80,66+Y],[78,88+Y],[69,88+Y]],'#cdd3e4');poly([[86,67+Y],[100,67+Y],[98,86+Y],[86,86+Y]],'#f2f4fa');
+  g.fillStyle='#b8a060';g.fillRect(66,65+Y,36,2);g.fillRect(69,86+Y,30,2);g.fillStyle='rgba(60,70,100,.5)';g.fillRect(84,67+Y,1,19);
+  poly([[74,36+Y],[82,30+Y],[94,31+Y],[98,38+Y],[96,49+Y],[84,52+Y],[76,50+Y],[73,43+Y]],'#dfe4f2');poly([[74,36+Y],[82,30+Y],[86,31+Y],[80,38+Y],[75,46+Y]],'#f2f4fa');
+  poly([[84,40+Y],[98,39+Y],[97,42+Y],[84,43+Y]],'#20243a');glow(92,41+Y,9,'rgba(200,230,255,A)',.85);
+  poly([[82,30+Y],[76,24+Y],[68,22+Y],[76,28+Y]],'#c8d0ec');
+  for(let k=0;k<8;k++){const x=70+k*4+r()*2,h=12+r()*22;poly([[x-4,88+Y],[x+1,88+Y+h],[x+5,88+Y]],'rgba(225,232,255,'+(.3+r()*.3)+')')}
+  glow(84,90+Y,26,'rgba(220,230,255,A)',.35);
+  g.globalAlpha=1;
+  // 地面に立てた光の三叉槍
+  g.fillStyle='rgba(120,150,230,.7)';g.fillRect(124,40,4,112);g.fillStyle='#e8f0ff';g.fillRect(125,40,2,112);
+  poly([[118,42],[126,36],[134,42],[126,39]],'#d8e2ff');for(const sg of[-1,1])poly([[126+sg*4,40],[126+sg*9,32],[126+sg*10,22],[126+sg*7,30],[126+sg*2,38]],'#c8d6ff');poly([[124,38],[126,12],[128,38]],'#ffffff');glow(126,28,18,'rgba(220,232,255,A)',.5);
+  // 立ちのぼる鬼火と光の粒
+  for(let i=0;i<9;i++){const x=40+r()*90,y=20+r()*120;glow(x,y,6,'rgba(230,236,255,A)',.5);g.fillStyle='#f4f6ff';g.fillRect(x-1|0,y-1|0,2,3)}
+  for(let i=0;i<34;i++){g.fillStyle=i%3?'#e8eeff':'#b8c8ff';g.fillRect(56+r()*56|0,r()*150|0,1,1+(i%2))}
  },['#e4e8f8','#c8c8e8']),
 kansho:AK(31,(g,r,poly,glow,sky,W,H)=>{sky(['#02060c','#081a2a','#04101a','#010306']);
  for(let i=0;i<40;i++){g.fillStyle='rgba(120,240,255,'+(.1+r()*.3)+')';g.fillRect(r()*W|0,r()*110|0,1,1+(i%3))}
@@ -5974,7 +5976,7 @@ function anSoft(a,t){const A=ANC[a],cv=ctx.canvas;A.sc(t);if(ANOC.width!==cv.wid
 // 古の者ごとの選択肢の候補（恵み＋ボスレリック）。毎回この中から3つ
 [['fang','relup','ac0','eshp','pumpkin','pflesh','fruit','ckey'],['song','ac1','egla','relup','astro','sozu','rcube'],['sand','ac2','espi','fang','pyr','seye','ecto','choker','pandora'],['ash','ac3','eimb','relup','mpain','philo','gaunt','cage'],['ac4','esow','seed','relup','fruit','coffer','crown','bstar'],['ac5','eroy','page','fang','tome','drift','dome','calling']].forEach((l,i)=>ANC[i].pool=l);
 // キャラごとの古の版：元の初期カード → 古の版
-const FAN={10:['霊槍の解放','霊槍・天解'],0:['強打','砕月'],1:['しびれ薬','痺霧'],2:['抜刀・閃華','抜刀・月閃'],3:['火球の頁','劫火の頁'],4:['マイクロスリープ','深き眠り'],6:['放電','雷霆招来']};
+const FAN={10:['霊騎士召喚','霊騎士・降臨'],0:['強打','砕月'],1:['しびれ薬','痺霧'],2:['抜刀・閃華','抜刀・月閃'],3:['火球の頁','劫火の頁'],4:['マイクロスリープ','深き眠り'],6:['放電','雷霆招来']};
 const faTgt=()=>{const f=FAN[P.cls];if(!f)return -1;const j=CI(f[0]);return P.deck.findIndex(o=>o.i===j)};
 const ANGT={song:['骨鯨の歌','最大HP+20／休憩所の回復量が増える','最大HPが20増える。この冒険の間、休憩所で休んだ時の回復量が、最大HPの15%分増える。'],sand:['刻の砂','カード3枚をレアカードに変え、強化する','デッキからランダムに3枚（初期カードを優先）を、自分のキャラのレアカードに変えて強化する。'],ash:['灰の羽','カードを3枚選んで消す','デッキから好きなカードを3枚選び、取り除く。'],seed:['晶の種','レアカード3枚から1枚選んで得る','自分のキャラのレアカードが3枚出る。1枚選んでデッキに加える。'],page:['写しの頁','カード1枚を選んで複製する','デッキのカード1枚を選び、同じカード（強化・エンチャントも含む）をもう1枚加える。'],
 eshp:['鍛えの灯火','攻撃カードすべてに【鋭利3】','デッキの攻撃カード（エンチャントの無いもの）すべてに【鋭利3】が付く。ダメージ+3。'],egla:['響きの余韻','カード3枚に【華】','好きなカードを3枚選び【華】を付ける。1戦闘に1回、もう一度発動する。'],espi:['時の渦','カード1枚に【渦】','好きなカードを1枚選び【渦】を付ける。使うたび、もう一度発動する。'],eimb:['不滅の火種','カード2枚に【宿り】','好きなカードを2枚選び【宿り】を付ける。戦闘開始時に自動で発動する。'],esow:['晶の芽','カード3枚に【芽吹き】','好きなカードを3枚選び【芽吹き】を付ける。戦闘で最初に使うとエナジー+1。'],eroy:['王の綴じ紐','カード2枚に【御墨付き】','好きなカードを2枚選び【御墨付き】を付ける。必ず最初の手札に来て、ターン終了時に手札に残る。'],
