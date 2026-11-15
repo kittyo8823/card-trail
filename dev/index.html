@@ -1831,7 +1831,7 @@ const KNCS={pur:{t:['#3a1a88','#6a2ec8','#a070e8'],a:['#5a1ab8','#9a4aff','#d8b0
  wht:{t:['#8a90a8','#c8ccdc','#f4f6ff'],a:['#6a6a80','#b8b8cc','#ffffff'],am:'lighter',sh:'60,60,80',gl:'240,240,255',pt:'#f0f0ff',s:['#8a8aa0','#d8dcec','#e8ecf8','#ffffff'],sm:'lighter'},
  red:{t:['#6a0e18','#a81e2a','#e85a5a'],a:['#8a1020','#e8304a','#ffb0b0'],am:'lighter',sh:'90,20,30',gl:'255,120,120',pt:'#ff9a9a',s:['#c8303a','#ff6a6a','#ff8a8a','#fff0f0'],sm:'lighter'},
  blk:{t:['#08080c','#1c1a24','#3e3850'],a:['#0a0a10','#221e2c','#4e4660'],am:'source-over',sh:'0,0,0',gl:'120,105,150',pt:'#5a5070',s:['#000000','#16141c','#2a2634','#6a6080'],sm:'source-over'}};
-let KNC=KNCS.pur;knSet('pur');
+let KNC=KNCS.wht;knSet('wht');
 function knPaint(sp,cp,hf){if(!KN.c){KN.c=MKC(KN.W,KN.H);KN.e=MKC(KN.W/2,KN.H/2)}const g=KN.c.getContext('2d'),E=KN.e,e=E.getContext('2d'),Z=KZ,TT=T*4.4,kx=KN.X0,ky=KN.Y0+Math.round(Math.sin(TT)*2.4*sp),GY=KN.GY,X=a=>kx+a*KU+2,Y=b=>ky+(b+4)*KU+2;
  g.clearRect(0,0,KN.W,KN.H);e.clearRect(0,0,E.width,E.height);g.imageSmoothingEnabled=false;
  const flm=(x,y,s,ph,dn)=>{s*=sp*Z;if(s<.8)return;x/=2;y/=2;s=s*1.6/2;e.globalCompositeOperation=dn?'source-over':KNC.am;for(let k=0;k<3;k++){const h=s*(1-k*.25)*(1+.3*Math.sin(TT*2+ph+k))*(dn?-1:1),w=s*.7*(1-k*.25);e.globalAlpha=dn?[.55,.6,.45][k]:KNC.am==='lighter'?[.35,.45,.6][k]:[.75,.8,.7][k];e.fillStyle=(dn?KNC.t:KNC.a)[k];e.beginPath();e.moveTo(x-w,y);e.quadraticCurveTo(x-w*.6+Math.sin(TT*2+ph)*1.2,y-h*.6,x+Math.sin(TT*2.4+ph)*1.6,y-h);e.quadraticCurveTo(x+w*.6+Math.sin(TT*2+ph)*1.2,y-h*.6,x+w,y);e.closePath();e.fill()}e.globalAlpha=1;e.globalCompositeOperation='source-over'},
