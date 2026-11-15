@@ -14,15 +14,25 @@ const spot=()=>{
   for(let k=0;k<18;k++){const t=(T*.06+hs(k))%1;ctx.globalAlpha=.6*Math.sin(t*3.14);sq(Math.round(120+hs(k+3)*140+t*20),Math.round(20+t*270),1,'#fffbe0')}ctx.restore();ctx.globalAlpha=1;
 };
 const S={
- // ユウキング：城（塔・とんがり屋根・城門・旗・松明）と赤い月
+ // ユウキング：崩れた城（折れた塔・欠けた城壁・瓦礫・破れた旗・くすぶる火）と赤い月
  pl(){sky('#12040a','#3a0c14','#1a0608');stars(50,'#ffd0c0',140);moon(300,56,16,'#ffb0a0','rgba(255,90,70,.35)');
-  const C='#4a1420',C2='#5a1a28',bat=(x,w,y)=>{for(let q=x;q<x+w;q+=10)ctx.fillRect(q,y-6,6,6)},tow=(x,w,y,rf)=>{ctx.fillStyle=C;ctx.fillRect(x,y,w,300-y);if(rf){poly([[x-4,y],[x+w/2,y-w*1.3],[x+w+4,y]],C2);ctx.fillStyle=C;ctx.fillRect(x+w/2-1,y-w*1.3-12,2,12);const f=Math.sin(T*3+x)*2;poly([[x+w/2+1,y-w*1.3-12],[x+w/2+14,y-w*1.3-9+f],[x+w/2+1,y-w*1.3-5]],'#e8303c')}else{ctx.fillStyle=C;bat(x,w,y)}ctx.fillStyle='#ffb050';ctx.fillRect(x+w/2-2,y+20,4,7)};
-  tow(10,34,150,1);tow(90,30,110,1);tow(150,44,70,1);tow(240,30,120,1);tow(300,36,160,1);
-  ctx.fillStyle=C;ctx.fillRect(0,200,352,100);bat(0,352,200);
-  ctx.fillStyle='#200810';ctx.beginPath();ctx.moveTo(150,300);ctx.lineTo(150,250);ctx.arc(172,250,22,3.14,0);ctx.lineTo(194,300);ctx.fill();
-  for(const x of[40,120,230,320]){ctx.fillStyle='#a8182a';ctx.fillRect(x,212,14,30);poly([[x,242],[x+7,236],[x+14,242],[x+14,248],[x+7,244],[x,248]],'#a8182a');ctx.fillStyle='#ffd23f';ctx.fillRect(x+5,220,4,4)}
-  for(const x of[134,210]){const fl=Math.sin(T*9+x)*1.5;ctx.fillStyle='#ffb050';ctx.fillRect(x,256+fl,4,6);const g=ctx.createRadialGradient(x+2,258,0,x+2,258,20);g.addColorStop(0,'rgba(255,150,60,.5)');g.addColorStop(1,'rgba(255,90,30,0)');ctx.fillStyle=g;ctx.fillRect(x-18,238,40,40)}
-  ground('#140406','#ff7a4a50');rise(24,'#ffb060',2,.15)},
+  const C='#4a1420',C2='#3a0e18';
+  // 折れた塔（上がギザギザに欠ける）
+  const tow=(x,w,y,jag)=>{ctx.fillStyle=C;ctx.beginPath();ctx.moveTo(x,300);ctx.lineTo(x,y+jag[0]);for(let i=1;i<jag.length;i++)ctx.lineTo(x+w*i/(jag.length-1),y+jag[i]);ctx.lineTo(x+w,300);ctx.fill();
+   ctx.fillStyle=C2;for(let k=0;k<3;k++)ctx.fillRect(x+4+hs(x+k)*(w-12),y+30+k*34,5+hs(k+x)*5,3);ctx.fillStyle='#120408';ctx.fillRect(x+w/2-3,y+40,6,10)};
+  tow(14,32,150,[0,-10,6,-4,12,2]);tow(146,48,80,[10,-6,4,-16,0,14,6]);tow(292,34,130,[4,14,-2,8,-8]);
+  // 欠けた城壁（途中が崩れて隙間）
+  ctx.fillStyle=C;ctx.beginPath();ctx.moveTo(0,300);ctx.lineTo(0,206);for(let x=0;x<=352;x+=10){const gap=(x>96&&x<136)||(x>226&&x<262);ctx.lineTo(x,gap?250+hs(x)*20:(x/10%2?200:206)+hs(x+5)*6)}ctx.lineTo(352,300);ctx.fill();
+  // 傾いた塔の残骸
+  ctx.save();ctx.translate(240,300);ctx.rotate(.18);ctx.fillStyle=C2;ctx.fillRect(-12,-70,24,70);ctx.beginPath();ctx.moveTo(-12,-70);ctx.lineTo(-4,-82);ctx.lineTo(4,-72);ctx.lineTo(12,-84);ctx.lineTo(12,-70);ctx.fill();ctx.restore();
+  // 瓦礫
+  for(let i=0;i<22;i++){const x=hs(i+70)*352,w=6+hs(i+71)*14,h=4+hs(i+72)*8;ctx.fillStyle=i%3?'#3a0e18':'#5a1a24';ctx.save();ctx.translate(x,298-h/2);ctx.rotate((hs(i)-.5)*.8);ctx.fillRect(-w/2,-h/2,w,h);ctx.restore()}
+  // 破れた旗
+  ctx.fillStyle=C;ctx.fillRect(168,42,2,40);const w=Math.sin(T*3)*2;poly([[170,44],[188,46+w],[184,50+w],[190,54+w],[178,56+w],[182,60],[170,62]],'#a8182a');
+  // くすぶる火と煙
+  for(const x of[60,120,250,320]){const fl=Math.sin(T*7+x);const g=ctx.createRadialGradient(x,296,0,x,296,26);g.addColorStop(0,'rgba(255,120,40,'+(.45+.1*fl)+')');g.addColorStop(1,'rgba(255,60,20,0)');ctx.fillStyle=g;ctx.fillRect(x-26,270,52,40);poly([[x-4,298],[x,288+fl*2],[x+4,298]],'#ffb050')}
+  for(let k=0;k<6;k++){const t=(T*.05+hs(k+80))%1,x=[60,120,250,320][k%4]+Math.sin(T+k)*10+t*20,y=290-t*160;ctx.globalAlpha=.25*Math.sin(t*3.14);ctx.fillStyle='#2a1418';ctx.beginPath();ctx.arc(x,y,8+t*20,0,6.3);ctx.fill()}ctx.globalAlpha=1;
+  ground('#140406','#ff7a4a50');rise(26,'#ffb060',2,.15)},
  // 坂井：夜のジャングル（大きな葉・つる・蛍・霧・光る目）
  si(){sky('#020804','#08180c','#020604');stars(20,'#c8ffd0',60);
   const leaf=(x,y,l,a,cl)=>{ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.fillStyle=cl;ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(l*.5,-l*.28,l,0);ctx.quadraticCurveTo(l*.5,l*.28,0,0);ctx.fill();ctx.fillStyle='rgba(0,0,0,.25)';ctx.fillRect(0,-.5,l*.9,1);ctx.restore()};
