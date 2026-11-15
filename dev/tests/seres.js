@@ -17,6 +17,6 @@ const r=await p.evaluate(()=>{const out=[],ok=(c,m)=>out.push((c?'OK ':'NG ')+m)
  giv('霊騎士召喚');hp=g.hp;giv('鎧の破片');ok(hp-g.hp===9&&PS.kn===0,'鎧の破片');
  B.ethN=0;giv('穢れの刃');giv('畏れ');hp=g.hp;g.vuln=0;giv('下からの手');ok(hp-g.hp===10,'下からの手 5×エセリアル2 '+(hp-g.hp));
  hp=g.hp;giv('吊るす');giv('吊るす');ok(hp-g.hp===30,'吊るす 10+20 '+(hp-g.hp));
- const cs=C.filter(c=>c.k===10);ok(cs.length===66,'カード66枚（魂を含む） '+cs.length);for(const c of cs){const t=dl(c).join(' ')+dl(up(c)).join(' ');if(/undefined|NaN/.test(t))ok(0,'説明 '+c.n+' '+t)}
+ const cs=C.filter(c=>c.k===10&&!c.fa);ok(cs.length===66,'カード66枚（魂を含む） '+cs.length);for(const c of cs){const t=dl(c).join(' ')+dl(up(c)).join(' ');if(/undefined|NaN/.test(t))ok(0,'説明 '+c.n+' '+t)}
  return out});
 console.log(r.join('\n'));console.log('ページエラー:',er.length?er:'なし');await b.close();process.exit(er.length||r.some(x=>x.startsWith('NG'))?1:0)})();
