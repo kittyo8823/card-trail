@@ -287,9 +287,8 @@ Playwright（chromium）入りの環境なら、ページを開いて `page.eval
 
 ## キャラ セレス（CH[10]、k:10、Ver3.40）
 - 白い頭巾で目を隠した少女（`SD.seres`、元は `dev/mock/girls3.js` の gr1）と、従う霊騎士（`KNF`、`dknight.js` の k3 の胴＋kwS の腕。倍率2.1、少女は2.6。部位ごとの絵 `KN.P`。中身・槍・鎧の色は白（ユーザー指定。紫・赤・黒の組も `KNCS`/`KNAS` に残してあり `knSet(k)` で切り替え）)。騎士は下半身が青い炎の尾、鎧の隙間から炎、光の三叉槍を地面に立てる。毎コマ `knPaint(霊の濃さ,崩れ具合,被弾)` で 別キャンバス `KN.c`に描く（炎・槍は半分の解像度で描いて2倍）。`serDraw(cx,gy,bb,ps,nob)` が少女＋騎士（戦闘・マルチ・選択画面）。崩れる／立ち上がる演出は `B.kdT`／`B.kuT`、被弾 `B.khr`、突き `B.kat`（`knS()`）。
-- 霊騎士 `PS.kn`/`PS.knm`：敵の攻撃はブロックの後、セレスより先に騎士が受ける（`hitP` の `knAbs`）。0で崩れる（`knDown`）、召喚 `ksm` で立つ（崩れている時は値が新しいHP、立っている時はHPと最大HPが増える）。初期レリック白い頭巾 `whood`：戦闘開始時に召喚8。HPバーは少女の真下（`SERX`）と騎士の真下（`serDraw` 内の `hpBar`）。カード65枚。
-- 霊光 `PS.rl`：騎士が攻撃を受けるたび+1。カードのキー：`kt` 霊騎士が攻撃（崩れていると半減）／`rlX` 霊光×nを上乗せ（使うと0）／`rlH` 回数＝霊光+n（使うと0）／`rlB` 霊光×nのブロック（減らない）／`rlG` 霊光+n／`knH` 騎士のHP+n／`kbl` このターン騎士の被ダメ半分／`ksac` 騎士を崩して残りHP分を全体に／`kaB` 騎士がいればブロック／`krv` 崩れていれば召喚・いればブロック／`kcv` 騎士HP-5で霊光。パワー `kreg` `kth` `kpr` `kund` `krb` `kgb` `rdr` `kdbl` `rlt` `kar`。処理は `selEff`（`xEff` の頭）・`serTurn`・`serEnd`。確認は `node tests/seres.js`。
-
+- 霊騎士 `PS.kn`/`PS.knm`：敵の攻撃はブロックの後、セレスより先に騎士が受ける（`hitP` の `knAbs`）。0で崩れる（`knDown`）、召喚 `ksm` で立つ（崩れている時は値が新しいHP、立っている時はHPと最大HPが増える）。初期レリック白い頭巾 `whood`：戦闘開始時に召喚6、2ターン目から毎ターン召喚1。HPバーは少女の真下（`SERX`）と騎士の真下（`serDraw` 内の `hpBar`）。
+- Ver3.41 カードはスレスパ2のネクロバインダー（全カードは `dev/sts2_necrobinder.tsv`、wiki.gg の Cargo 表から取得）を手本に作り直した（ユーザー指定）。破滅の代わりの核は**葬列** `e.fun`（ユーザー採用）：攻撃を受けるたびダメージ+印の数（`hitE` の頭、減らない）。倒れると半分が他の敵（HPの一番多い1体）へ移る、移る先が無ければ霊騎士を召喚（`fuPass`）。付ける `fuAdd`。**魂** `SOUL`（0コスト2枚引く・廃棄、`soulAdd`）、エセリアルの使用数 `B.ethN`、騎士の攻撃数 `B.katN`、引いた数 `B.drN`。カードは `C` の末尾（66枚＝初期4・コモン18・アンコモン28・レア15＋魂）。キーと説明は `serDl`、処理は `selEff`（`xEff` の頭）・`serTurn`・`xBon`/`xMul`/`xHit`。確認は `node tests/seres.js`。
 ## 次の会話への引き継ぎ（Ver3.40 作業版）
 - スレスパ2のザコ敵・エリートの見た目と行動パターンを調べた結果は `dev/sts2_enemies.md`（層・道ごと。出典は sts2.untapped.gg の敵ページ。mobalytics は確認画面で読めない）。敵の絵は sts2.untapped.gg の `/_next/image?url=https%3A%2F%2Fsts2json.untapped.gg%2Fart%2Fenemies%2F<名前>.png&w=384&q=70` で取れる（q は70でないと断られる）。ユーザーの返事待ち（これを元に何を作るか）。
 - 公開版（GitHub Pages）は Ver3.27（控え index47 = Ver3.26）。dev は Ver3.40（アーティファクトのみ公開。Ver3.28〜3.40 は GitHub Pages 未反映）。
@@ -297,5 +296,5 @@ Playwright（chromium）入りの環境なら、ページを開いて `page.eval
 - 初期カード「斬撃」「防御」を命刈りの鎌と同じ細かさ（HART、148×88・1px）で描いた見本：`dev/mock/hart_basic.js`（`artStrike`／`artDefend`）、撮影 `node dev/mock/hart_basic_shot.js 出力先`。ユーザー指定で「描くだけ」（ゲームには入れていない）。その2（本家の描き方を参考：主役1つを大きく斜めに・平塗り＋2〜3段の影・背景は大きな色の形・主役に暗い縁取り。構図はまねしない）は `dev/mock/hart_basic2.js`（`artStrike2`／`artDefend2`）、撮影 `node dev/mock/hart_basic2_shot.js 出力先`。細かさ「2」（1＝今の粗いドット、3＝本家風の見本その2の間。74×44 で描いて2倍の 2px ドット、くすんだ色の表に寄せる・ディザあり）は `dev/mock/hart_mid.js`（`artStrikeM`／`artDefendM`、剣を大きく手前に寄せた斬撃 `artStrikeM2`）、撮影 `node dev/mock/hart_mid_shot.js 出力先`。5枚の見本（兜割り・鉄壁・大回転・粉砕・魔の力）は `dev/mock/hart_mid5.js`、撮影 `node dev/mock/hart_mid5_shot.js 出力先`（返事待ち）。ユーザーの考え：斬撃は剣をでかでかと描く、他の攻撃カードはキャラが剣を振る絵もあり（本家2のアイアンクラッドのように）。返事待ち。本家の絵は slay-the-spire.fandom.com の api.php（imageinfo）で画像の場所を取れる（環境で許可済み。ページ本体は確認画面で止まる）。
 - 地図のマスのアイコンを細かく（8×8・倍率3 → 12×12・倍率2）する見本：`dev/mock/map_icons.py`（形と色。実行すると `map_icons.js` を作る）、撮影 `node dev/mock/map_icons_shot.js 出力先`。2回目（テカテカさせない・丸い形にしない・黒い輪郭を付けない）も見たうえで、ユーザーは今のままを選んだ（入れない）。
 - 地図のマスの見た目を変える案は保留（ユーザー指定：「地図は一旦いい」）。見本のコードは `dev/mock/map_node_mock.js`（地図の色に合わせた案 `NODEV.S`）、撮影は `node dev/mock/map_node_shot.js`。2回目の案 C（丸なし・縁取りと影）／D（菱形の札）／E（カード札）は1層だけ `node dev/mock/map_node_shot2.js 0 C D E` で撮る。本家風の案 F（丸なし・墨一色の絵、選べるマスは絵が脈打つ）は `... 0 F`（返事待ち）。
-- 新キャラ セレス（`CH[10]`・`k:10`、Ver3.40）を入れた。性能・カードは仮決め（ユーザー指定：名前も性能も任せる・ネクロバインダーとは別物・騎士のHPの仕組みだけ同じ）。次は遊んだ感想で調整。説明は下の「セレス」の節。
+- セレス（`CH[10]`・`k:10`）：Ver3.40 で入れ、Ver3.41 でカードをネクロバインダー手本・核は葬列に作り直した。霊光は外した（ユーザー：気・魔力と同じ型なので不可）。次は遊んだ感想で調整。
 - 天使のボスの見本は `dev/mock/angel*.js`（4が敵と同じ paint の版）、ゲームには入れていない。
