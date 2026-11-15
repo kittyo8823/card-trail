@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.47';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.48';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -1958,7 +1958,7 @@ function tkPay(n){if(!(n>0)||!PS)return;PS.ki=Math.max(0,PS.ki-n);nmb(110,118,'�
 // カードの刀魂コストの印（赤い刃の形）
 function tGem(x,y,v){ctx.fillStyle='#08060f';ctx.beginPath();ctx.moveTo(x,y-10);ctx.lineTo(x+8,y+1);ctx.lineTo(x,y+10);ctx.lineTo(x-8,y+1);ctx.fill();ctx.fillStyle='#c8342a';ctx.beginPath();ctx.moveTo(x,y-8);ctx.lineTo(x+6,y+1);ctx.lineTo(x,y+8);ctx.lineTo(x-6,y+1);ctx.fill();ctx.fillStyle='rgba(255,200,170,.5)';ctx.beginPath();ctx.moveTo(x,y-8);ctx.lineTo(x+6,y+1);ctx.lineTo(x,y+1);ctx.fill();txt(String(v),x,y+5,'#fff','center',11)}
 // 戦闘中の刀魂の数（エナジーの右上にくっつける。ユーザー指定で文字は出さない）。燃える刃の印と数字
-let TKO=0;function tkOrb(x,y,v){const p=.5+.5*Math.sin(T*3),g=ctx.createRadialGradient(x,y,1,x,y,24);g.addColorStop(0,'rgba(255,120,80,'+(v>0?.35+.15*p:.1)+')');g.addColorStop(1,'rgba(255,90,60,0)');ctx.fillStyle=g;ctx.fillRect(x-24,y-24,48,48);
+let TKO=1;function tkOrb(x,y,v){const p=.5+.5*Math.sin(T*3),g=ctx.createRadialGradient(x,y,1,x,y,24);g.addColorStop(0,'rgba(255,120,80,'+(v>0?.35+.15*p:.1)+')');g.addColorStop(1,'rgba(255,90,60,0)');ctx.fillStyle=g;ctx.fillRect(x-24,y-24,48,48);
  const dm=(r,c)=>{ctx.fillStyle=c;ctx.beginPath();ctx.moveTo(x,y-12-r);ctx.lineTo(x+8+r*.75,y+2);ctx.lineTo(x,y+11+r);ctx.lineTo(x-8-r*.75,y+2);ctx.fill()};
  // 縁 TKO：0=黒く太い（前）／1=細い暗い赤／2=エナジーと同じ金の細い縁／3=黒をやめて淡い光のにじみ
  if(TKO===0)dm(3,'#08060f');else if(TKO===1)dm(1.4,'#4a120e');else if(TKO===2){dm(2.2,'rgba(8,6,15,.55)');dm(1.2,'#c89a28')}else{ctx.save();ctx.globalCompositeOperation='lighter';dm(2.6,'rgba(255,120,90,.25)');ctx.restore()}ctx.fillStyle=v>0?'#b82a22':'#4a3a3a';ctx.beginPath();ctx.moveTo(x,y-12);ctx.lineTo(x+8,y+2);ctx.lineTo(x,y+11);ctx.lineTo(x-8,y+2);ctx.fill();ctx.fillStyle='rgba(255,210,180,.45)';ctx.beginPath();ctx.moveTo(x,y-12);ctx.lineTo(x+8,y+2);ctx.lineTo(x,y+2);ctx.fill();txt(String(v),x,y+7,'#fff','center',13);hit(x-12,y-14,24,28,()=>say('刀魂 '+v+'：カードの左上の赤い印の数だけ払って使う（戦闘中は持続）'))}
