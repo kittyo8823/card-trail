@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.41';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.42';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -1822,10 +1822,10 @@ const KNF=A0=>{const A=SOFS(A0,4),{t,l,e,r,q,sh,pt}=A;const[S1,S2,S3,S4]=KNA.S,R
   t([[24,0],[20,-4],[14,-6],[19,-2.6],[22,1]],KNA.PL[0]);t([[20,-4],[14,-6],[16,-3]],KNA.PL[1])});
  pt('af',()=>{t([[31,12],[38,13],[39,19],[32,20]],S3);t([[33,19],[38,19],[44,22],[40,25]],S2);t([[43,19.6],[48,19.4],[48.6,23.6],[43.4,24]],S1);t([[44.4,20.4],[47.4,20.2],[47.6,23],[44.6,23.2]],S3)});
  sh();pt('hd',()=>{l(26,6.6,33,6.2,KNA.V,.35)});for(const[a,b]of[[16,20],[30,20],[16,26],[30,25]])q(a,b,GD)};
-// 騎士は少女より少し小さい倍率（2.1）で描く。崩れる演出のため部位（胴・兜・両腕）も別々に描いておく
-let KU=2.1,KZ=KU/3,KNk='wht';const KN={X0:4,P:{}};function knDim(){KN.W=Math.round(212*KZ);KN.H=Math.round(240*KZ);KN.Y0=Math.round(37*KZ);KN.GY=KN.Y0+Math.round(178*KZ);KN.c=null}knDim();
+// 騎士の倍率は2.5（Ver3.42 ユーザー採用の案C：少女が騎士の手前に寄り添う）で描く。崩れる演出のため部位（胴・兜・両腕）も別々に描いておく
+let KU=2.5,KZ=KU/3,KNk='wht';const KN={X0:4,P:{}};function knDim(){KN.W=Math.round(212*KZ);KN.H=Math.round(240*KZ);KN.Y0=Math.round(37*KZ);KN.GY=KN.Y0+Math.round(178*KZ);KN.c=null}knDim();
 // 騎士の大きさを変える（倍率）。SERL：少女から見た騎士の位置 dx・高さ dy、bk=1 で騎士を少女の後ろに描く
-function knScale(u){KU=u;KZ=u/3;knDim();knSet(KNk)}const SERL={dx:22,dy:0,bk:0,hb:0};
+function knScale(u){KU=u;KZ=u/3;knDim();knSet(KNk)}const SERL={dx:-4,dy:-10,bk:1,hb:0};
 function knSet(k){KNk=k;KNC=KNCS[k];KNA=KNAS[k];SPR.kn=paint(64,52,KNF,KU);for(const pp of['body','ab','hd','af']){PPART=pp;KN.P[pp]=paint(64,52,KNF,KU)}PPART=null}
 // 1コマ分の騎士（尾の炎・鎧・鎧の隙間の炎・光の槍）を描く。sp：霊の濃さ（0で中身が消える）、cp：崩れ具合（1で鎧が地面に散らばる）、hf：被弾の光
 // 霊騎士の中身（炎）と槍の色。t 尾の炎・a 鎧の隙間の炎（am 重ね方）・sh 足元の影・gl 兜の光・pt 昇る粒・s 槍［にじみ,柄,刃,芯］（sm 重ね方）
@@ -1867,7 +1867,7 @@ function knS(ps,bb){if(!ps||!(ps.knm>0))return null;const ku=bb&&bb.kuT,kd=bb&&b
  else{const r=kd!=null?Math.max(0,Math.min(1,(T-kd)/.9)):1;cp=r;sp=Math.max(0,1-r*2.2)}
  const hf=bb&&bb.khr!=null&&T>=bb.khr&&T-bb.khr<.25?1-(T-bb.khr)/.25:0,lg=bb&&bb.kat!=null&&T>=bb.kat&&T-bb.kat<.45?Math.sin((T-bb.kat)/.45*Math.PI)*34:0;return[sp,cp,hf,lg]}
 // 少女（足元の中心 cx,gy）と、その前に浮かぶ霊騎士。nob=1 で騎士のHPバーを出さない（キャラ選択画面）
-let SERX=60;
+let SERX=64;
 function serDraw(cx,gy,bb,ps,nob){const im=SPR.seres,gd=()=>ctx.drawImage(im,Math.round(cx-im.width/2),Math.round(gy-im.height+(PFY.seres||0))),s=knS(ps,bb);if(!s){gd();return}
  const ox=SERL.dx,[sp,cp,hf,lg]=s,c=knPaint(sp,cp,hf),x=Math.round(cx+ox+lg+(hf>0?(Math.random()-.5)*6:0)),y=Math.round(gy-KN.GY+SERL.dy*sp);if(!SERL.bk)gd();ctx.drawImage(c,x,y);if(SERL.bk)gd();
  if(nob)return;const kc=Math.round(cx+ox+KN.X0+26*KU+2),kv=Math.max(0,ps.kn);
@@ -6235,7 +6235,7 @@ const g=ctx.createRadialGradient(190,200,10,190,200,270);g.addColorStop(0,col+'6
 ctx.fillStyle='rgba(255,255,255,.05)';ctx.beginPath();ctx.moveTo(150,0);ctx.lineTo(230,0);ctx.lineTo(320,300);ctx.lineTo(60,300);ctx.fill();
 for(let k=0;k<16;k++){const t=(T*.15+hs(k))%1;ctx.globalAlpha=.6*Math.sin(t*3.14);sq(70+hs(k+3)*240,300-t*260,k%3?2:3,c.lt||'#fff')}ctx.globalAlpha=1;
 ctx.fillStyle='#000';ctx.globalAlpha=.5;ctx.beginPath();ctx.ellipse(190,298,90,14,0,0,6.3);ctx.fill();ctx.globalAlpha=a;
-const SK2=1.5,sx=Math.round(Math.min(190-(im.bw||im.width)*SK2/2-(im.ox||0)*SK2,372-im.width*SK2)+(1-a)*40),sy=Math.round(300-((im.fy||im.height)-(PFY[c.s]||0))*SK2+Math.sin(T*2)*2);ctx.save();ctx.beginPath();ctx.rect(0,0,352,360);ctx.clip();if(c.s==='neb'){ctx.translate(sx+60,sy+156);ctx.scale(SK2,SK2);nebPaint(ctx,0,0,T,{})}else if(c.s==='seres'){ctx.translate(Math.round(150+(1-a)*40),300+Math.round(Math.sin(T*2)*2));ctx.scale(1.3,1.3);serDraw(-34,0,{},{kn:1,knm:1},1)}else ctx.drawImage(im,sx,sy,im.width*SK2,im.height*SK2);ctx.restore();ctx.globalAlpha=1;
+const SK2=1.5,sx=Math.round(Math.min(190-(im.bw||im.width)*SK2/2-(im.ox||0)*SK2,372-im.width*SK2)+(1-a)*40),sy=Math.round(300-((im.fy||im.height)-(PFY[c.s]||0))*SK2+Math.sin(T*2)*2);ctx.save();ctx.beginPath();ctx.rect(0,0,352,360);ctx.clip();if(c.s==='neb'){ctx.translate(sx+60,sy+156);ctx.scale(SK2,SK2);nebPaint(ctx,0,0,T,{})}else if(c.s==='seres'){ctx.translate(Math.round(150+(1-a)*40),300+Math.round(Math.sin(T*2)*2));ctx.scale(1.1,1.1);serDraw(-20,0,{},{kn:1,knm:1},1)}else ctx.drawImage(im,sx,sy,im.width*SK2,im.height*SK2);ctx.restore();ctx.globalAlpha=1;
 if(N>1){const pu=Math.sin(T*5)*3;txt('◀',38-pu,190,c.lt,'center',26);txt('▶',342+pu,190,c.lt,'center',26);hit(14,150,50,80,()=>selGo(-1));hit(316,150,50,80,()=>selGo(1))}
 ctx.globalAlpha=a;txt('CHARACTER　'+(SEL+1)+' / '+N,372,56,col,'left',11);txt(c.n,372,88,'#fff','left',c.n.length>8?24:28);ctx.fillStyle=col;ctx.fillRect(372,98,248,2);
 txt('HP '+c.hp,372,120,'#ff9a9a','left',15);txt(c.key,446,120,'#d8d0f0','left',11);
