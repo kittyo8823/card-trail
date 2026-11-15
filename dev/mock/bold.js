@@ -158,11 +158,11 @@ Object.assign(BOS,{
 // 生成・イベントのカード
 '小ナイフ':'K,streak+knife,,-.2','鍛えし刃':'G,spk+katana,,-.3','巨鳥の卵':'W,egg','啄み':'W,birds+burst','環の守り':'C,rings+shield','悟り':'G,light+eye,y',
 });Object.assign(BOS,{
-'白い光':'W,light+streak,,-.5','祈りの守り':'S,shield+light','霊騎士召喚':'I,ghost+aura','霊槍の解放':'I,beam+burst,,-.6','葬送の一撃':'K,streak+candles,,-.4','冥い波':'P,ripple+shield','葬鐘':'K,bell+candles','穢れの刃':'P,knife+smoke,,-.5','拒絶':'C,wall+light','力の吸収':'P,swirl+cards',
-'畏れ':'K,eye+streak','墓守':'S,lanterns+shield','掘り返す':'K,pages+cards','呼び寄せ':'I,souls+circle','槍の突き':'I,beam+streak,,-.3','引きつけ':'S,armor+rings','刈り取り':'K,scythe+cres,,-.8','魂を奪う':'P,souls+claws','葬列の刃':'K,knives+candles','槍の払い':'I,hcres+beam',
-'蒔かれた光':'W,petals+light','鬼火':'D,flame+soul','鎧の破片':'I,armor+shards','埋葬':'K,skull+rocks,,-1','鎧の硬化':'S,armor+aura','魂の捕縛':'P,souls+chains','数え歌':'K,clock+candles','死の舞踏':'P,skull+whirl','死の行進':'K,skull+arrows','死の扉':'K,circle+shield',
-'葬列の宣告':'K,scroll+candles','先送り':'C,clock+shield','葬送歌':'I,souls+rings','衰えの手':'P,threads+smoke','槍の呼び戻し':'I,beam+swirl','騎士との誓い':'I,helm+heart','憑く':'P,ghost+eyes','槍の号令':'I,beam+rings,,-.5','必殺の構え':'B,eye+aura','逃げ場なし':'K,chains+candles',
-'読み解く':'C,book+pages','下からの手':'P,hole+claws','腐らせる':'P,drops+smoke','鳴らす槍':'I,beam+multi','断絶':'K,xcres+souls','帳':'P,moon+shield','けしかける':'I,ghost+streak','葬列の棘':'K,needles+candles','拍車':'I,ghost+heart','来世':'W,souls+light',
-'嘆きの叫び':'P,rings+souls+burst','灰の霊':'D,ash+ghost','命を喰らう':'B,souls+jaws','根絶':'K,xcres+boom','吊るす':'K,chains+skull','悲惨':'P,eyes+drops','霊騎士の契約':'I,ghost+circle+aura','忘却':'P,hole+swirl','蘇生':'W,armor+light+aura','死神の姿':'K,scythe+aura',
-'犠牲':'B,armor+burst','魂の嵐':'P,souls+whirl','握り潰す':'I,claws+shock','時は満ちた':'K,clock+burst','不死':'S,skull+shield','魂':'W,soul+light'});
+'白い光':'C,orb+streak,,-.5','祈りの守り':'S,shield+rings','霊騎士召喚':'K,ghost+circle','霊槍の解放':'B,arrow1+burst,,-.6','葬送の一撃':'K,streak+candles,,-.4','冥い波':'P,ripple+shield','葬鐘':'K,bell+candles','穢れの刃':'P,knife+smoke,,-.5','拒絶':'P,wall+eyes','力の吸収':'P,swirl+cards',
+'畏れ':'K,eye+streak','墓守':'S,lanterns+shield','掘り返す':'K,pages+cards','呼び寄せ':'P,souls+circle','槍の突き':'K,arrow1+shock,,-.3','引きつけ':'S,armor+rings','刈り取り':'K,scythe+cres,,-.8','魂を奪う':'P,souls+claws','葬列の刃':'K,knives+candles','槍の払い':'S,hcres+arrow1',
+'蒔かれた光':'P,petals+hcres','鬼火':'D,flame+soul','鎧の破片':'S,armor+shards','埋葬':'K,skull+rocks,,-1','鎧の硬化':'S,armor+aura','魂の捕縛':'P,souls+chains','数え歌':'K,clock+candles','死の舞踏':'P,skull+whirl','死の行進':'K,skull+arrows','死の扉':'K,circle+shield',
+'葬列の宣告':'K,scroll+candles','先送り':'C,clock+shield','葬送歌':'P,souls+rings','衰えの手':'P,threads+smoke','槍の呼び戻し':'P,arrow1+swirl','騎士との誓い':'B,helm+heart','憑く':'P,ghost+eyes','槍の号令':'B,arrow1+rings,,-.5','必殺の構え':'B,eye+aura','逃げ場なし':'K,chains+candles',
+'読み解く':'C,book+pages','下からの手':'P,hole+claws','腐らせる':'P,drops+smoke','鳴らす槍':'K,arrow1+rings','断絶':'K,xcres+souls','帳':'P,moon+shield','けしかける':'P,ghost+claws','葬列の棘':'K,needles+candles','拍車':'B,heart+aura','来世':'P,souls+circle',
+'嘆きの叫び':'P,rings+souls+burst','灰の霊':'D,ash+ghost','命を喰らう':'B,souls+jaws','根絶':'K,xcres+boom','吊るす':'K,chains+skull','悲惨':'P,eyes+drops','霊騎士の契約':'B,ghost+circle','忘却':'P,hole+swirl','蘇生':'K,armor+aura','死神の姿':'K,scythe+aura',
+'犠牲':'B,armor+burst','魂の嵐':'P,souls+whirl','握り潰す':'B,claws+shock','時は満ちた':'K,clock+burst','不死':'S,skull+shield','魂':'P,soul+rings'});
 
