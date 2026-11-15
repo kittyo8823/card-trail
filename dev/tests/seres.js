@@ -8,8 +8,8 @@ const r=await p.evaluate(()=>{const out=[],ok=(c,m)=>out.push((c?'OK ':'NG ')+m)
  let hp=e.hp;giv('槍の突き');ok(hp-e.hp===3,'崩れていると騎士の攻撃は半減 '+(hp-e.hp));hp=e.hp;giv('白い光');ok(hp-e.hp===6,'白い光は騎士なしでも6');
  giv('霊騎士召喚');ok(PS.kn===5,'召喚5で立て直す');giv('霊騎士召喚');ok(PS.kn===10&&PS.knm===10,'立っている時は+5');
  hp=e.hp;giv('霊槍の解放');ok(hp-e.hp===16,'霊槍の解放 6+騎士のHP10 '+(hp-e.hp));
- giv('葬鐘');ok(e.fun===3,'葬列3');hp=e.hp;giv('葬列の刃');ok(hp-e.hp===12&&e.fun===4,'葬列の刃 (3+3)×2、そのあと葬列+1 '+(hp-e.hp));
- e.hp=1;e.blk=0;giv('白い光');ok(e.dead&&f.fun===2,'倒れると半分が移る '+f.fun);
+ giv('葬鐘');ok(e.fun===3,'葬列3');hp=e.hp;giv('葬列の刃');ok(hp-e.hp===11&&e.fun===2,'葬列の刃 (3+3)+(3+2)、当たるたび1減り、そのあと葬列+1 '+(hp-e.hp));
+ e.fun=5;e.hp=1;e.blk=0;giv('白い光');ok(e.dead&&f.fun===2,'倒れると半分が移る '+f.fun);f.fun=4;
  f.hp=1;f.blk=0;const k0=PS.kn;giv('白い光',1);ok(f.dead&&PS.kn===k0+1,'移る先が無い時は騎士を召喚 '+(PS.kn-k0));
  fight(['gargoyle'],0);B.bn=null;const g=B.en[0];g.hp=g.mh=999;g.blk=0;
  const d0=B.dr.length;giv('墓守');ok(B.dr.length===d0+1&&B.dr.some(o=>o.i===SOUL),'魂を山札へ');
