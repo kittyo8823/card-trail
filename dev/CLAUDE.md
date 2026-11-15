@@ -260,6 +260,7 @@ Playwright（chromium）入りの環境なら、ページを開いて `page.eval
 
 ## カードの数と無色カード
 - 各キャラ：アンコモン+12・レア+7ずつ追加済み。追加カードは「既存カードの数字違い（上位・下位互換）」は禁止というユーザー方針で作り直した。新カードは必ず新しい仕組みを持たせること。
+- 同じキャラの中で全く同じ性能のカードは作らない（Ver3.49〜3.50 で直した）。キャラ違いで同じ性能なのは直さなくてよい（ユーザー指定）。
 - 新しいカードのキー（`dl()` に説明あり）：失ったHP比例 `lh/lhx/lhb`、使うたび成長 `gr`（戦闘中 `o.g`）、使うたびコスト減 `cr`（`o.cm`）、手札枚数 `hd`、処刑 `exe`、ブロック無視 `pc`、ランダム対象 `rnd`、撃破で金 `gd`、廃棄コスト倍 `ec`、ブロック倍 `bsm`、最大HP割合 `pct`、詠唱中の数 `csp`、反撃 `rv`、手札最後 `lst`、気全消費 `kh`、経過分 `tm/tmE`、筋力倍全体 `saa`、魔力全消費全体 `mxA`、魔力比例 `hpm`、寝起き `awk`、次ターン `nt/nd/nb`、保持 `rt/kb1`、初手 `inn`、毒関連 `pz/pdr/tr/vd`、封じ `nat/stn`、デバフ解除 `clr`、手札操作 `dupA/kr/solo/upH/rcl/fsp/mul/oc/rp/dbn`、気・魔力・詠唱 `kb/mb/kie/cmb/zk/kef/hst/rec/qkb/mdr/msx`、その他 `gg/pay/pot/mir/svd`。
 - 新しいパワー：`blkd egy psn hpb bers udy ftw a3e svb dsd pmul fz kdr ct2 ksd vamp kfst slot chb rech chD msd stb ms2 msf qyp gw`（説明は `PSD`）。ダメージの加算・倍率は `xBon()`/`xMul()` に集約し、`pvw()` と `play()` で共有。
 - ユウキングの毒カード（毒塗り・毒の粉）は `k:8` にして出なくした（ユウキングに毒は無し）。`k:8` は「引退カード」で報酬・ショップ・絵の割り当てから除外。
