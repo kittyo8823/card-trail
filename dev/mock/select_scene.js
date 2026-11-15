@@ -45,11 +45,28 @@ const S={
   poly([[150,300],[160,180],[170,160],[180,170],[188,120],[196,170],[206,150],[214,300]],'#0a0e1a');
   for(let k=0;k<6;k++){const x=40+k*55+Math.sin(T+k)*6,y=230-((T*8+k*30)%80);ctx.globalAlpha=.5+.3*Math.sin(T*3+k);const g=ctx.createRadialGradient(x,y,0,x,y,10);g.addColorStop(0,'rgba(255,255,255,.9)');g.addColorStop(1,'rgba(200,220,255,0)');ctx.fillStyle=g;ctx.fillRect(x-10,y-10,20,20)}ctx.globalAlpha=1;
   ground('#06080e','#8ac4ff40');fog(230,320,'#c8d8ff')},
- // ホーリー大輔：夜の街のビル屋上・緑のネオン
- hori(){sky('#04060a','#0e1a1a','#04060a');stars(30,'#d0ffe8',100);
-  for(let i=0;i<9;i++){const x=i*42-10,h=90+hs(i+40)*120;ctx.fillStyle=i%2?'#0a1416':'#0e1a1c';ctx.fillRect(x,300-h,40,h);for(let y=300-h+10;y<290;y+=14)for(let q=0;q<3;q++)if(hs(i*31+y+q)>.55){ctx.fillStyle=hs(y+q)>.7?'#7affb0':'#ffe2a0';ctx.fillRect(x+6+q*11,y,5,6)}}
-  ctx.globalAlpha=.6+.4*Math.abs(Math.sin(T*2));txt('GYM',300,90,'#7affb0','center',16);ctx.globalAlpha=1;
-  ctx.fillStyle='#0a1012';ctx.fillRect(0,296,352,64);ctx.fillStyle='#7affb050';ctx.fillRect(0,296,352,1);for(let x=10;x<352;x+=30){ctx.fillStyle='#0e1618';ctx.fillRect(x,286,2,10)}ctx.fillRect(0,286,352,2)}
+ // ホーリー大輔：夜のジム（ダンベル棚・ベンチ・鏡・ネオン）＋スポットライト
+ hori(){sky('#06080a','#0c1214','#050708');
+  // 奥の壁（タイル）
+  ctx.fillStyle='#0e1517';ctx.fillRect(0,40,640,260);ctx.fillStyle='#121b1e';for(let y=40;y<300;y+=16)for(let x=(y/16%2)*12;x<640;x+=24)ctx.fillRect(x,y,22,14);
+  // 鏡
+  for(const x of[14,250]){ctx.fillStyle='#1a2a2e';ctx.fillRect(x,90,88,150);ctx.fillStyle='rgba(180,255,220,.08)';ctx.fillRect(x+4,94,80,142);ctx.fillStyle='rgba(255,255,255,.12)';ctx.beginPath();ctx.moveTo(x+10,94);ctx.lineTo(x+30,94);ctx.lineTo(x+10,140);ctx.fill()}
+  // ネオン
+  ctx.globalAlpha=.75+.25*Math.abs(Math.sin(T*2));const ng=ctx.createRadialGradient(190,62,0,190,62,60);ng.addColorStop(0,'rgba(122,255,176,.35)');ng.addColorStop(1,'rgba(122,255,176,0)');ctx.fillStyle=ng;ctx.fillRect(130,20,120,90);txt('GYM',190,72,'#7affb0','center',20);ctx.globalAlpha=1;
+  // ダンベル棚（左）
+  ctx.fillStyle='#1c2628';ctx.fillRect(18,250,80,6);ctx.fillRect(18,272,80,6);ctx.fillRect(20,250,4,48);ctx.fillRect(92,250,4,48);
+  for(let i=0;i<4;i++){const x=28+i*18;for(const y of[244,266]){ctx.fillStyle='#2e3a3c';ctx.fillRect(x,y,4,8);ctx.fillRect(x+10,y,4,8);ctx.fillStyle='#3e4a4c';ctx.fillRect(x+4,y+3,6,2)}}
+  // プレートとバーベル台（右）
+  ctx.fillStyle='#1c2628';ctx.fillRect(262,180,4,118);ctx.fillRect(320,180,4,118);ctx.fillRect(250,196,86,4);ctx.fillStyle='#4a5658';ctx.fillRect(240,190,108,3);for(const x of[240,342]){ctx.fillStyle='#26302f';ctx.fillRect(x-4,178,8,28)}
+  for(let i=0;i<3;i++){ctx.fillStyle='#202a2c';ctx.beginPath();ctx.arc(300+i*12,286,12-i*2,0,6.3);ctx.fill()}
+  // 床（ゴムのマット）
+  ctx.fillStyle='#0a0e10';ctx.fillRect(0,298,640,62);ctx.fillStyle='#10171a';for(let x=0;x<640;x+=44)ctx.fillRect(x,298,42,62);ctx.fillStyle='#7affb030';ctx.fillRect(0,298,352,1);
+  // スポットライト（今の選択画面と同じ光の筋）
+  ctx.save();ctx.globalCompositeOperation='lighter';const sg=ctx.createLinearGradient(0,0,0,300);sg.addColorStop(0,'rgba(255,255,240,.20)');sg.addColorStop(1,'rgba(255,255,240,.06)');ctx.fillStyle=sg;ctx.beginPath();ctx.moveTo(150,0);ctx.lineTo(230,0);ctx.lineTo(320,300);ctx.lineTo(60,300);ctx.fill();
+  const pg=ctx.createRadialGradient(190,300,0,190,300,130);pg.addColorStop(0,'rgba(255,255,230,.25)');pg.addColorStop(1,'rgba(255,255,230,0)');ctx.save();ctx.translate(190,300);ctx.scale(1,.25);ctx.translate(-190,-300);ctx.fillStyle=pg;ctx.beginPath();ctx.arc(190,300,130,0,6.3);ctx.fill();ctx.restore();
+  for(let k=0;k<18;k++){const t=(T*.06+hs(k))%1;ctx.globalAlpha=.6*Math.sin(t*3.14);sq(Math.round(120+hs(k+3)*140+t*20),Math.round(20+t*270),1,'#fffbe0')}ctx.restore();ctx.globalAlpha=1;
+  // 周りを暗く
+  const vg=ctx.createRadialGradient(190,200,80,190,200,320);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.6)');ctx.fillStyle=vg;ctx.fillRect(0,0,640,360)}
 };
 window.SELDV=window.SELDV||{};
 SELDV[4]={bg(c,a,col){(S[c.s]||S.pl)();const g=ctx.createLinearGradient(340,0,400,0);g.addColorStop(0,'rgba(6,6,12,0)');g.addColorStop(1,'rgba(6,6,12,.7)');ctx.fillStyle=g;ctx.fillRect(340,0,300,360)},
