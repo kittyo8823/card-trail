@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.44';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.45';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -1957,9 +1957,9 @@ function tkAdd(n){if(!(n>0)||!PS)return;PS.ki+=n;if(B){B.tkG=(B.tkG||0)+n;nmb(11
 function tkPay(n){if(!(n>0)||!PS)return;PS.ki=Math.max(0,PS.ki-n);nmb(110,118,'刀魂-'+n,'#ff8a6a');if(PS.tkB){B.blk+=n*PS.tkB;fxs('sh',110,175,{d:.4})}if(PS.tkD)for(const e of alive())hitE(e,PS.tkD,.1,0,0);if(has('sakura')){P.hp=Math.min(P.mhp,P.hp+2);fxs('ar',110,160,{s:'＋',c:'#7dff9a',d:.7})}}
 // カードの刀魂コストの印（赤い刃の形）
 function tGem(x,y,v){ctx.fillStyle='#08060f';ctx.beginPath();ctx.moveTo(x,y-10);ctx.lineTo(x+8,y+1);ctx.lineTo(x,y+10);ctx.lineTo(x-8,y+1);ctx.fill();ctx.fillStyle='#c8342a';ctx.beginPath();ctx.moveTo(x,y-8);ctx.lineTo(x+6,y+1);ctx.lineTo(x,y+8);ctx.lineTo(x-6,y+1);ctx.fill();ctx.fillStyle='rgba(255,200,170,.5)';ctx.beginPath();ctx.moveTo(x,y-8);ctx.lineTo(x+6,y+1);ctx.lineTo(x,y+1);ctx.fill();txt(String(v),x,y+5,'#fff','center',11)}
-// 戦闘中の刀魂の数（エナジーの上）。燃える刃の印と数字
+// 戦闘中の刀魂の数（エナジーの右上にくっつける。ユーザー指定で文字は出さない）。燃える刃の印と数字
 function tkOrb(x,y,v){const p=.5+.5*Math.sin(T*3),g=ctx.createRadialGradient(x,y,1,x,y,24);g.addColorStop(0,'rgba(255,120,80,'+(v>0?.35+.15*p:.1)+')');g.addColorStop(1,'rgba(255,90,60,0)');ctx.fillStyle=g;ctx.fillRect(x-24,y-24,48,48);
- ctx.fillStyle='#08060f';ctx.beginPath();ctx.moveTo(x,y-15);ctx.lineTo(x+11,y+2);ctx.lineTo(x,y+14);ctx.lineTo(x-11,y+2);ctx.fill();ctx.fillStyle=v>0?'#b82a22':'#4a3a3a';ctx.beginPath();ctx.moveTo(x,y-12);ctx.lineTo(x+8,y+2);ctx.lineTo(x,y+11);ctx.lineTo(x-8,y+2);ctx.fill();ctx.fillStyle='rgba(255,210,180,.45)';ctx.beginPath();ctx.moveTo(x,y-12);ctx.lineTo(x+8,y+2);ctx.lineTo(x,y+2);ctx.fill();txt(String(v),x,y+7,'#fff','center',13);txt('刀魂',x+15,y+6,'#ffb89a','left',9);hit(x-14,y-16,48,32,()=>say('刀魂 '+v+'：カードの左上の赤い印の数だけ払って使う（戦闘中は持続）'))}
+ ctx.fillStyle='#08060f';ctx.beginPath();ctx.moveTo(x,y-15);ctx.lineTo(x+11,y+2);ctx.lineTo(x,y+14);ctx.lineTo(x-11,y+2);ctx.fill();ctx.fillStyle=v>0?'#b82a22':'#4a3a3a';ctx.beginPath();ctx.moveTo(x,y-12);ctx.lineTo(x+8,y+2);ctx.lineTo(x,y+11);ctx.lineTo(x-8,y+2);ctx.fill();ctx.fillStyle='rgba(255,210,180,.45)';ctx.beginPath();ctx.moveTo(x,y-12);ctx.lineTo(x+8,y+2);ctx.lineTo(x,y+2);ctx.fill();txt(String(v),x,y+7,'#fff','center',13);hit(x-12,y-14,24,28,()=>say('刀魂 '+v+'：カードの左上の赤い印の数だけ払って使う（戦闘中は持続）'))}
 // ===== セレスの仕組み（Ver3.41 作り直し。スレスパ2のネクロバインダーのカードを手本に、破滅の代わりを「葬列」にした） =====
 // 霊騎士 PS.kn/PS.knm：敵の攻撃はブロックの後、セレスより先に騎士が受ける。0で崩れ、召喚 ksm でまた立つ（崩れている時は召喚の値が新しいHP）
 // 葬列 e.fun：攻撃を受けるたびダメージ+印の数（減らない）。倒れると半分（切り捨て）が残りの敵でHPの一番多い1体へ移る。移る先が無い時はその分だけ霊騎士を召喚
@@ -5637,7 +5637,7 @@ function drawBattle(){const b=B;ER=[];CR=[];hit(0,24,640,206,()=>{b.sel=-1});ctx
 ctx.save();if(shk>0)ctx.translate((Math.random()-.5)*shk*2,(Math.random()-.5)*shk*2);
 const lg=b.lg>0?Math.sin(b.lg/.25*3.14)*(b.lgA!=null?b.lgA:30):0,sh=b.sh>0&&b.sh<=.3?(Math.random()-.5)*8:0;
 if(MPB)mpDrawPlayers(b);else{if(P.cls===3)drawGrim(b);const pim=P.cls===3?SPR.oji:P.cls===4?SPR[(b.ms?'hori_z':'hori')+P.act]:SPR[CH[P.cls].s];ctx.globalAlpha=b.sh>0&&b.sh<=.3&&Math.floor(T*30)%2?.5:1;{const wk=plKey(),bim=wk&&!b.ms?SPR[wk+'_b']:pim,by=Math.round(Math.sin(T*1.8)),px=Math.round(74+lg+sh-(PCX[wk]!=null?PCX[wk]*3+2-36:0)),py=208-bim.height+(b.ms?0:by)+(PFY[wk]||0);if(P.cls===6)nebDraw(px+pim.width/2,208,b);else if(P.cls===10)serDraw(SERX+lg+sh,208,b,PS);else if(wk&&!b.ms)plDraw(wk,px,py);else ctx.drawImage(pim,px,py)}ctx.globalAlpha=1;if(b.ms){for(let k=0;k<3;k++){const q=(T*.5+k/3)%1;ctx.globalAlpha=Math.sin(q*3.14);txt('Z',118+q*18,208-pim.height+6-q*30,'#c8d0ff','center',10+k*4)}ctx.globalAlpha=1}
-hpBar(P.cls===10?SERX-(SERL.hb?36:44):74,210,P.cls===10&&!SERL.hb?66:72,Math.min(P.mhp,vHP()),P.mhp,'#e8505b',b.blk,PS.poison);chips(stat(PS,1),64,P.cls===10&&SERL.hb===1?236:224,'l',204);}
+hpBar(P.cls===10?SERX-(SERL.hb?36:44):74,210,P.cls===10&&!SERL.hb?66:72,Math.min(P.mhp,vHP()),P.mhp,'#e8505b',b.blk,PS.poison);chips(stat(PS,1),P.cls===2?72:64,P.cls===10&&SERL.hb===1?236:224,'l',204);}
 {const bd=b.en.find(e=>!e.dead&&E[e.k]&&E[e.k].bd);if(bd){const im=SPR[E[bd.k].bd];ctx.drawImage(im,Math.round(455-im.width/2),Math.round(194-im.height+Math.sin(T*1.2)*1.5))}}
 {const lk=b.en.map((e,i)=>[e,i]).filter(([e])=>e.rat&&!e.dead);for(let j=0;j+1<lk.length;j++){const[a,ia]=lk[j],[c,ic]=lk[j+1],A=ePos(ia),C=ePos(ic),y=A.y-55,n=16;for(let k=0;k<=n;k++){const u=k/n,x=A.x+(C.x-A.x)*u,yy=y+Math.sin(u*Math.PI)*12+Math.sin(T*1.6+j)*1.5*Math.sin(u*Math.PI);ctx.globalAlpha=(a.rtc||c.rtc)?.35:1;ctx.fillStyle='#14121a';ctx.fillRect(Math.round(x-3),Math.round(yy-2),6,5);ctx.fillStyle=k%2?'#6a6274':'#8a8296';ctx.fillRect(Math.round(x-2),Math.round(yy-1),4,3)}ctx.globalAlpha=1}}
 b.en.forEach((e,i)=>{if(e.dead){if(e.dT!=null&&T-e.dT<.8)eDeath(e,i);if(e.dT!=null&&T<e.dT&&e.vq){const p0=ePos(i);hpBar(p0.x-32,p0.y+2,64,Math.min(e.mh,e.vq.reduce((s2,q)=>s2+(q.at>T?q.d:0),0)),e.mh,e.el?'#c9a0ff':'#e8505b',0,0,0);txt(e.n,p0.x,p0.y+22,'#cfc8ee','center',10)}return}const p0=ePos(i),p={x:p0.x,y:p0.y-(e.fly?Math.round(e.fly+(FLYP[e.k]?0:Math.sin(T*1.4)*4)):0)},im=SPR[e.sl>0&&SPR[e.k+'_z']?e.k+'_z':e.k],w=im.width,h=im.height,eo=eMot(e,i),off=(e.lg>0?-Math.sin(e.lg/.3*3.14)*30:0)+eo.x,s=e.sh>0&&T>=(e.flS||0)?(Math.random()-.5)*8:0;
@@ -5651,7 +5651,7 @@ ER.push({i,x:p.x-w/2,y:p.y-h,w,h:h+12});hit(p.x-w/2,p.y-h,w,h+12,()=>{if(e.rtc){
 serFx();drawXF();drawFx();ctx.restore();drawBossIntro(b);
 if(b.ph==='e'){ctx.fillStyle='rgba(140,10,40,.2)';ctx.fillRect(0,24,640,206)}
 drawSp(b);
-{const me=MPB?mpME():b.me,cl=P.cls===6?5:P.cls===10?6:Math.min(4,P.cls|0);energyGem(34,246,cl,me,MXE())}if(P.cls===2)tkOrb(30,206,PS.ki);
+{const me=MPB?mpME():b.me,cl=P.cls===6?5:P.cls===10?6:Math.min(4,P.cls|0);energyGem(34,246,cl,me,MXE())}if(P.cls===2)tkOrb(55,229,PS.ki);
 pileOrbs(b.dr.length,b.dis.length);hit(4,312,66,48,()=>openPile('山札',b.dr,1));hit(570,312,66,48,()=>openPile('捨て札',b.dis,0));
 if(b.ex.length){txt('廃棄'+b.ex.length,632,330,'#ff9a9a','right',11);hit(570,316,70,16,()=>openPile('廃棄札',b.ex,0))}
 if(MPB&&(b.dn||b.dnp||b.down)&&b.ph==='p'){txt(b.down?'戦闘不能':'味方を',606,284,'#9ad8ff','center',11);if(!b.down)txt('待っている',606,300,'#9ad8ff','center',11)}else if(b.ph==='p'&&!b.vt&&!b.dsc){box(578,264,56,48,'#7a2a3a');txt('ターン',606,284,'#fff','center',13);txt('終了',606,302,'#fff','center',13);hit(578,264,56,48,endTurn)};
@@ -6400,7 +6400,7 @@ const HELP_X=[[
 '【毒】敵全体にばらまき、ターンごとに削っていく。「毒の雲」「毒の煙」が強力。',
 '初期レリック「蛇の指輪」により、最初のターンに2枚多く引ける。'],[
 '【坪内丸】HP75。刀に宿る魂「刀魂」を溜め、一太刀で斬り伏せる剣士。',
-'【刀魂】エナジーとは別の力。戦闘中の数はエナジーの上に赤い刃の印で出る。ターンを越えて戦闘中は持続し、上限はない。呼吸・凪、明鏡止水、残月などで溜まる（初期レリック「朧の鞘」で戦闘開始時に刀魂+2）。',
+'【刀魂】エナジーとは別の力。戦闘中の数はエナジーの右上の赤い刃の印に出る。ターンを越えて戦闘中は持続し、上限はない。呼吸・凪、明鏡止水、残月などで溜まる（初期レリック「朧の鞘」で戦闘開始時に刀魂+2）。',
 '【刀魂を払う技】カードの左上、エナジーのひし形の下に赤い印があるカードは、その数の刀魂も払って使う（例：抜刀・閃華はエナジー0・刀魂1）。足りないと使えない。大技ほど多くの刀魂を払う。',
 '【居合】「1枚目なら+7」のカードは、そのターン最初に使ったときのみダメージが上がる。ターンの初手で使うこと。',
 '【反撃】「今ターン反撃4」のカードを使うと、そのターン中は攻撃を受けるたびに4ダメージを返す。ブロックしていても発動する。',
