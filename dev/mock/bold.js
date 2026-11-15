@@ -166,5 +166,6 @@ Object.assign(BOS,{
 '葬列の宣告':'K,scroll+candles','先送り':'C,clock+shield','葬送歌':'P,souls+rings','衰えの手':'P,threads+smoke','槍の呼び戻し':'P,arrow1+swirl','騎士との誓い':'B,helm+heart','憑く':'P,ghost+eyes','槍の号令':'B,arrow1+rings,,-.5','必殺の構え':'B,eye+aura','逃げ場なし':'K,chains+candles',
 '読み解く':'C,book+pages','下からの手':'P,hole+claws','腐らせる':'P,drops+smoke','鳴らす槍':'K,arrow1+rings','断絶':'K,xcres+souls','帳':'P,moon+shield','けしかける':'P,ghost+claws','葬列の棘':'K,needles+candles','拍車':'B,heart+aura','来世':'P,souls+circle',
 '嘆きの叫び':'P,rings+souls+burst','灰の霊':'D,ash+ghost','命を喰らう':'B,souls+jaws','根絶':'K,xcres+boom','吊るす':'K,chains+skull','悲惨':'P,eyes+drops','霊騎士の契約':'B,ghost+circle','忘却':'P,hole+swirl','蘇生':'K,armor+aura','死神の姿':'K,scythe+aura',
-'犠牲':'B,armor+burst','魂の嵐':'P,souls+whirl','握り潰す':'B,claws+shock','時は満ちた':'K,clock+burst','不死':'S,skull+shield','魂':'P,soul+rings'});
+'犠牲':'B,armor+burst','魂の嵐':'P,souls+whirl','握り潰す':'B,claws+shock','時は満ちた':'K,clock+burst','不死':'S,skull+shield','魂':'P,soul+rings',
+'盾突き':'S,shield+arrow1,,-.3','旋回の槍':'K,arrow1+whirl','先駆けの槍':'B,arrow1+streak,,-.4','葬送の突き':'K,arrow1+candles,,-.2','霊身の突撃':'P,ghost+burst','百の槍':'B,arrow1+needles,,-.6'});
 
