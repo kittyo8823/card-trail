@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.73';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.74';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2848,42 +2848,69 @@ BBG.dragon=(x)=>{const W=640,H=360,R=(px,py,w,h,c)=>{x.fillStyle=c;x.fillRect(Ma
  for(let i=0;i<34;i++){R(rn()*W,rn()*200,2,2,rn()<.5?'rgba(255,176,80,.8)':'rgba(255,106,40,.7)')}};
 // 小さな道具：2px格子の四角 R、グラデの塗り G、光のにじみ GL
 const bbR=(x,px,py,w,h,c)=>{x.fillStyle=c;x.fillRect(Math.round(px/2)*2,Math.round(py/2)*2,Math.max(2,Math.ceil(w/2)*2),Math.max(2,Math.ceil(h/2)*2))},bbGL=(x,cx,cy,r,c,a)=>{const g=x.createRadialGradient(cx,cy,0,cx,cy,r);g.addColorStop(0,c.replace('A',a));g.addColorStop(1,c.replace('A',0));x.fillStyle=g;x.fillRect(cx-r,cy-r,r*2,r*2)};
-// ゴーレムキング：森の奥に崩れた石の遺跡と玉座
-BBG.king=(x)=>{const R=(...a)=>bbR(x,...a),rn=bgRng(31),S1='#3a4048',S2='#4a525a',S3='#2a3036',MS='#2a4a34';
- for(const[px,ph,br]of[[60,120,1],[170,90,0],[548,140,1],[610,100,0]]){R(px-10,212-ph,20,ph,S1);R(px-10,212-ph,6,ph,S2);R(px-14,206,28,8,S3);if(br){R(px-12,212-ph-6,10,6,S2);R(px+2,212-ph-10,8,10,S1)}else R(px-14,212-ph-6,28,6,S2);for(let k=0;k<4;k++)R(px-10+rn()*18,212-ph+rn()*ph,4,6,MS)}
- // 玉座（中央の奥）
- const cx=330;R(cx-46,150,92,58,S1);R(cx-46,150,92,8,S2);R(cx-38,96,76,58,S3);R(cx-38,96,76,6,S2);R(cx-54,128,14,80,S2);R(cx+40,128,14,80,S2);R(cx-6,84,12,14,S2);R(cx-22,104,10,6,'#6a7078');R(cx-20,96,6,8,S1);
- for(let k=0;k<10;k++)R(cx-50+rn()*100,100+rn()*100,6,4,MS);for(let k=0;k<14;k++)R(rn()*640,214+rn()*30,4+rn()*8,4,rn()<.5?S1:S3);
- x.globalCompositeOperation='source-atop';const g=x.createLinearGradient(0,0,0,360);g.addColorStop(0,'rgba(10,20,30,.25)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,640,360);x.globalCompositeOperation='source-over'};
+// ゴーレムキング：森の奥に崩れた巨大な石の遺跡と玉座・崩れた巨像の頭
+BBG.king=(x)=>{const R=(...a)=>bbR(x,...a),rn=bgRng(31),S1='#3a4048',S2='#4e565e',S3='#2a3036',MS='#2a4a34';
+ x.globalCompositeOperation='multiply';x.fillStyle='#b8c0c8';x.fillRect(0,0,640,360);x.globalCompositeOperation='source-over';
+ // 奥の大きな城壁の残骸
+ for(let k=0;k<640;k+=2){const h=60+Math.abs(Math.sin(k*.021))*40+(rn()<.1?-20:0);R(k,200-h,2,h,(k>>3)%5?S3:S1)}
+ for(const[px,ph,br]of[[40,150,1],[150,110,0],[560,170,1],[620,120,0]]){R(px-14,212-ph,28,ph,S1);R(px-14,212-ph,8,ph,S2);R(px-18,204,36,10,S3);if(br){R(px-16,212-ph-8,14,8,S2);R(px+2,212-ph-14,10,14,S1)}else R(px-18,212-ph-8,36,8,S2);for(let k=0;k<6;k++)R(px-12+rn()*24,212-ph+rn()*ph,6,6,MS)}
+ const cx=320;R(cx-70,130,140,80,S1);R(cx-70,130,140,10,S2);R(cx-56,50,112,84,S3);R(cx-56,50,112,8,S2);R(cx-80,96,20,114,S2);R(cx+60,96,20,114,S2);R(cx-10,30,20,22,S2);R(cx-30,64,14,8,'#6a7078');for(let k=0;k<16;k++)R(cx-74+rn()*148,56+rn()*150,8,4,MS);
+ // 崩れた巨像の頭（左手前の地面）
+ R(150,190,56,30,S1);R(150,190,56,6,S2);R(160,200,10,6,'#14181c');R(184,200,10,6,'#14181c');R(166,212,24,4,'#14181c');R(142,206,10,14,S3);
+ for(let k=0;k<20;k++)R(rn()*640,214+rn()*40,4+rn()*10,4+rn()*4,rn()<.5?S1:S3);
+ bbGL(x,320,120,200,'rgba(160,200,170,A)',.12)};
 // 月蛾の司祭：大きな満月の光と鱗粉
 BBG.mothP=(x)=>{const rn=bgRng(41);bbGL(x,300,70,190,'rgba(200,190,240,A)',.28);bbGL(x,300,70,60,'rgba(240,236,255,A)',.6);x.fillStyle='rgba(236,232,250,.9)';x.beginPath();x.arc(300,70,26,0,6.3);x.fill();x.fillStyle='rgba(200,196,226,.5)';x.fillRect(290,62,8,6);x.fillRect(306,76,6,4);
  for(let i=0;i<70;i++){const px=rn()*640,py=rn()*240;bbR(x,px,py,2,2,rn()<.6?'rgba(230,220,255,.55)':'rgba(255,230,180,.45)')}};
-// 泉の乙女像：森の奥の滝と、手前の泉
-BBG.maiden=(x)=>{const R=(...a)=>bbR(x,...a),rn=bgRng(51);for(let k=0;k<5;k++){const wx=300+k*14;R(wx,40,10,170,k%2?'rgba(170,220,230,.35)':'rgba(200,240,250,.45)')}bbGL(x,330,205,90,'rgba(170,230,240,A)',.3);
- const g=x.createLinearGradient(0,216,0,300);g.addColorStop(0,'rgba(70,130,150,.55)');g.addColorStop(1,'rgba(20,50,70,.5)');x.fillStyle=g;x.beginPath();x.ellipse(330,250,300,40,0,0,6.3);x.fill();
- for(let i=0;i<40;i++)R(60+rn()*540,226+rn()*48,6+rn()*20,2,rn()<.5?'rgba(200,240,250,.45)':'rgba(140,200,220,.35)')};
+// 泉の乙女像：奥一面の大きな滝と霧、手前の広い泉と睡蓮
+BBG.maiden=(x)=>{const R=(...a)=>bbR(x,...a),rn=bgRng(51);
+ x.globalCompositeOperation='multiply';x.fillStyle='#a8c8d0';x.fillRect(0,0,640,360);x.globalCompositeOperation='source-over';
+ R(200,30,260,8,'#1e3036');for(let k=0;k<26;k++){const wx=200+k*10;R(wx,38,8,176,k%3?'rgba(170,220,232,.42)':'rgba(220,248,255,.58)')}for(let k=0;k<40;k++)R(200+rn()*260,40+rn()*170,2,8+rn()*14,'rgba(255,255,255,.5)');
+ bbGL(x,330,200,200,'rgba(190,240,250,A)',.4);const g=x.createLinearGradient(0,206,0,330);g.addColorStop(0,'rgba(90,160,180,.7)');g.addColorStop(1,'rgba(20,60,80,.65)');x.fillStyle=g;x.beginPath();x.ellipse(320,262,340,64,0,0,6.3);x.fill();
+ for(let i=0;i<60;i++)R(rn()*640,216+rn()*90,6+rn()*24,2,rn()<.5?'rgba(210,245,255,.5)':'rgba(140,200,220,.4)');
+ for(let i=0;i<9;i++){const px=40+rn()*560,py=234+rn()*70;R(px-8,py,16,4,'#2e5a3a');R(px-6,py-2,12,2,'#3e7a4c');if(i%3===0){R(px-2,py-4,4,4,'#e8c8d8')}}
+ const fg=x.createLinearGradient(0,170,0,240);fg.addColorStop(0,'rgba(220,245,255,0)');fg.addColorStop(1,'rgba(220,245,255,.22)');x.fillStyle=fg;x.fillRect(0,170,640,70)};
 // 沈没都市：大魚は漂う灯、灯台は差し込む光
 BBG.userp=(x)=>{const rn=bgRng(61);for(let i=0;i<14;i++){const px=rn()*640,py=40+rn()*170;bbGL(x,px,py,14+rn()*10,'rgba(150,240,220,A)',.35);bbR(x,px-1,py-1,2,2,'rgba(220,255,245,.9)')}};
 BBG.ulight=(x)=>{x.save();x.globalCompositeOperation='screen';const g=x.createLinearGradient(400,0,260,360);g.addColorStop(0,'rgba(255,240,190,.32)');g.addColorStop(1,'rgba(255,240,190,0)');x.fillStyle=g;x.beginPath();x.moveTo(420,0);x.lineTo(500,0);x.lineTo(380,360);x.lineTo(220,360);x.fill();x.restore()};
-// 死神ネヴァル：墓標とろうそく
-BBG.reaper=(x)=>{const R=(...a)=>bbR(x,...a),rn=bgRng(71);for(const[px,h,c]of[[40,44,1],[110,30,0],[200,38,1],[470,34,0],[560,46,1],[620,28,0]]){if(c){R(px-3,212-h,6,h,'#1e2228');R(px-12,212-h+8,24,6,'#1e2228')}else{R(px-10,212-h,20,h,'#1e2228');R(px-8,212-h-4,16,4,'#1e2228')}}
- for(let i=0;i<9;i++){const px=20+rn()*600,h=6+rn()*10;R(px,212-h,4,h,'#d8d0c0');R(px,212-h-4,4,4,'#ffd27a');bbGL(x,px+2,212-h-2,18,'rgba(255,200,120,A)',.35)}};
-// 処刑機関：鎖と処刑台のある刑場（錆びた赤を少し）
-BBG.gilL=(x)=>{const R=(...a)=>bbR(x,...a),rn=bgRng(81);x.globalCompositeOperation='multiply';x.fillStyle='rgba(200,150,140,1)';x.fillRect(0,0,640,360);x.globalCompositeOperation='source-over';
- for(const px of[70,250,560]){R(px-16,60,6,152,'#2a1e1c');R(px+12,60,6,152,'#2a1e1c');R(px-20,56,42,8,'#3a2a26');R(px-10,64,22,6,'#6a6a70')}
- for(let i=0;i<10;i++){const px=rn()*640,l=40+rn()*90;for(let k=0;k<l;k+=6)R(px+((k/6)%2?2:0),k,4,4,'#3a3436');R(px-2,l,8,6,'#4a4246')}
- bbGL(x,450,200,160,'rgba(180,40,30,A)',.18)};
+// 死神ネヴァル：冷たい青紫の地下墓所。並ぶ墓標・骨・青白い霊の灯・床の霧
+BBG.reaper=(x)=>{const R=(...a)=>bbR(x,...a),rn=bgRng(71);
+ x.globalCompositeOperation='multiply';x.fillStyle='#8a90b8';x.fillRect(0,0,640,360);x.globalCompositeOperation='source-over';
+ for(let r=0;r<2;r++)for(let i=0;i<9;i++){const px=20+i*72+rn()*30+(r?36:0),h=(r?40:26)+rn()*16,c=rn()<.5,col=r?'#20222e':'#2a2c3a',by=r?214:200;if(c){R(px-3,by-h,6,h,col);R(px-12,by-h+8,24,6,col)}else{R(px-11,by-h,22,h,col);R(px-9,by-h-4,18,4,col)}}
+ for(let i=0;i<12;i++){const px=rn()*640,py=206+rn()*30;R(px,py,10,4,'#c8c4b8');R(px+3,py-3,4,3,'#d8d4c8')}
+ for(let i=0;i<10;i++){const px=20+rn()*600,py=40+rn()*140;bbGL(x,px,py,22,'rgba(150,180,255,A)',.4);R(px-2,py-2,4,4,'rgba(220,235,255,.9)')}
+ const g=x.createLinearGradient(0,190,0,260);g.addColorStop(0,'rgba(170,180,230,0)');g.addColorStop(1,'rgba(170,180,230,.3)');x.fillStyle=g;x.fillRect(0,190,640,90);
+ for(let i=0;i<8;i++){const px=20+rn()*600,h=6+rn()*10;R(px,212-h,4,h,'#d8d0c0');R(px,212-h-4,4,4,'#a8c8ff');bbGL(x,px+2,212-h-2,16,'rgba(160,200,255,A)',.4)}};
+// 処刑機関：血と錆の刑場。大きな処刑台の枠・吊るされた檻・重い鎖・赤い光
+BBG.gilL=(x)=>{const R=(...a)=>bbR(x,...a),rn=bgRng(81);x.globalCompositeOperation='multiply';x.fillStyle='#c88c80';x.fillRect(0,0,640,360);x.globalCompositeOperation='source-over';
+ bbGL(x,440,160,260,'rgba(200,40,30,A)',.3);
+ for(const[px,w,h]of[[60,60,170],[300,80,190],[600,56,150]]){R(px-w/2,212-h,10,h,'#2a1a18');R(px+w/2-10,212-h,10,h,'#2a1a18');R(px-w/2-6,212-h-8,w+12,10,'#3a2420');R(px-w/2+10,212-h+12,w-20,10,'#8a8e94');R(px-w/2+10,212-h+20,w-20,2,'#c8ccd2')}
+ for(let i=0;i<14;i++){const px=rn()*640,l=40+rn()*120;for(let k=0;k<l;k+=6)R(px+((k/6)%2?2:0),k,4,4,'#3a3234');R(px-3,l,10,8,'#4a4044')}
+ for(const[px,py]of[[180,90],[470,70]]){R(px,0,2,py,'#3a3234');R(px-14,py,30,36,'#2a2224');for(let k=0;k<5;k++)R(px-12+k*6,py+2,2,32,'#4a4044');R(px-14,py+34,30,4,'#3a3234')}
+ for(let i=0;i<8;i++)R(rn()*640,220+rn()*120,10+rn()*30,4+rn()*6,'rgba(90,10,10,.45)')};
 BBG.gilR=BBG.gilL;
-// 時の機神クロノス：奥に大きな歯車と時計の文字盤
-BBG.chronos=(x)=>{const gear=(cx,cy,r,n,c)=>{x.fillStyle=c;x.beginPath();for(let k=0;k<n*2;k++){const t=k/(n*2)*6.283,rr=k%2?r:r*1.14;x.lineTo(cx+Math.cos(t)*rr,cy+Math.sin(t)*rr)}x.fill();x.fillStyle='rgba(0,0,0,.35)';x.beginPath();x.arc(cx,cy,r*.4,0,6.3);x.fill()};
- gear(120,90,70,12,'rgba(40,90,110,.45)');gear(560,140,90,14,'rgba(40,90,110,.4)');gear(420,40,46,10,'rgba(60,120,140,.35)');
- x.strokeStyle='rgba(200,240,255,.35)';x.lineWidth=2;x.beginPath();x.arc(320,110,80,0,6.3);x.stroke();for(let k=0;k<12;k++){const t=k/12*6.283;x.fillStyle='rgba(200,240,255,.45)';x.fillRect(Math.round(320+Math.cos(t)*70)-1,Math.round(110+Math.sin(t)*70)-1,2,4)}x.beginPath();x.moveTo(320,110);x.lineTo(320,58);x.moveTo(320,110);x.lineTo(354,124);x.stroke()};
-// 試作機神：管と配線の実験場
-BBG.protoA=(x)=>{const R=(...a)=>bbR(x,...a),rn=bgRng(91);for(const px of[50,130,520,600]){R(px-14,70,28,140,'rgba(90,200,180,.32)');R(px-14,70,4,140,'rgba(220,255,255,.4)');R(px-16,62,32,10,'#1e3a40');R(px-16,206,32,8,'#1e3a40');bbGL(x,px,150,44,'rgba(120,255,220,A)',.3);for(let k=0;k<5;k++)R(px-6+rn()*12,80+rn()*120,4,4,'rgba(200,255,240,.6)');R(px-4,120+rn()*60,8,8,'rgba(40,60,60,.6)')}
- x.strokeStyle='#14262a';x.lineWidth=4;for(let i=0;i<7;i++){const a=rn()*640,b=rn()*640;x.beginPath();x.moveTo(a,0);x.quadraticCurveTo((a+b)/2,60+rn()*60,b,0);x.stroke()}};
+// 時の機神クロノス：神殿の奥一面に回る大歯車と巨大な文字盤、漂う時の輪
+BBG.chronos=(x)=>{const gear=(cx,cy,r,n,c)=>{x.fillStyle=c;x.beginPath();for(let k=0;k<n*2;k++){const t=k/(n*2)*6.283,rr=k%2?r:r*1.14;x.lineTo(cx+Math.cos(t)*rr,cy+Math.sin(t)*rr)}x.fill();x.fillStyle='rgba(6,10,20,.5)';x.beginPath();x.arc(cx,cy,r*.42,0,6.3);x.fill();x.strokeStyle='rgba(220,200,130,.35)';x.lineWidth=2;x.beginPath();x.arc(cx,cy,r*.75,0,6.3);x.stroke()};
+ x.globalCompositeOperation='multiply';x.fillStyle='#c8c0a8';x.fillRect(0,0,640,360);x.globalCompositeOperation='source-over';
+ gear(90,110,96,14,'rgba(120,110,70,.55)');gear(590,150,110,16,'rgba(120,110,70,.5)');gear(450,30,60,10,'rgba(150,140,90,.5)');gear(200,20,40,8,'rgba(150,140,90,.45)');
+ const cx=320,cy=110;bbGL(x,cx,cy,150,'rgba(255,220,140,A)',.18);x.strokeStyle='rgba(255,230,170,.6)';x.lineWidth=4;x.beginPath();x.arc(cx,cy,100,0,6.3);x.stroke();x.lineWidth=2;x.beginPath();x.arc(cx,cy,88,0,6.3);x.stroke();
+ for(let k=0;k<12;k++){const t=k/12*6.283;x.fillStyle='rgba(255,230,170,.75)';x.fillRect(Math.round(cx+Math.cos(t)*94)-2,Math.round(cy+Math.sin(t)*94)-3,4,k%3?4:8)}
+ x.lineWidth=4;x.beginPath();x.moveTo(cx,cy);x.lineTo(cx,cy-74);x.moveTo(cx,cy);x.lineTo(cx+50,cy+22);x.stroke();
+ for(let k=0;k<3;k++){x.strokeStyle='rgba(200,240,255,.22)';x.lineWidth=2;x.beginPath();x.ellipse(cx,212,180+k*60,16+k*6,0,0,6.3);x.stroke()}};
+// 試作機神：緑に光る培養槽が並ぶ実験場、太い配線、床の警告の縞、火花
+BBG.protoA=(x)=>{const R=(...a)=>bbR(x,...a),rn=bgRng(91);
+ x.globalCompositeOperation='multiply';x.fillStyle='#a8d0b8';x.fillRect(0,0,640,360);x.globalCompositeOperation='source-over';
+ for(const[px,w]of[[40,44],[118,36],[520,40],[600,48]]){R(px-w/2,50,w,160,'rgba(80,220,140,.35)');R(px-w/2,50,4,160,'rgba(220,255,230,.5)');R(px-w/2-4,40,w+8,12,'#1a2e28');R(px-w/2-4,206,w+8,10,'#1a2e28');bbGL(x,px,130,50,'rgba(110,255,170,A)',.35);for(let k=0;k<8;k++)R(px-w/2+4+rn()*(w-8),60+rn()*140,4,4,'rgba(220,255,230,.7)');R(px-6,110,12,26,'rgba(30,60,40,.7)')}
+ x.strokeStyle='#0e1c18';x.lineWidth=6;for(let i=0;i<9;i++){const a=rn()*640,b=rn()*640;x.beginPath();x.moveTo(a,0);x.quadraticCurveTo((a+b)/2,70+rn()*70,b,0);x.stroke()}
+ for(let k=0;k<640;k+=24){R(k,214,12,4,'rgba(230,190,40,.55)');R(k+12,214,12,4,'rgba(20,20,20,.55)')}
+ for(let i=0;i<8;i++){const px=rn()*640,py=20+rn()*80;R(px,py,2,2,'#ffffff');R(px-4,py,2,2,'#ffe6a0');R(px+4,py+2,2,2,'#ffe6a0')}};
 BBG.protoB=BBG.protoC=BBG.protoA;
-// 永劫の天秤：光の柱が立つ裁きの間（少し金色）
-BBG.scales=(x)=>{x.save();x.globalCompositeOperation='screen';for(const[px,w]of[[90,40],[250,30],[520,46]]){const g=x.createLinearGradient(0,0,0,212);g.addColorStop(0,'rgba(255,230,160,.0)');g.addColorStop(.4,'rgba(255,230,160,.22)');g.addColorStop(1,'rgba(255,220,140,.32)');x.fillStyle=g;x.fillRect(px-w/2,0,w,212)}x.restore();bbGL(x,330,212,220,'rgba(255,210,130,A)',.12)};
+// 永劫の天秤：金色の裁きの間。何本もの光の柱、宙に浮かぶ分銅、金の照り返し
+BBG.scales=(x)=>{const R=(...a)=>bbR(x,...a),rn=bgRng(101);x.globalCompositeOperation='multiply';x.fillStyle='#e0c890';x.fillRect(0,0,640,360);x.globalCompositeOperation='screen';
+ for(const[px,w]of[[40,30],[130,46],[240,26],[420,30],[540,50],[620,26]]){const g=x.createLinearGradient(0,0,0,212);g.addColorStop(0,'rgba(255,230,160,.05)');g.addColorStop(.4,'rgba(255,230,160,.3)');g.addColorStop(1,'rgba(255,220,140,.45)');x.fillStyle=g;x.fillRect(px-w/2,0,w,212)}
+ x.globalCompositeOperation='source-over';bbGL(x,330,212,260,'rgba(255,210,130,A)',.25);
+ for(let i=0;i<7;i++){const px=40+rn()*560,py=40+rn()*120,s=8+rn()*10;R(px-s/2,py,s,s*.8,'rgba(150,120,60,.7)');R(px-s/4,py-4,s/2,4,'rgba(150,120,60,.7)');R(px-s/2,py,s,2,'rgba(255,230,160,.6)')}
+ const g=x.createLinearGradient(0,212,0,360);g.addColorStop(0,'rgba(255,210,130,.22)');g.addColorStop(1,'rgba(255,210,130,0)');x.fillStyle=g;x.fillRect(0,212,640,150)};
 function bossBg(base,ks){const k=ks&&ks.find(q=>BBG[q]);if(!k)return base;const id=k+'_'+(base.ak||'');if(!BBGC[id]){const c=MKC(640,360),x=c.getContext('2d');x.imageSmoothingEnabled=false;x.drawImage(base,0,0);BBG[k](x,base);c.ak=base.ak;c.boss=k;BBGC[id]=c}return BBGC[id]}
 function bgPick(kind,ks){const a=Math.max(1,Math.min(3,P.act||1)),k=a===1&&P.v1==='s'?'s':a;if(kind===2)return bossBg(bgVar(k,k===3?2:0),ks);const h=Math.abs((a*131+(CUR?CUR.f:0)*37+(CUR?CUR.j:0)*11+(P.path?P.path.length:0)*7)*2654435761|0);if(k===3){const L=[0,1,3,4];return bgVar(3,L[h%L.length])}const n=BGVN[k];return bgVar(k,h%(n+1))}
 /* ===== データ ===== */
