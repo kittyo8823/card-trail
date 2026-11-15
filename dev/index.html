@@ -4378,9 +4378,12 @@ const CH=[{n:'ユウキング',hp:80,rel:'burn',s:'pl',col:'#e8505b',dk:'#3a0c14
 CH[6]={n:'ネブラ',hp:75,rel:'ccore',s:'neb',col:'#5ab8ff',lt:'#bfe8ff',dk:[...Array(4).fill(CI('触手打ち')),...Array(4).fill(CI('泡の膜')),CI('放電'),CI('二連放出')],dkt:'触手打ち×4 泡の膜×4 放電 二連放出',st:'宇宙を漂う機械仕掛けの浮遊生命体。半透明の傘に光る核を宿し、周りに小クラゲを従える。',key:'得意：小クラゲ・集中・連鎖'};
 const SOUL=CI('魂');
 CH[10]={n:'セレス',hp:70,rel:'whood',s:'seres',col:'#8ac4ff',lt:'#d8ecff',dk:[...Array(4).fill(CI('白い光')),...Array(4).fill(CI('祈りの守り')),CI('霊騎士召喚'),CI('霊槍の解放')],dkt:'白い光×4 祈りの守り×4 霊騎士召喚 霊槍の解放',st:'白い頭巾で目を隠した少女。亡き騎士の兜を抱き、青い幽霊となった騎士を従える。',key:'得意：霊騎士・葬列・魂'};
-const CHV=()=>[0,1,2,3,6,10].concat(HDU?[4]:[]),htab=cl=>2+(cl===6?4:cl===10?5:cl===4?6:cl);
+const CHV=()=>[0,1,2,3,6].concat(SERU?[10]:[],HDU?[4]:[]),htab=cl=>2+(cl===6?4:cl===10?5:cl===4?6:cl);
 // 隠しキャラ：タイトルの「CARD」の D を10回タップで解放（Ver2.25 から、1回以上クリアしていることが条件）
 // Ver2.25 一度解放したらずっと残る（30分で消えるのはやめた）。解放には1回以上のクリアが必要
+// Ver3.63 セレスは「虚空の眼」を倒すと使える（ユーザー指定）。この版より前に1回以上クリアしていた人は最初から解放（cardtower_serm で一度だけ判定）
+const SERK='cardtower_ser';let SERU=0;try{if(localStorage.getItem(SERK))SERU=1;else if(!localStorage.getItem('cardtower_serm')){localStorage.setItem('cardtower_serm','1');if(anyClr()){localStorage.setItem(SERK,'1');SERU=1}}}catch(e){}
+function serUnlock(){if(SERU)return 0;SERU=1;try{localStorage.setItem(SERK,'1')}catch(e){}return 1}
 const HDK='cardtower_hd';let HDU=0;try{if(localStorage.getItem(HDK))HDU=1}catch(e){}
 function hdSeen(){if(HDU)try{localStorage.setItem(HDK,JSON.stringify({ls:Date.now()}))}catch(e){}}
 addEventListener('visibilitychange',()=>{try{if(!document.hidden&&MPR&&MPR.pl){const n=Date.now();for(const q of MPR.pl)MPR.seen[q.id]=n;MPR.lt=n}}catch(e){}});
@@ -5043,7 +5046,7 @@ if(m.sa){for(const x of alive())if(x!==e){x.str+=m.sa;pop(x,'筋力+'+m.sa,'#ffd
 if(e.k==='maiden'){const lv=wlv(e);e.wl=m.wf?0:Math.min(WLMX,lv+1);e.wdt=0;if(m.wf){e.i--;pop(e,'水位が引いた','#5ac8ff')}else if(e.wl>=3)pop(e,'水位'+e.wl,'#5ac8ff')}
 if(e.plt>0&&!e.dead){e.blk+=e.plt;e.plt--;fxs('sh',p.x,p.y-30,{d:.4})}e.i++;if(E[e.k]&&E[e.k].rnd&&!e.bur)e.ri=rPk(e);if(e.weak>0)e.weak--;if(e.vuln>0)e.vuln--}
 function endBattle(){recTry('dmg',P.bTD||0);if(B.boss&&!B.hurt)P.perf++;if(has('burn'))P.hp=Math.min(P.mhp,P.hp+6);if(has('burn2'))P.hp=Math.min(P.mhp,P.hp+12);if(has('cheese')){P.mhp+=1;P.hp+=1}if(PS&&PS.shr)P.hp=Math.min(P.mhp,P.hp+PS.shr);if(has('ribbon'))P.hp=Math.min(P.mhp,P.hp+3);
-const k=B.kind;let g=Math.round((k===0?10+RI(10):k===1?25+RI(15):60)*(has('frog')?1.25:1)*(1+(P.act-1)*.3))+(has('purse')?12:0)+(PS&&PS.gw||0);if(has('ecto'))g=0;P.gold+=g;P.ge+=g;if(k===2&&P.act===4){P.eyeWin=1;go('win');return}if(k===2&&P.act===3){P.hp=P.mhp;P.eyT=T;clrAdd(P.cls,P.asc||0);go('eyein');return}
+const k=B.kind;let g=Math.round((k===0?10+RI(10):k===1?25+RI(15):60)*(has('frog')?1.25:1)*(1+(P.act-1)*.3))+(has('purse')?12:0)+(PS&&PS.gw||0);if(has('ecto'))g=0;P.gold+=g;P.ge+=g;if(k===2&&P.act===4){P.eyeWin=1;if(serUnlock())P.serNew=1;go('win');return}if(k===2&&P.act===3){P.hp=P.mhp;P.eyT=T;clrAdd(P.cls,P.asc||0);go('eyein');return}
 const shd=k===1&&B.en.some(e=>E[e.k]&&E[e.k].au);if(shd)P.shd=Math.min(3,(P.shd||0)+1);const rel=k===1?relicPick():null;if(rel)gain(rel);if(k===1&&P.el2){P.el2=0;const r3=relicPick();if(r3){gain(r3);say('？？？の加護：レリック「'+RL[r3][0]+'」も手に入れた')}}if(k===1&&has('bstar')){const r2=relicPick();if(r2)gain(r2)}
 RW={g,rel,shd,pot:(k>=1||R()<.4)?potPick():null,cards:(k===2?rare3():pick3(()=>cardPick(k===1))).slice(0,has('crown')?1:3),el:k===1,title:k===2?'ボス撃破報酬：レアカードを選択':null,boss:k===2};go('reward')}
 const POT={pfoc:['集中の薬','集中+2','#5ab8ff',6,1],pdark:['闇の素','枠の数だけ闇クラゲを呼ぶ','#b06aff',6,2],pcap:['器の薬','小クラゲの枠+2','#7ee8ff',6,0],heal:['回復の雫','HPを20回復','#ff5a7a'],str:['力のエキス','この戦闘中 筋力+2','#ff8c2e'],blk:['鉄壁の水薬','ブロック+12','#7ec8ff'],draw:['疾風の薬','カードを3枚引く','#c9a0ff'],fire:['業火の瓶','全敵に20ダメージ','#ff6a2a'],venom:['毒蛇の瓶','全敵に毒8','#7dff9a'],weak:['弱体の薬','全敵に弱体3','#ff9a6a'],nrg:['魂の香','エナジー+2','#ffd23f'],life:['命の水','最大HP+5','#ff9ad0'],ki:['心眼の薬','刀魂+4（坪内丸）','#4aa8ff',2],
@@ -6461,7 +6464,7 @@ function selArtPl(){const h=MKC(320,180),g=h.getContext('2d');
  // 下を暗く
  g.fillStyle=L(0,130,0,180,[[0,'rgba(20,2,6,0)'],[1,'rgba(20,2,6,.5)']]);g.fillRect(0,130,320,50);
  const c=MKC(640,360),x=c.getContext('2d');x.imageSmoothingEnabled=false;x.drawImage(h,0,0,640,360);return c}
-const SELA={},SELAF={pl:selArtPl};
+const SELA={},SELAF={},SELAX={pl:selArtPl};// 一枚絵は一旦使わない（ユーザー：イラストは一旦いい）。試す時は SELAF.pl=selArtPl
 function selArtDraw(A,c,a){const ox=Math.round((1-a)*30),by=Math.round(Math.sin(T*1.6)*2);ctx.fillStyle='#120204';ctx.fillRect(0,0,640,360);ctx.globalAlpha=a;ctx.drawImage(A,ox,by);
  ctx.save();ctx.globalCompositeOperation='lighter';
  // 目の光
@@ -6475,7 +6478,7 @@ function drawSelect(){if(SEL>=NCH())SEL=0;const c=CH[CHV()[SEL]],col=c.col||'#8a
 const g=ctx.createRadialGradient(190,200,10,190,200,270);g.addColorStop(0,col+'66');g.addColorStop(1,'#08060f00');ctx.fillStyle=g;ctx.fillRect(0,0,640,360);
 ctx.fillStyle='rgba(255,255,255,.05)';ctx.beginPath();ctx.moveTo(150,0);ctx.lineTo(230,0);ctx.lineTo(320,300);ctx.lineTo(60,300);ctx.fill();
 for(let k=0;k<16;k++){const t=(T*.15+hs(k))%1;ctx.globalAlpha=.6*Math.sin(t*3.14);sq(70+hs(k+3)*240,300-t*260,k%3?2:3,c.lt||'#fff')}ctx.globalAlpha=1;
-ctx.fillStyle='#000';ctx.globalAlpha=.5;ctx.beginPath();ctx.ellipse(190,298,90,14,0,0,6.3);ctx.fill();ctx.globalAlpha=a;
+if(window.SELDECO)SELDECO.bg(c,a,col);ctx.fillStyle='#000';ctx.globalAlpha=.5;ctx.beginPath();ctx.ellipse(190,298,90,14,0,0,6.3);ctx.fill();ctx.globalAlpha=a;
 const SK2=1.5,sx=Math.round(Math.min(190-(im.bw||im.width)*SK2/2-(im.ox||0)*SK2,372-im.width*SK2)+(1-a)*40),sy=Math.round(300-((im.fy||im.height)-(PFY[c.s]||0))*SK2+Math.sin(T*2)*2);ctx.save();ctx.beginPath();ctx.rect(0,0,352,360);ctx.clip();if(c.s==='neb'){ctx.translate(sx+60,sy+156);ctx.scale(SK2,SK2);nebPaint(ctx,0,0,T,{})}else if(c.s==='seres'){ctx.translate(Math.round(150+(1-a)*40),300+Math.round(Math.sin(T*2)*2));ctx.scale(1.1,1.1);serDraw(-20,0,{},{kn:100,knm:100},1)}else ctx.drawImage(im,sx,sy,im.width*SK2,im.height*SK2);ctx.restore();}ctx.globalAlpha=1;
 if(N>1){const pu=Math.sin(T*5)*3;txt('◀',38-pu,190,c.lt,'center',26);txt('▶',342+pu,190,c.lt,'center',26);hit(14,150,50,80,()=>selGo(-1));hit(316,150,50,80,()=>selGo(1))}
 ctx.globalAlpha=a;txt('CHARACTER　'+(SEL+1)+' / '+N,372,56,col,'left',11);txt(c.n,372,88,'#fff','left',c.n.length>8?24:28);ctx.fillStyle=col;ctx.fillRect(372,98,248,2);
@@ -6488,7 +6491,7 @@ btn(16,322,120,26,'？キャラ説明',()=>openHelp(htab(CHV()[SEL])),'#2a5a3a',
 {const sa=d=>{ASC=(ASC+d+11)%11;try{localStorage.setItem('cardtower_asc',ASC)}catch(e){}sfx('cl')},ac=ASC?'#ff6a6a':'#9a92c8';box(146,318,376,32,ASC?'#2a0c18':'#1a1630',ac);txt('◀',162,340,ac,'center',14);txt('▶',506,340,ac,'center',14);hit(146,318,40,32,()=>sa(-1));hit(482,318,40,32,()=>sa(1));
  txt(ASC?'アセンション '+ASC:'アセンションなし',248,333,ASC?'#ffd23f':'#cfc8ee','center',12);txt(ASC?ASCD[ASC]:'標準の難易度',248,346,'#b8b0d8','center',8);
  hit(186,318,296,32,()=>{if(ASC)say('A1〜A'+ASC+'の効果がすべて適用される（？説明→遊び方）')});{const cs=clrGet(CHV()[SEL]);for(let k=0;k<=10;k++){const x=327+k*14,c=cs.has(k);if(c){const g=.35+.25*Math.sin(T*2.4+k*.5);ctx.fillStyle='rgba(255,210,63,'+(g*.55)+')';ctx.fillRect(x-2,328,14,10);ctx.fillStyle='rgba(255,230,140,'+(g*.35)+')';ctx.fillRect(x-1,327,12,12)}
- ctx.fillStyle=c?'#ffd23f':k<=ASC&&k>0?'#ff6a6a':k===0?'#8a82b8':'#3a3458';ctx.fillRect(x,330,10,6);if(c){ctx.fillStyle='#fff6c8';ctx.fillRect(x,330,10,2)}if(k===ASC){ctx.fillStyle='#fff';ctx.fillRect(x+3,339,4,2)}}}}box(530,318,94,32,c.dk||'#2c3566',col);txt('出発する',577,340,'#fff','center',15);hit(530,318,94,32,()=>{sfx('pk');newRun(CHV()[SEL])})}
+ ctx.fillStyle=c?'#ffd23f':k<=ASC&&k>0?'#ff6a6a':k===0?'#8a82b8':'#3a3458';ctx.fillRect(x,330,10,6);if(c){ctx.fillStyle='#fff6c8';ctx.fillRect(x,330,10,2)}if(k===ASC){ctx.fillStyle='#fff';ctx.fillRect(x+3,339,4,2)}}}}box(530,318,94,32,c.dk||'#2c3566',col);txt('出発する',577,340,'#fff','center',15);hit(530,318,94,32,()=>{sfx('pk');newRun(CHV()[SEL])});if(window.SELDECO)SELDECO.fg(c,a,col)}
 // 最初の選択：原作のネオーと同じ配置（左に自分、右に巨大な「？？？」、その横に吹き出し、左下に選択肢）
 const NEB=(()=>{const c=MKC(640,360),x=c.getContext('2d'),rn=bgRng(41);const g=x.createLinearGradient(0,0,0,360);g.addColorStop(0,'#02040c');g.addColorStop(.6,'#081428');g.addColorStop(1,'#030610');x.fillStyle=g;x.fillRect(0,0,640,360);
  for(let i=0;i<120;i++){x.fillStyle=rn()<.25?'#9af6ff':'#24466a';x.fillRect(Math.floor(rn()*320)*2,Math.floor(rn()*100)*2,2,2)}
@@ -6644,6 +6647,7 @@ for(let k=0;k<28;k++){const x=(k*131)%640,y=360-(k*71+T*(12+k%4*6))%380;ctx.fill
 const a=Math.min(1,el/.8);ctx.globalAlpha=a;
 txt(win?(P.eyeEnd?'踏破':'勝利'):'敗北',320,64-Math.round((1-a)*16),win?'#ffd23f':'#ff5a5a','center',44);
 txt(win?(P.eyeEnd?'塔の頂で「虚空の眼」に見つめられ、その一部となった…':P.eyeWin?'「虚空の眼」を討ち、塔の頂を越えた':'塔の頂に到達した'):P.gaveUp?'挑戦を諦めた…':P.slept?'ホーリー大輔は寝てしまった':P.killer?'「'+P.killer+'」に倒された…':'力尽きた…',320,94,win?'#fff1c0':'#e8b0b8','center',14);
+if(win&&P.serNew){ctx.globalAlpha=a*(.75+.25*Math.sin(T*4));txt('新しいキャラ「セレス」が使えるようになった',320,108,'#8ac4ff','center',11);ctx.globalAlpha=a}
 const im=P.slept?SPR['hori_z'+P.act]:P.cls===4?SPR['hori'+P.act]:SPR[CH[P.cls].s];ctx.save();if(win||P.slept)ctx.drawImage(im,Math.round(110-(im.bw||im.width)/2-(im.ox||0)),Math.round(232-ftY(im,P.cls===4?'hori':CH[P.cls].s)+Math.sin(T*3)*3));else{ctx.globalAlpha=a*.5;ctx.translate(110,232-im.width/2);ctx.rotate(-Math.PI/2);ctx.drawImage(im,-im.width/2,-im.height/2)}ctx.restore();ctx.globalAlpha=a;
 txt(CH[P.cls].n,110,254,'#fff','center',13);txt('デッキ'+P.deck.length+'枚・レリック'+P.relics.length+'個',110,272,'#cfc8ee','center',11);
 box(222,112,398,194,win?'#2a1e10':'#1a0c14',win?'#ffd23f':'#8a2a3a');txt('スコア',238,132,win?'#ffe9a8':'#e8b0b8','left',13);
