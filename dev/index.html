@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.77';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.78';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2969,47 +2969,75 @@ BFULL.maiden=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(311),ST=['#5e6e74','#44
  for(let y=222;y<270;y+=2){const t=Math.abs(y-246)/24,w=320*Math.sqrt(1-t*t);R(330-w,y,w*2,2,y<230||y>262?'#244e5a':'#2e6472')}for(let i=0;i<24;i++)R(200+rn()*260,232+rn()*26,10+rn()*20,2,i%2?'#6ab0c0':'#a0dce8');
  for(let i=0;i<8;i++){const px=190+rn()*280,py=238+rn()*18;R(px-6,py,12,4,MS[0]);if(i%3===0)R(px-2,py-2,4,2,'#e8c8d8')}
  for(let i=0;i<16;i++)R(rn()*640,212+rn()*14,6+rn()*10,4,ST[1+(i%2)])};
-// ===== 時の機神クロノス：時の狭間に浮かぶ時計塔の頂（床そのものが巨大な文字盤、背後に大時計と砂時計の柱、宙に浮く歯車）
-BFULL.chronos=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(321),BR=['#e0c070','#b08a40','#6a4e22','#3a2a14'],CY='#5ae8f0';
- BF.sky(x,'#0a0618','#1a1030','#0c0a1c');for(let i=0;i<90;i++)R(rn()*640,rn()*200,2,2,rn()<.3?'#c8b8ff':rn()<.5?'#6a5a9a':'#3a3060');
- // 時の渦（同心の輪）
- for(let k=0;k<6;k++){x.strokeStyle=k%2?'#2a1e48':'#3a2a60';x.lineWidth=4;x.beginPath();x.ellipse(320,96,120+k*46,60+k*22,0,0,6.3);x.stroke()}
- const gear=(cx,cy,r,n,c,ang)=>{const[L,M,D]=c;x.fillStyle=D;x.beginPath();for(let k=0;k<n*2;k++){const t=k/(n*2)*6.283+ang,rr=k%2?r:r*1.18;x.lineTo(BF.F(cx+Math.cos(t)*rr),BF.F(cy+Math.sin(t)*rr))}x.fill();x.fillStyle=M;x.beginPath();x.arc(cx,cy,r*.9,0,6.3);x.fill();x.fillStyle=D;x.beginPath();x.arc(cx,cy,r*.66,0,6.3);x.fill();x.fillStyle=M;for(let k=0;k<5;k++){x.save();x.translate(cx,cy);x.rotate(k/5*6.283+ang);x.fillRect(0,-3,r*.66,6);x.restore()}x.fillStyle=L;x.beginPath();x.arc(cx,cy,r*.2,0,6.3);x.fill();x.fillStyle=L;x.beginPath();x.arc(cx-r*.3,cy-r*.3,r*.08,0,6.3);x.fill()};
- // 背後の大時計
- const cx=320,cy=98,r=104;gear(cx,cy,r+20,24,[BR[1],BR[2],BR[3]],0);x.fillStyle='#a8987a';x.beginPath();x.arc(cx,cy,r,0,6.3);x.fill();x.fillStyle='#8a7a5c';x.beginPath();x.arc(cx,cy,r*.8,0,6.3);x.fill();x.fillStyle='#a8987a';x.beginPath();x.arc(cx,cy,r*.74,0,6.3);x.fill();
- const RN=['XII','I','II','III','IV','V','VI','VII','VIII','IX','X','XI'];x.font='bold 14px serif';x.textAlign='center';for(let k=0;k<12;k++){const t=k/12*6.283-1.571;x.fillStyle='#3a2a14';x.fillText(RN[k],cx+Math.cos(t)*r*.87,cy+Math.sin(t)*r*.87+5)}
- for(let k=0;k<60;k++){const t=k/60*6.283;R(cx+Math.cos(t)*(r*.77)-1,cy+Math.sin(t)*(r*.77)-1,2,k%5?2:4,'#6a4e22')}
- x.strokeStyle='#2a1a0a';x.lineWidth=8;x.beginPath();x.moveTo(cx,cy);x.lineTo(cx+Math.cos(-2.3)*r*.48,cy+Math.sin(-2.3)*r*.48);x.stroke();x.lineWidth=5;x.beginPath();x.moveTo(cx,cy);x.lineTo(cx+Math.cos(-.4)*r*.7,cy+Math.sin(-.4)*r*.7);x.stroke();x.fillStyle=BR[0];x.beginPath();x.arc(cx,cy,10,0,6.3);x.fill();
- // 砂時計の柱（左右）
- const hg=(hx,top,h)=>{R(hx-24,top,48,10,BR[1]);R(hx-24,top,48,3,BR[0]);R(hx-24,top+h-10,48,10,BR[1]);R(hx-22,top+10,4,h-20,BR[2]);R(hx+18,top+10,4,h-20,BR[2]);const m=top+h/2;for(let y=top+10;y<top+h-10;y+=2){const t=Math.abs(y-m)/(h/2-10),w=4+t*30;x.fillStyle=y<m?'#5a6a8a':'#5a6a8a';x.fillRect(BF.F(hx-w/2),y,BF.F(w),2);if(y>m&&y>top+h-10-(h/2-10)*.55)x.fillStyle='#e0c070',x.fillRect(BF.F(hx-w/2+2),y,BF.F(w-4),2);if(y<m&&y<top+10+(h/2-10)*.35)x.fillStyle='#e0c070',x.fillRect(BF.F(hx-w/2+2),y,BF.F(w-4),2)}R(hx-1,m-2,2,(h/2-10)*.45,'#e0c070')};
- hg(52,40,170);hg(588,40,170);
- // 宙に浮く歯車
- gear(150,60,30,10,BR.slice(0,3),.4);gear(500,52,24,8,BR.slice(0,3),.1);gear(128,170,20,8,BR.slice(0,3),.7);gear(520,170,34,10,BR.slice(0,3),.2);
- // 床：巨大な文字盤（遠近の楕円）
- for(let y=212;y<360;y+=2){x.fillStyle=BF.mix('#1a1030','#0a0618',(y-212)/148);x.fillRect(0,y,640,2)}
- x.fillStyle=BR[2];x.beginPath();x.ellipse(320,262,330,70,0,0,6.3);x.fill();x.fillStyle='#8a7a5c';x.beginPath();x.ellipse(320,260,316,64,0,0,6.3);x.fill();x.fillStyle='#9a8a6c';x.beginPath();x.ellipse(320,260,250,50,0,0,6.3);x.fill();
- for(let k=0;k<12;k++){const t=k/12*6.283;const px=320+Math.cos(t)*284,py=260+Math.sin(t)*57;R(px-6,py-2,12,4,'#3a2a14')}
- x.strokeStyle='#3a2a14';x.lineWidth=6;x.beginPath();x.moveTo(320,260);x.lineTo(470,272);x.stroke();x.lineWidth=4;x.beginPath();x.moveTo(320,260);x.lineTo(240,236);x.stroke();x.fillStyle=BR[1];x.beginPath();x.ellipse(320,260,16,6,0,0,6.3);x.fill();
- R(0,212,640,2,BR[2])};
-// ===== 機神デウス・マキナ：雲の上の機械の大聖堂（白と金の柱、背後に回る光輪の機関、雲の床、差し込む光）
-BFULL.deus=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(331),MB=['#f0eee8','#c8c6c0','#8a8a90'],GD=['#f0d890','#c8a850','#7a6230'],CY='#6ae8ff';
- BF.sky(x,'#0a1430','#24305a','#3a4470');for(let i=0;i<60;i++)R(rn()*640,rn()*120,2,2,rn()<.4?'#e8f0ff':'#8a98c8');
- // 背後の光輪の機関（同心の輪と放射の骨組み）
- const cx=320,cy=96;for(let k=0;k<3;k++){x.strokeStyle=k===1?GD[0]:GD[1];x.lineWidth=k===1?8:4;x.beginPath();x.arc(cx,cy,70+k*36,0,6.3);x.stroke()}
- for(let k=0;k<16;k++){const t=k/16*6.283;x.strokeStyle=GD[2];x.lineWidth=4;x.beginPath();x.moveTo(cx+Math.cos(t)*70,cy+Math.sin(t)*70);x.lineTo(cx+Math.cos(t)*142,cy+Math.sin(t)*142);x.stroke();R(cx+Math.cos(t)*106-3,cy+Math.sin(t)*106-3,6,6,CY)}
- x.fillStyle='#1a2448';x.beginPath();x.arc(cx,cy,62,0,6.3);x.fill();x.fillStyle=GD[1];x.beginPath();x.arc(cx,cy,30,0,6.3);x.fill();x.fillStyle=CY;x.beginPath();x.arc(cx,cy,12,0,6.3);x.fill();
- // 差し込む光（半透明の光の筋）
- x.save();x.globalCompositeOperation='screen';for(const[a,b,c,d]of[[200,250,150,260],[390,440,380,500],[300,340,280,360]]){const g=x.createLinearGradient(0,0,0,212);g.addColorStop(0,'rgba(255,240,200,.28)');g.addColorStop(1,'rgba(255,240,200,.04)');x.fillStyle=g;x.beginPath();x.moveTo(a,0);x.lineTo(b,0);x.lineTo(d,212);x.lineTo(c,212);x.fill()}x.restore();
- // 白と金の柱
- for(const[px,w,top]of[[30,34,20],[110,26,50],[530,26,50],[610,34,20]]){BF.col(x,px,top,206,w,MB,0);R(px-w/2-6,top-14,w+12,6,GD[1]);R(px-w/2,top+30,w,4,GD[0]);for(let y=top+50;y<200;y+=40)R(px-2,y,4,10,CY)}
- // 空中の大きな歯車（白）
- const gear=(gx,gy,r,n)=>{x.fillStyle=MB[2];x.beginPath();for(let k=0;k<n*2;k++){const t=k/(n*2)*6.283,rr=k%2?r:r*1.16;x.lineTo(gx+Math.cos(t)*rr,gy+Math.sin(t)*rr)}x.fill();x.fillStyle=MB[1];x.beginPath();x.arc(gx,gy,r*.86,0,6.3);x.fill();x.fillStyle=MB[2];x.beginPath();x.arc(gx,gy,r*.4,0,6.3);x.fill();x.fillStyle=GD[0];x.beginPath();x.arc(gx,gy,r*.16,0,6.3);x.fill()};
- gear(190,40,26,10);gear(460,50,22,9);gear(170,170,16,8);
- // 雲の床
- for(let y=200;y<360;y+=2){x.fillStyle=BF.mix('#5a6488','#242c48',(y-200)/160);x.fillRect(0,y,640,2)}
- for(let i=0;i<26;i++){const px=rn()*660-10,py=200+rn()*120,w=40+rn()*80,h=10+rn()*14;R(px,py,w,h,'#6a7498');R(px+6,py-6,w-12,6,'#8a94b4');R(px+10,py-8,w-24,2,'#a8b0cc')}
+// 奥行きの道具（沈没都市の背景と同じ作り）：光のにじみ BF.gl、光の側に縁取りを付けた歯車 BF.gear、縁の光る柱 BF.pil、周りを暗くする BF.vig
+BF.gl=(x,cx,cy,rx,ry,c)=>{x.save();x.translate(cx,cy);x.scale(1,ry/rx);const g=x.createRadialGradient(0,0,1,0,0,rx);g.addColorStop(0,c);g.addColorStop(1,'rgba(0,0,0,0)');x.globalCompositeOperation='lighter';x.fillStyle=g;x.fillRect(-rx,-rx,rx*2,rx*2);x.restore()};
+BF.gear=(x,cx,cy,r,n,c,hole,rim,lx,ly,ang)=>{const pth=(ox,oy)=>{x.beginPath();for(let k=0;k<n*2;k++){const t=k/(n*2)*6.283+(ang||0),rr=k%2?r:r*1.16;x.lineTo(BF.F(cx+ox+Math.cos(t)*rr),BF.F(cy+oy+Math.sin(t)*rr))}x.closePath()};const d=Math.hypot(lx-cx,ly-cy)||1,ox=(lx-cx)/d*3,oy=(ly-cy)/d*3;
+ if(rim){pth(ox,oy);x.fillStyle=rim;x.fill()}pth(0,0);x.fillStyle=c;x.fill();x.fillStyle=hole;x.beginPath();x.arc(cx,cy,r*.62,0,6.3);x.fill();x.fillStyle=c;for(let k=0;k<5;k++){x.save();x.translate(cx,cy);x.rotate(k/5*6.283+(ang||0));x.fillRect(0,-Math.max(2,r*.07),r*.64,Math.max(4,r*.14));x.restore()}x.beginPath();x.arc(cx,cy,r*.2,0,6.3);x.fill();if(rim){x.fillStyle=rim;x.beginPath();x.arc(cx+ox*.6,cy+oy*.6,r*.08,0,6.3);x.fill()}};
+BF.pil=(x,cx,top,w,h,c,hl,rim,cap,side,band)=>{const R=(...a)=>BF.R(x,...a);R(cx-w/2,top,w,h,c);R(side>0?cx+w/2-Math.max(2,w*.16):cx-w/2,top,Math.max(2,w*.16),h,rim);R(side>0?cx+w/2-Math.max(2,w*.34):cx-w/2+Math.max(2,w*.16),top,Math.max(2,w*.18),h,hl);for(let k=1;k<6;k++)R(cx-w/2,top+h*k/6,w,2,'rgba(0,0,0,.35)');if(w>16)for(let k=0;k<3;k++)R(cx-w/2+w*(.25+k*.22),top+6,2,h-12,'rgba(0,0,0,.22)');R(cx-w/2-cap,top-cap*2,w+cap*2,cap*2,c);R(cx-w/2-cap,top-cap*2,w+cap*2,2,rim);R(cx-w/2-cap,top+h-cap,w+cap*2,cap*1.4,c);if(band)for(let k=1;k<4;k++)R(cx-w/2,top+h*k/4,w,2,band)};
+BF.vig=(x,a)=>{const g=x.createRadialGradient(320,150,120,320,150,420);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,'+a+')');x.fillStyle=g;x.fillRect(0,0,640,360)};
+BF.rays=(x,cx,list,col,y1)=>{x.save();x.globalCompositeOperation='lighter';for(const[lx,lw,a]of list){const g=x.createLinearGradient(0,0,0,y1);g.addColorStop(0,col.replace('A',a));g.addColorStop(1,col.replace('A',0));x.fillStyle=g;x.beginPath();x.moveTo(lx,0);x.lineTo(lx+lw,0);x.lineTo(lx+lw+(lx-cx)*.35,y1);x.lineTo(lx+(lx-cx)*.35,y1);x.fill()}x.restore()};
+// ===== 時の機神クロノス：時の狭間の時計塔の内部。奥に逆光の大時計、何層もの歯車、柱廊、砂時計、床に刻まれた文字盤
+BFULL.chronos=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(321),C0='#040208',C1='#0a0614',C2='#130c22',C3='#1e1534',C4='#2e2250',C5='#4a3a78',GD=['#ffe6a8','#e0b060','#9a7032','#5a3e1c','#2e2010'],LX=320,LY=96;
+ x.fillStyle=C1;x.fillRect(0,0,640,212);BF.gl(x,320,110,340,200,'rgba(110,70,190,.6)');BF.gl(x,320,96,170,150,'rgba(255,190,110,.32)');
+ // 一番奥の歯車（霞む）
+ for(const[gx,gy,gr,gn,a]of[[120,40,60,14,.2],[520,30,72,16,.6],[210,150,40,10,.4],[430,150,46,11,.1],[40,120,50,12,.3],[600,140,44,10,.5]])BF.gear(x,gx,gy,gr,gn,C4,C3,C5,LX,LY,a);
+ // 奥の大時計（逆光）：輪・文字盤・ローマ数字の光
+ const cx=320,cy=96,r=96;BF.gl(x,cx,cy,r+40,r+40,'rgba(255,200,120,.35)');BF.gear(x,cx,cy,r+12,30,C3,C2,GD[2],cx,cy-200,0);x.fillStyle=C2;x.beginPath();x.arc(cx,cy,r,0,6.3);x.fill();x.fillStyle=C3;x.beginPath();x.arc(cx,cy,r*.82,0,6.3);x.fill();x.fillStyle=C2;x.beginPath();x.arc(cx,cy,r*.76,0,6.3);x.fill();
+ for(let k=0;k<60;k++){const t=k/60*6.283;R(cx+Math.cos(t)*r*.79-1,cy+Math.sin(t)*r*.79-1,2,2,k%5?GD[3]:GD[1])}
+ const RN=['XII','I','II','III','IV','V','VI','VII','VIII','IX','X','XI'];x.font='bold 13px serif';x.textAlign='center';for(let k=0;k<12;k++){const t=k/12*6.283-1.571,px=cx+Math.cos(t)*r*.9,py=cy+Math.sin(t)*r*.9+5;x.fillStyle=GD[3];x.fillText(RN[k],px+1,py+1);x.fillStyle=GD[1];x.fillText(RN[k],px,py)}
+ BF.gl(x,cx,cy,r*.6,r*.6,'rgba(160,110,255,.25)');x.strokeStyle=C0;x.lineWidth=8;x.beginPath();x.moveTo(cx,cy);x.lineTo(cx+Math.cos(-2.3)*r*.5,cy+Math.sin(-2.3)*r*.5);x.stroke();x.lineWidth=5;x.beginPath();x.moveTo(cx,cy);x.lineTo(cx+Math.cos(-.45)*r*.72,cy+Math.sin(-.45)*r*.72);x.stroke();x.fillStyle=GD[1];x.beginPath();x.arc(cx,cy,8,0,6.3);x.fill();x.fillStyle=GD[0];x.fillRect(cx-2,cy-4,4,2);
+ // 光の筋
+ BF.rays(x,320,[[296,10,.18],[312,6,.26],[330,10,.16],[346,6,.14],[280,6,.1],[362,8,.1]],'rgba(255,215,150,A)',206);
+ // 左右の柱廊（奥ほど霞む・中央に向いた縁が金に光る）
+ const rows=[[[244,396],70,8,C3,C4,GD[2],2],[[210,430],62,12,C2,C3,GD[2],3],[[164,476],52,18,C2,C3,GD[1],4],[[104,536],40,26,C1,C2,GD[1],5]];
+ for(const[[lx,rx],top,w,c,hl,rim,cap]of rows){const h=208-top;BF.pil(x,lx,top,w,h,c,hl,rim,cap,1,GD[3]);BF.pil(x,rx,top,w,h,c,hl,rim,cap,-1,GD[3])}
+ // 梁
+ for(const[y0,y1,c]of[[56,64,C2],[44,56,C1],[28,44,C0]]){x.fillStyle=c;x.beginPath();x.moveTo(0,y0-34);x.lineTo(236,y0);x.lineTo(236,y1);x.lineTo(0,y1+10);x.fill();x.beginPath();x.moveTo(640,y0-34);x.lineTo(404,y0);x.lineTo(404,y1);x.lineTo(640,y1+10);x.fill()}x.fillStyle=GD[3];x.fillRect(0,60,236,2);x.fillRect(404,60,236,2);
+ // 手前の歯車（影）
+ BF.gear(x,-10,30,70,16,C0,C1,GD[2],LX,LY,.2);BF.gear(x,650,40,80,18,C0,C1,GD[2],LX,LY,.4);BF.gear(x,60,190,30,10,C0,C1,GD[3],LX,LY,0);
+ // 手前の砂時計の柱（影の枠・光る砂）
+ const hg=(hx,top,h,sd)=>{R(hx-22,top,44,8,C0);R(hx-22,top,44,2,GD[2]);R(hx-22,top+h-8,44,8,C0);R(hx-22,top+h-8,44,2,GD[3]);R(hx-20,top+8,4,h-16,C0);R(hx+16,top+8,4,h-16,C0);R(hx+(sd>0?16:-20),top+8,2,h-16,GD[3]);const m=top+h/2;for(let y=top+8;y<top+h-8;y+=2){const t=Math.abs(y-m)/(h/2-8),w=4+t*30;R(hx-w/2,y,w,2,'#1a1830');if((y>m&&y>top+h-8-(h/2-8)*.5)||(y<m&&y<top+8+(h/2-8)*.3))R(hx-w/2+2,y,w-4,2,y%4?GD[1]:GD[0])}R(hx-1,m-2,2,(h/2-8)*.5,GD[0]);BF.gl(x,hx,top+h*.8,34,20,'rgba(255,190,90,.35)')};
+ hg(30,36,172,1);hg(610,36,172,-1);
+ // 床：暗い床に刻まれた大きな文字盤、奥の光の照り返し
+ for(let y=208;y<360;y+=2){x.fillStyle=BF.mix(C3,C0,(y-208)/152);x.fillRect(0,y,640,2)}R(0,208,640,2,GD[2]);
+ BF.gl(x,320,222,280,26,'rgba(170,120,255,.3)');BF.gl(x,320,218,120,14,'rgba(255,200,120,.3)');
+ x.strokeStyle=GD[3];x.lineWidth=2;for(const[rx,ry]of[[300,62],[250,50],[170,34]]){x.beginPath();x.ellipse(320,262,rx,ry,0,0,6.3);x.stroke()}
+ for(let k=0;k<12;k++){const t=k/12*6.283;R(320+Math.cos(t)*275-5,262+Math.sin(t)*56-1,10,2,GD[2])}
+ x.strokeStyle=GD[2];x.lineWidth=4;x.beginPath();x.moveTo(320,262);x.lineTo(470,276);x.stroke();x.lineWidth=2;x.beginPath();x.moveTo(320,262);x.lineTo(236,244);x.stroke();R(312,258,16,6,GD[1]);
+ // 漂う光の粒（金と紫）
+ for(let i=0;i<40;i++){const px=rn()*640,py=rn()*300;R(px,py,2,2,rn()<.5?GD[0]:'#c8a8ff');if(i%5===0)BF.gl(x,px+1,py+1,8,8,'rgba(255,210,140,.4)')}
+ BF.vig(x,.7)};
+// ===== 機神デウス・マキナ：雲の上の機械の大聖堂。奥に逆光の光輪の機関、白い大理石の柱廊、神の光、雲海
+BFULL.deus=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(331),C0='#03060e',C1='#08101e',C2='#0e1a30',C3='#182a48',C4='#2a4268',C5='#4a6a98',HZ='#7a90c0',GD=['#fff0c0','#e8c878','#a07e3a','#5a4420'],CY='#8af0ff',LX=320,LY=100;
+ x.fillStyle=C1;x.fillRect(0,0,640,212);BF.gl(x,320,120,340,210,'rgba(70,120,200,.6)');BF.gl(x,320,100,160,140,'rgba(220,240,255,.35)');
+ for(let i=0;i<50;i++)R(rn()*640,rn()*90,2,2,rn()<.3?'#e8f0ff':'#5a6a98');
+ // 一番奥の雲（霞む）
+ for(let i=0;i<8;i++){const px=rn()*640,py=110+rn()*50,w=80+rn()*90;R(px,py,w,14,C4);R(px+10,py-6,w-20,6,C5)}
+ // 光輪の機関（逆光）：放射の骨組み・何重もの輪・光る節
+ const cx=320,cy=100;BF.gl(x,cx,cy,160,160,'rgba(255,230,170,.3)');
+ for(let k=0;k<24;k++){const t=k/24*6.283;x.strokeStyle=k%2?C3:C4;x.lineWidth=k%2?2:4;x.beginPath();x.moveTo(cx+Math.cos(t)*64,cy+Math.sin(t)*64);x.lineTo(cx+Math.cos(t)*150,cy+Math.sin(t)*150);x.stroke()}
+ for(const[rr,lw,c]of[[150,6,C4],[128,4,GD[3]],[104,8,C3],[84,2,GD[2]],[64,6,C3]]){x.strokeStyle=c;x.lineWidth=lw;x.beginPath();x.arc(cx,cy,rr,0,6.3);x.stroke()}
+ x.strokeStyle=GD[1];x.lineWidth=2;x.beginPath();x.arc(cx,cy,104,3.6,5.8);x.stroke();x.beginPath();x.arc(cx,cy,150,3.8,5.6);x.stroke();
+ for(let k=0;k<12;k++){const t=k/12*6.283;const px=cx+Math.cos(t)*128,py=cy+Math.sin(t)*128;R(px-3,py-3,6,6,C2);R(px-2,py-2,4,4,CY);BF.gl(x,px,py,10,10,'rgba(140,240,255,.5)')}
+ x.fillStyle=C2;x.beginPath();x.arc(cx,cy,56,0,6.3);x.fill();BF.gl(x,cx,cy,50,50,'rgba(140,230,255,.45)');x.fillStyle=GD[2];x.beginPath();x.arc(cx,cy,24,0,6.3);x.fill();x.fillStyle=CY;x.beginPath();x.arc(cx,cy,10,0,6.3);x.fill();x.fillStyle='#e8ffff';x.fillRect(cx-2,cy-4,4,2);
+ // 神の光
+ BF.rays(x,320,[[292,12,.2],[310,6,.3],[328,12,.2],[348,8,.16],[272,8,.1],[368,10,.1]],'rgba(220,240,255,A)',206);
+ // 白い大理石の柱廊（奥ほど空の色に霞む・中央の光に向いた縁が白く光る）
+ const rows=[[[240,400],74,8,BF.mix(C4,HZ,.5),HZ,'#e8f0ff',2],[[204,436],64,12,C4,C5,'#dfe8ff',3],[[156,484],52,18,C3,C4,'#cfe0ff',4],[[96,544],38,26,C2,C3,'#b8ccf0',5]];
+ for(const[[lx,rx],top,w,c,hl,rim,cap]of rows){const h=206-top;BF.pil(x,lx,top,w,h,c,hl,rim,cap,1,GD[3]);BF.pil(x,rx,top,w,h,c,hl,rim,cap,-1,GD[3])}
+ for(const[y0,y1,c]of[[58,66,C3],[46,58,C2],[30,46,C1]]){x.fillStyle=c;x.beginPath();x.moveTo(0,y0-34);x.lineTo(232,y0);x.lineTo(232,y1);x.lineTo(0,y1+10);x.fill();x.beginPath();x.moveTo(640,y0-34);x.lineTo(408,y0);x.lineTo(408,y1);x.lineTo(640,y1+10);x.fill()}x.fillStyle=GD[2];x.fillRect(0,62,232,2);x.fillRect(408,62,232,2);
+ // 手前の影の柱
+ BF.pil(x,20,10,40,198,C0,C1,'#8aa0d0',8,1,0);BF.pil(x,620,10,40,198,C0,C1,'#8aa0d0',8,-1,0);
+ // 浮かぶ白い歯車（中景）
+ BF.gear(x,170,40,22,9,C4,C2,'#dfe8ff',LX,LY,.3);BF.gear(x,474,46,18,8,C4,C2,'#dfe8ff',LX,LY,.1);
+ // 雲海の床：奥は霞み、手前ほど暗く、雲の上が光る
+ for(let y=206;y<360;y+=2){x.fillStyle=BF.mix(C4,C0,(y-206)/154);x.fillRect(0,y,640,2)}
+ BF.gl(x,320,214,300,22,'rgba(200,230,255,.35)');
+ for(let row=0;row<5;row++){const by=222+row*30,cc=BF.mix(C4,C1,row/5),top=BF.mix('#a8bce0',C3,row/5),sz=10+row*5;for(let i=0;i<6;i++){const px=rn()*700-30,n=3+Math.floor(rn()*3);for(let k=0;k<n;k++){const bx=px+k*sz*1.4,br=sz*(.8+rn()*.5);x.fillStyle=top;x.beginPath();x.arc(BF.F(bx),BF.F(by-2),br,3.14,6.28);x.fill();x.fillStyle=cc;x.beginPath();x.arc(BF.F(bx),BF.F(by),br,0,6.3);x.fill()}x.fillStyle=cc;x.fillRect(BF.F(px),by,BF.F(n*sz*1.4),sz)}}
  // 祭壇の段
- R(200,206,240,10,MB[1]);R(200,206,240,2,MB[0]);R(220,214,200,8,MB[2]);R(200,204,240,2,GD[0])};
+ R(210,204,220,8,C4);R(210,204,220,2,'#e8f0ff');R(226,210,188,6,C3);R(210,202,220,2,GD[1]);
+ for(let i=0;i<30;i++){const px=rn()*640,py=rn()*300;R(px,py,2,2,rn()<.5?'#e8f8ff':GD[0]);if(i%6===0)BF.gl(x,px+1,py+1,8,8,'rgba(200,240,255,.4)')}
+ BF.vig(x,.65)};
 function bossBg(base,ks){const k=ks&&ks.find(q=>BBG[q]||BFULL[q]);if(!k)return base;const id=k+'_'+(base.ak||'');if(!BBGC[id]){const c=MKC(640,360),x=c.getContext('2d');x.imageSmoothingEnabled=false;if(BFULL[k])BFULL[k](x);else{x.drawImage(base,0,0);BBG[k](x,base)}c.ak=base.ak;c.boss=k;BBGC[id]=c}return BBGC[id]}
 function bgPick(kind,ks){const a=Math.max(1,Math.min(3,P.act||1)),k=a===1&&P.v1==='s'?'s':a;if(kind===2)return bossBg(bgVar(k,k===3?2:0),ks);const h=Math.abs((a*131+(CUR?CUR.f:0)*37+(CUR?CUR.j:0)*11+(P.path?P.path.length:0)*7)*2654435761|0);if(k===3){const L=[0,1,3,4];return bgVar(3,L[h%L.length])}const n=BGVN[k];return bgVar(k,h%(n+1))}
 /* ===== データ ===== */
