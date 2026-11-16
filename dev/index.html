@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.09';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.10';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -6503,7 +6503,7 @@ for(const r of ER){const on=r.i===t,pu=on?Math.sin(T*10)*2:0,g=on?4-pu:8,L=on?12
  if(on){const mx=r.x+r.w/2,my=r.y+r.h/2;ctx.globalAlpha=.55+.25*Math.sin(T*10);ctx.fillStyle='#ff4a3a';ctx.fillRect(mx-9,my-1,6,2);ctx.fillRect(mx+3,my-1,6,2);ctx.fillRect(mx-1,my-9,2,6);ctx.fillRect(mx-1,my+3,2,6);ctx.globalAlpha=1}}
 const tr=t>=0?ER.find(r=>r.i===t):null;if(tr)txt('攻撃',tr.x+tr.w/2,tr.y-26,'#ff6a5a','center',14)}
 else if(dgUp(dg)){ctx.strokeStyle='#ffe14a';ctx.lineWidth=3;ctx.strokeRect(10,28,620,196);txt('離して使用',320,104,'#ffe14a','center',18)}
-/* Ver3.97 扇形の時は選んだ大きさ（1.4倍）のまま持ち上げる。手札に戻すと元の大きさへ */const DS=HFAN?HSC:1.06,tcy=dg.y-7-(HFAN?HUP+20:0);/* Ver4.05 持ち上げ始めにカクッと跳ばないよう、せり上がっていた位置から指の位置へなめらかに寄せる */if(dg.cx==null){dg.cx=HFAN&&o.vcx!=null?o.vcx:dg.x;dg.cy=HFAN&&o.vcy!=null?o.vcy:tcy}{const k=Math.min(1,dt*18);dg.cx+=(dg.x-dg.cx)*k;dg.cy+=(tcy-dg.cy)*k}o.hx=dg.cx-42;o.hy=dg.cy-53;o.hs=HFAN?HSC:1;o.hr=0;o.hu=HFAN?1:0;dg.rt=(dg.rt||0)+(Math.max(-.28,Math.min(.28,(dg.vx||0)*.025))-(dg.rt||0))*.25;ctx.fillStyle='rgba(0,0,0,.3)';ctx.fillRect(Math.round(dg.x-38*DS),Math.round(dg.y+50*DS),76*DS,6);cardAt(o,dg.cx,dg.cy,DS,dg.rt,.95,0,pvw(o,ptg))}}
+/* Ver3.97 扇形の時は選んだ大きさ（1.4倍）のまま持ち上げる。手札に戻すと元の大きさへ */const DS=HFAN?HSC:1.06,tcy=dg.y-7-(HFAN?HUP+20:0);/* Ver4.05 持ち上げ始めにカクッと跳ばないよう、せり上がっていた位置から指の位置へなめらかに寄せる */if(dg.cx==null){dg.cx=HFAN&&o.vcx!=null?o.vcx:dg.x;dg.cy=HFAN&&o.vcy!=null?o.vcy:tcy}{const k=Math.min(1,dt*18);dg.cx+=(dg.x-dg.cx)*k;dg.cy+=(tcy-dg.cy)*k}o.hx=dg.cx-42;o.hy=dg.cy-53;o.hs=HFAN?HSC:1;o.hr=0;o.hu=HFAN?1:0;dg.rt=(dg.rt||0)+(Math.max(-.28,Math.min(.28,(dg.vx||0)*.025))-(dg.rt||0))*.25;cardAt(o,dg.cx,dg.cy,DS,dg.rt,.95,0,pvw(o,ptg))}}
 if(b.bn&&b.bn.t>0&&!(b.bn.dl>0))drawBn(b.bn);deusAll(b);drawTut(b)}
 const MCW=72,MSW=1256,MX=f=>P&&P.act===4?150+(f+1)*100:40+(f+1)*MCW;let MSC=0;
 // Ver2.79 4層の地図：赤黒い肉の膜に血管が走り、縁は骨。中央に向かって暗く沈む
