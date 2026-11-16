@@ -19,7 +19,8 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.94';let RNG=null,QT=0,PMODE=0,HSU=0;
+// 手札を扇形に並べる見本（HFAN=1）
+let HFAN=0;const GVER='3.94';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -6484,7 +6485,7 @@ if(b.dsc>0){ctx.fillStyle='rgba(4,2,12,.66)';ctx.fillRect(0,30,640,330);ctx.fill
 /* Ver3.67 操作のヒントの文字は出さない（ユーザー指定） */
 HV.forEach(([o,i],j)=>{const c=cd(o),sk=o.sk&&T-o.sk<.32?Math.sin((T-o.sk)*70)*5*(1-(T-o.sk)/.32):0,x=Math.round(x0+j*sp+sk),sel=b.sel===i,ok=b.dsc>0||b.ph==='p'&&!c.un&&(c.X||(MPB?mpME():b.me)>=c.c)&&!(c.tc&&PS.ki<c.tc)&&!(has('choker')&&b.pl>=6)&&!o.sld&&b.pl<cLim()&&!(c.ms&&b.pl>0)&&!(c.solo&&n>1)&&!(c.pay&&P.gold<c.pay),y=sel&&!(dg&&dg.mv)?240:258;CR.push({i,x,y,w:j===n-1||sel?84:sp});if(dg&&dg.mv&&dg.i===i)return;
 if(o.hx==null){if(o.ht!=null){o.hx=DP.x-42;o.hy=DP.y-53;o.hs=.2}else{o.hx=278;o.hy=110;o.hs=.4}}if(T<(o.ht||0))return;const k=Math.min(1,dt*13);o.hx+=(x-o.hx)*k;o.hy+=(y-o.hy)*k;o.hs+=(1-o.hs)*k;
-if(Math.abs(x-o.hx)<.6&&Math.abs(y-o.hy)<.6&&o.hs>.99){o.hx=x;o.hy=y;o.hs=1;card(x,y,o,!ok,0,pvw(o,ptg))}else cardAt(o,o.hx+42,o.hy+53,o.hs,(x-o.hx)*.002,1,!ok);if(o.sld)sealMk(Math.round(o.hx),Math.round(o.hy))});
+if(Math.abs(x-o.hx)<.6&&Math.abs(y-o.hy)<.6&&o.hs>.99){o.hx=x;o.hy=y;o.hs=1;if(HFAN&&!sel){const d=j-(n-1)/2;cardAt(o,x+42,y+53+d*d*2.2,1,d*.055,1,!ok)}else card(x,y,o,!ok,0,pvw(o,ptg))}else cardAt(o,o.hx+42,o.hy+53,o.hs,(x-o.hx)*.002,1,!ok);if(o.sld)sealMk(Math.round(o.hx),Math.round(o.hy))});
 drawFly();
 if(dg&&dg.mv){const o=b.hand[dg.i];if(o){const c=cd(o);
 if(needT(c)){let t=erAt(dg.x,dg.y);
