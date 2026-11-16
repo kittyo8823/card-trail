@@ -5808,7 +5808,7 @@ function rxBig(f,p){const c1=f.c,c2=f.ex.c2,dk=f.ex.dk||'#0a0408',s=f.s,E=f.ev||
    ctx.save();ctx.globalAlpha=Math.max(0,1-v/.5);ctx.strokeStyle=c2;ctx.lineWidth=3*(1-v/.5)+.5;ctx.beginPath();ctx.ellipse(x,y,(20+v*300)*sc,(12+v*160)*sc,0,0,6.3);ctx.stroke();ctx.restore();
    rxSpk(x,y,v/.6,26,sd*31,c2,'#fff',190*sc);rxGlow(x,208,(60+v*120)*sc,c1,(.7-v)*.8)}};
  // 暗転と集中線
- rxDark(p<.12?p/.12*.75:p<.55?.75:.75*(1-(p-.55)/.35),dk);
+ // 暗転はユーザー指定で外した（rxDark は残してある）
  if(p<.2){ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=(1-p/.2)*.55;const cx=s==='aa'?110:f.x,cy=s==='aa'?166:f.y;for(let k=0;k<30;k++){const an=k/30*6.283+hs(k)*.2,r1=260+hs(k+1)*60,r2=r1-90-p*700;ln(cx+Math.cos(an)*r1,cy+Math.sin(an)*r1,cx+Math.cos(an)*Math.max(20,r2),cy+Math.sin(an)*Math.max(20,r2),2,c2)}ctx.restore()}
  if(s==='a'){if(p<.16)rxGlow(f.x,f.y,30+p*200,c1,p/.16*.8);hitAt(f.x,f.y,.1,1,1)}
  else{const es=f.ex.es||[];
