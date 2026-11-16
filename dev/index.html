@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.81';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.82';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2921,31 +2921,36 @@ BF.shaft=(x,x0,x1,x2,x3,y0,y1,c,c2)=>{/* 光の筋は半透明でなく、明る
 // 石柱（3段の陰影）
 BF.col=(x,cx,top,bot,w,c,broken)=>{const[L,M,D]=c;BF.R(x,cx-w/2,top,w,bot-top,M);BF.R(x,cx-w/2,top,w*.3,bot-top,L);BF.R(x,cx+w/2-w*.25,top,w*.25,bot-top,D);for(let y=top+14;y<bot;y+=20)BF.R(x,cx-w/2,y,w,2,D);BF.R(x,cx-w/2-6,bot-8,w+12,8,M);BF.R(x,cx-w/2-6,bot-8,w+12,2,L);if(broken){for(let k=0;k<w;k+=4)BF.R(x,cx-w/2+k,top-((k*7)%11),4,(k*7)%11+2,M)}else{BF.R(x,cx-w/2-6,top-8,w+12,8,M);BF.R(x,cx-w/2-6,top-8,w+12,2,L)}};
 const BFULL={};
-// ===== ゴーレムキング：月夜の森の奥、崩れた王の広間（はっきりした石組み・大きな玉座・崩れた巨像）
-BFULL.king=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(301),ST=['#6a7484','#4c5462','#323844'],MS=['#3e6a46','#2c5236'];
- BF.sky(x,'#06101a','#0e2230','#0a1418');
- // 月と遠い木々
- R(470,40,40,40,'#d8e0d0');R(474,44,32,32,'#e8eee0');R(476,46,10,8,'#c8d0c0');
- for(let i=0;i<40;i++){const tx=rn()*640,th=60+rn()*80;R(tx,200-th,6,th,'#081418');R(tx-10,200-th,26,20,'#0a1a1e')}
- // 奥の壁（崩れた上端・窓のアーチ）
- for(let px=40;px<600;px+=4){const h=150+Math.sin(px*.03)*18+((px*13)%30<6?-30:0);R(px,200-h,4,h,ST[2])}
- for(const ax of[150,320,490]){R(ax-28,80,56,90,'#0a1a20');R(ax-24,72,48,8,'#0a1a20');R(ax-20,66,40,6,'#0a1a20');for(let k=0;k<3;k++)R(ax-24+k*18,120+k*10,6,6,'#2a4a5a')}
- for(let px=40;px<600;px+=24)for(let y=60;y<200;y+=12)R(px+((y/12)%2?12:0),y,2,10,'#262c36');
- // 大きな玉座（中央奥）
- const cx=320;R(cx-60,110,120,96,ST[1]);R(cx-60,110,120,6,ST[0]);R(cx-48,40,96,74,ST[2]);R(cx-48,40,96,6,ST[0]);R(cx-44,46,16,64,ST[1]);R(cx+28,46,16,64,ST[1]);R(cx-76,120,24,86,ST[0]);R(cx+52,120,24,86,ST[0]);R(cx-76,120,24,4,'#8a94a4');R(cx+52,120,24,4,'#8a94a4');
- R(cx-10,24,20,18,ST[0]);R(cx-16,30,6,10,ST[1]);R(cx+10,30,6,10,ST[1]);R(cx-30,58,60,6,'#8a7a4a');R(cx-6,52,12,14,'#a8945a');
- for(let k=0;k<5;k++)R(cx-80+k*36,206,40,8,k%2?ST[1]:ST[0]);
- // 柱（左右）
- BF.col(x,40,70,212,26,ST,1);BF.col(x,120,100,212,22,ST,0);BF.col(x,540,60,212,28,ST,0);BF.col(x,612,110,212,22,ST,1);
- // 苔とつた
- for(let i=0;i<40;i++){const px=rn()*640,py=40+rn()*170;R(px,py,6,4,MS[i%2])}for(const vx of[60,128,548,604]){for(let y=70;y<200;y+=6)R(vx+Math.round(Math.sin(y*.2)*3),y,2,6,MS[1])}
- // 床（石畳）
- for(let y=212;y<360;y+=2){x.fillStyle=BF.mix('#2a3038','#141a20',(y-212)/148);x.fillRect(0,y,640,2)}
- for(let y=218;y<360;y+=16)for(let px=((y/16)%2)*20;px<640;px+=40)R(px,y,38,2,'#1a2028');
- for(let i=0;i<30;i++)R(rn()*640,216+rn()*130,4,2,MS[i%2]);
- // 崩れた巨像の頭（左手前）
- const hx=170,hy=196;R(hx,hy,60,30,ST[1]);R(hx,hy,60,6,ST[0]);R(hx+48,hy,12,30,ST[2]);R(hx+10,hy+10,10,6,'#141820');R(hx+34,hy+10,10,6,'#141820');R(hx+18,hy+22,24,4,'#141820');R(hx-6,hy-8,20,10,ST[1]);R(hx+40,hy-12,16,12,ST[1]);
- for(let i=0;i<14;i++)R(rn()*640,210+rn()*20,6+rn()*10,4+rn()*4,ST[rn()<.5?1:2])};
+// ===== ゴーレムキング：月に照らされた、森に沈む古の王の広間。奥に崩れた巨像と逆光の玉座、壊れた天井の月、柱廊、破れた旗、段
+BFULL.king=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(301),C0='#030508',C1='#080d14',C2='#0f1822',C3='#1a2632',C4='#2a3a4a',C5='#465a6c',HZ='#6a7e92',MN=['#f0f4f0','#c8d4dc'],MS=['#2e5038','#1e3828','#466a40'],RD=['#5a1e24','#3a1418'];
+ x.fillStyle=C1;x.fillRect(0,0,640,212);BF.gl(x,320,110,340,200,'rgba(90,130,170,.55)');
+ // 壊れた天井の向こうの月と雲
+ x.fillStyle=C3;x.fillRect(250,0,140,60);BF.gl(x,320,30,90,70,'rgba(220,235,255,.5)');x.fillStyle=MN[1];x.beginPath();x.arc(320,30,24,0,6.3);x.fill();x.fillStyle=MN[0];x.beginPath();x.arc(316,26,20,0,6.3);x.fill();R(308,22,6,4,MN[1]);R(322,32,4,4,MN[1]);for(let i=0;i<5;i++)R(250+rn()*120,6+rn()*40,30+rn()*30,4,C4);
+ BF.rays(x,320,[[294,10,.18],[312,8,.26],[330,10,.18],[350,6,.12],[276,6,.1],[366,8,.1]],'rgba(200,225,255,A)',206);
+ // 奥の崩れた巨像（王の像・逆光で影）
+ const cx=320;x.fillStyle=C3;x.beginPath();x.moveTo(cx-70,206);x.lineTo(cx-60,110);x.lineTo(cx-40,80);x.lineTo(cx-30,48);x.lineTo(cx+30,48);x.lineTo(cx+40,80);x.lineTo(cx+56,104);x.lineTo(cx+44,118);x.lineTo(cx+64,206);x.fill();R(cx-26,30,52,22,C3);R(cx-30,22,8,10,C3);R(cx-4,18,8,14,C3);R(cx+22,22,8,10,C3);R(cx-14,38,6,4,'#8ab0d8');R(cx+8,38,6,4,'#8ab0d8');R(cx+30,48,2,60,C5);R(cx+40,80,2,40,C5);
+ for(let k=0;k<6;k++)R(cx+44+k*8,118+k*14,10,6,C3);
+ // 玉座（巨像の足元）
+ R(cx-48,134,96,72,C2);R(cx-48,134,96,4,C5);R(cx-38,96,76,42,C2);R(cx-38,96,76,3,C5);R(cx-60,150,18,56,C3);R(cx+42,150,18,56,C3);R(cx+42,150,2,56,HZ);R(cx-26,110,52,6,'#8a6a2a');R(cx-6,104,12,12,'#b08a3a');BF.gl(x,cx,110,30,20,'rgba(255,210,120,.25)');
+ // 柱廊（月の光に向いた縁が光る・つたが絡む）
+ const rows=[[[232,408],70,10,BF.mix(C3,HZ,.35),C4,MN[1],2],[[190,450],60,14,C3,C4,MN[1],3],[[140,500],48,20,C2,C3,'#a8b8c8',4],[[78,562],36,28,C1,C2,'#8898a8',5]];
+ for(const[[lx,rx],top,w,c,hl,rim,cap]of rows){const h=208-top;BF.pil(x,lx,top,w,h,c,hl,rim,cap,1);BF.pil(x,rx,top,w,h,c,hl,rim,cap,-1);for(const px of[lx,rx])for(let y=top+8;y<206;y+=6)R(px-w/2+((y*5)%w),y,2,6,MS[1])}
+ for(const[y0,y1,c]of[[52,62,C2],[38,52,C1],[20,38,C0]]){x.fillStyle=c;x.beginPath();x.moveTo(0,y0-34);x.lineTo(220,y0);x.lineTo(220,y1);x.lineTo(0,y1+10);x.fill();x.beginPath();x.moveTo(640,y0-34);x.lineTo(420,y0);x.lineTo(420,y1);x.lineTo(640,y1+10);x.fill()}
+ // 破れた旗（柱の間）
+ for(const[px,w,h]of[[166,18,60],[474,18,64],[104,24,80],[536,24,78]]){R(px-w/2,64,w,h,RD[0]);R(px-w/2,64,w,4,'#8a6a2a');R(px-w/2,64,3,h,RD[1]);for(let k=0;k<w;k+=6)R(px-w/2+k,64+h,4,6+((k*7)%10),RD[0]);R(px-3,64+h*.35,6,8,'#8a6a2a')}
+ // 垂れるつた
+ for(let i=0;i<12;i++){const vx=rn()*640,vl=20+rn()*70;for(let y=10;y<vl;y+=4)R(vx+Math.round(Math.sin(y*.15+i)*3),y,2,4,MS[i%2]);R(vx-2,vl,6,4,MS[2])}
+ // 床：段と石畳、月の光の照り返し、崩れた石、霧
+ for(let y=208;y<360;y+=2){x.fillStyle=BF.mix(C3,C0,(y-208)/152);x.fillRect(0,y,640,2)}
+ for(let k=0;k<3;k++){R(cx-120-k*30,206+k*8,240+k*60,8,k%2?C3:C4);R(cx-120-k*30,206+k*8,240+k*60,2,C5)}
+ for(let y=236,dy=6;y<360;dy*=1.25,y+=dy)R(0,y,640,2,C1);for(let k=-10;k<=10;k++){const x0=320+k*34,x1=320+k*130;for(let yy=230;yy<360;yy+=2)x.fillStyle=C1,x.fillRect(BF.F(x0+(x1-x0)*(yy-230)/130),yy,2,2)}
+ BF.gl(x,320,240,240,34,'rgba(170,200,240,.28)');
+ for(let i=0;i<14;i++){const px=rn()*640,py=250+rn()*100,w=12+rn()*26;R(px,py,w,8,C2);R(px,py,w,2,C5);R(px+2,py-2,w*.5,2,MS[1])}
+ // 崩れた巨像の頭（手前）
+ const hx=120,hy=290;R(hx,hy,64,34,C2);R(hx,hy,64,4,C5);R(hx+52,hy,12,34,C1);R(hx+10,hy+12,10,6,C0);R(hx+36,hy+12,10,6,C0);R(hx+18,hy+24,26,4,C0);R(hx-8,hy-10,22,12,C2);R(hx-8,hy-10,22,2,C5);R(hx+44,hy-14,18,14,C2);R(hx+20,hy+6,4,4,MS[0]);
+ for(let i=0;i<8;i++){const py=212+rn()*40,px=rn()*560,w=80+rn()*140;R(px,py,w,2,i%2?C4:C5)}
+ for(let i=0;i<26;i++){const px=rn()*640,py=40+rn()*260;R(px,py,2,2,rn()<.5?'#e8ffb0':'#c8f0ff');if(i%5===0)BF.gl(x,px,py,8,8,'rgba(210,255,200,.4)')}
+ BF.vig(x,.72)};
 // ===== 泉の乙女像：森に呑まれた崩れた聖堂。壊れた天井の穴から光が差し、中央に光る泉の噴水（沈没都市と同じ影と奥行きの作り）
 BFULL.maiden=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(311),C0='#020807',C1='#06120f',C2='#0c1e1a',C3='#163028',C4='#24483c',C5='#3e7062',HZ='#5a9080',W=['#e8fff8','#9ae8e0','#4ab0b0','#2a7078'],MS=['#2e5a36','#1e4026','#4a7a3e'];
  x.fillStyle=C1;x.fillRect(0,0,640,212);BF.gl(x,320,120,330,200,'rgba(50,150,130,.55)');BF.gl(x,320,150,150,90,'rgba(150,240,220,.35)');
