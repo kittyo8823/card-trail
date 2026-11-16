@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // 見本：戦闘の場（キャラ・敵）を下げる dy・縮める sc、手札を下げる hy（Ver3.99 見本用、今は使っていない）
-const FMV={dy:0,sc:1,hy:0};let HFAN=1,HUP=54;/* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='3.99';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:0,cx:320,bg:0};let HFAN=1,HUP=54;/* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='3.99';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -6455,8 +6455,8 @@ function drawBn(bn){const p=1-bn.t/1.1,a=p<.15?p/.15:p>.75?(1-p)/.25:1,off=p<.15
  ctx.globalAlpha=Math.max(0,Math.min(1,a));ctx.drawImage(bnBand(bn.bg,hi),sx,y-4);
  for(const dx of[-160,160]){const cx=320+dx+off;ctx.fillStyle=hi;ctx.fillRect(cx-2,y+h/2-6,4,12);ctx.fillRect(cx-6,y+h/2-2,12,4);ctx.fillStyle='#fff';ctx.fillRect(cx-1,y+h/2-1,2,2)}
  txt(bn.s,320+off,y+37,'#fff','center',32);ctx.globalAlpha=1}
-function drawBattle(){const b=B;ER=[];CR=[];hit(0,24,640,206,()=>{b.sel=-1});ctx.drawImage(BGB,0,0);bgAnim();
-ctx.save();if(shk>0)ctx.translate((Math.random()-.5)*shk*2,(Math.random()-.5)*shk*2);if(FMV.dy||FMV.sc!==1){ctx.translate(320,208+FMV.dy);ctx.scale(FMV.sc,FMV.sc);ctx.translate(-320,-208)}
+function drawBattle(){const b=B;ER=[];CR=[];hit(0,24,640,206,()=>{b.sel=-1});if(FMV.bg){ctx.drawImage(BGB,0,FMV.bg);ctx.drawImage(BGB,0,0,640,2,0,0,640,FMV.bg);ctx.save();ctx.translate(0,FMV.bg);bgAnim();ctx.restore()}else{ctx.drawImage(BGB,0,0);bgAnim()}
+ctx.save();if(shk>0)ctx.translate((Math.random()-.5)*shk*2,(Math.random()-.5)*shk*2);if(FMV.dy||FMV.sc!==1){ctx.translate(FMV.cx,208+FMV.dy);ctx.scale(FMV.sc,FMV.sc);ctx.translate(-FMV.cx,-208)}
 const lg=b.lg>0?Math.sin(b.lg/.25*3.14)*(b.lgA!=null?b.lgA:30):0,sh=b.sh>0&&b.sh<=.3?(Math.random()-.5)*8:0;
 if(MPB)mpDrawPlayers(b);else{if(P.cls===3)drawGrim(b);if(P.cls===2)fgAura(b,B.fgx=74+lg+sh);const pim=P.cls===3?SPR.oji:P.cls===4?SPR[(b.ms?'hori_z':'hori')+P.act]:SPR[CH[P.cls].s];ctx.globalAlpha=b.sh>0&&b.sh<=.3&&Math.floor(T*30)%2?.5:1;{const wk=plKey(),bim=wk&&!b.ms?SPR[wk+'_b']:pim,by=Math.round(Math.sin(T*1.8)),px=Math.round(74+lg+sh-(PCX[wk]!=null?PCX[wk]*3+2-36:0)),py=208-bim.height+(b.ms?0:by)+(PFY[wk]||0);if(P.cls===6)nebDraw(px+pim.width/2,208,b);else if(P.cls===10)serDraw(SERX+lg+sh,208,b,PS);else if(wk&&!b.ms)plDraw(wk,px,py);else ctx.drawImage(pim,px,py)}ctx.globalAlpha=1;if(b.ms){for(let k=0;k<3;k++){const q=(T*.5+k/3)%1;ctx.globalAlpha=Math.sin(q*3.14);txt('Z',118+q*18,208-pim.height+6-q*30,'#c8d0ff','center',10+k*4)}ctx.globalAlpha=1}
 {const pw=HPV===4&&P.cls!==10?Math.max(60,Math.min(110,Math.round((pim.bw||pim.width)*.9))):72;hpBar(P.cls===10?SERX-(SERL.hb?36:SERL.hs?32:44):110-pw/2,210,P.cls===10&&!SERL.hb?(SERL.hs?64:66):pw,Math.min(P.mhp,vHP()),P.mhp,'#e8505b',b.blk,PS.poison)}chips(stat(PS,1),P.cls===2?72:64,P.cls===10&&SERL.hb===1?236:224,'l',204);}
