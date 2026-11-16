@@ -5142,17 +5142,20 @@ let FGB=null;function fgBl(){if(FGB)return FGB;const W=44,H=144,c=document.creat
  R(13,46,4,2,'#8a6a32');R(14,46,2,1,'#b08a44');R(10,48,10,2,'#241c22');R(11,48,8,1,'#342a30');
  for(let y=50;y<67;y++){R(13,y,4,1,'#36100f');if(y%3===0)R(14,y,2,1,'#5e1a1c')}R(13,67,4,2,'#241c22');
  const g=document.createElement('canvas');g.width=W;g.height=H;const gx=g.getContext('2d');gx.drawImage(c,0,0);gx.globalCompositeOperation='source-in';gx.fillStyle='#c0202a';gx.fillRect(0,0,W,H);c.g=g;return FGB=c}
-function fgAura(b,x0,fr){const FG=BLADE,pa0=b.pa&&b.pa.k==='fgb'&&b.pa.tx&&T-b.pa.t0<b.pa.d,on=pa0||[b.hand,b.dr,b.dis].some(L=>L&&L.some(o=>o.i===FG));if(!on||(fr&&!pa0))return;const cx=x0-12,cy=116+Math.sin(T*1.6)*5;
- ctx.save();if(!fr){const g=ctx.createRadialGradient(cx+20,cy+30,6,cx+20,cy+30,95);g.addColorStop(0,'rgba(150,18,26,.85)');g.addColorStop(.45,'rgba(80,6,16,.7)');g.addColorStop(1,'rgba(10,0,4,0)');ctx.fillStyle=g;ctx.fillRect(cx-80,cy-70,200,200)}
+function fgAura(b,x0,fr){const FG=BLADE,pa0=b.pa&&b.pa.k==='fgb'&&b.pa.tx&&T-b.pa.t0<b.pa.d,on=pa0||[b.hand,b.dr,b.dis].some(L=>L&&L.some(o=>o.i===FG));if(!fr){if(!on)b.fgA0=null;else if(b.fgA0==null)b.fgA0=T}if(!on||(fr&&!pa0))return;
+ // 現れる時は1.1秒かけて：オーラがにじみ出て、刃が下から上へ形になりながら浮かび上がる
+ const ap=Math.min(1,(T-(b.fgA0==null?-9:b.fgA0))/1.1),aE=ap*ap*(3-2*ap);const cx=x0-12,cy=116+Math.sin(T*1.6)*5;
+ ctx.save();if(!fr){ctx.globalAlpha=aE;const g=ctx.createRadialGradient(cx+20,cy+30,6,cx+20,cy+30,95);g.addColorStop(0,'rgba(150,18,26,.85)');g.addColorStop(.45,'rgba(80,6,16,.7)');g.addColorStop(1,'rgba(10,0,4,0)');ctx.fillStyle=g;ctx.fillRect(cx-80,cy-70,200,200)}
 
  ctx.globalAlpha=1;const im=fgBl(),sc=(.6+.4*Math.max(0,Math.min(1,((PS&&PS.forge||0)-5)/95))),pa=b.pa&&b.pa.k==='fgb'&&b.pa.tx?b.pa:null;
  const ez=v=>v*v*(3-2*v),pos=t=>{if(!pa||t<=0||t>=pa.d)return[cx,cy,0];const tx=pa.tx-34,ty=pa.ty-8;
   if(t<.22){const v=ez(t/.22);return[cx+(tx-cx)*v,cy+(ty-cy)*v-Math.sin(v*3.14)*26,-.7*v]}
   if(t<.38){const v=ez((t-.22)/.16);return[tx+v*22,ty+v*10,-.7+2.6*v]}
   const v=ez((t-.38)/(pa.d-.38));return[tx+22+(cx-tx-22)*v,ty+10+(cy-ty-10)*v-Math.sin(v*3.14)*20,1.9*(1-v)]};
- const t0=pa?T-pa.t0:0,dB=(q,al)=>{ctx.save();ctx.translate(q[0],q[1]);ctx.rotate(q[2]);ctx.scale(sc,sc);ctx.globalAlpha=al;if(al>=1){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.7+.25*Math.sin(T*3);ctx.filter='blur(5px)';for(let k=0;k<2;k++)ctx.drawImage(im.g,-im.width/2,-im.height/2);ctx.filter='none';ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;ctx.drawImage(im,-im.width/2,-im.height/2)}else{ctx.drawImage(im.g,-im.width/2,-im.height/2)}ctx.restore()};
+ const t0=pa?T-pa.t0:0,dB=(q,al)=>{ctx.save();const hm=!pa||t0<=0||t0>=pa.d,rv=hm&&ap<1;ctx.translate(q[0],q[1]+(rv?(1-aE)*22:0));ctx.rotate(q[2]);ctx.scale(sc,sc);if(rv){const hh=im.height*Math.min(1,ap*1.25);ctx.beginPath();ctx.rect(-im.width,im.height/2-hh,im.width*2,hh);ctx.clip()}ctx.globalAlpha=al;if(al>=1){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.7+.25*Math.sin(T*3);ctx.filter='blur(5px)';for(let k=0;k<2;k++)ctx.drawImage(im.g,-im.width/2,-im.height/2);ctx.filter='none';ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;ctx.drawImage(im,-im.width/2,-im.height/2)}else{ctx.drawImage(im.g,-im.width/2,-im.height/2)}ctx.restore()};
  if(fr&&pa&&t0>0&&t0<pa.d){for(let k=3;k>=1;k--)dB(pos(t0-k*.025),.22*(4-k)/3);if(t0>=.3&&!pa.ev.fgs){pa.ev.fgs=1;fxs('is',pa.tx,pa.ty,{d:.36});sfx('spk');shk=Math.max(shk,4)}}
  if(!!fr===!!pa0)dB(pos(t0),1);
+ if(!fr&&ap<1&&!pa0){const q=pos(0),hh=im.height*sc*Math.min(1,ap*1.25),ey=q[1]+(1-aE)*22+im.height*sc/2-hh;ctx.globalCompositeOperation='lighter';ctx.globalAlpha=(1-ap)*.9;const g2=ctx.createRadialGradient(q[0],ey,0,q[0],ey,18*sc+6);g2.addColorStop(0,'rgba(255,120,110,.9)');g2.addColorStop(1,'rgba(160,20,30,0)');ctx.fillStyle=g2;ctx.fillRect(q[0]-30,ey-30,60,60);ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1}
  ctx.restore()}
 function plDraw(k,x,y){const b=SPR[k+'_b'],W=WPN[k],pa=B&&B.pa;if(!b){ctx.drawImage(SPR[k],x,y);return}
  const A=pa&&PA2[pa.k],d=pa&&(pa.d||A&&A.d),t=A?(T-pa.t0)/d:1,on=A&&t>=0&&t<1,nb=W&&W.ng&&on&&NGK[pa.k],g=(n,dv)=>on&&(nb&&NGB[n]||A[n])?kf(t,nb&&NGB[n]||A[n]):dv;if(on)plEv(pa,t,A);
