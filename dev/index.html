@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.05';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.06';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -6482,7 +6482,7 @@ pileOrbs(b.dr.length,b.dis.length);hit(4,312,66,48,()=>openPile('山札',b.dr,1)
 if(b.ex.length){txt('廃棄'+b.ex.length,632,330,'#ff9a9a','right',11);hit(570,316,70,16,()=>openPile('廃棄札',b.ex,0))}
 if(MPB&&(b.dn||b.dnp||b.down)&&b.ph==='p'){txt(b.down?'戦闘不能':'味方を',606,284,'#9ad8ff','center',11);if(!b.down)txt('待っている',606,300,'#9ad8ff','center',11)}else if(b.ph==='p'&&!b.vt&&!b.dsc){if(ETV)etDraw(b);else{box(578,264,56,48,'#7a2a3a');txt('ターン',606,284,'#fff','center',13);txt('終了',606,302,'#fff','center',13)}if(ETV>=7)hit(564,236,74,72,endTurn);else hit(578,264,56,48,endTurn)};
 const dt=Math.min(.05,Math.max(0,T-(b.lt||T)));b.lt=T;if(MPB)for(const q of b.hand)if(q.pend>0&&T-q.pend>5)q.pend=0;if(b.dnp&&(b.dn||b.ph!=='p'||T-b.dnp>5))b.dnp=0;const HV=b.hand.map((o,i)=>[o,i]).filter(a=>!(a[0].pend>0)),n=HV.length,sp=Math.min(HFAN?72:92,(500-84)/Math.max(1,n-1)),x0=320-((n-1)*sp+84)/2;
-let ptg=alive().length===1?alive()[0]:null;if(dg&&dg.mv){{const ri=erAt(dg.x,dg.y);if(ri>=0)ptg=b.en[ri]}}
+let ptg=alive().length===1?alive()[0]:null;if(dg&&dg.mv){{const ri=erAtD(dg);if(ri>=0)ptg=b.en[ri]}}
 if(b.dsc>0){ctx.fillStyle='rgba(4,2,12,.66)';ctx.fillRect(0,30,640,330);ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,62,640,20);txt('捨てるカードを選択（残り'+b.dsc+'枚）',320,77,'#ff9a6a','center',14)}else if(!HFAN&&b.sel>=0&&b.hand[b.sel]){const c=cd(b.hand[b.sel]);const s=c.n+'：'+dl(c,pvw(b.hand[b.sel],ptg)).join('、');ctx.font='12px DotGothic16,sans-serif';const w=ctx.measureText(s).width+20;ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(320-w/2,62,w,20);txt(s,320,77,'#ffe14a','center',12)}
 /* Ver3.67 操作のヒントの文字は出さない（ユーザー指定） */
 // Ver3.95 扇形の手札（HFAN）：触れている・選んだカードは上へせり上がって大きく前に出て、両隣はよける（本家風。ユーザー指定）
@@ -6493,7 +6493,7 @@ if(Math.abs(x-o.hx)<.6&&Math.abs(y-o.hy)<.6&&o.hs>.99){o.hx=x;o.hy=y;o.hs=1;card
 hvD.sort((a,b)=>a[0].hu-b[0].hu).forEach(([o,x,ok])=>{const u=o.hu,S2=HSC,cx=o.hx+42+(Math.max(62,Math.min(578,x+42))-o.hx-42)*u,cy=o.hy+53+(356-53*S2-HUP-o.hy-53)*u,sc=o.hs+(S2-o.hs)*u,r=(o.hr||0)*(1-u);o.vcx=cx;o.vcy=cy;ctx.save();ctx.translate(cx,cy);ctx.rotate(r);ctx.scale(sc,sc);card(-42,-53,o,!ok,0,pvw(o,ptg));ctx.restore()});
 drawFly();
 if(dg&&dg.mv){const o=b.hand[dg.i];if(o){const c=cd(o);
-if(needT(c)){let t=erAt(dg.x,dg.y);
+if(needT(c)){let t=erAtD(dg);
 if(t<0&&alive().length===1&&dg.y<236)t=b.en.indexOf(alive()[0]);
 // 狙い：狙っている敵に四すみの照準（脈打ちながら寄る）、他の敵は薄い印
 for(const r of ER){const on=r.i===t,pu=on?Math.sin(T*10)*2:0,g=on?4-pu:8,L=on?12:7,x0=r.x-g,y0=r.y-g,x1=r.x+r.w+g,y1=r.y+r.h+g;ctx.fillStyle=on?'#ff4a3a':'rgba(255,255,255,.3)';const k=on?3:2;
@@ -7893,11 +7893,13 @@ function tapCard(i){const b=B,o=b.hand[i],c=cd(o);sfx('cl');if(b.dsc>0){discardC
 if(!(c.X||b.me>=c.c)){sfx('no');say('エナジーが足りない');return}if(c.tc&&PS.ki<c.tc){sfx('no');say('刀魂が足りない');return}
 if(needT(c)&&alive().length>1){say('カードを敵へドラッグして使用');return}play(i,0)}
 // Ver3.67 狙う敵は、指の位置を含む敵のうち中心が一番近い敵（絵の枠が重なる時に先頭ばかり選ばれていた。ユーザー指摘）。崩れている敵は選ばない
+// Ver4.06 カードを持ち上げている時の狙い：カードは指より上に浮いているので、カードの位置 → 指の位置の順で敵を探す（指が敵の上に来なくても使える。ユーザー指定）
+function erAtD(d){if(HFAN&&d.cx!=null){const t=erAt(d.cx,d.cy);if(t>=0)return t;const t2=erAt(d.cx,(d.cy+d.y)/2);if(t2>=0)return t2}return erAt(d.x,d.y)}
 function erAt(x,y){let bi=-1,bd=1e9;for(const r of ER){const e=B.en[r.i];if(!e||e.rtc||e.dead)continue;if(x>=r.x-14&&x<=r.x+r.w+14&&y>=r.y-14&&y<=r.y+r.h+14){const d=Math.abs(x-(r.x+r.w/2));if(d<bd){bd=d;bi=r.i}}}return bi}
 function dropCard(){const d=dg;dg=null;if(!B||B.ph!=='p'||B.vt)return;const o=B.hand[d.i];if(!o)return;
 if(!d.mv){tapCard(d.i);return}if(B.dsc>0)return;
 const c=cd(o);if(d.y>=236){B.sel=-1;return}
-if(needT(c)){let ti=erAt(d.x,d.y);
+if(needT(c)){let ti=erAtD(d);
 if(ti<0&&alive().length===1)ti=B.en.indexOf(alive()[0]);
 if(ti<0){say('敵の上で離して使用');B.sel=-1;o.sk=T;return}play(d.i,ti)}else play(d.i,0);if(B&&B.hand[d.i]===o&&!o.pend){o.sk=T;sfx('no')}}
 cv.addEventListener('pointerdown',e=>{initAudio();const p=pos(e);if(S==='btr'&&BT&&BT.lp!=null){BT.lp=null;LP=null;drag=null;sfx('cl');return}LP={x:p.x,y:p.y,t:performance.now(),m:0};if(LPV){const r=LPV.bt;if(r&&p.x>=r.x-6&&p.x<=r.x+r.w+6&&p.y>=r.y-6&&p.y<=r.y+r.h+6){LPV.up=!LPV.up;LP=null;drag=null;sfx('cl');return}LPV=null;drag=null;dg=null;LP=null;sfx('cl');return}drag={...p,sc:scr,ms:MSC,m:0};dg=null;if(S==='map'&&MDW&&typeof MPON==='function'&&MPON()&&p.x>=8&&p.x<=632&&p.y>=62&&p.y<=300&&!mdwIn(p,MDB.pen)&&!mdwIn(p,MDB.clr))drag.pen=[[Math.round(p.x-8+MSC),Math.round(p.y-62)]];
