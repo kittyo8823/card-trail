@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.78';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.79';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -3033,7 +3033,14 @@ BFULL.deus=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(331),C0='#03060e',C1='#08
  // 雲海の床：奥は霞み、手前ほど暗く、雲の上が光る
  for(let y=206;y<360;y+=2){x.fillStyle=BF.mix(C4,C0,(y-206)/154);x.fillRect(0,y,640,2)}
  BF.gl(x,320,214,300,22,'rgba(200,230,255,.35)');
- for(let row=0;row<5;row++){const by=222+row*30,cc=BF.mix(C4,C1,row/5),top=BF.mix('#a8bce0',C3,row/5),sz=10+row*5;for(let i=0;i<6;i++){const px=rn()*700-30,n=3+Math.floor(rn()*3);for(let k=0;k<n;k++){const bx=px+k*sz*1.4,br=sz*(.8+rn()*.5);x.fillStyle=top;x.beginPath();x.arc(BF.F(bx),BF.F(by-2),br,3.14,6.28);x.fill();x.fillStyle=cc;x.beginPath();x.arc(BF.F(bx),BF.F(by),br,0,6.3);x.fill()}x.fillStyle=cc;x.fillRect(BF.F(px),by,BF.F(n*sz*1.4),sz)}}
+ // 磨かれた大理石の床（遠近の目地・柱と光の映り込み・金の象眼）と、奥に細くたなびく雲
+ for(let k=-12;k<=12;k++){const x0=320+k*30,x1=320+k*120;for(let yy=208;yy<360;yy+=2){x.fillStyle=k%3?'#1a2a46':'#22365a';x.fillRect(BF.F(x0+(x1-x0)*(yy-206)/154),yy,2,2)}}
+ for(let y=214,dy=4;y<360;dy*=1.28,y+=dy)R(0,y,640,2,'#1a2a46');
+ for(const[px,w]of[[20,40],[96,26],[156,18],[204,12],[436,12],[484,18],[544,26],[620,40]]){for(let yy=208;yy<208+w*3;yy+=2){x.fillStyle=yy%4?'#1c2c4c':'#22365a';x.fillRect(BF.F(px-w/2),yy,BF.F(w),2)}}
+ BF.gl(x,320,236,90,60,'rgba(200,235,255,.35)');BF.gl(x,320,220,40,30,'rgba(255,230,170,.35)');
+ x.strokeStyle=GD[2];x.lineWidth=2;for(const[rx,ry]of[[150,26],[110,18]]){x.beginPath();x.ellipse(320,236,rx,ry,0,0,6.3);x.stroke()}x.strokeStyle=GD[3];x.beginPath();x.ellipse(320,236,190,34,0,0,6.3);x.stroke();
+ for(let k=0;k<8;k++){const t=k/8*6.283;R(320+Math.cos(t)*150-2,236+Math.sin(t)*26-2,4,4,GD[1])}
+ for(let i=0;i<9;i++){const py=176+i*4+rn()*6,px=rn()*560,w=80+rn()*160;R(px,py,w,2,i%2?C5:'#5a78a8');R(px+20,py+2,w-40,2,C4)}
  // 祭壇の段
  R(210,204,220,8,C4);R(210,204,220,2,'#e8f0ff');R(226,210,188,6,C3);R(210,202,220,2,GD[1]);
  for(let i=0;i<30;i++){const px=rn()*640,py=rn()*300;R(px,py,2,2,rn()<.5?'#e8f8ff':GD[0]);if(i%6===0)BF.gl(x,px+1,py+1,8,8,'rgba(200,240,255,.4)')}
