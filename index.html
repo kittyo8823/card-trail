@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.87';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.88';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -3389,7 +3389,7 @@ function encApply(o,d){const v=o.ev||0,A=n=>{if(d.a)d.a+=n;else if(d.aa)d.aa+=n}
  case'goopy':d.x=1;d.b=(d.b||0)+v;break;case'inky':A(1);d.wk=(d.wk||0)+1;break;case'instinct':if(d.a)d.a*=2;if(d.aa)d.aa*=2;break;case'momentum':A(o.mo||0);break;case'royal':d.inn=1;d.rt=1;break;case'steady':d.rt=1;break;case'souls':d.x=0;break;
  case'ember':d.c=0;A(3);break;case'slither':if(o.sc!=null)d.c=o.sc;break;case'slumb':if(o.sl1)d.c=Math.max(0,d.c-o.sl1);break}}
 const cd=o=>{const fb=cdB(),c=o.u&&!(fb&1)?up(C[o.i]):C[o.i],gt=c.t===2&&c.c>=0&&has('gaunt'),hx=fb&2&&o.hxe&&c.t<3&&!c.eth;if(c.ethC&&B&&B.ethN&&!(o.f0||o.en))return{...c,c:Math.max(0,c.c-c.ethC*B.ethN)};if(c.kt&&!c.X&&B&&B.kfr&&!(o.f0||o.en)&&c.c>0)return{...c,c:0};if(c.fin&&B&&B.dr&&B.dr.length&&B.en)return{...c,un:1};if(!(o.f0||o.g||o.cm||gt||hx||o.sly||o.en||o.e1))return c;const d={...c};if(o.en&&ENC[o.en])encApply(o,d);if(o.e1&&B&&o.e1===B.turn&&d.c>1)d.c=1;if(o.sly)d.sly=1;if(gt)d.c++;if(hx)d.eth=1;if(o.f0)d.c=0;if(o.cm&&d.c>0)d.c=Math.max(0,d.c-o.cm);if(o.g){if(d.a)d.a+=o.g;else if(d.aa)d.aa+=o.g;else if(d.b)d.b+=o.g}return d};
-function dl(c,pv){const p=[],cl=(v,b)=>{if(pv&&b!=null&&v!==b)p.cl[p.length-1]=v>b?'#7dff9a':'#ff6a6a'};p.cl={};if(c.ms)p.push('立ったまま眠る','HP+'+(4+4*c.ms)+'・筋力+'+(c.ms+1),'次ターンエナ+1','2枚多く引く');if(c.sp)p.push('詠唱'+c.sp);if(c.X&&c.chX==null&&c.evX==null)p.push('X回');if(c.a||c.bs&&pv){const v=pv?pv.a:c.a;p.push(v+'ダメージ'+(c.h>1?'×'+c.h:''));cl(v,c.bs?null:c.a)}if(c.sm)p.push('筋力×'+c.sm);if(c.bs&&!pv)p.push('ブロック分ダメージ');if(c.aa){const v=pv?pv.aa:c.aa;p.push('全体'+v+'ダメージ'+(c.h>1?'×'+c.h:''));cl(v,c.aa)}if(c.lf)p.push((c.aa?'1体につきHP+':'HP+')+c.lf);
+function dl(c,pv){const p=[],cl=(v,b)=>{if(pv&&b!=null&&v!==b)p.cl[p.length-1]=v>b?'#7dff9a':'#ff6a6a'};p.cl={};if(c.ms)p.push('立ったまま眠る','HP+'+(4+4*c.ms)+'・筋力+'+(c.ms+1),'次ターンエナ+1','2枚多く引く');if(c.sp)p.push('詠唱'+c.sp);if(c.X&&c.chX==null&&c.evX==null)p.push('X回');if(c.a||c.bs&&pv){/* Ver3.88 鍛えし刃は山札・捨て札などでも戦闘中は鍛えた分を足して見せる */const v=pv?pv.a:c.fgA&&B&&PS&&PS.forge&&B.ph&&!/^[VLD]$/.test(B.ph)?c.a+PS.forge:c.a;p.push(v+'ダメージ'+(c.h>1?'×'+c.h:''));cl(v,c.bs?null:c.a)}if(c.sm)p.push('筋力×'+c.sm);if(c.bs&&!pv)p.push('ブロック分ダメージ');if(c.aa){const v=pv?pv.aa:c.aa;p.push('全体'+v+'ダメージ'+(c.h>1?'×'+c.h:''));cl(v,c.aa)}if(c.lf)p.push((c.aa?'1体につきHP+':'HP+')+c.lf);
 if(c.b){const v=pv&&pv.b!=null?pv.b:c.b;p.push('ブロック'+v);cl(v,c.b)}if(c.db)p.push('ブロック2倍');if(c.dr)p.push(c.dr+'枚引く');if(c.en)p.push('エナジー+'+c.en);
 if(c.vu)p.push('弱体'+c.vu);if(c.wk)p.push('脆弱'+c.wk);if(c.vuA)p.push('全体弱体'+c.vuA);if(c.wkA)p.push('全体脆弱'+c.wkA);
 if(c.ps)p.push('毒'+c.ps);if(c.cat)p.push('毒2倍');if(c.ds)p.push('敵の筋力-'+c.ds);
@@ -5142,17 +5142,22 @@ let FGB=null;function fgBl(){if(FGB)return FGB;const W=44,H=144,c=document.creat
  R(13,46,4,2,'#8a6a32');R(14,46,2,1,'#b08a44');R(10,48,10,2,'#241c22');R(11,48,8,1,'#342a30');
  for(let y=50;y<67;y++){R(13,y,4,1,'#36100f');if(y%3===0)R(14,y,2,1,'#5e1a1c')}R(13,67,4,2,'#241c22');
  const g=document.createElement('canvas');g.width=W;g.height=H;const gx=g.getContext('2d');gx.drawImage(c,0,0);gx.globalCompositeOperation='source-in';gx.fillStyle='#c0202a';gx.fillRect(0,0,W,H);c.g=g;return FGB=c}
-function fgAura(b,x0,fr){const FG=BLADE,pa0=b.pa&&b.pa.k==='fgb'&&b.pa.tx&&T-b.pa.t0<b.pa.d,on=pa0||[b.hand,b.dr,b.dis].some(L=>L&&L.some(o=>o.i===FG));if(!on||(fr&&!pa0))return;const cx=x0-12,cy=116+Math.sin(T*1.6)*5;
- ctx.save();if(!fr){const g=ctx.createRadialGradient(cx+20,cy+30,6,cx+20,cy+30,95);g.addColorStop(0,'rgba(150,18,26,.85)');g.addColorStop(.45,'rgba(80,6,16,.7)');g.addColorStop(1,'rgba(10,0,4,0)');ctx.fillStyle=g;ctx.fillRect(cx-80,cy-70,200,200)}
+function fgAura(b,x0,fr){const FG=BLADE,pa0=b.pa&&b.pa.k==='fgb'&&b.pa.tx&&T-b.pa.t0<b.pa.d,on=pa0||[b.hand,b.dr,b.dis].some(L=>L&&L.some(o=>o.i===FG));if(!fr){if(!on)b.fgA0=null;else if(b.fgA0==null)b.fgA0=T}if(!on||(fr&&!pa0))return;
+ // 現れる時：刃が上から素早く降ってきて止まり、少し弾む。オーラは降り立つ瞬間に広がる
+ const tA=T-(b.fgA0==null?-9:b.fgA0),ap=Math.min(1,tA/.6),aE=Math.max(0,Math.min(1,(tA-.18)/.3)),fO=tA<.24?-260*(1-Math.pow(tA/.24,2)):tA<.5?-7*Math.sin((tA-.24)/.26*3.14)*(1-(tA-.24)/.26):0;const cx=x0-12,cy=116+Math.sin(T*1.6)*5;
+ ctx.save();if(!fr){ctx.globalAlpha=aE;const g=ctx.createRadialGradient(cx+20,cy+30,6,cx+20,cy+30,95);g.addColorStop(0,'rgba(150,18,26,.85)');g.addColorStop(.45,'rgba(80,6,16,.7)');g.addColorStop(1,'rgba(10,0,4,0)');ctx.fillStyle=g;ctx.fillRect(cx-80,cy-70,200,200)}
 
  ctx.globalAlpha=1;const im=fgBl(),sc=(.6+.4*Math.max(0,Math.min(1,((PS&&PS.forge||0)-5)/95))),pa=b.pa&&b.pa.k==='fgb'&&b.pa.tx?b.pa:null;
  const ez=v=>v*v*(3-2*v),pos=t=>{if(!pa||t<=0||t>=pa.d)return[cx,cy,0];const tx=pa.tx-34,ty=pa.ty-8;
   if(t<.22){const v=ez(t/.22);return[cx+(tx-cx)*v,cy+(ty-cy)*v-Math.sin(v*3.14)*26,-.7*v]}
   if(t<.38){const v=ez((t-.22)/.16);return[tx+v*22,ty+v*10,-.7+2.6*v]}
   const v=ez((t-.38)/(pa.d-.38));return[tx+22+(cx-tx-22)*v,ty+10+(cy-ty-10)*v-Math.sin(v*3.14)*20,1.9*(1-v)]};
- const t0=pa?T-pa.t0:0,dB=(q,al)=>{ctx.save();ctx.translate(q[0],q[1]);ctx.rotate(q[2]);ctx.scale(sc,sc);ctx.globalAlpha=al;if(al>=1){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.7+.25*Math.sin(T*3);ctx.filter='blur(5px)';for(let k=0;k<2;k++)ctx.drawImage(im.g,-im.width/2,-im.height/2);ctx.filter='none';ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;ctx.drawImage(im,-im.width/2,-im.height/2)}else{ctx.drawImage(im.g,-im.width/2,-im.height/2)}ctx.restore()};
+ const t0=pa?T-pa.t0:0,dB=(q,al)=>{ctx.save();const hm=!pa||t0<=0||t0>=pa.d,rv=hm&&ap<1;ctx.translate(q[0],q[1]+(rv?fO:0));ctx.rotate(q[2]);ctx.scale(sc,sc);ctx.globalAlpha=al;if(al>=1){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.7+.25*Math.sin(T*3);ctx.filter='blur(5px)';for(let k=0;k<2;k++)ctx.drawImage(im.g,-im.width/2,-im.height/2);ctx.filter='none';ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;ctx.drawImage(im,-im.width/2,-im.height/2)}else{ctx.drawImage(im.g,-im.width/2,-im.height/2)}ctx.restore()};
  if(fr&&pa&&t0>0&&t0<pa.d){for(let k=3;k>=1;k--)dB(pos(t0-k*.025),.22*(4-k)/3);if(t0>=.3&&!pa.ev.fgs){pa.ev.fgs=1;fxs('is',pa.tx,pa.ty,{d:.36});sfx('spk');shk=Math.max(shk,4)}}
  if(!!fr===!!pa0)dB(pos(t0),1);
+ if(!fr&&ap<1&&!pa0){const q=pos(0);if(tA<.24)for(let k=1;k<=4;k++){ctx.save();ctx.translate(q[0],q[1]+fO-k*16);ctx.scale(sc,sc);ctx.globalAlpha=.32*(1-k/5);ctx.drawImage(im.g,-im.width/2,-im.height/2);ctx.restore()}
+  else{const f=1-(tA-.24)/.36;ctx.globalCompositeOperation='lighter';ctx.globalAlpha=Math.max(0,f);const g2=ctx.createRadialGradient(q[0],q[1],0,q[0],q[1],70*sc+10);g2.addColorStop(0,'rgba(255,110,100,.8)');g2.addColorStop(1,'rgba(160,20,30,0)');ctx.fillStyle=g2;ctx.fillRect(q[0]-90,q[1]-90,180,180);ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;if(!b.fgL){b.fgL=1;shk=Math.max(shk,3);sfx('spk')}}}
+ if(!fr&&tA<.24)b.fgL=0;
  ctx.restore()}
 function plDraw(k,x,y){const b=SPR[k+'_b'],W=WPN[k],pa=B&&B.pa;if(!b){ctx.drawImage(SPR[k],x,y);return}
  const A=pa&&PA2[pa.k],d=pa&&(pa.d||A&&A.d),t=A?(T-pa.t0)/d:1,on=A&&t>=0&&t<1,nb=W&&W.ng&&on&&NGK[pa.k],g=(n,dv)=>on&&(nb&&NGB[n]||A[n])?kf(t,nb&&NGB[n]||A[n]):dv;if(on)plEv(pa,t,A);
