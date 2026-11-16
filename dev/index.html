@@ -1117,8 +1117,8 @@ const sg=(x0,y0,x1,y1,w,c)=>{const dx=y1-y0,dy=-(x1-x0),L=Math.hypot(dx,dy)||1,o
 pt('wb',()=>{l(27,11,31,5,M[2],1.2);r(29.6,2,3,5,M[1]);gat(31.6,2.2,6.6,4);for(let k=0;k<3;k++)r(29,7.4+k*1.2,1.4,.8,YW)});
 pt('wf',()=>{l(13,11,8,5,M[2],1.3);t([[3,1],[10,1],[10.6,7],[3,7]],M[1]);for(let a=0;a<2;a++)for(let b=0;b<3;b++){e(4.6+b*2.2,2.6+a*2.6,.8,.8,'#0e1014');q(4.6+b*2.2,2.6+a*2.6,'#c84a2a')}r(3,7,7.6,.8,YW)});
 // 脚：後ろへ引き、足の噴射口から炎
-sg(19,24,14,29,4.6,M[1]);sg(14,29,12,33.6,4,M[1]);sg(18.4,24.6,14.6,28.4,1.8,M[0]);e(14,29,2.4,2.4,M[2]);t([[10,33],[14.4,33],[14,35.4],[10.4,35.4]],M[2]);fl(12.2,35.4,6.4);r(13.4,28,2.4,2.4,M[0]);
-sg(22,24,26,29.6,4.8,M[0]);sg(26,29.6,22.6,34,4.2,M[0]);sg(22.6,24.6,25.4,28.6,1.8,'#9aa0aa');e(26,29.6,2.4,2.4,M[1]);t([[20.4,33.6],[25,33.6],[24.6,36],[21,36]],M[2]);fl(22.8,36,6);r(24.6,28.6,2.4,2.4,'#9aa0aa');
+sg(19,24,14,29,4.6,M[1]);sg(14,29,12,33.6,4,M[1]);sg(18.4,24.6,14.6,28.4,1.8,M[0]);e(14,29,2.4,2.4,M[2]);t([[10,33],[14.4,33],[14,35.4],[10.4,35.4]],M[2]);r(13.4,28,2.4,2.4,M[0]);
+sg(22,24,26,29.6,4.8,M[0]);sg(26,29.6,22.6,34,4.2,M[0]);sg(22.6,24.6,25.4,28.6,1.8,'#9aa0aa');e(26,29.6,2.4,2.4,M[1]);t([[20.4,33.6],[25,33.6],[24.6,36],[21,36]],M[2]);r(24.6,28.6,2.4,2.4,'#9aa0aa');
 // 胴：胸は広く、腰は細い
 t([[12,8],[28,8],[29,18],[24,24],[17,24],[11,18]],M[1]);t([[13.6,9],[26.6,9],[27,17],[23,22.6],[17.6,22.6],[13,17]],M[0]);
 e(19,14.6,3.6,3.6,M[3]);r(17.6,22,4.6,3,M[2]);
@@ -2254,7 +2254,11 @@ function ePart(e,q,i){if(q.r)return rigA(e,q,i);const Z=[0,0,0],W=q.w||Z,S=q.s||
 function dParts(e,i,w,h){const L=EPT[e.k],d=SD[e.k],u=d[2],hw=Math.round(w/2),M={};for(const q of L)M[q.n]=[q,ePart(e,q,i)];
  const tf=q=>{if(q.pa)tf(M[q.pa][0]);const v=M[q.n][1],X=-hw+w-(q.pv[0]*u/2+1)*2,Y=-h+(q.pv[1]*u/2+1)*2;ctx.translate(X-v[1]*u,Y+v[2]*u);ctx.rotate(-v[0]);ctx.translate(-X,-Y)};
  const dp=q=>{ctx.save();tf(q);ctx.drawImage(SPR[e.k+'_p'+q.n],-hw,-h);ctx.restore()};
- for(const q of L)if(q.z==='b')dp(q);ctx.drawImage(SPR[e.k+'_pb'],-hw,-h);for(const q of L)if(q.z==='f')dp(q)}
+ for(const q of L)if(q.z==='b')dp(q);ctx.drawImage(SPR[e.k+'_pb'],-hw,-h);for(const q of L)if(q.z==='f')dp(q);if(e.k==='protoC')thrFx(w,h,u)}
+// Ver3.84 試作機神・完全体 足の噴射（ずっと揺らめく）
+function thrFx(w,h,u){const hw=Math.round(w/2),X=x=>-hw+w-(x*u+2),Y=y=>-h+y*u+2;for(const[x0,y0,L,ph]of[[12.2,35.4,6.4,0],[22.8,36,6,1.7]]){const cx=X(x0),cy=Y(y0),k=1+.16*Math.sin(T*31+ph)+.1*Math.sin(T*53+ph*2),Lp=L*u*k,W=1.7*u,j=Math.sin(T*41+ph)*u*.25;
+ ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(cx,cy+Lp*.35,0,cx,cy+Lp*.35,Lp*.9);g.addColorStop(0,'rgba(255,140,50,.35)');g.addColorStop(1,'rgba(255,90,30,0)');ctx.fillStyle=g;ctx.fillRect(cx-Lp,cy-Lp*.6,Lp*2,Lp*2);ctx.globalCompositeOperation='source-over';
+ const fp=(a,b,c)=>{ctx.fillStyle=c;ctx.beginPath();ctx.moveTo(cx-W*a,cy);ctx.lineTo(cx+W*a,cy);ctx.lineTo(cx+j+W*a*.25,cy+Lp*b);ctx.lineTo(cx+j-W*a*.25,cy+Lp*b);ctx.fill()};fp(1,1,'#e0602a');fp(.68,.75,'#ffb040');fp(.36,.45,'#ffe8b0')}}
 // 攻撃の動き用：武器だけ別の絵にして、手元を軸に回す（WPN の pv は手の位置＝元の単位）。ra があれば攻撃の間だけ構えの角度 rest から ra へ持ち上げる（Ver2.55 ユウキングの下段の構え）
 // Ver2.56 体の中心（元の単位）。戦闘で体の中心がHPバーの中心（x=110）に来るように置く
 // 足の下の空き（画素）。絵の下端に空きがあるので、その分だけ下げて足を地面につける
@@ -5870,7 +5874,7 @@ rows.forEach((r,j)=>{let cx=al==='c'?x-(r.reduce((s,q)=>s+q[1]+2,-2))/2:x;const 
 // HPバーの見た目の案（HPV：0 今／1 鋳鉄の枠／2 斜めに切った札／3 刻みの付いた細身）
 let HPV=4;/* Ver3.70 スレスパ2風の細いゲージ（ユーザー採用）。長さは体の幅に合わせる（敵が多いほど上限を短く） */const hpSh=(c,k)=>adj(c,k);
 // Ver3.71 敵のHPバーの高さ：絵の一番下（透明でない所）のすぐ下。浮いている敵は上に（ユーザー指定）。地面より下にはしない。絵には重ならない
-function eBarY(e,im,p0){if(!im)return p0.y+2;if(im._bot==null){try{const c=im.getContext?im:null;let bot=im.height;if(c){const d=c.getContext('2d').getImageData(0,0,im.width,im.height).data;bot=0;for(let y=im.height-1;y>=0&&!bot;y--)for(let x=0;x<im.width;x++)if(d[(y*im.width+x)*4+3]>40){bot=y+1;break}}im._bot=bot||im.height}catch(_){im._bot=im.height}}return Math.min(p0.y+2,Math.round(p0.y-(e.fly||0)-(im.height-im._bot)+5))}
+function eBarY(e,im,p0){if(!im)return p0.y+2;if(im._bot==null){try{const c=im.getContext?im:null;let bot=im.height;if(c){const d=c.getContext('2d').getImageData(0,0,im.width,im.height).data;bot=0;for(let y=im.height-1;y>=0&&!bot;y--)for(let x=0;x<im.width;x++)if(d[(y*im.width+x)*4+3]>40){bot=y+1;break}}im._bot=bot||im.height}catch(_){im._bot=im.height}}return Math.min(p0.y+2,Math.round(p0.y-(e.fly||0)-(im.height-im._bot)+5+(e.k==='protoC'?22:0)))}
 function hpFrame(x,y,w,hp,mh,col,blk){const f=blk>0?'#4a8fe0':col,r=Math.max(0,w*hp/mh);
  if(HPV===1){ctx.fillStyle='#141018';ctx.fillRect(x-3,y-3,w+6,16);ctx.fillStyle='#4a4250';ctx.fillRect(x-2,y-2,w+4,1);ctx.fillStyle='#2a2430';ctx.fillRect(x-2,y+11,w+4,1);ctx.fillStyle='#24101a';ctx.fillRect(x,y,w,10);
   const g=ctx.createLinearGradient(0,y,0,y+10);g.addColorStop(0,hpSh(f,.35));g.addColorStop(.45,f);g.addColorStop(1,hpSh(f,-.45));ctx.fillStyle=g;ctx.fillRect(x,y,r,10);ctx.fillStyle='rgba(255,255,255,.28)';ctx.fillRect(x,y+1,r,1);
