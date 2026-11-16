@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.87';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.88';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -3389,7 +3389,7 @@ function encApply(o,d){const v=o.ev||0,A=n=>{if(d.a)d.a+=n;else if(d.aa)d.aa+=n}
  case'goopy':d.x=1;d.b=(d.b||0)+v;break;case'inky':A(1);d.wk=(d.wk||0)+1;break;case'instinct':if(d.a)d.a*=2;if(d.aa)d.aa*=2;break;case'momentum':A(o.mo||0);break;case'royal':d.inn=1;d.rt=1;break;case'steady':d.rt=1;break;case'souls':d.x=0;break;
  case'ember':d.c=0;A(3);break;case'slither':if(o.sc!=null)d.c=o.sc;break;case'slumb':if(o.sl1)d.c=Math.max(0,d.c-o.sl1);break}}
 const cd=o=>{const fb=cdB(),c=o.u&&!(fb&1)?up(C[o.i]):C[o.i],gt=c.t===2&&c.c>=0&&has('gaunt'),hx=fb&2&&o.hxe&&c.t<3&&!c.eth;if(c.ethC&&B&&B.ethN&&!(o.f0||o.en))return{...c,c:Math.max(0,c.c-c.ethC*B.ethN)};if(c.kt&&!c.X&&B&&B.kfr&&!(o.f0||o.en)&&c.c>0)return{...c,c:0};if(c.fin&&B&&B.dr&&B.dr.length&&B.en)return{...c,un:1};if(!(o.f0||o.g||o.cm||gt||hx||o.sly||o.en||o.e1))return c;const d={...c};if(o.en&&ENC[o.en])encApply(o,d);if(o.e1&&B&&o.e1===B.turn&&d.c>1)d.c=1;if(o.sly)d.sly=1;if(gt)d.c++;if(hx)d.eth=1;if(o.f0)d.c=0;if(o.cm&&d.c>0)d.c=Math.max(0,d.c-o.cm);if(o.g){if(d.a)d.a+=o.g;else if(d.aa)d.aa+=o.g;else if(d.b)d.b+=o.g}return d};
-function dl(c,pv){const p=[],cl=(v,b)=>{if(pv&&b!=null&&v!==b)p.cl[p.length-1]=v>b?'#7dff9a':'#ff6a6a'};p.cl={};if(c.ms)p.push('立ったまま眠る','HP+'+(4+4*c.ms)+'・筋力+'+(c.ms+1),'次ターンエナ+1','2枚多く引く');if(c.sp)p.push('詠唱'+c.sp);if(c.X&&c.chX==null&&c.evX==null)p.push('X回');if(c.a||c.bs&&pv){const v=pv?pv.a:c.a;p.push(v+'ダメージ'+(c.h>1?'×'+c.h:''));cl(v,c.bs?null:c.a)}if(c.sm)p.push('筋力×'+c.sm);if(c.bs&&!pv)p.push('ブロック分ダメージ');if(c.aa){const v=pv?pv.aa:c.aa;p.push('全体'+v+'ダメージ'+(c.h>1?'×'+c.h:''));cl(v,c.aa)}if(c.lf)p.push((c.aa?'1体につきHP+':'HP+')+c.lf);
+function dl(c,pv){const p=[],cl=(v,b)=>{if(pv&&b!=null&&v!==b)p.cl[p.length-1]=v>b?'#7dff9a':'#ff6a6a'};p.cl={};if(c.ms)p.push('立ったまま眠る','HP+'+(4+4*c.ms)+'・筋力+'+(c.ms+1),'次ターンエナ+1','2枚多く引く');if(c.sp)p.push('詠唱'+c.sp);if(c.X&&c.chX==null&&c.evX==null)p.push('X回');if(c.a||c.bs&&pv){/* Ver3.88 鍛えし刃は山札・捨て札などでも戦闘中は鍛えた分を足して見せる */const v=pv?pv.a:c.fgA&&B&&PS&&PS.forge&&B.ph&&!/^[VLD]$/.test(B.ph)?c.a+PS.forge:c.a;p.push(v+'ダメージ'+(c.h>1?'×'+c.h:''));cl(v,c.bs?null:c.a)}if(c.sm)p.push('筋力×'+c.sm);if(c.bs&&!pv)p.push('ブロック分ダメージ');if(c.aa){const v=pv?pv.aa:c.aa;p.push('全体'+v+'ダメージ'+(c.h>1?'×'+c.h:''));cl(v,c.aa)}if(c.lf)p.push((c.aa?'1体につきHP+':'HP+')+c.lf);
 if(c.b){const v=pv&&pv.b!=null?pv.b:c.b;p.push('ブロック'+v);cl(v,c.b)}if(c.db)p.push('ブロック2倍');if(c.dr)p.push(c.dr+'枚引く');if(c.en)p.push('エナジー+'+c.en);
 if(c.vu)p.push('弱体'+c.vu);if(c.wk)p.push('脆弱'+c.wk);if(c.vuA)p.push('全体弱体'+c.vuA);if(c.wkA)p.push('全体脆弱'+c.wkA);
 if(c.ps)p.push('毒'+c.ps);if(c.cat)p.push('毒2倍');if(c.ds)p.push('敵の筋力-'+c.ds);
