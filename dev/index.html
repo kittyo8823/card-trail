@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.80';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.81';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -3057,6 +3057,72 @@ BFULL.deus=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(331),C0='#03060e',C1='#08
  R(210,204,220,8,C4);R(210,204,220,2,'#e8f0ff');R(226,210,188,6,C3);R(210,202,220,2,GD[1]);
  for(let i=0;i<30;i++){const px=rn()*640,py=rn()*300;R(px,py,2,2,rn()<.5?'#e8f8ff':GD[0]);if(i%6===0)BF.gl(x,px+1,py+1,8,8,'rgba(200,240,255,.4)')}
  BF.vig(x,.65)};
+// ===== 永劫の天秤：天上の裁きの間。奥に逆光の巨大な天秤、吊られた分銅と鎖、金の縁の柱廊、鏡のような床
+BFULL.scales=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(341),C0='#06040a',C1='#0e0a14',C2='#1a1220',C3='#2a1e30',C4='#3e2e40',HZ='#6a5a6a',GD=['#fff0c0','#e8c070','#a8803a','#5e4420','#2e2010'];
+ x.fillStyle=C1;x.fillRect(0,0,640,212);BF.gl(x,320,110,340,200,'rgba(200,150,80,.5)');BF.gl(x,320,90,150,120,'rgba(255,230,170,.4)');
+ for(let i=0;i<40;i++)R(rn()*640,rn()*150,2,2,rn()<.3?GD[0]:'#5a4a5a');
+ // 奥の巨大な天秤（逆光の影）
+ const cx=320;x.fillStyle=C3;R(cx-4,30,8,170,C3);R(cx-110,44,220,8,C3);R(cx-12,22,24,12,C3);x.beginPath();x.arc(cx,28,14,0,6.3);x.fill();
+ for(const px of[cx-104,cx+104]){x.strokeStyle=C3;x.lineWidth=2;x.beginPath();x.moveTo(px,52);x.lineTo(px-30,120);x.moveTo(px,52);x.lineTo(px+30,120);x.stroke();R(px-36,120,72,8,C3);R(px-30,128,60,4,C3)}
+ R(cx-110,44,220,2,GD[2]);R(cx-2,30,2,170,GD[3]);BF.gl(x,cx,28,26,26,'rgba(255,220,140,.6)');x.fillStyle=GD[1];x.beginPath();x.arc(cx,28,6,0,6.3);x.fill();
+ // 光の筋
+ BF.rays(x,320,[[294,10,.2],[312,6,.28],[330,10,.18],[350,8,.14],[272,8,.1],[372,8,.1]],'rgba(255,225,160,A)',206);
+ // 柱廊
+ const rows=[[[238,402],76,8,BF.mix(C3,HZ,.4),HZ,GD[1],2],[[200,440],64,12,C3,C4,GD[1],3],[[152,488],52,18,C2,C3,GD[2],4],[[92,548],38,26,C1,C2,GD[2],5]];
+ for(const[[lx,rx],top,w,c,hl,rim,cap]of rows){const h=208-top;BF.pil(x,lx,top,w,h,c,hl,rim,cap,1,GD[3]);BF.pil(x,rx,top,w,h,c,hl,rim,cap,-1,GD[3])}
+ for(const[y0,y1,c]of[[56,64,C2],[44,56,C1],[28,44,C0]]){x.fillStyle=c;x.beginPath();x.moveTo(0,y0-34);x.lineTo(228,y0);x.lineTo(228,y1);x.lineTo(0,y1+10);x.fill();x.beginPath();x.moveTo(640,y0-34);x.lineTo(412,y0);x.lineTo(412,y1);x.lineTo(640,y1+10);x.fill()}x.fillStyle=GD[3];x.fillRect(0,60,228,2);x.fillRect(412,60,228,2);
+ // 吊られた分銅と鎖（手前ほど大きく暗い）
+ for(const[px,py,s,c]of[[150,110,10,C3],[490,96,12,C3],[70,140,16,C1],[580,150,18,C1],[240,70,7,C4],[410,74,8,C4]]){for(let y=0;y<py-s;y+=4)R(px+((y/4)%2),y,2,2,c===C1?GD[3]:C4);R(px-s,py-s,s*2,s*1.6,c);R(px-s/2,py-s-4,s,4,c);R(px-s,py-s,2,s*1.6,GD[2]);BF.gl(x,px,py,s*1.6,s,'rgba(255,200,120,.2)')}
+ // 床：鏡のように磨かれた金の床、天秤と光の映り込み、象眼の円
+ for(let y=208;y<360;y+=2){x.fillStyle=BF.mix(C3,C0,(y-208)/152);x.fillRect(0,y,640,2)}R(0,208,640,2,GD[2]);
+ for(let k=-12;k<=12;k++){const x0=320+k*30,x1=320+k*120;for(let yy=210;yy<360;yy+=2)x.fillStyle=C2,x.fillRect(BF.F(x0+(x1-x0)*(yy-208)/152),yy,2,2)}
+ R(cx-4,210,8,70,C3);R(cx-100,252,200,4,C3);BF.gl(x,320,232,260,40,'rgba(230,180,100,.3)');
+ x.strokeStyle=GD[2];x.lineWidth=2;for(const[rx,ry]of[[220,40],[150,27]]){x.beginPath();x.ellipse(320,250,rx,ry,0,0,6.3);x.stroke()}for(let k=0;k<12;k++){const t=k/12*6.283;R(320+Math.cos(t)*185-2,250+Math.sin(t)*33-2,4,4,GD[1])}
+ for(let i=0;i<30;i++){const px=rn()*640,py=rn()*300;R(px,py,2,2,GD[0]);if(i%5===0)BF.gl(x,px,py,8,8,'rgba(255,220,150,.45)')}
+ BF.vig(x,.7)};
+// ===== 沈んだ灯台：深い海の底。奥に沈んだ街の影、上から揺れる光、大きな灯台の光の帯、海藻、岩、泡、砂の床
+BFULL.ulight=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(351),C0='#010608',C1='#041014',C2='#08202a',C3='#103440',C4='#1e5258',C5='#3a8a88',HZ='#4a8a8a',SW=['#1e5a3a','#2e7a4a','#143a28'];
+ x.fillStyle=C1;x.fillRect(0,0,640,212);BF.gl(x,300,40,360,180,'rgba(40,140,150,.6)');BF.gl(x,300,20,180,80,'rgba(140,230,220,.35)');
+ // 水面からの揺れる光
+ BF.rays(x,300,[[240,14,.16],[270,8,.22],[300,18,.18],[336,8,.2],[360,12,.14],[200,8,.1],[400,10,.1]],'rgba(160,240,230,A)',212);
+ // 奥の沈んだ街の影（霞む）
+ for(let i=0;i<18;i++){const bx=20+i*36+rn()*10,bh=40+rn()*90;R(bx,200-bh,18+rn()*14,bh,BF.mix(C3,HZ,.3));if(rn()<.5){x.fillStyle=BF.mix(C3,HZ,.3);x.beginPath();x.moveTo(bx-2,200-bh);x.lineTo(bx+12,200-bh-20);x.lineTo(bx+26,200-bh);x.fill()}for(let k=0;k<3;k++)R(bx+4+rn()*10,200-bh+10+rn()*(bh-20),4,6,C2)}
+ // 中景の岩とアーチ
+ for(const[px,w,h]of[[60,120,90],[560,140,110]]){x.fillStyle=C2;x.beginPath();x.moveTo(px-w/2,208);x.lineTo(px-w/3,208-h);x.lineTo(px,208-h-14);x.lineTo(px+w/3,208-h+6);x.lineTo(px+w/2,208);x.fill();R(px-w/3,208-h,4,h,C4)}
+ // 灯台の光の帯（右上から斜めに）
+ x.save();x.globalCompositeOperation='lighter';const g=x.createLinearGradient(520,40,120,260);g.addColorStop(0,'rgba(255,240,180,.4)');g.addColorStop(1,'rgba(255,240,180,0)');x.fillStyle=g;x.beginPath();x.moveTo(500,60);x.lineTo(540,40);x.lineTo(260,360);x.lineTo(80,360);x.fill();x.restore();BF.gl(x,520,52,40,30,'rgba(255,240,180,.6)');
+ // 海藻
+ for(let i=0;i<16;i++){const px=rn()*640,h=40+rn()*90,c=SW[i%3];for(let y=0;y<h;y+=2)R(px+Math.round(Math.sin(y*.08+i)*6),208-y,4,2,c);R(px-2,208-h,6,4,SW[1])}
+ // 砂の床
+ for(let y=208;y<360;y+=2){x.fillStyle=BF.mix(C3,C0,(y-208)/152);x.fillRect(0,y,640,2)}BF.gl(x,300,224,260,30,'rgba(140,220,210,.3)');
+ for(let i=0;i<60;i++)R(rn()*640,212+rn()*140,4+rn()*10,2,rn()<.5?C4:C2);
+ for(let i=0;i<12;i++){const px=rn()*640,py=230+rn()*110,w=14+rn()*30;R(px,py,w,8,C1);R(px,py,w,2,C4);R(px+4,py-4,w-8,4,C2)}
+ // 泡と小魚の影
+ for(let i=0;i<30;i++){const px=rn()*640,py=rn()*300,r=1+rn()*2;x.strokeStyle='#8ad8d0';x.lineWidth=1;x.beginPath();x.arc(px,py,r+1,0,6.3);x.stroke()}
+ for(let i=0;i<8;i++){const px=rn()*640,py=60+rn()*110;R(px,py,10,4,C2);R(px+10,py-2,4,8,C2)}
+ BF.vig(x,.7)};
+// ===== 死神ネヴァル：冥府の地下墓所。奥に頭蓋の並ぶ壁龕、青白い霊火の灯る大きな門、並ぶ墓標、骨の山、床の霧
+BFULL.reaper=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(361),C0='#03030a',C1='#08081a',C2='#10122a',C3='#1a1e3e',C4='#2a3058',C5='#46508a',HZ='#5a6290',BN=['#d8d4c4','#a8a494','#6a6858'],SP=['#e0ecff','#8ab0ff','#4a68c8'];
+ x.fillStyle=C1;x.fillRect(0,0,640,212);BF.gl(x,320,120,320,190,'rgba(70,90,200,.55)');BF.gl(x,320,130,120,100,'rgba(160,200,255,.35)');
+ // 奥の壁：頭蓋の並ぶ壁龕
+ for(let px=120;px<520;px+=2)R(px,40,2,170,C2);
+ for(let row=0;row<5;row++)for(let col=0;col<11;col++){const px=136+col*34,py=50+row*30;if(px>270&&px<370&&py>80)continue;R(px,py,26,22,C1);R(px+7,py+6,12,10,BN[2]);R(px+9,py+9,3,3,C1);R(px+14,py+9,3,3,C1)}
+ // 大きな門（霊火の光）
+ const ax=320;R(ax-56,70,112,140,C0);x.fillStyle=C0;x.beginPath();x.arc(ax,70,56,3.14,0);x.fill();BF.gl(x,ax,140,60,80,'rgba(140,180,255,.55)');R(ax-62,64,8,146,C3);R(ax+54,64,8,146,C3);R(ax+54,64,2,146,SP[2]);R(ax-56,64,2,146,SP[2]);
+ for(const[px,py]of[[ax-40,100],[ax+40,100],[ax,90]]){R(px-2,py,4,8,BN[0]);R(px-2,py-6,4,6,SP[1]);R(px-1,py-8,2,2,SP[0]);BF.gl(x,px,py-4,16,16,'rgba(150,190,255,.6)')}
+ // 柱廊（墓所の太い柱、霊火の照り返し）
+ const rows=[[[220,420],72,12,BF.mix(C3,HZ,.3),C4,SP[2],3],[[176,464],60,18,C3,C4,SP[2],4],[[120,520],46,26,C2,C3,C5,5],[[50,590],30,36,C1,C2,C4,6]];
+ for(const[[lx,rx],top,w,c,hl,rim,cap]of rows){const h=208-top;BF.pil(x,lx,top,w,h,c,hl,rim,cap,1);BF.pil(x,rx,top,w,h,c,hl,rim,cap,-1)}
+ for(const[y0,y1,c]of[[50,62,C2],[36,50,C1],[18,36,C0]]){x.fillStyle=c;x.beginPath();x.moveTo(0,y0-34);x.lineTo(210,y0);x.lineTo(210,y1);x.lineTo(0,y1+10);x.fill();x.beginPath();x.moveTo(640,y0-34);x.lineTo(430,y0);x.lineTo(430,y1);x.lineTo(640,y1+10);x.fill()}
+ // 吊られた鎖と霊火の灯籠
+ for(const[px,l]of[[100,90],[540,80],[180,50],[460,56]]){for(let y=0;y<l;y+=4)R(px+((y/4)%2),y,2,2,C4);R(px-6,l,12,14,C2);R(px-4,l+2,8,10,SP[1]);R(px-2,l+4,4,4,SP[0]);BF.gl(x,px,l+8,24,24,'rgba(140,180,255,.5)')}
+ // 床：墓標が奥へ並び、骨の山、霧
+ for(let y=208;y<360;y+=2){x.fillStyle=BF.mix(C3,C0,(y-208)/152);x.fillRect(0,y,640,2)}BF.gl(x,320,220,260,24,'rgba(120,150,240,.3)');
+ for(let r=0;r<4;r++){const by=214+r*30,sz=1+r*.5,cc=BF.mix(C3,C1,r/4);for(let i=0;i<7;i++){const px=40+i*92+rn()*30+(r%2?40:0);if(Math.abs(px-320)<90&&r<2)continue;const h=16*sz+rn()*8,w=14*sz;if(rn()<.55){R(px-w/2,by-h,w,h,cc);x.fillStyle=cc;x.beginPath();x.arc(BF.F(px),BF.F(by-h),w/2,3.14,0);x.fill();R(px-w/2+2,by-h-w/2+2,w-4,2,C4);R(px-w/4,by-h+4,w/2,2,C1)}else{R(px-3*sz,by-h-4*sz,6*sz,h+4*sz,cc);R(px-w/2,by-h+2*sz,w,5*sz,cc);R(px-3*sz,by-h-4*sz,6*sz,2,C4)}R(px-w/2-2,by-2,w+4,4,C1)}}
+ for(const[px,py]of[[90,300],[540,290],[200,340]])for(let k=0;k<8;k++){R(px+k*6-20+rn()*6,py-rn()*14,8,4,BN[k%3]);if(k%3===0){R(px+k*5-14,py-14-rn()*6,10,8,BN[0]);R(px+k*5-12,py-12,2,2,C0);R(px+k*5-8,py-12,2,2,C0)}}
+ for(let i=0;i<10;i++){const py=210+rn()*60,px=rn()*560,w=80+rn()*160;R(px,py,w,2,i%2?C4:C5)}
+ for(let i=0;i<26;i++){const px=rn()*640,py=rn()*300;R(px,py,2,2,rn()<.5?SP[0]:SP[1]);if(i%5===0)BF.gl(x,px,py,8,8,'rgba(150,190,255,.45)')}
+ BF.vig(x,.72)};
 function bossBg(base,ks){const k=ks&&ks.find(q=>BBG[q]||BFULL[q]);if(!k)return base;const id=k+'_'+(base.ak||'');if(!BBGC[id]){const c=MKC(640,360),x=c.getContext('2d');x.imageSmoothingEnabled=false;if(BFULL[k])BFULL[k](x);else{x.drawImage(base,0,0);BBG[k](x,base)}c.ak=base.ak;c.boss=k;BBGC[id]=c}return BBGC[id]}
 function bgPick(kind,ks){const a=Math.max(1,Math.min(3,P.act||1)),k=a===1&&P.v1==='s'?'s':a;if(kind===2)return bossBg(bgVar(k,k===3?2:0),ks);const h=Math.abs((a*131+(CUR?CUR.f:0)*37+(CUR?CUR.j:0)*11+(P.path?P.path.length:0)*7)*2654435761|0);if(k===3){const L=[0,1,3,4];return bgVar(3,L[h%L.length])}const n=BGVN[k];return bgVar(k,h%(n+1))}
 /* ===== データ ===== */
