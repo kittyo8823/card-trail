@@ -5138,7 +5138,7 @@ let FGB=null;function fgBl(){if(FGB)return FGB;const W=44,H=144,c=document.creat
  for(let y=2;y<92;y++){const u=(92-y)/90,o=Math.round(26-10*Math.pow(u,1.8)),k=y<12?(y-2)/10:1,w=Math.max(1,Math.round(8*Math.sqrt(k))),l=o+8-w;
   P(l,y,w,'#a8a0a8');P(l,y,Math.min(w,2),'#4a4250');if(w>4)P(l+2,y,1,'#7a7280');const hm=Math.round(5+Math.sin(y*.45)*1.2);if(w>hm-1)P(o+8-Math.min(w,8-hm+3),y,Math.min(w,3),'#d8ced2');P(o+7,y,1,'#f2eaea')}
  R(13,46,4,2,'#8a6a32');R(14,46,2,1,'#b08a44');R(10,48,10,2,'#241c22');R(11,48,8,1,'#342a30');
- for(let y=50;y<67;y++){const o=13+Math.round((y-50)*.12);R(o,y,4,1,'#36100f');if((y+o)%3===0)R(o+1,y,2,1,'#5e1a1c')}R(15,67,4,2,'#241c22');
+ for(let y=50;y<67;y++){R(13,y,4,1,'#36100f');if(y%3===0)R(14,y,2,1,'#5e1a1c')}R(13,67,4,2,'#241c22');
  const g=document.createElement('canvas');g.width=W;g.height=H;const gx=g.getContext('2d');gx.drawImage(c,0,0);gx.globalCompositeOperation='source-in';gx.fillStyle='#c0202a';gx.fillRect(0,0,W,H);c.g=g;return FGB=c}
 function fgAura(b,x0){const FG=CI('鍛えし刃'),on=[b.hand,b.dr,b.dis].some(L=>L&&L.some(o=>o.i===FG));if(!on)return;const cx=x0-12,cy=116+Math.sin(T*1.6)*5;
  ctx.save();const g=ctx.createRadialGradient(cx+20,cy+30,6,cx+20,cy+30,95);g.addColorStop(0,'rgba(150,18,26,.85)');g.addColorStop(.45,'rgba(80,6,16,.7)');g.addColorStop(1,'rgba(10,0,4,0)');ctx.fillStyle=g;ctx.fillRect(cx-80,cy-70,200,200);
