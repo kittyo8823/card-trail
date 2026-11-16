@@ -36,10 +36,13 @@ RXC['命刈りの鎌']=[1.6,(f,p,X)=>{const{es,px,py}=X,mx=es.reduce((s,e)=>s+e[
  es.forEach((e,i)=>{const v=X.win(p,.22+i*.04,.5);if(v>0&&v<1)X.add(()=>X.G(e[0],e[1],30+v*50,'#c01a2a',1-v));
   for(let k=0;k<5;k++){const w=X.win(p,.45+i*.04+k*.03,.9+k*.02);if(w<=0||w>=1)continue;const cx=(e[0]+px)/2,cy=Math.min(e[1],py)-70-k*8,t=X.ez(w),xx=(1-t)*(1-t)*e[0]+2*(1-t)*t*cx+t*t*px,yy=(1-t)*(1-t)*e[1]+2*(1-t)*t*cy+t*t*py;X.add(()=>X.G(xx,yy,10,'#ff3a4a',1-w*.5))}});
  if(p>.85)X.add(()=>X.G(px,py,40,'#ff4a5a',(1-p)/.15))}];
-// 貪食：上下から牙の列が敵に噛みつき、血の滴を吸い上げる
-RXC['貪食']=[1.3,(f,p,X)=>{const{x,y,px,py}=X,o=p<.18?1-X.ei(p/.18):p<.35?0:X.ez((p-.35)/.2)*.4,a=p<.6?1:1-(p-.6)/.25;
- if(a>0)for(const s of[-1,1]){const yy=y+s*(14+o*60),pts=[[x-60,yy+s*28]];for(let k=0;k<=8;k++){const xx=x-56+k*14;pts.push([xx,yy+s*(k%2?-2:12)]);}pts.push([x+60,yy+s*28]);X.F(pts,'#3a0810',a);const t2=[];for(let k=0;k<=8;k++){const xx=x-56+k*14;t2.push([xx,yy+s*(k%2?-14:8)])}t2.push([x+56,yy+s*20],[x-56,yy+s*20]);X.F(t2,'#e8d8c8',a*.9)}
- if(p>.18){X.once('h',()=>X.sh(8));const v=(p-.18)/.82;X.add(()=>X.G(x,y,40+v*40,'#a01020',.9-v));for(let k=0;k<8;k++){const w=X.win(p,.35+k*.04,.75+k*.03);if(w<=0||w>=1)continue;const t=X.ez(w);X.add(()=>X.G(x+(px-x)*t,y+(py-y)*t-Math.sin(t*3.14)*50,8,'#ff2a3a',1))}}}];
+// 貪食：敵の影から黒紅の触手が伸びて敵を包み込み、閉じた瞬間に命の流れを吸い上げて自分へ取り込む
+RXC['貪食']=[1.6,(f,p,X)=>{const{x,y,px,py,gy}=X,u=X.ez(p/.28),cl=p<.28?0:p<.55?1:1-X.win(p,.55,.75);
+ X.F([[x-60,gy],[x,gy-10],[x+60,gy],[x,gy+12]],'#14040a',.7*(1-X.win(p,.7,1)));
+ if(p<.75)for(let k=0;k<8;k++){const s=k<4?-1:1,j=k%4,b=x+s*(26+j*11),hh=60+j*14,cx1=b+s*(30+j*6),cy1=gy-hh*1.1,tx=x+s*(4+j*3)*(1-cl*.8),ty=y-26+j*12,a=1-X.win(p,.55,.75),n=18,m=Math.floor(n*u);ctx.save();ctx.globalAlpha=a;ctx.lineCap='round';for(let q=0;q<m;q++){const t0=q/n,t1=(q+1)/n,P=t=>[(1-t)*(1-t)*b+2*(1-t)*t*cx1+t*t*tx+Math.sin(t*6+T*8+k)*2,(1-t)*(1-t)*gy+2*(1-t)*t*cy1+t*t*ty];const A=P(t0),Bq=P(t1);ln(A[0],A[1],Bq[0],Bq[1],Math.max(1,7*(1-t0)),q/n>.7?'#8a1020':'#2a060c')}ctx.restore()}
+ if(p>.28){X.once('h',()=>X.sh(9));const v=X.win(p,.28,.6);X.add(()=>X.G(x,y,30+v*50,'#c01a2a',(1-v)*1.1))}
+ for(let k=0;k<3;k++){const w=X.win(p,.4+k*.05,.85+k*.04);if(w<=0||w>=1)continue;ctx.save();ctx.globalCompositeOperation='lighter';ctx.lineCap='round';const cx=(x+px)/2,cy=Math.min(y,py)-60+k*20;for(let j=0;j<14;j++){const t=X.c(0,1,w*1.4-j*.04),t2=X.c(0,1,t-.06);if(t<=0||t>=1)continue;const P=q=>[(1-q)*(1-q)*x+2*(1-q)*q*cx+q*q*px,(1-q)*(1-q)*y+2*(1-q)*q*cy+q*q*py];const a=P(t2),b=P(t);ctx.globalAlpha=(1-j/14)*.9;ln(a[0],a[1],b[0],b[1],3-k*.6,j%3?'#d0182a':'#ff6a6a')}ctx.restore()}
+ if(p>.82)X.add(()=>X.G(px,py,30+X.win(p,.82,1)*30,'#d0182a',(1-X.win(p,.82,1))*.9))}];
 // 盾の一撃・極：光の大盾が飛んでいき叩きつけ、砕けて破片が散る
 RXC['盾の一撃・極']=[1.2,(f,p,X)=>{const{x,y,px,py}=X,u=X.ei(p/.2),sx=px+(x-30-px)*u,sy=py+(y-py)*u,shp=(cx,cy,s,a)=>X.F([[cx-14*s,cy-22*s],[cx+14*s,cy-22*s],[cx+16*s,cy+2*s],[cx,cy+26*s],[cx-16*s,cy+2*s]],'#ffb04a',a);
  if(p<.2){shp(sx,sy,1.4,.9);X.add(()=>{X.G(sx,sy,40,'#ff8a2a',.7);for(let k=1;k<4;k++)shp(sx-k*18,sy,1.3,.15)})}
