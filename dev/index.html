@@ -20,8 +20,8 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
-// 見本：戦闘の場（キャラ・敵）を下げる dy・縮める sc、手札を下げる hy（Ver3.99 見本用、今は使っていない）
-const FMV={dy:0,sc:1,hy:0,cx:320,bg:0};let HFAN=1,HUP=54;/* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='3.99';let RNG=null,QT=0,PMODE=0,HSU=0;
+// Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
+const FMV={dy:20,sc:.92,hy:30,cx:380,bg:20};let HFAN=1,HUP=54;/* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.00';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -403,7 +403,8 @@ function mk(rows,pal,s){const h=rows.length,w=rows[0].length,c=document.createEl
 function txt(s,x,y,c,al,sz){ctx.font=(sz||12)+'px DotGothic16,sans-serif';ctx.textAlign=al||'left';ctx.fillStyle='#000';ctx.fillText(s,x+1,y+1);ctx.fillStyle=c||'#fff';ctx.fillText(s,x,y)}
 function box(x,y,w,h,f,b){ctx.fillStyle=b||'#f6f2ff';ctx.fillRect(x-2,y-2,w+4,h+4);ctx.fillStyle=f||'#1d2040';ctx.fillRect(x,y,w,h)}
 let btns=[];
-function hit(x,y,w,h,f){btns.push({x,y,w,h,f})}
+function tfR(x,y,w,h){const m=ctx.getTransform();if(m.a===K&&m.d===K&&!m.e&&!m.f&&!m.b&&!m.c)return{x,y,w,h};return{x:(m.a*x+m.c*y+m.e)/K,y:(m.b*x+m.d*y+m.f)/K,w:w*m.a/K,h:h*m.d/K}}
+function hit(x,y,w,h,f){({x,y,w,h}=tfR(x,y,w,h));btns.push({x,y,w,h,f})}
 // Ver3.04 ボタンは板を無くし、文字と下の光る線だけ（ユーザー指定・案C）。決定（紫・緑）は ▶ 付きの金、赤は危険の色。読みやすいよう後ろにうっすら暗いにじみ
 function btn(x,y,w,h,l,f,col,sz){const c=col||'',p=/6a4bd6|2a5a3a/.test(c),d=/7a2a3a|5a2a3a|6a2a3a|5a0a1a/.test(c),lc=p?'255,216,144':d?'255,138,138':'220,210,190';
  let g=ctx.createRadialGradient(x+w/2,y+h/2,2,x+w/2,y+h/2,Math.max(w,h)*.62);g.addColorStop(0,'rgba(0,0,0,.42)');g.addColorStop(.7,'rgba(0,0,0,.22)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(x-8,y-6,w+16,h+12);
@@ -6472,10 +6473,10 @@ if(b.ph==='lv')return;const by=eBarY(e,SPR[e.k]||im,p0);if(e.gz){const n=e.gz,gw
 chips(stat(e,0),p.x,by+22,'c',b.en.length>2?106:150);
 const m=e.it,t=[];if(m.nm)t.push(['必殺',Math.floor(T*4)%2?'#ff3b5c':'#ffd23f']);if(m.wf)t.push(['即死','#ff3b5c']);else if(m.a)t.push(['攻'+calcP(e,m.a)+(m.h>1?'×'+m.h:''),'#ff6a6a']);if(m.b)t.push(['防'+m.b,'#7ec8ff']);if(stG(e,m))t.push(['強+'+m.st,'#ffd23f']);if(m.wk||m.vu||m.fr)t.push(['弱','#c9a0ff']);if(m.ab)t.push(['護'+m.ab,'#7ec8ff']);if(m.hl)t.push(['癒'+m.hl,'#7dff9a']);if(m.sa)t.push(['与'+m.sa,'#ffd23f']);if(m.gzA)t.push(['視+'+m.gzA,'#ff4a5a']);if(m.smn)t.push(['召','#5ff6ff']);if(m.rt)t.push(['儀+'+m.rt,'#ff8c2e']);if(m.fl)t.push(['逃','#c8c8d8']);if(m.dd)t.push(['鈍','#c8c8d8']);if(m.ps)t.push(['毒'+m.ps,'#7dff9a']);if(m.sc)t.push(['妨','#c8c8d8']);
 if(m.lb)t.push([m.lb,'#c9a0ff']);if(e.nat)t.push(['封','#c8c8d8']);if(e.stn){t.length=0;t.push(['行動不能','#c8c8d8'])}if(e.sl>0){t.length=0;t.push(['睡眠','#9ab0ff'])}if(e.reb){t.length=0;t.push(['再起動','#5ff6ff'])}if(has('dome')&&!e.stn&&!(e.sl>0)&&!e.reb){t.length=0;t.push(['？','#8a8aa0'])}if(IV&&!e.stn&&!(e.sl>0)&&!e.reb&&!(has('dome')))itDraw(e,m,p.x,Math.max(46,p.y-h-8));else tok(t,p.x,Math.max(46,p.y-h-8),13,1);if(b.ph==='e'&&b.en[b.eo?b.eo[b.ei]:b.ei]===e){ctx.fillStyle='#ff6a6a';const by=Math.round(Math.sin(T*10)*3);ctx.fillRect(p.x-6,p.y-h-34+by,12,4);ctx.fillRect(p.x-4,p.y-h-30+by,8,4);ctx.fillRect(p.x-2,p.y-h-26+by,4,4)}
-ER.push({i,x:p.x-w/2,y:p.y-h,w,h:h+12});hit(p.x-w/2,p.y-h,w,h+12,()=>{if(e.rtc){say(e.n+'は崩れている（あと'+e.rtc+'ターンで再結合）');return}if(b.sel>=0&&needT(cd(b.hand[b.sel])))play(b.sel,i);else say(e.n+'  HP'+e.hp+'  '+(m.nm?'必殺「'+m.nm+'」':m.a?'攻撃':m.b?'防御':'行動'))})});
+ER.push({i,...tfR(p.x-w/2,p.y-h,w,h+12)});hit(p.x-w/2,p.y-h,w,h+12,()=>{if(e.rtc){say(e.n+'は崩れている（あと'+e.rtc+'ターンで再結合）');return}if(b.sel>=0&&needT(cd(b.hand[b.sel])))play(b.sel,i);else say(e.n+'  HP'+e.hp+'  '+(m.nm?'必殺「'+m.nm+'」':m.a?'攻撃':m.b?'防御':'行動'))})});
 if(!MPB&&P.cls===2&&B.fgx!=null)fgAura(b,B.fgx,1);serFx();drawXF();drawFx();ctx.restore();drawBossIntro(b);
 if(b.ph==='e'){ctx.fillStyle='rgba(140,10,40,.2)';ctx.fillRect(0,24,640,206)}
-drawSp(b);
+{ctx.save();ctx.translate(FMV.cx,208+FMV.dy);ctx.scale(FMV.sc,FMV.sc);ctx.translate(-FMV.cx,-208);drawSp(b);ctx.restore()}
 {const me=MPB?mpME():b.me,cl=P.cls===6?5:P.cls===10?6:Math.min(4,P.cls|0);energyGem(34,246+FMV.hy*.8,cl,me,MXE())}if(P.cls===2)tkOrb(55,229+FMV.hy*.8,PS.ki);
 pileOrbs(b.dr.length,b.dis.length);hit(4,312,66,48,()=>openPile('山札',b.dr,1));hit(570,312,66,48,()=>openPile('捨て札',b.dis,0));
 if(b.ex.length){txt('廃棄'+b.ex.length,632,330,'#ff9a9a','right',11);hit(570,316,70,16,()=>openPile('廃棄札',b.ex,0))}
