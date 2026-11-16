@@ -20,7 +20,8 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
-let HFAN=1,HUP=54;/* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='3.99';let RNG=null,QT=0,PMODE=0,HSU=0;
+// 見本：戦闘の場（キャラ・敵）を下げる dy・縮める sc、手札を下げる hy（Ver3.99 見本用、今は使っていない）
+const FMV={dy:0,sc:1,hy:0};let HFAN=1,HUP=54;/* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='3.99';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -6455,7 +6456,7 @@ function drawBn(bn){const p=1-bn.t/1.1,a=p<.15?p/.15:p>.75?(1-p)/.25:1,off=p<.15
  for(const dx of[-160,160]){const cx=320+dx+off;ctx.fillStyle=hi;ctx.fillRect(cx-2,y+h/2-6,4,12);ctx.fillRect(cx-6,y+h/2-2,12,4);ctx.fillStyle='#fff';ctx.fillRect(cx-1,y+h/2-1,2,2)}
  txt(bn.s,320+off,y+37,'#fff','center',32);ctx.globalAlpha=1}
 function drawBattle(){const b=B;ER=[];CR=[];hit(0,24,640,206,()=>{b.sel=-1});ctx.drawImage(BGB,0,0);bgAnim();
-ctx.save();if(shk>0)ctx.translate((Math.random()-.5)*shk*2,(Math.random()-.5)*shk*2);
+ctx.save();if(shk>0)ctx.translate((Math.random()-.5)*shk*2,(Math.random()-.5)*shk*2);if(FMV.dy||FMV.sc!==1){ctx.translate(320,208+FMV.dy);ctx.scale(FMV.sc,FMV.sc);ctx.translate(-320,-208)}
 const lg=b.lg>0?Math.sin(b.lg/.25*3.14)*(b.lgA!=null?b.lgA:30):0,sh=b.sh>0&&b.sh<=.3?(Math.random()-.5)*8:0;
 if(MPB)mpDrawPlayers(b);else{if(P.cls===3)drawGrim(b);if(P.cls===2)fgAura(b,B.fgx=74+lg+sh);const pim=P.cls===3?SPR.oji:P.cls===4?SPR[(b.ms?'hori_z':'hori')+P.act]:SPR[CH[P.cls].s];ctx.globalAlpha=b.sh>0&&b.sh<=.3&&Math.floor(T*30)%2?.5:1;{const wk=plKey(),bim=wk&&!b.ms?SPR[wk+'_b']:pim,by=Math.round(Math.sin(T*1.8)),px=Math.round(74+lg+sh-(PCX[wk]!=null?PCX[wk]*3+2-36:0)),py=208-bim.height+(b.ms?0:by)+(PFY[wk]||0);if(P.cls===6)nebDraw(px+pim.width/2,208,b);else if(P.cls===10)serDraw(SERX+lg+sh,208,b,PS);else if(wk&&!b.ms)plDraw(wk,px,py);else ctx.drawImage(pim,px,py)}ctx.globalAlpha=1;if(b.ms){for(let k=0;k<3;k++){const q=(T*.5+k/3)%1;ctx.globalAlpha=Math.sin(q*3.14);txt('Z',118+q*18,208-pim.height+6-q*30,'#c8d0ff','center',10+k*4)}ctx.globalAlpha=1}
 {const pw=HPV===4&&P.cls!==10?Math.max(60,Math.min(110,Math.round((pim.bw||pim.width)*.9))):72;hpBar(P.cls===10?SERX-(SERL.hb?36:SERL.hs?32:44):110-pw/2,210,P.cls===10&&!SERL.hb?(SERL.hs?64:66):pw,Math.min(P.mhp,vHP()),P.mhp,'#e8505b',b.blk,PS.poison)}chips(stat(PS,1),P.cls===2?72:64,P.cls===10&&SERL.hb===1?236:224,'l',204);}
@@ -6485,7 +6486,7 @@ if(b.dsc>0){ctx.fillStyle='rgba(4,2,12,.66)';ctx.fillRect(0,30,640,330);ctx.fill
 /* Ver3.67 操作のヒントの文字は出さない（ユーザー指定） */
 // Ver3.95 扇形の手札（HFAN）：触れている・選んだカードは上へせり上がって大きく前に出て、両隣はよける（本家風。ユーザー指定）
 const hvI=HFAN?(dg&&!dg.mv?dg.i:b.sel):-1,hvJ=HV.findIndex(a=>a[1]===hvI);const hvD=[];
-HV.forEach(([o,i],j)=>{const c=cd(o),sk=o.sk&&T-o.sk<.32?Math.sin((T-o.sk)*70)*5*(1-(T-o.sk)/.32):0,x=Math.round(x0+j*sp+sk+(hvJ>=0&&j!==hvJ?(j<hvJ?-18:18):0)),sel=b.sel===i,ok=b.dsc>0||b.ph==='p'&&!c.un&&(c.X||(MPB?mpME():b.me)>=c.c)&&!(c.tc&&PS.ki<c.tc)&&!(has('choker')&&b.pl>=6)&&!o.sld&&b.pl<cLim()&&!(c.ms&&b.pl>0)&&!(c.solo&&n>1)&&!(c.pay&&P.gold<c.pay),y=sel&&!(dg&&dg.mv)&&!HFAN?240:258;CR.push({i,x,y,w:j===n-1||sel?84:sp});if(dg&&dg.mv&&dg.i===i)return;
+HV.forEach(([o,i],j)=>{const c=cd(o),sk=o.sk&&T-o.sk<.32?Math.sin((T-o.sk)*70)*5*(1-(T-o.sk)/.32):0,x=Math.round(x0+j*sp+sk+(hvJ>=0&&j!==hvJ?(j<hvJ?-18:18):0)),sel=b.sel===i,ok=b.dsc>0||b.ph==='p'&&!c.un&&(c.X||(MPB?mpME():b.me)>=c.c)&&!(c.tc&&PS.ki<c.tc)&&!(has('choker')&&b.pl>=6)&&!o.sld&&b.pl<cLim()&&!(c.ms&&b.pl>0)&&!(c.solo&&n>1)&&!(c.pay&&P.gold<c.pay),y=sel&&!(dg&&dg.mv)&&!HFAN?240:258+FMV.hy;CR.push({i,x,y,w:j===n-1||sel?84:sp});if(dg&&dg.mv&&dg.i===i)return;
 if(o.hx==null){if(o.ht!=null){o.hx=DP.x-42;o.hy=DP.y-53;o.hs=.2}else{o.hx=278;o.hy=110;o.hs=.4}}if(T<(o.ht||0))return;if(HFAN){/* 扇の位置・傾きへなめらかに寄せる（配る時・戻す時に一度まっすぐになってから傾くのを直した） */const d=j-(n-1)/2,fy=y+d*d*2.2,fr=d*.055,k=Math.min(1,dt*13);o.hx+=(x-o.hx)*k;o.hy+=(fy-o.hy)*k;o.hs+=(1-o.hs)*k;o.hr=(o.hr||0)+(fr-(o.hr||0))*k;o.hu=(o.hu||0)+((i===hvI?1:0)-(o.hu||0))*Math.min(1,dt*16);if(o.hu>.02)hvD.push([o,x,ok]);else{o.hu=0;cardAt(o,o.hx+42,o.hy+53,o.hs,o.hr,1,!ok)}if(o.sld)sealMk(Math.round(o.hx),Math.round(o.hy));return}const k=Math.min(1,dt*13);o.hx+=(x-o.hx)*k;o.hy+=(y-o.hy)*k;o.hs+=(1-o.hs)*k;
 if(Math.abs(x-o.hx)<.6&&Math.abs(y-o.hy)<.6&&o.hs>.99){o.hx=x;o.hy=y;o.hs=1;card(x,y,o,!ok,0,pvw(o,ptg))}else cardAt(o,o.hx+42,o.hy+53,o.hs,(x-o.hx)*.002,1,!ok);if(o.sld)sealMk(Math.round(o.hx),Math.round(o.hy))});
 hvD.sort((a,b)=>a[0].hu-b[0].hu).forEach(([o,x,ok])=>{const u=o.hu,S2=1.4,cx=o.hx+42+(Math.max(62,Math.min(578,x+42))-o.hx-42)*u,cy=o.hy+53+(356-53*S2-HUP-o.hy-53)*u,sc=o.hs+(S2-o.hs)*u,r=(o.hr||0)*(1-u);ctx.save();ctx.translate(cx,cy);ctx.rotate(r);ctx.scale(sc,sc);card(-42,-53,o,!ok,0,pvw(o,ptg));ctx.restore()});
