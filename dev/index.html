@@ -19,7 +19,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 <div id="rot">スマホを横向きにしてください</div>
 <script>
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
-const GVER='3.79';let RNG=null,QT=0,PMODE=0,HSU=0;
+const GVER='3.80';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2946,29 +2946,41 @@ BFULL.king=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(301),ST=['#6a7484','#4c54
  // 崩れた巨像の頭（左手前）
  const hx=170,hy=196;R(hx,hy,60,30,ST[1]);R(hx,hy,60,6,ST[0]);R(hx+48,hy,12,30,ST[2]);R(hx+10,hy+10,10,6,'#141820');R(hx+34,hy+10,10,6,'#141820');R(hx+18,hy+22,24,4,'#141820');R(hx-6,hy-8,20,10,ST[1]);R(hx+40,hy-12,16,12,ST[1]);
  for(let i=0;i<14;i++)R(rn()*640,210+rn()*20,6+rn()*10,4+rn()*4,ST[rn()<.5?1:2])};
-// ===== 泉の乙女像：崩れた遺跡の中の噴水。壊れた天井から光が流れ込む（森の夜の色）
-BFULL.maiden=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(311),ST=['#5e6e74','#44525a','#2c383e'],MS=['#3a6a4a','#2a5038'];
- BF.sky(x,'#081418','#0e2228','#0a181c');
- // 奥の壁と、穴の空いた天井
- R(0,0,640,40,ST[2]);for(let px=0;px<640;px+=2){const h=40+Math.abs(Math.sin(px*.04))*16;R(px,0,2,h,ST[2])}
- for(const[hx,hw]of[[150,70],[330,90],[520,60]]){R(hx-hw/2,0,hw,46,'#1c3a48');R(hx-hw/2+6,0,hw-12,30,'#2a5868');R(hx-hw/2+14,0,hw-28,16,'#4a8898')}
- R(0,46,640,166,'#1a2a30');for(let px=0;px<640;px+=32)for(let y=50;y<212;y+=14)R(px+((y/14)%2?16:0),y,2,12,'#14222a');
- // 光の筋（市松）
- x.save();x.globalCompositeOperation='screen';for(const[a,b,c,d]of[[120,180,170,280],[290,370,300,440],[495,545,470,560]]){const g=x.createLinearGradient(0,40,0,212);g.addColorStop(0,'rgba(200,245,240,.32)');g.addColorStop(1,'rgba(200,245,240,.08)');x.fillStyle=g;x.beginPath();x.moveTo(a,40);x.lineTo(b,40);x.lineTo(d,212);x.lineTo(c,212);x.fill()}x.restore();
- // 柱
- BF.col(x,40,60,212,30,ST,1);BF.col(x,250,90,212,22,ST,0);BF.col(x,420,80,212,24,ST,1);BF.col(x,610,60,212,30,ST,0);
- for(const vx of[50,256,606])for(let y=70;y<206;y+=6)R(vx+Math.round(Math.sin(y*.25)*4),y,2,6,MS[1]);
- // 噴水（大きな三段の水盤、落ちる水）
- const fx=330;R(fx-120,168,240,38,ST[1]);R(fx-120,168,240,6,ST[0]);R(fx-120,198,240,8,ST[2]);for(let k=-110;k<110;k+=28)R(fx+k,176,4,22,ST[2]);
- R(fx-70,124,140,14,ST[1]);R(fx-70,124,140,4,ST[0]);R(fx-70,134,140,4,ST[2]);R(fx-12,84,24,84,ST[1]);R(fx-12,84,8,84,ST[0]);R(fx-34,76,68,10,ST[0]);R(fx-34,84,68,4,ST[2]);R(fx-6,62,12,16,ST[1]);
- const W1='#7ac8d8',W2='#c8f0f8';for(let k=-1;k<=1;k+=2){for(let y=86;y<126;y+=2){const t=(y-86)/40;R(fx+k*(30+t*30),y,4,2,y%4?W1:W2)}for(let y=136;y<172;y+=2){const t=(y-136)/36;R(fx+k*(66+t*40),y,4,2,y%4?W1:W2)}}
- R(fx-114,170,228,6,'#4a98a8');R(fx-114,170,228,2,'#a8e0ec');R(fx-64,126,128,4,'#4a98a8');
- // 床（水たまりと割れた石畳）
- for(let y=212;y<360;y+=2){x.fillStyle=BF.mix('#24343a','#101c20',(y-212)/148);x.fillRect(0,y,640,2)}
- for(let y=218;y<360;y+=14)for(let px=((y/14)%2)*18;px<640;px+=36)R(px,y,34,2,'#18262c');for(const[cx,w]of[[225,110],[370,140],[515,90]])for(let y=212;y<226;y+=2)R(cx-w/2+(y-212),y,w-2*(y-212),2,'#2c4a52');
- for(let y=222;y<270;y+=2){const t=Math.abs(y-246)/24,w=320*Math.sqrt(1-t*t);R(330-w,y,w*2,2,y<230||y>262?'#244e5a':'#2e6472')}for(let i=0;i<24;i++)R(200+rn()*260,232+rn()*26,10+rn()*20,2,i%2?'#6ab0c0':'#a0dce8');
- for(let i=0;i<8;i++){const px=190+rn()*280,py=238+rn()*18;R(px-6,py,12,4,MS[0]);if(i%3===0)R(px-2,py-2,4,2,'#e8c8d8')}
- for(let i=0;i<16;i++)R(rn()*640,212+rn()*14,6+rn()*10,4,ST[1+(i%2)])};
+// ===== 泉の乙女像：森に呑まれた崩れた聖堂。壊れた天井の穴から光が差し、中央に光る泉の噴水（沈没都市と同じ影と奥行きの作り）
+BFULL.maiden=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(311),C0='#020807',C1='#06120f',C2='#0c1e1a',C3='#163028',C4='#24483c',C5='#3e7062',HZ='#5a9080',W=['#e8fff8','#9ae8e0','#4ab0b0','#2a7078'],MS=['#2e5a36','#1e4026','#4a7a3e'];
+ x.fillStyle=C1;x.fillRect(0,0,640,212);BF.gl(x,320,120,330,200,'rgba(50,150,130,.55)');BF.gl(x,320,150,150,90,'rgba(150,240,220,.35)');
+ // 一番奥：森の木々の影（霞む）
+ for(let i=0;i<30;i++){const tx=rn()*640,tw=6+rn()*10,th=90+rn()*90;R(tx,200-th,tw,th,C3);R(tx-tw,200-th,tw*3,10,C3)}
+ // 奥の壁（崩れた上端・窓のアーチ）
+ for(let px=150;px<490;px+=2){const h=120+Math.sin(px*.05)*10+((px*7)%40<6?-24:0);R(px,200-h,2,h,C2)}
+ for(const ax of[220,320,420]){R(ax-20,92,40,70,C1);R(ax-16,84,32,8,C1);R(ax-12,78,24,6,C1);BF.gl(x,ax,120,26,40,'rgba(120,220,200,.25)')}
+ // 差し込む光（天井の穴から）
+ x.save();x.globalCompositeOperation='lighter';for(const[a,b,c,d,al]of[[150,200,200,300,.22],[286,354,280,400,.3],[470,510,430,520,.2],[250,270,250,300,.12]]){const g=x.createLinearGradient(0,0,0,212);g.addColorStop(0,'rgba(200,255,240,'+al+')');g.addColorStop(1,'rgba(160,240,220,0)');x.fillStyle=g;x.beginPath();x.moveTo(a,0);x.lineTo(b,0);x.lineTo(d,212);x.lineTo(c,212);x.fill()}x.restore();
+ // 左右の柱廊（奥ほど霞む・中央の光に向いた縁が光る・折れた柱も）
+ const rows=[[[236,404],78,10,BF.mix(C3,HZ,.3),C4,'#8ad8c8',2,0],[[196,444],66,14,C3,C4,'#7ac8b8',3,1],[[146,494],52,20,C2,C3,'#6ab8a8',4,0],[[84,556],38,28,C1,C2,'#5aa898',5,1]];
+ for(const[[lx,rx],top,w,c,hl,rim,cap,br]of rows){const h=208-top;BF.pil(x,lx,top+(br?20:0),w,h-(br?20:0),c,hl,rim,cap,1);BF.pil(x,rx,top,w,h,c,hl,rim,cap,-1);for(const px of[lx,rx])for(let y=top+10;y<204;y+=6)R(px-w/2+((y*3)%w),y,2,6,MS[1])}
+ // 崩れた天井（梁と穴の縁）
+ for(const[y0,y1,c]of[[50,60,C2],[36,50,C1],[18,36,C0]]){x.fillStyle=c;x.beginPath();x.moveTo(0,y0-34);x.lineTo(224,y0);x.lineTo(224,y1);x.lineTo(0,y1+10);x.fill();x.beginPath();x.moveTo(640,y0-34);x.lineTo(416,y0);x.lineTo(416,y1);x.lineTo(640,y1+10);x.fill()}
+ for(let px=0;px<640;px+=4){const h=10+((px*13)%17)+(px>140&&px<520?0:14);R(px,0,4,h,C0)}
+ // 垂れるつた
+ for(let i=0;i<14;i++){const vx=rn()*640,vl=30+rn()*90;for(let y=10;y<vl;y+=4)R(vx+Math.round(Math.sin(y*.15+i)*3),y,2,4,i%3?MS[1]:MS[0]);R(vx-2,vl,6,4,MS[2])}
+ // 噴水（光る水）：石は明るめ・光の側の縁が光る
+ const fx=320,S1='#7a9e92',S2='#56786c',S3='#34524a';R(fx-112,170,224,36,S2);R(fx-112,170,224,4,S1);R(fx-112,198,224,8,S3);for(let k=-100;k<110;k+=26){R(fx+k,178,6,18,S3);R(fx+k,178,2,18,S1)}
+ R(fx-64,130,128,14,S2);R(fx-64,130,128,3,S1);R(fx-64,141,128,3,S3);R(fx-11,92,22,80,S2);R(fx-11,92,6,80,S1);R(fx+7,92,4,80,S3);R(fx-32,86,64,8,S2);R(fx-32,86,64,2,S1);R(fx-7,68,14,20,S2);R(fx-7,68,4,20,S1);R(fx-4,62,8,6,S1);
+ BF.gl(x,fx,150,140,80,'rgba(120,240,220,.45)');BF.gl(x,fx,80,30,30,'rgba(200,255,240,.4)');for(let k=-1;k<=1;k+=2){for(let y=98;y<134;y+=2){const t=(y-98)/36;R(fx+k*(24+t*30),y,4,2,y%4?W[1]:W[0])}for(let y=146;y<176;y+=2){const t=(y-146)/30;R(fx+k*(58+t*40),y,4,2,y%4?W[1]:W[0])}}
+ R(fx-104,174,208,4,W[2]);R(fx-104,174,208,2,W[1]);R(fx-56,134,112,3,W[2]);
+ // 床：割れた石畳と、光る泉（映り込み・波）
+ for(let y=208;y<360;y+=2){x.fillStyle=BF.mix(C3,C0,(y-208)/152);x.fillRect(0,y,640,2)}
+ for(let y=214,dy=4;y<360;dy*=1.28,y+=dy)R(0,y,640,2,C1);for(let k=-10;k<=10;k++){const x0=320+k*34,x1=320+k*130;for(let yy=208;yy<360;yy+=2)x.fillStyle=C1,x.fillRect(BF.F(x0+(x1-x0)*(yy-208)/152),yy,2,2)}
+ for(let y=220;y<282;y+=2){const t=Math.abs(y-251)/31,w=330*Math.sqrt(1-t*t);R(320-w,y,w*2,2,BF.mix('#1e5a5a','#0c2a2c',(y-220)/62))}
+ BF.gl(x,320,236,220,30,'rgba(120,230,215,.35)');for(let i=0;i<30;i++)R(170+rn()*300,226+rn()*48,10+rn()*24,2,i%2?W[2]:W[1]);
+ for(let k=0;k<4;k++){const px=[230,330,420,280][k];for(let yy=224;yy<224+30;yy+=4)R(px-6,yy,12,2,'#5ab0a8')}
+ for(let i=0;i<9;i++){const px=190+rn()*270,py=232+rn()*36;R(px-8,py,16,4,MS[0]);R(px-6,py-2,12,2,MS[2]);if(i%3===0)R(px-2,py-4,4,2,'#e8c8d8')}
+ // 手前の崩れた石と苔
+ for(let i=0;i<14;i++){const px=rn()*640,py=300+rn()*50,w=10+rn()*30;R(px,py,w,8,C1);R(px,py,w,2,C3);R(px+2,py-2,w*.6,2,MS[1])}
+ // 漂う光の粒（蛍）
+ for(let i=0;i<34;i++){const px=rn()*640,py=40+rn()*240;R(px,py,2,2,rn()<.5?'#c8fff0':'#e8ffb0');if(i%4===0)BF.gl(x,px+1,py+1,8,8,'rgba(200,255,220,.45)')}
+ BF.vig(x,.7)};
 // 奥行きの道具（沈没都市の背景と同じ作り）：光のにじみ BF.gl、光の側に縁取りを付けた歯車 BF.gear、縁の光る柱 BF.pil、周りを暗くする BF.vig
 BF.gl=(x,cx,cy,rx,ry,c)=>{x.save();x.translate(cx,cy);x.scale(1,ry/rx);const g=x.createRadialGradient(0,0,1,0,0,rx);g.addColorStop(0,c);g.addColorStop(1,'rgba(0,0,0,0)');x.globalCompositeOperation='lighter';x.fillStyle=g;x.fillRect(-rx,-rx,rx*2,rx*2);x.restore()};
 BF.gear=(x,cx,cy,r,n,c,hole,rim,lx,ly,ang)=>{const pth=(ox,oy)=>{x.beginPath();for(let k=0;k<n*2;k++){const t=k/(n*2)*6.283+(ang||0),rr=k%2?r:r*1.16;x.lineTo(BF.F(cx+ox+Math.cos(t)*rr),BF.F(cy+oy+Math.sin(t)*rr))}x.closePath()};const d=Math.hypot(lx-cx,ly-cy)||1,ox=(lx-cx)/d*3,oy=(ly-cy)/d*3;
