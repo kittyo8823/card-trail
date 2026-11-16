@@ -6476,7 +6476,7 @@ ER.push({i,x:p.x-w/2,y:p.y-h,w,h:h+12});hit(p.x-w/2,p.y-h,w,h+12,()=>{if(e.rtc){
 if(!MPB&&P.cls===2&&B.fgx!=null)fgAura(b,B.fgx,1);serFx();drawXF();drawFx();ctx.restore();drawBossIntro(b);
 if(b.ph==='e'){ctx.fillStyle='rgba(140,10,40,.2)';ctx.fillRect(0,24,640,206)}
 drawSp(b);
-{const me=MPB?mpME():b.me,cl=P.cls===6?5:P.cls===10?6:Math.min(4,P.cls|0);energyGem(34,246,cl,me,MXE())}if(P.cls===2)tkOrb(55,229,PS.ki);
+{const me=MPB?mpME():b.me,cl=P.cls===6?5:P.cls===10?6:Math.min(4,P.cls|0);energyGem(34,246+FMV.hy*.8,cl,me,MXE())}if(P.cls===2)tkOrb(55,229+FMV.hy*.8,PS.ki);
 pileOrbs(b.dr.length,b.dis.length);hit(4,312,66,48,()=>openPile('山札',b.dr,1));hit(570,312,66,48,()=>openPile('捨て札',b.dis,0));
 if(b.ex.length){txt('廃棄'+b.ex.length,632,330,'#ff9a9a','right',11);hit(570,316,70,16,()=>openPile('廃棄札',b.ex,0))}
 if(MPB&&(b.dn||b.dnp||b.down)&&b.ph==='p'){txt(b.down?'戦闘不能':'味方を',606,284,'#9ad8ff','center',11);if(!b.down)txt('待っている',606,300,'#9ad8ff','center',11)}else if(b.ph==='p'&&!b.vt&&!b.dsc){if(ETV)etDraw(b);else{box(578,264,56,48,'#7a2a3a');txt('ターン',606,284,'#fff','center',13);txt('終了',606,302,'#fff','center',13)}if(ETV>=7)hit(564,236,74,72,endTurn);else hit(578,264,56,48,endTurn)};
