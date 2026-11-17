@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.17';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.18';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2293,11 +2293,16 @@ function hhRig(e,q,i){const j=q.hi,ph=T+i*1.7;let a=.07*Math.sin(ph*(1.05+.37*j)
  return[a,dx,dy]}
 function rigA(e,q,i){if(q.hi!=null&&e.k==='hound')return hhRig(e,q,i);const r=q.r,ph=T+i*1.7+(q.o||0),br=Math.sin(ph*2.2);let a=0,dx=0,dy=0;
  if(r==='hd'){a=.05*Math.sin(ph*1.3);dy=.3*br}else if(r==='af'){a=.1*Math.sin(ph*1.6)+.04*br}else if(r==='ab'){a=-.1*Math.sin(ph*1.6+.6)-.04*br}else if(r==='lf'){a=.03*Math.sin(ph*1.1)}else if(r==='lb'){a=-.03*Math.sin(ph*1.1)}else if(r==='tl'){a=.14*Math.sin(ph*1.8)}else if(r==='jw'){a=.06+.05*Math.sin(ph*2.2)}else if(r==='wf'){a=.22*Math.sin(ph*4.4)}else if(r==='wb'){a=-.22*Math.sin(ph*4.4)}else if(r==='cp'){a=.05*Math.sin(ph*1.7)}
- if(e.fl>0&&T>=(e.flS||0)){const k=Math.min(1,e.fl*3);if(r==='hd')a-=.22*k;else if(r==='af')a+=.3*k;else if(r==='ab')a-=.3*k}
+ /* Ver4.18 部位で動く敵の共通の動きを凝る（ユーザー指定）
+  待機：時々首をかしげて見回す・重心を左右の脚に移す・腕がそれに遅れてついてくる */
+ {const c=(T*.17+i*.31+(e.mh%7)*.11)%1,s2=(Math.floor(T*.17+i*.31+(e.mh%7)*.11)%2)?1:-1;if(c<.16){const u=Math.sin(c/.16*Math.PI);if(r==='hd'){a+=.13*s2*u;dy-=.3*u}else if(r==='af'||r==='ab')a+=.04*s2*u}
+  const ws=Math.sin(T*.55+i*2.3);if(r==='lf')a+=.025*ws;else if(r==='lb')a-=.025*ws;else if(r==='af')a+=.03*Math.sin(T*.55+i*2.3-.6);else if(r==='ab')a-=.03*Math.sin(T*.55+i*2.3-.8);else if(r==='tl')a+=.08*Math.sin(T*3.1+i)}
+ /* 殴られた時：頭がのけぞり、腕・尾・翼が少し遅れて振られ、ばねのように揺れて戻る */
+ if(e.flS!=null&&T>=e.flS&&T-e.flS<1.1){const D={hd:0,af:.04,ab:.06,lf:.02,lb:.03,tl:.08,wf:.05,wb:.07,cp:.06,jw:.02}[r];if(D!=null){const u=T-e.flS-D;if(u>0){const w=Math.exp(-u*6.5)*Math.cos(u*17),m={hd:-.34,af:.42,ab:-.4,lf:-.06,lb:.06,tl:.4,wf:.3,wb:-.3,cp:-.25,jw:.3}[r];a+=m*w;if(r==='hd')dx-=1.2*w}}}
  const an=e.an;if(an){const t=T-an.t0,hT=eHitT(e),st=eSty(e),P=RPO[RFAM[st]||'sl']||RPO.sl,o=P[r]||RWG[r],G=(v,j)=>v&&v[j]||0;let v=null;
-  if(o&&an.k==='at'){const rg=EPJ[st],K=j=>rg?[[0,0],[hT*.3,G(o[0],j)],[hT*.42,G(o[1],j)],[hT,G(o[1],j)*.8],[hT+.3,0]]:[[0,0],[hT*.7,G(o[0],j)],[hT,G(o[1],j)],[hT+.1,G(o[1],j)*.85],[hT+.45,0]];if(t<hT+.45)v=[kf(t,K(0)),kf(t,K(1)),kf(t,K(2))]}
-  else if(o&&an.k==='mh'){const t0=hT-.13,n=Math.floor((t-t0)/.26),f=((t-t0)%.26)/.26,W=o[0],S=o[1];if(t<t0)v=[0,1,2].map(j=>G(W,j)*t/t0*.6);else if(n<an.h&&f<.62){const u=f<.2?0:f<.38?(f-.2)/.18:1,b=f<.38?1:1-(f-.38)/.24;v=[0,1,2].map(j=>(G(W,j)*.6*(1-u)+G(S,j)*u)*b)}else if(n<an.h)v=[0,1,2].map(j=>G(W,j)*.6*((f-.62)/.38))}
-  else if((an.k==='bf'||an.k==='bk'||an.k==='db')&&t<.6){const m=Math.sin(t/.6*Math.PI),B2={bf:{af:-1.3,ab:-1.1,hd:-.18},bk:{af:-.85,ab:-.7,hd:.1},db:{af:-.6,ab:.3,hd:.14*Math.sin(t*28)}}[an.k];v=[(B2[r]||0)*m,0,0]}
+  if(o&&an.k==='at'){const rg=EPJ[st],K=j=>rg?[[0,0],[hT*.3,G(o[0],j)],[hT*.42,G(o[1],j)],[hT,G(o[1],j)*.8],[hT+.3,0]]:[[0,0],[hT*.45,G(o[0],j)*.55],[hT*.72,G(o[0],j)*1.12],[hT*.8,G(o[0],j)*1.05],[hT,G(o[1],j)*1.08],[hT+.08,G(o[1],j)],[hT+.2,G(o[1],j)*.78],[hT+.5,G(o[1],j)*-.12],[hT+.7,0]];/* ため→振り抜きで少し行き過ぎ→余韻で少し戻りすぎて止まる */if(t<hT+.7)v=[kf(t,K(0)),kf(t,K(1)),kf(t,K(2))]}
+  else if(o&&an.k==='mh'){const t0=hT-.13,n=Math.floor((t-t0)/.26),f=((t-t0)%.26)/.26,sw=(r==='af'||r==='ab')&&n%2===1&&P.ab,oo=sw?(r==='af'?P.ab:P.af):o,W=oo[0],S=oo[1];/* 連撃は左右の腕で交互に */if(t<t0)v=[0,1,2].map(j=>G(W,j)*t/t0*.6);else if(n<an.h&&f<.62){const u=f<.2?0:f<.38?(f-.2)/.18:1,b=f<.38?1:1-(f-.38)/.24;v=[0,1,2].map(j=>(G(W,j)*.6*(1-u)+G(S,j)*u)*b)}else if(n<an.h)v=[0,1,2].map(j=>G(W,j)*.6*((f-.62)/.38))}
+  else if((an.k==='bf'||an.k==='bk'||an.k==='db')&&t<.6){const m=Math.sin(t/.6*Math.PI),m2=Math.sin(Math.min(1,Math.max(0,(t-.05)/.6))*Math.PI),B2={bf:{af:-1.3*m2,ab:-1.1*m,hd:-.18*m,lf:-.05*m,lb:.05*m,tl:.35*m},bk:{af:-.85*m,ab:-.7*m2,hd:.12*m,lf:.08*m,lb:-.08*m,tl:-.2*m},db:{af:-.75*m,ab:.3*m2,hd:(.08+.12*Math.sin(t*28))*m,tl:.25*Math.sin(t*20)*m}}[an.k];v=[B2[r]||0,0,an.k==='bk'&&(r==='hd')?.6*m:0]}
   if(v){a+=v[0];dx+=v[1];dy+=v[2]}}
  return[a,dx,dy]}
 // 部位の今の角度・ずれ（右向きの元絵での値）
