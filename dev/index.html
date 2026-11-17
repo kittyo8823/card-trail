@@ -7334,6 +7334,31 @@ SELDV[4]={bg(c,a,col){(S[c.s]||S.pl)();spot();const g=ctx.createLinearGradient(3
 })();
 
 window.SELDECO=SELDV[4];
+// Ver4.11 キャラ選択の背景・柄の案（スレスパ2風。ユーザー指定：イメージカラーの2〜3色に、ちょっとした柄）。SELDV[5]、SELBGV=5 で使う
+(function(){const PB={pl:['#3a0c12','#6a1620','#d0505a','blade'],si:['#0a2414','#14402a','#5ac87a','drop'],sm:['#10143a','#1e2a66','#8a9aff','moon'],nn:['#1e0e34','#3a1e5e','#c9a0ff','rune'],hori:['#0a2a16','#14502c','#7affa0','zz'],neb:['#06203a','#0c3a66','#6ac8ff','bub'],seres:['#121c34','#22345e','#c8d8ff','feather']},CC={};
+ const mk=k=>{if(CC[k])return CC[k];const[c0,c1,c2,m]=PB[k]||PB.pl,c=MKC(640,360),x=c.getContext('2d'),rn=bgRng(k.length*97+k.charCodeAt(0));
+  const g=x.createLinearGradient(0,0,640,360);g.addColorStop(0,c1);g.addColorStop(1,c0);x.fillStyle=g;x.fillRect(0,0,640,360);
+  // 大きく薄い模様（左上から斜めに）
+  x.save();x.globalAlpha=.12;x.fillStyle=c2;x.strokeStyle=c2;x.lineCap='round';
+  const R=(a,b)=>a+rn()*(b-a);
+  for(let i=0;i<46;i++){const px=R(-20,660),py=R(-20,380),sc=R(.6,1.6),an=R(-.8,.8);x.save();x.translate(px,py);x.rotate(an);x.scale(sc,sc);x.beginPath();
+   if(m==='blade'){x.moveTo(-2,-16);x.lineTo(2,-16);x.lineTo(2,8);x.lineTo(6,8);x.lineTo(6,10);x.lineTo(-6,10);x.lineTo(-6,8);x.lineTo(-2,8);x.closePath();x.fill()}
+   else if(m==='drop'){x.moveTo(0,-9);x.quadraticCurveTo(7,2,0,7);x.quadraticCurveTo(-7,2,0,-9);x.fill()}
+   else if(m==='moon'){x.arc(0,0,8,0,6.3);x.fill();x.globalCompositeOperation='destination-out';x.beginPath();x.arc(4,-2,7,0,6.3);x.fill();x.globalCompositeOperation='source-over'}
+   else if(m==='rune'){x.lineWidth=1.5;x.arc(0,0,9,0,6.3);x.stroke();x.beginPath();x.moveTo(0,-9);x.lineTo(0,9);x.moveTo(-6,-3);x.lineTo(6,3);x.stroke()}
+   else if(m==='zz'){x.lineWidth=2;x.moveTo(-6,-6);x.lineTo(6,-6);x.lineTo(-6,6);x.lineTo(6,6);x.stroke()}
+   else if(m==='bub'){x.lineWidth=1.5;x.arc(0,0,R(3,9),0,6.3);x.stroke()}
+   else{x.moveTo(0,-14);x.quadraticCurveTo(7,-2,0,14);x.quadraticCurveTo(-4,0,0,-14);x.fill();x.globalAlpha*=.6;x.lineWidth=1;x.beginPath();x.moveTo(0,-12);x.lineTo(0,13);x.stroke()}
+   x.restore()}
+  // 斜めに走る細い光の筋（2本）
+  x.globalAlpha=.18;x.lineWidth=2;for(let i=0;i<2;i++){x.beginPath();let px=R(0,300),py=-10;x.moveTo(px,py);while(py<370){px+=R(10,40);py+=R(20,50);x.lineTo(px,py)}x.stroke()}
+  x.restore();
+  // 中央を明るく・四すみを暗く
+  const v=x.createRadialGradient(200,190,40,200,190,420);v.addColorStop(0,'rgba(255,255,255,.07)');v.addColorStop(.5,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,.5)');x.fillStyle=v;x.fillRect(0,0,640,360);
+  return CC[k]=c};
+ SELDV[5]={bg(c,a,col){ctx.drawImage(mk(c.s),0,0);const g=ctx.createLinearGradient(340,0,400,0);g.addColorStop(0,'rgba(6,6,12,0)');g.addColorStop(1,'rgba(6,6,12,.5)');ctx.fillStyle=g;ctx.fillRect(340,0,300,360)},fg:SELDV[4].fg};
+ if(window.SELBGV===5)window.SELDECO=SELDV[5]})();
+
 const SELA={},SELAF={},SELAX={pl:selArtPl};// 一枚絵は一旦使わない（ユーザー：イラストは一旦いい）。試す時は SELAF.pl=selArtPl
 function selArtDraw(A,c,a){const ox=Math.round((1-a)*30),by=Math.round(Math.sin(T*1.6)*2);ctx.fillStyle='#120204';ctx.fillRect(0,0,640,360);ctx.globalAlpha=a;ctx.drawImage(A,ox,by);
  ctx.save();ctx.globalCompositeOperation='lighter';
