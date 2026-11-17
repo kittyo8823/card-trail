@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.13';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.14';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -7897,7 +7897,7 @@ function drawMpLobby(){mpBg(0);if(!MPR){S='mpm';return}
  let st='',sc='#7dff9a';if(NET.kind==='room'){let c=false;try{c=NET.room.connected()}catch(e){}st=c?'● オンライン接続中':'● 接続を待っている…';sc=c?'#7dff9a':'#ffd23f'}else if(NET.kind==='mq'){const c=NET.mq&&NET.mq.connected;st=c?'● オンライン接続中':'● 接続し直している…';sc=c?'#7dff9a':'#ffd23f'}else if(NET.kind==='bc'){st='オンラインにつながらなかった（'+(NET.err||'不明')+'）。インターネットの接続を確かめて入り直してほしい';sc='#ff9a6a'}
  if(NET.err&&NET.kind!=='bc')st+='　'+NET.err;if(st)txt(st,320,58,sc,'center',10);if(MPR.msg)txt(MPR.msg,320,74,'#ff9a6a','center',12);
  // 焚き火を囲む4つの立ち位置
- const L=MPR.lob||[],pos=[[120,258],[228,250],[412,250],[520,258]];if(L.length)txt(L.every(q=>q.c)?'全員クリア済み：眼の欠片のエリートが出る':'眼の欠片のエリートは、全員が1回クリアしていると出る',320,92,L.every(q=>q.c)?'#7dff9a':'#8a82b8','center',10);
+ const L=MPR.lob||[],pos=[[120,258],[228,250],[412,250],[520,258]];
  for(let i=0;i<4;i++){const[px,py]=pos[i],p=L[i];if(p){const ck=CH[p.cls]?CH[p.cls].s:'pl',im=SPR[ck],hh=ftY(im,ck);ctx.fillStyle='rgba(0,0,0,.35)';ctx.beginPath();ctx.ellipse(px,py,26,5,0,0,7);ctx.fill();ctx.drawImage(im,Math.round(px-(im.bw||im.width)/2-(im.ox||0)),py-hh+Math.round(Math.sin(T*1.8+i)));
    mpPlate(px-48,py+8,96,30);txt(p.nm||'プレイヤー',px,py+22,PCOL[i],'center',12);txt((CH[p.cls]?CH[p.cls].n:'?')+(p.id===MPR.hid?'・ホスト':''),px,py+34,'#cfc8ee','center',9);
    if(p.id===MPR.me){const ay=py-hh-10+Math.sin(T*4)*2;ctx.fillStyle='#ffd23f';ctx.beginPath();ctx.moveTo(px-5,ay-2);ctx.lineTo(px+5,ay-2);ctx.lineTo(px,ay+5);ctx.fill();txt('あなた',px,ay-6,'#ffd23f','center',9)}}
