@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:.72,b:1.4};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.27';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:.83,e:.9,b:1.4};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.28';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -543,6 +543,21 @@ t([[15.4,8],[16.6,8],[16,9.2]],'#0c0c14');for(let i=0;i<4;i++)q(11.2+i*1.2,9.8,'
 pt('ab',()=>l(4,12,4,18,'#d4a838',.5));
 pt('af',()=>{t([[18,13.4],[22,3.4],[23.2,3.8],[19.4,14]],'#b8bcc8');l(18.8,13,22.4,4,'#e8ecf6',.3);t([[16.6,13],[20.4,14.4],[20,15.2],[16.2,13.8]],'#6a5a3a');l(17.8,15,17.2,17.6,'#3a3020',.7)})}];
 // Ver4.17 見本：人型の敵を縦長に描き直した版（ゴブリン・骸骨兵。頭を小さく、胴と脚を長く）。SD.goblin2/skel2
+
+// Ver4.28 地図のボスのマスの紋章（ボスごと。全身ではなく象徴だけ。ユーザー指定）。16×16単位・倍率3
+SD.emb_king=[16,16,3,({t,r,q,sh})=>{t([[2,6],[5,9],[8,3.4],[11,9],[14,6],[13,13],[3,13]],'#c8962e');r(3,12,10,2,'#9a6a1e');t([[7.2,3],[8,1.6],[8.8,3],[8,4.2]],'#c8342a');q(4.6,10.6,'#3a8a9a');q(8,10.4,'#c8342a');q(11.4,10.6,'#3a8a9a');sh()}];
+SD.emb_dragon=[16,16,3,({t,q,sh})=>{t([[3,4],[1.4,1],[5,3.2]],'#6a5a52');t([[11,3.2],[14.6,1],[13,4]],'#6a5a52');t([[3.4,4],[12.6,4],[13.4,8],[11,13],[8,15],[5,13],[2.6,8]],'#7a2a24');t([[5,11],[11,11],[10,13.6],[8,14.6],[6,13.6]],'#5a1c18');t([[4.4,7],[6.8,7.6],[4.8,8.6]],'#e88a2a');t([[11.6,7],[9.2,7.6],[11.2,8.6]],'#e88a2a');sh()}];
+SD.emb_mothP=[16,16,3,({t,l,sh})=>{t([[8,5],[1,1.6],[.6,7],[4,9],[8,8]],'#6a5a8a');t([[8,5],[15,1.6],[15.4,7],[12,9],[8,8]],'#6a5a8a');t([[8,8],[3,9.4],[2.4,13.4],[6,13],[8,10]],'#4e4268');t([[8,8],[13,9.4],[13.6,13.4],[10,13],[8,10]],'#4e4268');t([[7.2,4],[8.8,4],[8.6,14],[7.4,14]],'#2e2638');l(7.4,4,5,1,'#2e2638',.4);l(8.6,4,11,1,'#2e2638',.4);t([[3,4],[5,4.4],[4,6]],'#c8b47a');t([[13,4],[11,4.4],[12,6]],'#c8b47a');sh()}];
+SD.emb_maiden=[16,16,3,({t,sh})=>{t([[8,1],[11,6],[12,10],[10.4,13.6],[8,14.6],[5.6,13.6],[4,10],[5,6]],'#3a7a9a');t([[8,3],[10,7],[10.4,10],[9,12.4],[8,12.8]],'#5aa0bc');t([[6,8],[7,8.4],[6.4,10]],'#a8d8e8');sh()}];
+SD.emb_reaper=[16,16,3,({t,l,sh})=>{l(4,15,10.6,2.6,'#5a4436',1.1);t([[9.6,2],[14.6,2.6],[15,4.4],[12,4.4],[6,8],[2,7.6],[6,4.4]],'#a8acb8');t([[6,5.4],[11,3],[12,4],[6.4,7.2]],'#d6dae2');sh()}];
+SD.emb_archdemon=[16,16,3,({t,sh})=>{t([[8,2],[13,4],[14.6,8.6],[12.6,13],[8,15],[10.6,11],[11,7],[9.6,4]],'#8a7a9a');t([[3,1],[5.6,4],[4.4,6]],'#5a2a34');t([[13,1],[10.4,4],[11.6,6]],'#5a2a34');t([[5,7],[7.6,8],[5.4,9]],'#c8342a');sh()}];
+SD.emb_gilB=[16,16,3,({t,r,sh})=>{r(2,1,2,14,'#4a3a2e');r(12,1,2,14,'#4a3a2e');r(1.4,1,13.2,2,'#5a4836');t([[4,4],[12,4],[12,8.4],[4,11]],'#a8acb8');t([[4,9.4],[12,6.8],[12,8.4],[4,11]],'#d6dae2');r(5,13.4,6,1.6,'#6a1a1e');sh()}];
+SD.emb_deus=[16,16,3,({t,e,sh})=>{for(let k=0;k<8;k++){const a=k/8*6.283,c=Math.cos(a),s2=Math.sin(a);t([[8+c*5.6-s2*1.2,8+s2*5.6+c*1.2],[8+c*7.4-s2*1,8+s2*7.4+c*1],[8+c*7.4+s2*1,8+s2*7.4-c*1],[8+c*5.6+s2*1.2,8+s2*5.6-c*1.2]],'#b8963a')}e(8,8,5.8,5.8,'#9a7a2a');e(8,8,3.4,3.4,'#2a2430');e(8,8,1.8,1.8,'#e8d06a');sh()}];
+SD.emb_chronos=[16,16,3,({t,r,sh})=>{r(3,1,10,2,'#b8963a');r(3,13,10,2,'#b8963a');t([[4,3],[12,3],[8.6,8],[12,13],[4,13],[7.4,8]],'#8ab8c8');t([[5.4,3.6],[10.6,3.6],[8,6.4]],'#e8c86a');t([[8,9.6],[10.8,12.6],[5.2,12.6]],'#e8c86a');sh()}];
+SD.emb_protoA=[16,16,3,({t,e,r,sh})=>{for(let k=0;k<4;k++){const x=2+k*3.2,y=2+k*3.2;e(x+1.6,y+1.6,1.8,1.8,k===2?'#3a3e48':'#6a707c')}t([[10.4,9.4],[12,8.4],[13.6,10],[12.4,11]],'#5ac8d8');r(10,11,4.4,4.4,'#565c66');sh()}];
+SD.emb_scales=[16,16,3,({t,r,l,sh})=>{r(7.2,2,1.6,12,'#b8963a');r(4,13.4,8,1.6,'#9a7a2a');t([[1,4.4],[15,3],[15,4],[1,5.4]],'#b8963a');l(2,5,1,9,'#b8963a',.3);l(2,5,4,9,'#b8963a',.3);t([[.4,9],[4.6,9],[3.8,10.4],[1.2,10.4]],'#b8963a');l(14,4,13,8,'#b8963a',.3);l(14,4,16,8,'#b8963a',.3);t([[12.4,8],[15.6,8],[15,9.4],[13,9.4]],'#b8963a');sh()}];
+SD.emb_userp=[16,16,3,({t,r,sh})=>{t([[1,8],[5,4.4],[11,5],[13,8],[11,11],[5,11.6]],'#3a6a7a');t([[13,8],[15.6,4.6],[15,8],[15.6,11.4]],'#2e5664');for(let k=0;k<4;k++)r(5+k*1.8,6,.8,4,'#d8d0c0');t([[2.4,7.4],[3.6,7],[3.2,8.2]],'#e8c86a');sh()}];
+SD.emb_ulight=[16,16,3,({t,r,sh})=>{t([[5.4,5],[10.6,5],[12,15],[4,15]],'#c8c4b8');r(4.6,8.4,6.8,1.6,'#a8342a');r(4.2,11.6,7.6,1.6,'#a8342a');r(5,2.6,6,2.6,'#3a3e48');t([[6,3],[10,3],[8,1]],'#e8d06a');sh()}];
 SD.goblin2=[24,34,3,({r,p,q,l,t,m,sh,pt})=>{
 pt('lb',()=>{t([[8.4,22.6],[10.6,22.6],[10,28],[8.2,28]],'#3e6a22');t([[8.2,27.6],[10,27.6],[9.8,32.4],[8,32.4]],'#3a6020');t([[6.6,32],[10.2,32],[10.6,34],[6,34]],'#2e1c0e')});
 pt('lf',()=>{t([[12.6,22.6],[15,22.6],[16.2,27.8],[14,28]],'#4a7a2a');t([[14,27.6],[16.2,27.6],[15.6,32.4],[13.6,32.4]],'#457226');t([[13.4,32],[17.2,32],[17.6,34],[13,34]],'#3a2414')});
@@ -1436,7 +1451,7 @@ if(!window.GRNC){for(let a=0;a<6.28;a+=.16)q(28.6+Math.cos(a)*5,15+Math.sin(a)*5
 t([[28.6,11],[31.6,17],[25.6,17]],'#c9a0ff');t([[28.6,12.6],[30.4,16.2],[26.8,16.2]],'#cbbd90');q(28.6,14.8,'#e84aa8')}
 for(const x of[4,36])for(let k=0;k<4;k++)r(x+(k%2?.3:0),28.4+k*.4,.8,.4,'#8a8fa0')}];
 // 敵は右向きで描いてあるので、左右反転して自分（左）の方を向かせる
-const NOFL=/^(pl|si|sm|oji|grim|hori.*|skunk|qcube|eye|demon|.*_wp|seres)$/,flipC=c=>{const o=MKC(c.width,c.height),x=o.getContext('2d');x.translate(c.width,0);x.scale(-1,1);x.drawImage(c,0,0);return o};
+const NOFL=/^(pl|si|sm|oji|grim|hori.*|skunk|qcube|eye|demon|.*_wp|seres|emb_.*)$/,flipC=c=>{const o=MKC(c.width,c.height),x=o.getContext('2d');x.translate(c.width,0);x.scale(-1,1);x.drawImage(c,0,0);return o};
 // ===== 沈没都市（Ver2.29 1層のもう一つの場所。ユーザー指定：アンダードックスを参考にした独自の敵。どれも右向きの斜めで描き flipC で反転） =====
 const UGL=(t,q,a,b,s,c)=>{s=s||1;t([[a-s,b-s*.8],[a+s,b-s*.8],[a+s,b+s*.8],[a-s,b+s*.8]],c||'#c8e0b0');q(a+s*.3,b,'#f0ffe0')},URING=(q,cx,cy,rr,c,st)=>{for(let a=0;a<6.28;a+=st||.35)q(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr*.9,c)};
 SD.ushell=[24,18,3,({r,p,q,l,t,sh,pt})=>{
@@ -6637,9 +6652,9 @@ const X=(f,n)=>8+MX(f)-MSC,Y=(f,j,n)=>f===LAST?184:104+j*40+(n.dy||0),av=avail()
 ctx.save();ctx.beginPath();ctx.rect(10,64,620,234);ctx.clip();
 for(let f=0;f<LAST;f++)MP[f].forEach((n,j)=>{if(!n)return;n.cn.forEach(k=>{const m=MP[f+1][k];if(!m)return;const x1=X(f,n),y1=Y(f,j,n),x2=X(f+1,m),y2=Y(f+1,k,m),sd=f*31+j*7+k;if(x2<-20||x1>660)return;
  if(vi(f,j)&&vi(f+1,k))trail(x1,y1,x2,y2,sd,th.hi,3);else if(CUR.f===f&&CUR.j===j&&av.includes(k))trail(x1,y1,x2,y2,sd,th.hi,3,1);else{ctx.globalAlpha=f<CUR.f?.3:.9;trail(x1,y1,x2,y2,sd,th.ink,2);ctx.globalAlpha=1}})});
-for(let f=0;f<=LAST;f++){const fx=8+MX(f)-MSC;if(fx<-30||fx>670)continue;txt(String(f+1),fx,292,th.sub,'center',10);MP[f].forEach((n,j)=>{if(!n)return;const x=X(f,n),y=Y(f,j,n),can=CUR.f+1===f&&av.includes(j),cur=CUR.f===f&&CUR.j===j,bs=f===LAST,r=bs?(P.act===4?34:Math.round(22*MPSZ.b)):Math.round(14*MPSZ.n);
+for(let f=0;f<=LAST;f++){const fx=8+MX(f)-MSC;if(fx<-30||fx>670)continue;txt(String(f+1),fx,292,th.sub,'center',10);MP[f].forEach((n,j)=>{if(!n)return;const x=X(f,n),y=Y(f,j,n),can=CUR.f+1===f&&av.includes(j),cur=CUR.f===f&&CUR.j===j,bs=f===LAST,r=bs?(P.act===4?34:Math.round(22*MPSZ.b)):Math.round(14*(n.t===1?MPSZ.e:MPSZ.n));
  if(can){pc(x,y,r+4+Math.floor(Math.sin(T*6)*2),th.hi);if(x>8&&x<632)hit(Math.max(10,x-r-2),y-r-2,r*2+4,r*2+4,()=>{sfx('pk');enter(j)})}else if(cur)pc(x,y,r+3,th.cur);
- ctx.globalAlpha=f<=CUR.f&&!vi(f,j)?.3:1;if(n.au&&!vi(f,j))auraD(x,y,r);pc(x,y,r+1,n.au||n.t>=7?'#7a1020':th.ring);pc(x,y,r-1,n.t===8?'#140006':th.nb);if(bs&&P.act===4)ctx.drawImage(SPR.eye,x-27,y-25+Math.round(Math.sin(T*1.5)),54,48);else if(bs){const z=Math.round(36*MPSZ.b);ctx.imageSmoothingEnabled=false;ctx.drawImage(ICN[6],x-z/2,y-z/2,z,z)}else if(n.au){const z=MPSZ.n;ctx.imageSmoothingEnabled=false;ctx.drawImage(ICNA,x-15*z,y-16*z,ICNA.width*z,ICNA.height*z)}else{const z=Math.round(24*MPSZ.n);ctx.imageSmoothingEnabled=false;ctx.drawImage(ICN[n.t===7?1:n.t],x-z/2,y-z/2,z,z)}
+ ctx.globalAlpha=f<=CUR.f&&!vi(f,j)?.3:1;if(n.au&&!vi(f,j))auraD(x,y,r);pc(x,y,r+1,n.au||n.t>=7?'#7a1020':th.ring);pc(x,y,r-1,n.t===8?'#140006':th.nb);if(bs&&P.act===4)ctx.drawImage(SPR.eye,x-27,y-25+Math.round(Math.sin(T*1.5)),54,48);else if(bs){const bk=bossIc()[bossI()],em=SPR['emb_'+bk],z=Math.round(36*MPSZ.b);ctx.imageSmoothingEnabled=false;if(em){const w=Math.round(r*1.55);ctx.drawImage(em,x-w/2,y-w/2,w,w)}else ctx.drawImage(ICN[6],x-z/2,y-z/2,z,z)}else if(n.au){const z=MPSZ.n;ctx.imageSmoothingEnabled=false;ctx.drawImage(ICNA,x-15*z,y-16*z,ICNA.width*z,ICNA.height*z)}else{const z=Math.round(24*(n.t===1?MPSZ.e:MPSZ.n));ctx.imageSmoothingEnabled=false;ctx.drawImage(ICN[n.t===7?1:n.t],x-z/2,y-z/2,z,z)}
  if(vi(f,j)&&!cur)ell(x,y,r+3,r+3,20,2,th.hi);ctx.globalAlpha=1;if(bs&&P.act!==4)txt('ボス',x,y-r-6,'#ff6a6a','center',11)})}
 if(MPON())mpDrawMap(X,Y);
 // 悪魔マス（第1層の最初）。第2層以降は入口の印
