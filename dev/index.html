@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.18';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.19';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2038,7 +2038,7 @@ function serGA(bb){const g={ab:Math.sin(T*1.3)*.05,af:[0,0,0],hd:0,bx:0,by:Math.
   else if(k==='pray'){g.hd=.16*up;g.af=[-1*up,-4*up,-.3*up];g.by+=Math.round(2*up);g.ab=.15*up;g.gl=.3+.6*up}
   else if(k==='pw'){g.ab=-1.7*up;g.af=[0,-3*up,-.2*up];g.hd=-.1*up;g.gl=.3+1.3*up;g.by-=Math.round(3*Math.sin(u*Math.PI))}
   else{g.hd=.08*up;g.ab=-.5*up;g.gl=.3+.5*up}}
- const hr=bb&&bb.hr&&T>=bb.hr&&T-bb.hr<.35?1-(T-bb.hr)/.35:0;if(hr){g.bx-=Math.round(6*hr);g.hd-=.14*hr;g.ab+=.3*hr}return g}
+ const hr=bb&&bb.hr&&T>=bb.hr&&T-bb.hr<1?KB(T-bb.hr):0;if(hr){g.bx-=Math.round(14*hr);g.hd-=.35*hr;g.ab+=.6*hr}return g}
 // 少女を部位から組み立てて描く（足元の中心 cx,gy）。角灯の位置を bb.lnx/lny に残す（光弾の出どころ）
 function serGirl(cx,gy,g,bb){const im=SPR.seres,x0=Math.round(cx-im.width/2+g.bx),y0=Math.round(gy-im.height+(PFY.seres||0)+g.by),dr=(k,p,r,dx,dy)=>{if(!r&&!dx&&!dy){ctx.drawImage(SR.P[k],x0,y0);return}const[px,py]=srP(...p);ctx.save();ctx.translate(x0+px+(dx||0),y0+py+(dy||0));ctx.rotate(r||0);ctx.drawImage(SR.P[k],-px,-py);ctx.restore()};
  dr('lb');dr('lf');dr('body');dr('ab',[15.6,15.4],g.ab);dr('hd',[21,14.2],g.hd);dr('af',[24.4,15.6],g.af[2],g.af[0],g.af[1]);
@@ -2291,6 +2291,8 @@ function hhRig(e,q,i){const j=q.hi,ph=T+i*1.7;let a=.07*Math.sin(ph*(1.05+.37*j)
   else if(an.k==='mh'){const t0=hT-.13,n=Math.floor((t-t0)/.26);if(t<t0){a-=.15*t/t0;dx-=.6*t/t0}else if(n<an.h){const f=((t-t0)%.26)/.26;if(n%3===(j+2)%3||(n>=0&&n%3===j&&false)){}if(n%3===[1,0,2][j]){const u=f<.2?.45*f/.2:.45+.55*(f-.2)/.8;bite(u,1.1)}else{a-=.08;dx-=.4}}}
   else if((an.k==='bf'||an.k==='bk'||an.k==='db')&&t<.9){const u=Math.max(0,Math.min(1,(t-j*.12)/.5)),m=Math.sin(u*Math.PI);a-=(an.k==='bk'?-.12:.5)*m;dy-=1.2*m;if(an.k==='db')a+=.06*Math.sin(t*36+j)*m}}
  return[a,dx,dy]}
+// Ver4.19 被弾の大げさな動き（ユーザー指定）：一瞬で大きく吹き飛び、ばねのように揺れ戻る形。u＝当たってからの秒
+const KB=u=>u<0?0:u<.05?u/.05:Math.exp(-(u-.05)*5.5)*Math.cos((u-.05)*12);
 function rigA(e,q,i){if(q.hi!=null&&e.k==='hound')return hhRig(e,q,i);const r=q.r,ph=T+i*1.7+(q.o||0),br=Math.sin(ph*2.2);let a=0,dx=0,dy=0;
  if(r==='hd'){a=.05*Math.sin(ph*1.3);dy=.3*br}else if(r==='af'){a=.1*Math.sin(ph*1.6)+.04*br}else if(r==='ab'){a=-.1*Math.sin(ph*1.6+.6)-.04*br}else if(r==='lf'){a=.03*Math.sin(ph*1.1)}else if(r==='lb'){a=-.03*Math.sin(ph*1.1)}else if(r==='tl'){a=.14*Math.sin(ph*1.8)}else if(r==='jw'){a=.06+.05*Math.sin(ph*2.2)}else if(r==='wf'){a=.22*Math.sin(ph*4.4)}else if(r==='wb'){a=-.22*Math.sin(ph*4.4)}else if(r==='cp'){a=.05*Math.sin(ph*1.7)}
  /* Ver4.18 部位で動く敵の共通の動きを凝る（ユーザー指定）
@@ -2298,7 +2300,7 @@ function rigA(e,q,i){if(q.hi!=null&&e.k==='hound')return hhRig(e,q,i);const r=q.
  {const c=(T*.17+i*.31+(e.mh%7)*.11)%1,s2=(Math.floor(T*.17+i*.31+(e.mh%7)*.11)%2)?1:-1;if(c<.16){const u=Math.sin(c/.16*Math.PI);if(r==='hd'){a+=.13*s2*u;dy-=.3*u}else if(r==='af'||r==='ab')a+=.04*s2*u}
   const ws=Math.sin(T*.55+i*2.3);if(r==='lf')a+=.025*ws;else if(r==='lb')a-=.025*ws;else if(r==='af')a+=.03*Math.sin(T*.55+i*2.3-.6);else if(r==='ab')a-=.03*Math.sin(T*.55+i*2.3-.8);else if(r==='tl')a+=.08*Math.sin(T*3.1+i)}
  /* 殴られた時：頭がのけぞり、腕・尾・翼が少し遅れて振られ、ばねのように揺れて戻る */
- if(e.flS!=null&&T>=e.flS&&T-e.flS<1.1){const D={hd:0,af:.04,ab:.06,lf:.02,lb:.03,tl:.08,wf:.05,wb:.07,cp:.06,jw:.02}[r];if(D!=null){const u=T-e.flS-D;if(u>0){const w=Math.exp(-u*6.5)*Math.cos(u*17),m={hd:-.34,af:.42,ab:-.4,lf:-.06,lb:.06,tl:.4,wf:.3,wb:-.3,cp:-.25,jw:.3}[r];a+=m*w;if(r==='hd')dx-=1.2*w}}}
+ if(e.flS!=null&&T>=e.flS&&T-e.flS<1.1){const D={hd:0,af:.04,ab:.06,lf:.02,lb:.03,tl:.08,wf:.05,wb:.07,cp:.06,jw:.02}[r];if(D!=null){const u=T-e.flS-D;if(u>0){const w=Math.exp(-u*5)*Math.cos(u*15),m={hd:-.55,af:.7,ab:-.65,lf:-.12,lb:.12,tl:.6,wf:.5,wb:-.5,cp:-.4,jw:.5}[r];a+=m*w;if(r==='hd')dx-=2.2*w}}}
  const an=e.an;if(an){const t=T-an.t0,hT=eHitT(e),st=eSty(e),P=RPO[RFAM[st]||'sl']||RPO.sl,o=P[r]||RWG[r],G=(v,j)=>v&&v[j]||0;let v=null;
   if(o&&an.k==='at'){const rg=EPJ[st],K=j=>rg?[[0,0],[hT*.3,G(o[0],j)],[hT*.42,G(o[1],j)],[hT,G(o[1],j)*.8],[hT+.3,0]]:[[0,0],[hT*.45,G(o[0],j)*.55],[hT*.72,G(o[0],j)*1.12],[hT*.8,G(o[0],j)*1.05],[hT,G(o[1],j)*1.08],[hT+.08,G(o[1],j)],[hT+.2,G(o[1],j)*.78],[hT+.5,G(o[1],j)*-.12],[hT+.7,0]];/* ため→振り抜きで少し行き過ぎ→余韻で少し戻りすぎて止まる */if(t<hT+.7)v=[kf(t,K(0)),kf(t,K(1)),kf(t,K(2))]}
   else if(o&&an.k==='mh'){const t0=hT-.13,n=Math.floor((t-t0)/.26),f=((t-t0)%.26)/.26,sw=(r==='af'||r==='ab')&&n%2===1&&P.ab,oo=sw?(r==='af'?P.ab:P.af):o,W=oo[0],S=oo[1];/* 連撃は左右の腕で交互に */if(t<t0)v=[0,1,2].map(j=>G(W,j)*t/t0*.6);else if(n<an.h&&f<.62){const u=f<.2?0:f<.38?(f-.2)/.18:1,b=f<.38?1:1-(f-.38)/.24;v=[0,1,2].map(j=>(G(W,j)*.6*(1-u)+G(S,j)*u)*b)}else if(n<an.h)v=[0,1,2].map(j=>G(W,j)*.6*((f-.62)/.38))}
@@ -5074,7 +5076,7 @@ function miniJ(x,cx,cy,col,t){x.save();x.translate(Math.round(cx),Math.round(cy)
  for(let j=0;j<3;j++)for(let k=1;k<=5;k++){const u=k/5;x.globalAlpha=.6*(1-u*.6);x.fillStyle=col;x.fillRect(Math.round(-4+j*4-u*3+Math.sin(u*6+t*3+j)*1.5),Math.round(2+u*9),2,2)}
  const pu=1+.07*Math.sin(t*3);x.scale(pu,1/pu);x.globalAlpha=.55;x.fillStyle=col;x.beginPath();x.moveTo(-7,2);x.quadraticCurveTo(-7,-9,0,-9);x.quadraticCurveTo(7,-9,7,2);x.fill();
  x.globalAlpha=.95;x.fillStyle='#ffffff';x.fillRect(-4,-7,3,1);x.fillRect(-1,-4,3,3);x.globalAlpha=1;x.fillStyle='#1e2a44';x.fillRect(-8,1,16,3);x.fillStyle=col;x.fillRect(3,2,2,1);x.restore()}
-function nebDraw(cx,cy,bb){const pa=bb&&bb.pa,lt=pa?T-pa.t0:9,lg=lt>=0&&lt<.45?Math.sin(lt/.45*Math.PI)*16:0,hr=bb&&bb.hr&&T>=bb.hr&&T-bb.hr<.28?1-(T-bb.hr)/.28:0;nebPaint(ctx,cx+lg-hr*8,cy,T,{lg,hr,gl:lt<.45?Math.sin(lt/.45*Math.PI):0});nebOrbs(cx,cy)}
+function nebDraw(cx,cy,bb){const pa=bb&&bb.pa,lt=pa?T-pa.t0:9,lg=lt>=0&&lt<.45?Math.sin(lt/.45*Math.PI)*16:0,hr=bb&&bb.hr&&T>=bb.hr&&T-bb.hr<1?KB(T-bb.hr):0;nebPaint(ctx,cx+lg-hr*16,cy,T,{lg,hr,gl:lt<.45?Math.sin(lt/.45*Math.PI):0});nebOrbs(cx,cy)}
 function nebOrbs(cx,cy){if(!PS||!PS.orb)return;const n=Math.max(PS.osl,PS.orb.length),dx=cx-110,dy=cy-208;
  for(let i=0;i<n;i++){const[x0,y0]=oPos(i,n),x=x0+dx,y=y0+dy+Math.round(Math.sin(T*2+i)*2),o=PS.orb[i];
   if(!o){ctx.globalAlpha=.35;ell(x,y,7,7,12,2,'#9ab8d8',T*.5);ctx.globalAlpha=1;continue}const col=OT[o.t][1];miniJ(ctx,x,y,col,T+i);
@@ -5237,7 +5239,7 @@ function fgAura(b,x0,fr){const FG=BLADE,pa0=b.pa&&b.pa.k==='fgb'&&b.pa.tx&&T-b.p
 function plDraw(k,x,y){const b=SPR[k+'_b'],W=WPN[k],pa=B&&B.pa;if(!b){ctx.drawImage(SPR[k],x,y);return}
  const A=pa&&PA2[pa.k],d=pa&&(pa.d||A&&A.d),t=A?(T-pa.t0)/d:1,on=A&&t>=0&&t<1,nb=W&&W.ng&&on&&NGK[pa.k],g=(n,dv)=>on&&(nb&&NGB[n]||A[n])?kf(t,nb&&NGB[n]||A[n]):dv;if(on)plEv(pa,t,A);
  let bx=g('bx',0)*(on&&pa.k==='otk'?pa.D||0:1),by=g('by',0),br=g('br',0),bs=g('bs',1),wx=g('wx',0),gl=g('gl',0);const ng=W.ng&&on&&NGK[pa.k],ang=tt=>on||tt<1?(ng?tt:pa.k==='fl'?flAng(tt,pa):A.w?kf(tt,A.w):0):0,wa=on?(ng?kf(t,NGA):ang(t)):0;
- const hr=B&&B.hr?T-B.hr:9;if(hr>=0&&hr<.28){const q=1-hr/.28;bx-=7*q;br-=.07*q}
+ const hr=B&&B.hr?T-B.hr:9;if(hr>=0&&hr<1){const q=KB(hr);bx-=17*q;br-=.2*q}
  if(on&&pa.k==='otk'&&((t>.1&&t<.24)||(t>.8&&t<.97))){const g0=ctx.globalAlpha;ctx.globalCompositeOperation='lighter';for(let j=6;j>=1;j--){const tt=Math.max(0,t-j*.012);ctx.globalAlpha=g0*.08*(7-j);ctx.drawImage(b,Math.round(x+kf(tt,A.bx)*(pa.D||0)),Math.round(y+kf(tt,A.by)))}ctx.globalCompositeOperation='source-over';ctx.globalAlpha=g0}
  ctx.save();ctx.translate(Math.round(x+b.width/2+bx),Math.round(y+b.height+by));ctx.rotate(br);ctx.scale(1+(1-bs)*.6,bs);ctx.translate(-b.width/2,-b.height);const RG=PRIG[k]?plRig(k,wa,on,pa,hr>=0&&hr<.28?1-hr/.28:0):null,dB=()=>{if(RG)plParts(k,RG);else ctx.drawImage(b,0,0)};dB();
  if(gl>0){const ga=ctx.globalAlpha;ctx.globalCompositeOperation='lighter';ctx.globalAlpha=ga*gl;dB();ctx.globalCompositeOperation='source-over';ctx.globalAlpha=ga}
@@ -5348,7 +5350,7 @@ function eMot(e,i){const c=ECAT[e.k]||'hum',o={ur:0,x:0,y:e.fly?0:Math.round(Mat
   else if(a.k==='bk'&&t<.5){const s=Math.sin(t/.5*Math.PI);o.sy=1-.06*s;o.sx=1+.04*s;o.g=.35*s;if(!a.fx){a.fx=1;const q=ePos(i);fxs('gl',q.x-16,q.y-40,{d:.35})}}
   else if(a.k==='db'&&t<.5){const s=Math.sin(t/.5*Math.PI);if(c==='cast'||c==='fly'){o.y-=8*s;o.g=.5*s;o.x=-6*s}else{o.x=Math.sin(t*70)*3*s;o.sx=1+.05*s;o.sy=1+.05*s;o.r=-.05*s}if(!a.fx&&t>.18){a.fx=1;const q=ePos(i);fxs('dw',q.x-30,q.y-40,{d:.45,ex:{tx:120,ty:170}})}}}
  if(XMO[e.k])XMO[e.k](e,i,o,a,a?T-a.t0:0);
- if(e.fl>0&&T>=(e.flS||0)){const q=Math.min(1,e.fl/.25);o.x+=Math.round(6*q);o.r+=.06*q}return o}
+ if(e.flS!=null&&T>=e.flS&&T-e.flS<1){const k=KB(T-e.flS)*(e.dead?0:1);o.x+=Math.round(17*k);o.r+=.17*k;o.ur-=.22*k;o.y-=Math.round(3*Math.max(0,k));o.sx*=1+.07*k;o.sy*=1-.06*k}return o}
 // 体と武器を1枚に合わせる（選択画面・結果画面用）。上や右にはみ出した分はキャンバスを広げ、体の左下はそのまま
 function wpComp(b,W){const w=SPR[W.wp],hx=W.pv[0]*W.u,hy=W.pv[1]*W.u,gx=W.g[0]*W.wu,gy=W.g[1]*W.wu,c=Math.cos(W.rest),s=Math.sin(W.rest);let x0=0,y0=0,x1=b.width,y1=b.height;
  for(const[px,py]of[[0,0],[w.width,0],[0,w.height],[w.width,w.height]]){const dx=px-gx,dy=py-gy,X=hx+dx*c-dy*s,Y=hy+dx*s+dy*c;x0=Math.min(x0,X);x1=Math.max(x1,X);y0=Math.min(y0,Y);y1=Math.max(y1,Y)}
