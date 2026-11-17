@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.20';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.21';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -6358,20 +6358,21 @@ const DP={x:36,y:336},DSP={x:604,y:336},FD={sc:1.25,dis:.34,use:.7,pw:.7,ex:.6,s
 function cFly(o,k,x,y,dl){if(!B)return;if(x==null){x=278;y=258}B.fly.push({o,k,x,y,t0:T+(dl||0)})}
 function cardAt(o,cx,cy,s,r,a,dim,pv){ctx.save();ctx.globalAlpha=a;ctx.translate(cx,cy);if(r)ctx.rotate(r);ctx.scale(s,s);if(o)card(-42,-53,o,dim,0,pv);else{ctx.fillStyle='#08060f';ctx.fillRect(-44,-55,88,110);ctx.fillStyle='#3a2e6a';ctx.fillRect(-42,-53,84,106);ctx.fillStyle='#241c48';ctx.fillRect(-36,-47,72,94);ctx.fillStyle='#c9a0ff';ctx.beginPath();ctx.moveTo(0,-18);ctx.lineTo(14,0);ctx.lineTo(0,18);ctx.lineTo(-14,0);ctx.fill()}ctx.restore()}
 const ez=p=>p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2,lp=(a,b,p)=>a+(b-a)*p;
+function pshadeC(h,f){const n=parseInt(h.slice(1),16),c=[n>>16,(n>>8)&255,n&255].map(v=>Math.round(f<0?v*(1+f):v+(255-v)*f));return'#'+c.map(v=>v.toString(16).padStart(2,'0')).join('')}
 function drawFly(){const b=B;b.fly=b.fly.filter(f=>T-f.t0<FD[f.k]);for(const f of b.fly){const p=(T-f.t0)/FD[f.k];if(p<0)continue;const sx=f.x+42,sy=f.y+53;
  if(f.k==='sc'){if(p<.38){const q=p/.38,s2=.25+.75*ez(Math.min(1,q*1.6));ctx.globalAlpha=Math.min(1,q*3);cardAt(f.o,sx,sy+Math.sin(T*9)*1.5,s2*.8,Math.sin(q*12)*.08*(1-q),1);ctx.globalAlpha=1}else{const q=ez((p-.38)/.62);cardAt(f.o,lp(sx,DSP.x,q),lp(sy,DSP.y,q)-Math.sin(q*3.14)*70,lp(.8,.16,q),q*2.4,1)}}
  else if(f.k==='dis'){const q=ez(p);cardAt(f.o,lp(sx,DSP.x,q),lp(sy,DSP.y,q)-Math.sin(q*3.14)*40,lp(1,.18,q),q*1.2,1)}
  else if(f.k==='sh'){const q=ez(p);cardAt(null,lp(DSP.x,DP.x,q),lp(DSP.y,DP.y,q)-Math.sin(q*3.14)*70,.28,-q*3,1)}
  else if(f.k==='use'||f.k==='pw'){/* Ver4.20 使ったカードは小さく縮み、キャラのイメージカラーのオーラと尾を引いて弧を描いて飛ぶ（ユーザー指定）。パワーは捨て札ではなく自分の体へ吸い込まれる */
-  const cc=(CH[P.cls]&&CH[P.cls].col)||'#ffd23f',pw=f.k==='pw',tx=pw?(P.cls===10?SERX:112):DSP.x,ty=pw?150:DSP.y;
-  if(p<.14){const q=ez(p/.14);cardAt(f.o,sx,lp(sy,sy-18,q),lp(1,.22,q),q*.4,1);ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=q*.8;const g=ctx.createRadialGradient(sx,sy-18*q,2,sx,sy-18*q,30+30*(1-q));g.addColorStop(0,cc);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(sx-70,sy-90,140,140);ctx.restore()}
+  const cc=(CH[P.cls]&&CH[P.cls].col)||'#ffd23f',/* 写真くらいの濃さ：白で光らせず、色の濃淡で */cd2=pshadeC(cc,-.45),cl2=pshadeC(cc,.25),pw=f.k==='pw',tx=pw?(P.cls===10?SERX:112):DSP.x,ty=pw?150:DSP.y;
+  if(p<.14){const q=ez(p/.14);cardAt(f.o,sx,lp(sy,sy-18,q),lp(1,.22,q),q*.4,1);ctx.save();ctx.globalAlpha=q*.6;const g=ctx.createRadialGradient(sx,sy-18*q,2,sx,sy-18*q,30+30*(1-q));g.addColorStop(0,cc);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(sx-70,sy-90,140,140);ctx.restore()}
   else{const q=(p-.14)/.86,y0=sy-18,c1x=sx+(pw?-40:(sx<320?-30:30)),c1y=y0-(pw?110:150),c2x=tx+(pw?60:-40),c2y=ty-(pw?120:170),bz=t=>{const u=1-t;return[u*u*u*sx+3*u*u*t*c1x+3*u*t*t*c2x+t*t*t*tx,u*u*u*y0+3*u*u*t*c1y+3*u*t*t*c2y+t*t*t*ty]},hd=Math.min(1,ez(q)),fa=q<.88?1:(1-q)/.12;
-   ctx.save();ctx.globalCompositeOperation='lighter';ctx.lineCap='round';
-   for(let k=22;k>0;k--){const t0=Math.max(0,hd-k*.018),t1=Math.max(0,hd-(k-1)*.018);if(t1<=0)continue;const[a,b]=bz(t0),[c,d]=bz(t1),al=(1-k/22)*fa;ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(c,d);ctx.globalAlpha=al*.55;ctx.strokeStyle=cc;ctx.lineWidth=11*(1-k/22)+1;ctx.stroke();ctx.globalAlpha=al*.7;ctx.strokeStyle='#fff6e0';ctx.lineWidth=2.5*(1-k/22)+.5;ctx.stroke()}
-   for(let k=0;k<14;k++){const t=Math.max(0,hd-hs(k+f.t0)*.25),[a,b]=bz(t),ox=(hs(k+3)-.5)*16*(hd-t)*6,oy=(hs(k+7)-.5)*16*(hd-t)*6+((hd-t)*60);ctx.globalAlpha=Math.max(0,fa*(1-(hd-t)/.25)*.9);ctx.fillStyle=k%3?cc:'#fff6e0';ctx.fillRect(a+ox,b+oy,2,2)}
-   const[hx,hy]=bz(hd);ctx.globalAlpha=fa;const g=ctx.createRadialGradient(hx,hy,2,hx,hy,26);g.addColorStop(0,cc);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(hx-26,hy-26,52,52);ctx.restore();
+   ctx.save();ctx.lineCap='round';
+   for(let k=22;k>0;k--){const t0=Math.max(0,hd-k*.018),t1=Math.max(0,hd-(k-1)*.018);if(t1<=0)continue;const[a,b]=bz(t0),[c,d]=bz(t1),al=(1-k/22)*fa;ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(c,d);ctx.globalAlpha=al*.55;ctx.strokeStyle=cd2;ctx.lineWidth=15*(1-k/22)+1;ctx.stroke();ctx.globalAlpha=al*.85;ctx.strokeStyle=cc;ctx.lineWidth=8*(1-k/22)+1;ctx.stroke();ctx.globalAlpha=al*.8;ctx.strokeStyle=cl2;ctx.lineWidth=2*(1-k/22)+.5;ctx.stroke()}
+   for(let k=0;k<14;k++){const t=Math.max(0,hd-hs(k+f.t0)*.25),[a,b]=bz(t),ox=(hs(k+3)-.5)*16*(hd-t)*6,oy=(hs(k+7)-.5)*16*(hd-t)*6+((hd-t)*60);ctx.globalAlpha=Math.max(0,fa*(1-(hd-t)/.25)*.9);ctx.fillStyle=k%3?cc:cl2;ctx.fillRect(a+ox,b+oy,2,2)}
+   const[hx,hy]=bz(hd);ctx.globalAlpha=fa*.75;const g=ctx.createRadialGradient(hx,hy,2,hx,hy,24);g.addColorStop(0,cc);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(hx-26,hy-26,52,52);ctx.restore();
    if(q<.97)cardAt(f.o,hx,hy,.22*(q<.85?1:1-(q-.85)/.15*.6),.4+q*5.5,fa);
-   if(q>.9){const r=(q-.9)/.1;ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=1-r;const g2=ctx.createRadialGradient(tx,ty,2,tx,ty,pw?60+r*40:22+r*14);g2.addColorStop(0,'#fff');g2.addColorStop(.3,cc);g2.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g2;ctx.fillRect(tx-110,ty-110,220,220);ctx.restore()}}}
+   if(q>.9){const r=(q-.9)/.1;ctx.save();ctx.globalAlpha=(1-r)*.7;const g2=ctx.createRadialGradient(tx,ty,2,tx,ty,pw?60+r*40:22+r*14);g2.addColorStop(0,cl2);g2.addColorStop(.3,cc);g2.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g2;ctx.fillRect(tx-110,ty-110,220,220);ctx.restore()}}}
  else if(f.k==='ex'){const q=ez(Math.min(1,p/.3)),cx=lp(sx,320,q),cy=lp(sy,140,q),r=Math.max(0,(p-.3)/.7),ln=cy+55-r*110;ctx.save();ctx.beginPath();ctx.rect(cx-50,cy-60,100,ln-(cy-60));ctx.clip();cardAt(f.o,cx,cy,1,0,1);ctx.restore();if(r>0)for(let k=0;k<18;k++){const h=(k*37%18)/18,up=((T*3+k*.37)%1)*18;ctx.globalAlpha=1-up/18;sq(cx-42+h*84,ln-up,k%4?4:6,k%3?'#ff8c2e':'#ffd23f')}ctx.globalAlpha=1}}
  ctx.globalAlpha=1}
 // 魔法陣：外の点の輪（ゆっくり右回り）・内の輪（左回り）・三角（ゆっくり回る）・中心の宝石。淡い紫の光が脈打ち、魔法を使うと強く光る
