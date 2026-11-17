@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:.83,e:.9,b:1.4};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.29';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:.83,e:.9,b:1.65};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.30';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -558,6 +558,14 @@ SD.emb_protoA=[16,16,3,({t,e,r,sh})=>{for(let k=0;k<4;k++){const x=2+k*3.2,y=2+k
 SD.emb_scales=[16,16,3,({t,r,l,sh})=>{r(7.2,2,1.6,12,'#b8963a');r(4,13.4,8,1.6,'#9a7a2a');t([[1,4.4],[15,3],[15,4],[1,5.4]],'#b8963a');l(2,5,1,9,'#b8963a',.3);l(2,5,4,9,'#b8963a',.3);t([[.4,9],[4.6,9],[3.8,10.4],[1.2,10.4]],'#b8963a');l(14,4,13,8,'#b8963a',.3);l(14,4,16,8,'#b8963a',.3);t([[12.4,8],[15.6,8],[15,9.4],[13,9.4]],'#b8963a');sh()}];
 SD.emb_userp=[16,16,3,({t,r,sh})=>{t([[1,8],[5,4.4],[11,5],[13,8],[11,11],[5,11.6]],'#3a6a7a');t([[13,8],[15.6,4.6],[15,8],[15.6,11.4]],'#2e5664');for(let k=0;k<4;k++)r(5+k*1.8,6,.8,4,'#d8d0c0');t([[2.4,7.4],[3.6,7],[3.2,8.2]],'#e8c86a');sh()}];
 SD.emb_ulight=[16,16,3,({t,r,sh})=>{t([[5.4,5],[10.6,5],[12,15],[4,15]],'#c8c4b8');r(4.6,8.4,6.8,1.6,'#a8342a');r(4.2,11.6,7.6,1.6,'#a8342a');r(5,2.6,6,2.6,'#3a3e48');t([[6,3],[10,3],[8,1]],'#e8d06a');sh()}];
+
+// Ver4.30 地図のマスの絵を紋章と同じ細かさで描き直し（ユーザー指定：ボス・？？？と細かさをそろえる）。紙の上で見えるよう濃いめの色
+SD.nic_0=[16,16,3,({t,r,sh})=>{t([[2,1.4],[3.6,1.4],[12,10.6],[10.6,12]],'#8a909c');t([[2.6,1.6],[3.2,1.6],[11.4,10.8],[11,11.2]],'#c8ccd6');t([[12.6,1.4],[14,1.4],[5.4,12],[4,10.6]],'#8a909c');t([[13.2,1.6],[13.6,1.6],[5.2,11.2],[4.8,10.8]],'#c8ccd6');t([[9.4,11.6],[12.4,8.6],[13.6,9.8],[10.6,12.8]],'#6a4a2a');t([[3.6,8.6],[6.6,11.6],[5.4,12.8],[2.4,9.8]],'#6a4a2a');t([[11.4,12],[13,13.6],[12,14.6],[10.4,13]],'#4a3020');t([[4.6,12],[3,13.6],[4,14.6],[5.6,13]],'#4a3020');sh()}];
+SD.nic_1=[16,16,3,({t,r,q,sh})=>{t([[1,1],[4,4.6],[3,6]],'#a83a2a');t([[15,1],[12,4.6],[13,6]],'#a83a2a');t([[3.4,4],[12.6,4],[13.6,8.4],[12,11],[11.2,14],[4.8,14],[4,11],[2.4,8.4]],'#d8d0bc');t([[4.6,7.4],[7.2,7.8],[7,9.6],[4.8,9.4]],'#2a1414');t([[11.4,7.4],[8.8,7.8],[9,9.6],[11.2,9.4]],'#2a1414');q(5.8,8.4,'#c8342a');q(10,8.4,'#c8342a');t([[7.4,10.6],[8.6,10.6],[8,11.8]],'#2a1414');for(let k=0;k<4;k++)r(5.6+k*1.3,12.4,.8,1.4,'#2a1414');sh()}];
+SD.nic_2=[16,16,3,({t,r,e,sh})=>{e(8,8,6.6,6.6,'#b8862a');e(8,8,5.2,5.2,'#d8a83a');t([[6.4,4.4],[10,4.4],[10,5.6],[7.4,5.6],[7.4,10.4],[10,10.4],[10,11.6],[6.4,11.6]],'#8a5e1a');sh()}];
+SD.nic_3=[16,16,3,({t,r,sh})=>{t([[2,13],[14,11.4],[14.4,13],[2.4,14.6]],'#5a3a22');t([[2,11.4],[14,13],[13.6,14.6],[1.6,13]],'#6a4628');t([[8,2],[11.4,7],[11.4,10.6],[8,12],[4.6,10.6],[4.6,7]],'#c8542a');t([[8,5],[10,8.4],[9.4,10.6],[8,11.2],[6.6,10.6],[6,8.4]],'#e8962e');t([[8,8],[9,9.6],[8,10.6],[7,9.6]],'#f2d07a');sh()}];
+SD.nic_4=[16,16,3,({t,r,sh})=>{t([[4,3],[6.4,1.4],[10.6,1.4],[12.4,3.4],[12.4,6.4],[10,8.4],[9.4,9.6],[6.8,9.6],[6.8,7.6],[9.4,5.6],[9.6,4.2],[8.8,3.4],[7.2,3.4],[6.4,4.6]],'#7a5aa8');r(6.8,11.2,2.8,2.8,'#7a5aa8');sh()}];
+SD.nic_5=[16,16,3,({t,r,sh})=>{t([[1.6,7],[14.4,7],[14.4,14],[1.6,14]],'#7a4a24');t([[1.6,3.6],[14.4,3.6],[14.4,7],[1.6,7]],'#8a5a2c');r(1.6,6.4,12.8,1.4,'#b8862a');r(1.6,10.4,12.8,1,'#5a3418');t([[6.6,6],[9.4,6],[9.4,9.6],[6.6,9.6]],'#d8a83a');r(7.6,7.4,.8,1.4,'#3a2010');sh()}];
 SD.goblin2=[24,34,3,({r,p,q,l,t,m,sh,pt})=>{
 pt('lb',()=>{t([[8.4,22.6],[10.6,22.6],[10,28],[8.2,28]],'#3e6a22');t([[8.2,27.6],[10,27.6],[9.8,32.4],[8,32.4]],'#3a6020');t([[6.6,32],[10.2,32],[10.6,34],[6,34]],'#2e1c0e')});
 pt('lf',()=>{t([[12.6,22.6],[15,22.6],[16.2,27.8],[14,28]],'#4a7a2a');t([[14,27.6],[16.2,27.6],[15.6,32.4],[13.6,32.4]],'#457226');t([[13.4,32],[17.2,32],[17.6,34],[13,34]],'#3a2414')});
@@ -1451,7 +1459,7 @@ if(!window.GRNC){for(let a=0;a<6.28;a+=.16)q(28.6+Math.cos(a)*5,15+Math.sin(a)*5
 t([[28.6,11],[31.6,17],[25.6,17]],'#c9a0ff');t([[28.6,12.6],[30.4,16.2],[26.8,16.2]],'#cbbd90');q(28.6,14.8,'#e84aa8')}
 for(const x of[4,36])for(let k=0;k<4;k++)r(x+(k%2?.3:0),28.4+k*.4,.8,.4,'#8a8fa0')}];
 // 敵は右向きで描いてあるので、左右反転して自分（左）の方を向かせる
-const NOFL=/^(pl|si|sm|oji|grim|hori.*|skunk|qcube|eye|demon|.*_wp|seres|emb_.*)$/,flipC=c=>{const o=MKC(c.width,c.height),x=o.getContext('2d');x.translate(c.width,0);x.scale(-1,1);x.drawImage(c,0,0);return o};
+const NOFL=/^(pl|si|sm|oji|grim|hori.*|skunk|qcube|eye|demon|.*_wp|seres|emb_.*|nic_.*)$/,flipC=c=>{const o=MKC(c.width,c.height),x=o.getContext('2d');x.translate(c.width,0);x.scale(-1,1);x.drawImage(c,0,0);return o};
 // ===== 沈没都市（Ver2.29 1層のもう一つの場所。ユーザー指定：アンダードックスを参考にした独自の敵。どれも右向きの斜めで描き flipC で反転） =====
 const UGL=(t,q,a,b,s,c)=>{s=s||1;t([[a-s,b-s*.8],[a+s,b-s*.8],[a+s,b+s*.8],[a-s,b+s*.8]],c||'#c8e0b0');q(a+s*.3,b,'#f0ffe0')},URING=(q,cx,cy,rr,c,st)=>{for(let a=0;a<6.28;a+=st||.35)q(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr*.9,c)};
 SD.ushell=[24,18,3,({r,p,q,l,t,sh,pt})=>{
@@ -6656,7 +6664,7 @@ for(let f=0;f<LAST;f++)MP[f].forEach((n,j)=>{if(!n)return;n.cn.forEach(k=>{const
  if(vi(f,j)&&vi(f+1,k))trail(x1,y1,x2,y2,sd,th.hi,3);else if(CUR.f===f&&CUR.j===j&&av.includes(k))trail(x1,y1,x2,y2,sd,th.hi,3,1);else{ctx.globalAlpha=f<CUR.f?.3:.9;trail(x1,y1,x2,y2,sd,th.ink,2);ctx.globalAlpha=1}})});
 for(let f=0;f<=LAST;f++){const fx=8+MX(f)-MSC;if(fx<-30||fx>670)continue;txt(String(f+1),fx,292,th.sub,'center',10);MP[f].forEach((n,j)=>{if(!n)return;const x=X(f,n),y=Y(f,j,n),can=CUR.f+1===f&&av.includes(j),cur=CUR.f===f&&CUR.j===j,bs=f===LAST,r=bs?(P.act===4?34:Math.round(22*MPSZ.b)):Math.round(14*(n.t===1?MPSZ.e:MPSZ.n));
  if(can){mGlow(x,y,r,th.hi);if(x>8&&x<632)hit(Math.max(10,x-r-2),y-r-2,r*2+4,r*2+4,()=>{sfx('pk');enter(j)})}else if(cur)mGlow(x,y,r,th.cur,1);
- ctx.globalAlpha=f<=CUR.f&&!vi(f,j)?.3:1;if(n.au&&!vi(f,j))auraD(x,y,r);/* Ver4.29 マスの後ろの黒丸は出さない（ユーザー指定） */if(bs&&P.act===4){pc(x,y,r+1,'#7a1020');pc(x,y,r-1,'#140006')}if(bs&&P.act===4)ctx.drawImage(SPR.eye,x-27,y-25+Math.round(Math.sin(T*1.5)),54,48);else if(bs){const bk=bossIc()[bossI()],em=SPR['emb_'+bk],z=Math.round(36*MPSZ.b);ctx.imageSmoothingEnabled=false;if(em){const w=Math.round(r*1.55);ctx.drawImage(em,x-w/2,y-w/2,w,w)}else ctx.drawImage(ICN[6],x-z/2,y-z/2,z,z)}else if(n.au){const z=MPSZ.n;ctx.imageSmoothingEnabled=false;ctx.drawImage(ICNA,x-15*z,y-16*z,ICNA.width*z,ICNA.height*z)}else{const z=Math.round(24*(n.t===1?MPSZ.e:MPSZ.n));ctx.imageSmoothingEnabled=false;ctx.drawImage(ICN[n.t===7?1:n.t],x-z/2,y-z/2,z,z)}
+ ctx.globalAlpha=f<=CUR.f&&!vi(f,j)?.3:1;if(n.au&&!vi(f,j))auraD(x,y,r);/* Ver4.29 マスの後ろの黒丸は出さない（ユーザー指定） */if(bs&&P.act===4){pc(x,y,r+1,'#7a1020');pc(x,y,r-1,'#140006')}if(bs&&P.act===4)ctx.drawImage(SPR.eye,x-27,y-25+Math.round(Math.sin(T*1.5)),54,48);else if(bs){const bk=bossIc()[bossI()],em=SPR['emb_'+bk],z=Math.round(36*MPSZ.b);ctx.imageSmoothingEnabled=false;if(em){const w=Math.round(r*1.55);ctx.drawImage(em,x-w/2,y-w/2,w,w)}else ctx.drawImage(ICN[6],x-z/2,y-z/2,z,z)}else if(n.au){const z=MPSZ.n;ctx.imageSmoothingEnabled=false;ctx.drawImage(ICNA,x-15*z,y-16*z,ICNA.width*z,ICNA.height*z)}else{const tt=n.t===7?1:n.t,im=SPR['nic_'+tt]||ICN[tt],z=Math.round((SPR['nic_'+tt]?27:24)*(n.t===1?MPSZ.e:MPSZ.n));ctx.imageSmoothingEnabled=false;ctx.drawImage(im,x-z/2,y-z/2,z,z)}
  if(vi(f,j)&&!cur)ell(x,y,r+3,r+3,20,2,th.hi);ctx.globalAlpha=1;})}
 if(MPON())mpDrawMap(X,Y);
 // 悪魔マス（第1層の最初）。第2層以降は入口の印
@@ -6670,7 +6678,7 @@ ctx.restore();
 const pu=Math.floor(T*3)%2;if(MSC>2){ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(10,170,18,30);txt('◀',19,191,pu?'#fff':th.hi,'center',14)}if(MSC<mx-2){ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(612,170,18,30);txt('▶',621,191,pu?'#fff':th.hi,'center',14)}
 if(P.act!==4){ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillRect(20,296,600,3);ctx.fillStyle=th.hi;ctx.fillRect(20+Math.round(600*MSC/MSW),296,Math.round(600*624/MSW),3)}
 txt('第'+P.act+'層　'+(MPON()?(MPR.votes[LK]&&MPR.votes[LK].f===CUR.f+1&&MPR.votes[LK].a===P.act?'投票済み・仲間を待っている':'進路を投票（多数決）'):'進路を選べ'),320,80,th.tx,'center',14);if(S==='map'&&P.back&&!(MPON()&&MPR.votes[LK]&&MPR.votes[LK].f===CUR.f+1&&MPR.votes[LK].a===P.act)&&((P.back.pot&&!P.back.pt&&!has('sozu'))||!P.back.ct))btn(14,66,150,24,'◀ 前のマスに戻る',()=>{RW=P.back;sfx('cl');S='reward'},'#3a3068',11);if(P.act!==4)txt('◀ ドラッグで動かせる ▶',622,80,th.sub,'right',10);
-if(MPON()){mpParty();return}const lg=[['戦闘',0],['エリート',1],['ショップ',2],['休憩',3],['？',4],['宝箱',5]];lg.forEach((a,i)=>{ctx.drawImage(ICN[a[1]],16+i*100,310,24,24);txt(a[0],44+i*100,328,'#cfc8ee','left',11)})}
+if(MPON()){mpParty();return}const lg=[['戦闘',0],['エリート',1],['ショップ',2],['休憩',3],['？',4],['宝箱',5]];lg.forEach((a,i)=>{ctx.imageSmoothingEnabled=false;ctx.drawImage(SPR['nic_'+a[1]]||ICN[a[1]],14+i*100,308,28,28);txt(a[0],44+i*100,328,'#cfc8ee','left',11)})}
 function after(){if(RW.nx){const x=RW.nx;RW.nx=null;if(x==='act')btNext();else go(x);return}if(RW.boss){if(P.act<3)openBossChest();else go('win')}else{const n=CUR&&MP[CUR.f]&&MP[CUR.f][CUR.j];P.back=n&&(n.t===0||n.t===1)?{...RW,g:0,rel:null,shd:0,title:'戦利品の回収'}:null;go('map')}}
 let BT=null;const OCH=mk(['.bbbbbb.','b.yyyy.b','..yyyy..','bbbbbbbb','bbbyybbb','bbbbbbbb','bbbbbbbb','........'],{b:'#8a5a3a',y:'#ffe14a'},3);
 // ボスレリックの「拾うと〜」で選ぶもの（古びた魔導書・空の檻）を順に処理してから次の層へ
