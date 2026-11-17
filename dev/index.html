@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.14';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.15';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -7672,7 +7672,7 @@ function drawRank(){ttlBg(.66);if(!RK)RK={k:'dmg',docs:[],st:''};txt('ランキ�
  txt(RK.st||(L.length+'人の記録'),20,88,'#a8a0c8','left',10);const mi=L.findIndex(q=>q.id===me);txt(mi>=0?'あなた：'+(mi+1)+'位　'+fm(L[mi].v):'あなたの記録はまだない',620,88,'#7ec8ff','right',11);
  ctx.save();ctx.beginPath();ctx.rect(0,top-2,640,360-top);ctx.clip();
  L.forEach((q,i)=>{const y=top+i*rh-scr;if(y<top-rh||y>360)return;const mine=q.id===me;ctx.fillStyle=mine?'rgba(90,140,220,.35)':i%2?'rgba(20,16,40,.6)':'rgba(30,24,56,.6)';ctx.fillRect(20,y,600,rh-2);
-  const col=i===0?'#ffd23f':i===1?'#d8dce8':i===2?'#e0a060':'#cfc8ee';txt((i+1)+'',52,y+15,col,'right',i<3?14:12);txt(q.nm,68,y+15,mine?'#fff':'#e8e4ff','left',12);txt(q.c===4&&!HDU?'？？？':CH[q.c].n,300,y+15,q.c===4&&!HDU?'#8a82b8':CH[q.c].col||'#a8a0c8','left',11);if(q.a)txt('A'+q.a,420,y+15,'#ff8a8a','left',11);txt(fm(q.v),612,y+15,col,'right',13)});
+  const col=i===0?'#ffd23f':i===1?'#d8dce8':i===2?'#e0a060':'#cfc8ee';txt((i+1)+'',52,y+15,col,'right',i<3?14:12);txt(q.nm,68,y+15,mine?'#fff':'#e8e4ff','left',12);{/* Ver4.15 まだ解放していないキャラ（ホーリー大輔・セレス）は名前を伏せる */const hid=(q.c===4&&!HDU)||(q.c===10&&!SERU)||!CH[q.c];txt(hid?'？？？':CH[q.c].n,300,y+15,hid?'#8a82b8':CH[q.c].col||'#a8a0c8','left',11)}if(q.a)txt('A'+q.a,420,y+15,'#ff8a8a','left',11);txt(fm(q.v),612,y+15,col,'right',13)});
  ctx.restore();if(!L.length)txt('まだ記録がない。ひとりで遊ぶと記録が残る',320,200,'#8a82b8','center',12)}
 // Ver2.20 名前は最初に1回決め、タイトル左上でいつでも変えられる。マルチは決めた名前をそのまま使う
 function askName(then,o){MPN={then,back:o&&o.back,first:o&&o.first};S='mpn';sfx('cl');const ni=nmInput();ni.value=pName();setTimeout(()=>{try{ni.focus()}catch(e){}},50)}
