@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:.83,e:.9,b:1.4};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.28';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:.83,e:.9,b:1.4};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.29';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -6647,21 +6647,23 @@ function mdwDraw(){if(!(typeof MPON==='function'&&MPON()&&MPR))return;const L=(M
  ctx.save();ctx.beginPath();ctx.rect(8,62,624,238);ctx.clip();ctx.lineCap='round';ctx.lineJoin='round';for(const q of L.concat(cur)){if(q.p.length<2)continue;ctx.strokeStyle='rgba(0,0,0,.35)';ctx.lineWidth=4;ctx.beginPath();q.p.forEach((pt,i)=>ctx[i?'lineTo':'moveTo'](pt[0]-MSC+8+1,pt[1]+62+1));ctx.stroke();ctx.strokeStyle=PCOL[q.k%4]||'#fff';ctx.lineWidth=2.5;ctx.beginPath();q.p.forEach((pt,i)=>ctx[i?'lineTo':'moveTo'](pt[0]-MSC+8,pt[1]+62));ctx.stroke()}ctx.restore();
  const[a,b,c,d]=MDB.pen;ctx.fillStyle=MDW?'rgba(200,150,60,.85)':'rgba(20,16,30,.75)';ctx.fillRect(a,b,c,d);txt(MDW?'書く中':'✎ 書く',a+c/2,b+14,MDW?'#1a1008':'#f0e6d6','center',11);hit(a,b,c,d,()=>{MDW=!MDW;sfx('cl')});
  const[e,f,g,h]=MDB.clr;ctx.fillStyle='rgba(20,16,30,.75)';ctx.fillRect(e,f,g,h);txt('消す',e+g/2,f+14,'#f0e6d6','center',11);hit(e,f,g,h,()=>{mpSend({ty:'mdc',id:MPR.me});sfx('cl')})}
+// Ver4.29 選べるマス・今いるマスの印：黒丸の代わりに、色のにじみ（選べるマスは脈打つ）
+function mGlow(x,y,r,c,st){const p=st?1:.75+.25*Math.sin(T*6),R=(r+8)*p;ctx.save();ctx.globalAlpha=st?.55:.7;const g=ctx.createRadialGradient(x,y,r*.3,x,y,R);g.addColorStop(0,c);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(x-R,y-R,R*2,R*2);ctx.restore()}
 function drawMap(){{const a=Math.max(1,Math.min(4,P.act||1)),g=bgbFor(a),o=BGB;ctx.drawImage(g,0,0);BGB=g;bgAnim();BGB=o;ctx.fillStyle='rgba(6,4,12,.28)';ctx.fillRect(0,0,640,360)}const th=MTH[P.act-1]||MTH[2],mx=P.act===4?0:MSW-624;MSC=Math.max(0,Math.min(mx,MSC));ctx.drawImage(th.pn,Math.round(MSC),0,624,238,8,62,624,238);topbar();
 const X=(f,n)=>8+MX(f)-MSC,Y=(f,j,n)=>f===LAST?184:104+j*40+(n.dy||0),av=avail(),vs=new Set(P.path||[]),vi=(f,j)=>vs.has(f+','+j);
 ctx.save();ctx.beginPath();ctx.rect(10,64,620,234);ctx.clip();
 for(let f=0;f<LAST;f++)MP[f].forEach((n,j)=>{if(!n)return;n.cn.forEach(k=>{const m=MP[f+1][k];if(!m)return;const x1=X(f,n),y1=Y(f,j,n),x2=X(f+1,m),y2=Y(f+1,k,m),sd=f*31+j*7+k;if(x2<-20||x1>660)return;
  if(vi(f,j)&&vi(f+1,k))trail(x1,y1,x2,y2,sd,th.hi,3);else if(CUR.f===f&&CUR.j===j&&av.includes(k))trail(x1,y1,x2,y2,sd,th.hi,3,1);else{ctx.globalAlpha=f<CUR.f?.3:.9;trail(x1,y1,x2,y2,sd,th.ink,2);ctx.globalAlpha=1}})});
 for(let f=0;f<=LAST;f++){const fx=8+MX(f)-MSC;if(fx<-30||fx>670)continue;txt(String(f+1),fx,292,th.sub,'center',10);MP[f].forEach((n,j)=>{if(!n)return;const x=X(f,n),y=Y(f,j,n),can=CUR.f+1===f&&av.includes(j),cur=CUR.f===f&&CUR.j===j,bs=f===LAST,r=bs?(P.act===4?34:Math.round(22*MPSZ.b)):Math.round(14*(n.t===1?MPSZ.e:MPSZ.n));
- if(can){pc(x,y,r+4+Math.floor(Math.sin(T*6)*2),th.hi);if(x>8&&x<632)hit(Math.max(10,x-r-2),y-r-2,r*2+4,r*2+4,()=>{sfx('pk');enter(j)})}else if(cur)pc(x,y,r+3,th.cur);
- ctx.globalAlpha=f<=CUR.f&&!vi(f,j)?.3:1;if(n.au&&!vi(f,j))auraD(x,y,r);pc(x,y,r+1,n.au||n.t>=7?'#7a1020':th.ring);pc(x,y,r-1,n.t===8?'#140006':th.nb);if(bs&&P.act===4)ctx.drawImage(SPR.eye,x-27,y-25+Math.round(Math.sin(T*1.5)),54,48);else if(bs){const bk=bossIc()[bossI()],em=SPR['emb_'+bk],z=Math.round(36*MPSZ.b);ctx.imageSmoothingEnabled=false;if(em){const w=Math.round(r*1.55);ctx.drawImage(em,x-w/2,y-w/2,w,w)}else ctx.drawImage(ICN[6],x-z/2,y-z/2,z,z)}else if(n.au){const z=MPSZ.n;ctx.imageSmoothingEnabled=false;ctx.drawImage(ICNA,x-15*z,y-16*z,ICNA.width*z,ICNA.height*z)}else{const z=Math.round(24*(n.t===1?MPSZ.e:MPSZ.n));ctx.imageSmoothingEnabled=false;ctx.drawImage(ICN[n.t===7?1:n.t],x-z/2,y-z/2,z,z)}
- if(vi(f,j)&&!cur)ell(x,y,r+3,r+3,20,2,th.hi);ctx.globalAlpha=1;if(bs&&P.act!==4)txt('ボス',x,y-r-6,'#ff6a6a','center',11)})}
+ if(can){mGlow(x,y,r,th.hi);if(x>8&&x<632)hit(Math.max(10,x-r-2),y-r-2,r*2+4,r*2+4,()=>{sfx('pk');enter(j)})}else if(cur)mGlow(x,y,r,th.cur,1);
+ ctx.globalAlpha=f<=CUR.f&&!vi(f,j)?.3:1;if(n.au&&!vi(f,j))auraD(x,y,r);/* Ver4.29 マスの後ろの黒丸は出さない（ユーザー指定） */if(bs&&P.act===4){pc(x,y,r+1,'#7a1020');pc(x,y,r-1,'#140006')}if(bs&&P.act===4)ctx.drawImage(SPR.eye,x-27,y-25+Math.round(Math.sin(T*1.5)),54,48);else if(bs){const bk=bossIc()[bossI()],em=SPR['emb_'+bk],z=Math.round(36*MPSZ.b);ctx.imageSmoothingEnabled=false;if(em){const w=Math.round(r*1.55);ctx.drawImage(em,x-w/2,y-w/2,w,w)}else ctx.drawImage(ICN[6],x-z/2,y-z/2,z,z)}else if(n.au){const z=MPSZ.n;ctx.imageSmoothingEnabled=false;ctx.drawImage(ICNA,x-15*z,y-16*z,ICNA.width*z,ICNA.height*z)}else{const z=Math.round(24*(n.t===1?MPSZ.e:MPSZ.n));ctx.imageSmoothingEnabled=false;ctx.drawImage(ICN[n.t===7?1:n.t],x-z/2,y-z/2,z,z)}
+ if(vi(f,j)&&!cur)ell(x,y,r+3,r+3,20,2,th.hi);ctx.globalAlpha=1;})}
 if(MPON())mpDrawMap(X,Y);
 // 悪魔マス（第1層の最初）。第2層以降は入口の印
 {const x=8+MX(-1)-MSC,y=184,dm=P.act===1&&P.nw!==undefined,can=dm&&P.nw===0&&CUR.f===-1,r=Math.round(18*MPSZ.b);
  MP[0].forEach((n,j)=>{if(!n)return;const x2=X(0,n),y2=Y(0,j,n),sd=j*13+5;if(vi(0,j))trail(x,y,x2,y2,sd,th.hi,3);else if(CUR.f===-1&&!can)trail(x,y,x2,y2,sd,th.hi,3,1);else{ctx.globalAlpha=CUR.f>=0?.3:.9;trail(x,y,x2,y2,sd,th.ink,2);ctx.globalAlpha=1}});
- if(dm){if(can){pc(x,y,r+4+Math.floor(Math.sin(T*6)*2),'#c9a0ff');if(x>8&&x<632)hit(Math.max(10,x-r-2),y-r-2,r*2+4,r*2+4,()=>{sfx('pk');P.nw=1;NE.t0=T;go('neow')})}else if(CUR.f===-1)pc(x,y,r+3,th.cur);
-  pc(x,y,r+1,th.ring);pc(x,y,r-1,'#08101e');ctx.imageSmoothingEnabled=false;{const z=Math.round(28*MPSZ.b);ctx.drawImage(SPR.qcube,x-z/2,y-z/2-1+Math.round(Math.sin(T*2)),z,z)}if(P.nw===1&&CUR.f>=0)ell(x,y,r+3,r+3,20,2,th.hi);txt('？？？',x,y-r-8,'#5ff6ff','center',11)}
+ if(dm){if(can){mGlow(x,y,r,'#c9a0ff');if(x>8&&x<632)hit(Math.max(10,x-r-2),y-r-2,r*2+4,r*2+4,()=>{sfx('pk');P.nw=1;NE.t0=T;go('neow')})}else if(CUR.f===-1)mGlow(x,y,r,th.cur,1);
+  ctx.imageSmoothingEnabled=false;{const z=Math.round(28*MPSZ.b);ctx.drawImage(SPR.qcube,x-z/2,y-z/2-1+Math.round(Math.sin(T*2)),z,z)}if(P.nw===1&&CUR.f>=0)ell(x,y,r+3,r+3,20,2,th.hi);}
  else{pc(x,y,9,th.ring);pc(x,y,7,th.nb);txt('入口',x,y-16,th.sub,'center',10)}}
 ctx.restore();
 // スクロールの目印：両はしの矢印と下のバー
