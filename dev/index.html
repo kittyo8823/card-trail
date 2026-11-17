@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:.83,e:.9,b:2.1};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.32';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:.83,e:.9,b:2.1};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.33';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -559,6 +559,10 @@ SD.emb_protoA=[16,16,3,({t,e,r,sh})=>{for(let k=0;k<4;k++){const x=2+k*3.2,y=2+k
 SD.emb_scales=[16,16,3,({t,r,l,sh})=>{r(7.2,2,1.6,12,'#b8963a');r(4,13.4,8,1.6,'#9a7a2a');t([[1,4.4],[15,3],[15,4],[1,5.4]],'#b8963a');l(2,5,1,9,'#b8963a',.3);l(2,5,4,9,'#b8963a',.3);t([[.4,9],[4.6,9],[3.8,10.4],[1.2,10.4]],'#b8963a');l(14,4,13,8,'#b8963a',.3);l(14,4,16,8,'#b8963a',.3);t([[12.4,8],[15.6,8],[15,9.4],[13,9.4]],'#b8963a');sh()}];
 SD.emb_userp=[16,16,3,({t,r,sh})=>{t([[1,8],[5,4.4],[11,5],[13,8],[11,11],[5,11.6]],'#3a6a7a');t([[13,8],[15.6,4.6],[15,8],[15.6,11.4]],'#2e5664');for(let k=0;k<4;k++)r(5+k*1.8,6,.8,4,'#d8d0c0');t([[2.4,7.4],[3.6,7],[3.2,8.2]],'#e8c86a');sh()}];
 SD.emb_ulight=[16,16,3,({t,r,sh})=>{t([[5.4,5],[10.6,5],[12,15],[4,15]],'#c8c4b8');r(4.6,8.4,6.8,1.6,'#a8342a');r(4.2,11.6,7.6,1.6,'#a8342a');r(5,2.6,6,2.6,'#3a3e48');t([[6,3],[10,3],[8,1]],'#e8d06a');sh()}];
+// Ver4.33 古の者のマスの絵：頭巾の老人が光の輪を背に杖を持つ
+SD.emb_anc=[16,16,3,({t,e,l,q,sh})=>{for(let k=0;k<40;k++){const a1=k/40*6.283,a2=(k+1)/40*6.283;l(8+Math.cos(a1)*6.8,6.4+Math.sin(a1)*6.8,8+Math.cos(a2)*6.8,6.4+Math.sin(a2)*6.8,'#d8c8a0',.45)}
+ t([[8,4.4],[11.2,7],[13,15.8],[3,15.8],[4.8,7]],'#5a4a6a');t([[8,8.6],[9.6,15.8],[6.4,15.8]],'#46385a');t([[8,1.6],[11,4.6],[11.6,8.4],[4.4,8.4],[5,4.6]],'#6e5e80');e(8,6.4,2,2.3,'#1a1420');
+ l(12.6,3.4,13.4,15.8,'#7a5a3a',.7);e(11.8,9.6,1,.9,'#c8a888');sh();e(12.6,2.8,1.4,1.4,'#e8f0f0');q(7.2,6.2,'#f8e8a0');q(8.8,6.2,'#f8e8a0')}];
 
 // Ver4.30 地図のマスの絵を紋章と同じ細かさで描き直し（ユーザー指定：ボス・？？？と細かさをそろえる）。紙の上で見えるよう濃いめの色
 SD.nic_0=[16,16,3,({t,r,sh})=>{t([[2,1.4],[3.6,1.4],[12,10.6],[10.6,12]],'#8a909c');t([[2.6,1.6],[3.2,1.6],[11.4,10.8],[11,11.2]],'#c8ccd6');t([[12.6,1.4],[14,1.4],[5.4,12],[4,10.6]],'#8a909c');t([[13.2,1.6],[13.6,1.6],[5.2,11.2],[4.8,10.8]],'#c8ccd6');t([[9.4,11.6],[12.4,8.6],[13.6,9.8],[10.6,12.8]],'#6a4a2a');t([[3.6,8.6],[6.6,11.6],[5.4,12.8],[2.4,9.8]],'#6a4a2a');t([[11.4,12],[13,13.6],[12,14.6],[10.4,13]],'#4a3020');t([[4.6,12],[3,13.6],[4,14.6],[5.6,13]],'#4a3020');sh()}];
@@ -6614,7 +6618,7 @@ const tr=t>=0?ER.find(r=>r.i===t):null;if(tr)txt('攻撃',tr.x+tr.w/2,tr.y-26,'#
 else if(dgUp(dg)){ctx.strokeStyle='#ffe14a';ctx.lineWidth=3;ctx.strokeRect(10,28,620,196);txt('離して使用',320,104,'#ffe14a','center',18)}
 /* Ver3.97 扇形の時は選んだ大きさ（1.4倍）のまま持ち上げる。手札に戻すと元の大きさへ */const DS=HFAN?HSC:1.06,tcy=dg.y-7-(HFAN?HUP+20:0);/* Ver4.05 持ち上げ始めにカクッと跳ばないよう、せり上がっていた位置から指の位置へなめらかに寄せる */if(dg.cx==null){dg.cx=HFAN&&o.vcx!=null?o.vcx:dg.x;dg.cy=HFAN&&o.vcy!=null?o.vcy:tcy}{const k=Math.min(1,dt*18);dg.cx+=(dg.x-dg.cx)*k;dg.cy+=(tcy-dg.cy)*k}o.hx=dg.cx-42;o.hy=dg.cy-53;o.hs=HFAN?HSC:1;o.hr=0;o.hu=HFAN?1:0;dg.rt=(dg.rt||0)+(Math.max(-.28,Math.min(.28,(dg.vx||0)*.025))-(dg.rt||0))*.25;cardAt(o,dg.cx,dg.cy,DS,dg.rt,.95,0,pvw(o,ptg))}}
 if(b.bn&&b.bn.t>0&&!(b.bn.dl>0))drawBn(b.bn);deusAll(b);drawTut(b)}
-const MCW=72,MSW=1256,MX=f=>P&&P.act===4?150+(f+1)*100:40+(f+1)*MCW;let MSC=0;
+const MCW=72,MSW=1320,MX=f=>P&&P.act===4?150+(f+1)*100:40+(f+1)*MCW+(f>0&&f>=LAST?44:0);/* Ver4.33 ボスは大きいので少し右へ離す */let MSC=0;
 // Ver2.79 4層の地図：赤黒い肉の膜に血管が走り、縁は骨。中央に向かって暗く沈む
 function vpanel(){const W=640,H=238,c=MKC(MSW,H),x=c.getContext('2d');let sd=97;const rn=()=>(sd=(sd*16807)%2147483647)/2147483647;
  const g=x.createRadialGradient(W/2,H/2,20,W/2,H/2,W*.6);g.addColorStop(0,'#1a0408');g.addColorStop(1,'#3a0a14');x.fillStyle=g;x.fillRect(0,0,W,H);
@@ -6636,9 +6640,20 @@ else{x.fillStyle='rgba(2,16,26,.92)';x.fillRect(0,0,W,H);x.fillStyle='rgba(95,24
  x.fillStyle='rgba(95,246,255,.05)';for(let j=0;j<H;j+=3)x.fillRect(0,j,W,1);x.fillStyle='#5ff6ff';x.fillRect(0,0,W,2);x.fillRect(0,H-2,W,2);x.fillRect(0,0,2,H);x.fillRect(W-2,0,2,H);
  for(const[a,b]of[[0,0],[W-20,0],[0,H-4],[W-20,H-4]])x.fillRect(a,b,20,4);x.fillStyle='#ff4fd8';x.fillRect(W-60,8,40,2);x.fillStyle='rgba(95,246,255,.4)';for(let i=0;i<5;i++)x.fillRect(10,10+i*4,30-i*5,2)}
 return c}
-const MTH=[{pn:mpanel(0),ink:'#6a4422',hi:'#b0281a',tx:'#5a3010',sub:'#8a6a40',ring:'#6a4422',nb:'#3a2a1a',cur:'#2a6ab0'},
-{pn:mpanel(1),ink:'#b8a8d8',hi:'#ffd23f',tx:'#e8e0ff',sub:'#7a6a98',ring:'#6a5a8a',nb:'#1d1828',cur:'#7ec8ff'},
-{pn:mpanel(2),ink:'#5ad0e0',hi:'#ffd23f',tx:'#bff8ff',sub:'#3a8a9a',ring:'#5ff6ff',nb:'#06202c',cur:'#ff4fd8'},{pn:vpanel(),ink:'#8a1a2a',hi:'#ff3b5c',tx:'#ffd0d8',sub:'#a04050',ring:'#7a1020',nb:'#140006',cur:'#ffd23f'}];
+// Ver4.33 1〜3層の地図はスレスパ2のような淡い紙に（ユーザー指定）。層ごとに紙の色味だけ変える。マスの絵は紙の墨色1色の濃淡（ic＝[濃,淡]）
+function ppanel(k){const W=MSW,H=238,c=MKC(W,H),x=c.getContext('2d');let sd=31+k*7;const rn=()=>(sd=(sd*16807)%2147483647)/2147483647,F=Math.floor,B=[[203,191,176],[196,188,203],[186,194,197]][k],cs=(d,a)=>'rgba('+(B[0]+d)+','+(B[1]+d)+','+(B[2]+d)+','+a+')',ik=[[80,62,52],[70,58,86],[54,70,76]][k],ia=a=>'rgba('+ik.join(',')+','+a+')';
+ x.fillStyle=cs(0,1);x.fillRect(0,0,W,H);
+ for(let i=0;i<22;i++){const mx=rn()*W,my=rn()*H,rr=20+rn()*60;for(let s2=0;s2<4;s2++){x.fillStyle=cs(rn()<.5?-10:8,.12);const q=rr*(1-s2*.22);x.beginPath();x.ellipse(F(mx/2)*2,F(my/2)*2,q*1.5,q,0,0,6.283);x.fill()}}
+ for(let i=0;i<2400;i++){x.fillStyle=cs([-9,7,-4,4][i%4],.55);x.fillRect(F(rn()*W/2)*2,F(rn()*H/2)*2,2,2)}
+ for(const fx of[F(W/3),F(W*2/3)]){x.fillStyle=ia(.07);x.fillRect(fx,0,2,H);x.fillStyle=cs(14,.35);x.fillRect(fx+2,0,2,H)}x.fillStyle=ia(.05);x.fillRect(0,F(H/2),W,2);
+ if(k===0){const cx=W-34,cy=36;x.fillStyle=ia(.22);for(let i=-16;i<=16;i+=2){x.fillRect(cx+i,cy-1,2,2);x.fillRect(cx-1,cy+i,2,2)}x.fillRect(cx-3,cy-20,6,4)}
+ if(k===1){x.fillStyle=ia(.05);for(let y=0;y<H;y+=24){x.fillRect(0,y,W,2);for(let i=0;i<W+24;i+=48)x.fillRect(i-((y/24)%2?24:0),y,2,24)}}
+ if(k===2){x.fillStyle=ia(.05);for(let i=0;i<W;i+=16)x.fillRect(i,0,1,H);for(let j=0;j<H;j+=16)x.fillRect(0,j,W,1)}
+ for(let r=0;r<10;r++){x.fillStyle=ia(.07-r*.006);x.fillRect(r*2,r*2,W-r*4,2);x.fillRect(r*2,H-2-r*2,W-r*4,2);x.fillRect(r*2,r*2,2,H-r*4);x.fillRect(W-2-r*2,r*2,2,H-r*4)}
+ return c}
+const MTH=[{pn:ppanel(0),ink:'#7a6a60',hi:'#a2483a',tx:'#4a3c34',sub:'#7e6e62',ring:'#7a6a60',nb:'#3a2e28',cur:'#4a6a90',ic:['#3c302a','#968478']},
+{pn:ppanel(1),ink:'#6e6480',hi:'#9a4656',tx:'#3e3448',sub:'#746a84',ring:'#6e6480',nb:'#2e2838',cur:'#4a6a90',ic:['#332a40','#8a7e9a']},
+{pn:ppanel(2),ink:'#5a6e74',hi:'#a2483a',tx:'#2e3e44',sub:'#64787e',ring:'#5a6e74',nb:'#24323a',cur:'#7a4a8a',ic:['#26343a','#7a8e94']},{pn:vpanel(),ink:'#8a1a2a',hi:'#ff3b5c',tx:'#ffd0d8',sub:'#a04050',ring:'#7a1020',nb:'#140006',cur:'#ffd23f'}];
 // 点線の曲がった道（sd で毎回同じ曲がり方）
 function trail(x1,y1,x2,y2,sd,col,sz,an){const cx=(x1+x2)/2+(hs(sd)-.5)*18,cy=(y1+y2)/2+(hs(sd+1)-.5)*18,L=Math.hypot(x2-x1,y2-y1),n=Math.max(2,Math.floor(L/6));
 for(let i=0;i<=n;i++){const t=i/n;if(t*L<15||(1-t)*L<15)continue;const u=1-t,x=u*u*x1+2*u*t*cx+t*t*x2,y=u*u*y1+2*u*t*cy+t*t*y2;if(an&&(i+Math.floor(T*10))%3)continue;sq(x,y,sz,col)}}
@@ -6659,6 +6674,12 @@ function mdwDraw(){if(!(typeof MPON==='function'&&MPON()&&MPR))return;const L=(M
  const[e,f,g,h]=MDB.clr;ctx.fillStyle='rgba(20,16,30,.75)';ctx.fillRect(e,f,g,h);txt('消す',e+g/2,f+14,'#f0e6d6','center',11);hit(e,f,g,h,()=>{mpSend({ty:'mdc',id:MPR.me});sfx('cl')})}
 // Ver4.29 選べるマス・今いるマスの印：黒丸の代わりに、色のにじみ（選べるマスは脈打つ）
 // Ver4.32 地図のマスの絵は少し暗く沈めて紙になじませる（ユーザー指定：明るすぎる）
+// 墨色1色の濃淡にする（明るさを5段に分けて [濃,淡] の間に置く）
+const hx3=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16));
+function mTone(src,d,l){const c=MKC(src.width,src.height),x=c.getContext('2d');x.drawImage(src,0,0);const D=x.getImageData(0,0,c.width,c.height),a=D.data,A=hx3(d),L=hx3(l);for(let i=0;i<a.length;i+=4)if(a[i+3]){let t=(a[i]*.3+a[i+1]*.59+a[i+2]*.11)/255;t=Math.round(Math.min(1,Math.pow(t,.85)*1.25)*4)/4;for(let k=0;k<3;k++)a[i+k]=Math.round(A[k]+(L[k]-A[k])*t)}x.putImageData(D,0,0);return c}
+const MTC={};function micT(t,d,l){const k=t+d+l;return MTC[k]||(MTC[k]=mTone(ICN[t],d,l))}
+// 地図用の大きい絵（ボスの紋章・古の者・？？？）。細かめに描き直して墨色に
+const MBG={};function mBig(k,d,l,sc){const key=k+d+l+sc;if(MBG[key])return MBG[key];const sd=SD[k];if(!sd)return null;PNOOL=1;let im=paint(sd[0],sd[1],sd[3],sc);PNOOL=0;return MBG[key]=mTone(im,d,l)}
 const MICN=[];function micn(t){if(MICN[t])return MICN[t];const s0=ICN[t],c=MKC(s0.width,s0.height),x=c.getContext('2d');x.drawImage(s0,0,0);const D=x.getImageData(0,0,c.width,c.height),a=D.data;for(let i=0;i<a.length;i+=4)if(a[i+3]){a[i]=Math.round(a[i]*.74+58*.26);a[i+1]=Math.round(a[i+1]*.74+42*.26);a[i+2]=Math.round(a[i+2]*.74+30*.26)}x.putImageData(D,0,0);return MICN[t]=c}
 function mGlow(x,y,r,c,st){const p=st?1:.75+.25*Math.sin(T*6),R=(r+8)*p;ctx.save();ctx.globalAlpha=st?.55:.7;const g=ctx.createRadialGradient(x,y,r*.3,x,y,R);g.addColorStop(0,c);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(x-R,y-R,R*2,R*2);ctx.restore()}
 function drawMap(){{const a=Math.max(1,Math.min(4,P.act||1)),g=bgbFor(a),o=BGB;ctx.drawImage(g,0,0);BGB=g;bgAnim();BGB=o;ctx.fillStyle='rgba(6,4,12,.28)';ctx.fillRect(0,0,640,360)}const th=MTH[P.act-1]||MTH[2],mx=P.act===4?0:MSW-624;MSC=Math.max(0,Math.min(mx,MSC));ctx.drawImage(th.pn,Math.round(MSC),0,624,238,8,62,624,238);topbar();
@@ -6666,28 +6687,28 @@ const X=(f,n)=>8+MX(f)-MSC,Y=(f,j,n)=>f===LAST?184:104+j*40+(n.dy||0),av=avail()
 ctx.save();ctx.beginPath();ctx.rect(10,64,620,234);ctx.clip();
 for(let f=0;f<LAST;f++)MP[f].forEach((n,j)=>{if(!n)return;n.cn.forEach(k=>{const m=MP[f+1][k];if(!m)return;const x1=X(f,n),y1=Y(f,j,n),x2=X(f+1,m),y2=Y(f+1,k,m),sd=f*31+j*7+k;if(x2<-20||x1>660)return;
  if(vi(f,j)&&vi(f+1,k))trail(x1,y1,x2,y2,sd,th.hi,3);else if(CUR.f===f&&CUR.j===j&&av.includes(k))trail(x1,y1,x2,y2,sd,th.hi,3,1);else{ctx.globalAlpha=f<CUR.f?.3:.9;trail(x1,y1,x2,y2,sd,th.ink,2);ctx.globalAlpha=1}})});
-for(let f=0;f<=LAST;f++){const fx=8+MX(f)-MSC;if(fx<-30||fx>670)continue;txt(String(f+1),fx,292,th.sub,'center',10);MP[f].forEach((n,j)=>{if(!n)return;const x=X(f,n),y=Y(f,j,n),can=CUR.f+1===f&&av.includes(j),cur=CUR.f===f&&CUR.j===j,bs=f===LAST,r=bs?(P.act===4?34:Math.round(22*MPSZ.b)):Math.round(14*(n.t===1?MPSZ.e:MPSZ.n));
+for(let f=0;f<=LAST;f++){const fx=8+MX(f)-MSC;if(fx<-30||fx>670)continue;txt(String(f+1),fx,292,th.sub,'center',10);MP[f].forEach((n,j)=>{if(!n)return;const x=X(f,n),y=Y(f,j,n),can=CUR.f+1===f&&av.includes(j)&&!(f===0&&ancP()),cur=CUR.f===f&&CUR.j===j,bs=f===LAST,ic=th.ic,r=bs?(P.act===4?34:60):Math.round(14*(n.t===1?MPSZ.e:MPSZ.n));
  if(can){mGlow(x,y,r,th.hi);if(x>8&&x<632)hit(Math.max(10,x-r-2),y-r-2,r*2+4,r*2+4,()=>{sfx('pk');enter(j)})}else if(cur)mGlow(x,y,r,th.cur,1);
- ctx.globalAlpha=f<=CUR.f&&!vi(f,j)?.3:1;if(n.au&&!vi(f,j))auraD(x,y,r);/* Ver4.29 マスの後ろの黒丸は出さない（ユーザー指定） */if(bs&&P.act===4){pc(x,y,r+1,'#7a1020');pc(x,y,r-1,'#140006')}if(bs&&P.act===4)ctx.drawImage(SPR.eye,x-27,y-25+Math.round(Math.sin(T*1.5)),54,48);else if(bs){const bk=bossIc()[bossI()],em=SPR['emb_'+bk],z=Math.round(36*MPSZ.b);ctx.imageSmoothingEnabled=false;if(em){const w=Math.round(r*1.55);ctx.drawImage(em,x-w/2,y-w/2,w,w)}else ctx.drawImage(ICN[6],x-z/2,y-z/2,z,z)}else if(n.au){const z=MPSZ.n;ctx.imageSmoothingEnabled=false;ctx.drawImage(ICNA,x-15*z,y-16*z,ICNA.width*z,ICNA.height*z)}else{const z=Math.round(24*(n.t===1?MPSZ.e:MPSZ.n));ctx.imageSmoothingEnabled=false;ctx.drawImage(micn(n.t===7?1:n.t),x-z/2,y-z/2,z,z)}
+ ctx.globalAlpha=f<=CUR.f&&!vi(f,j)?.3:1;if(n.au&&!vi(f,j))auraD(x,y,r);/* Ver4.29 マスの後ろの黒丸は出さない（ユーザー指定） */if(bs&&P.act===4){pc(x,y,r+1,'#7a1020');pc(x,y,r-1,'#140006')}if(bs&&P.act===4)ctx.drawImage(SPR.eye,x-27,y-25+Math.round(Math.sin(T*1.5)),54,48);else if(bs){const bk=bossIc()[bossI()],em=mBig('emb_'+bk,ic[0],ic[1],4);ctx.imageSmoothingEnabled=false;if(em){const w=em.width*2;ctx.drawImage(em,x-w/2,y-w/2+Math.round(Math.sin(T*1.2)*1.5),w,w)}else ctx.drawImage(ICN[6],x-30,y-30,60,60)}else if(n.au){const z=MPSZ.n;ctx.imageSmoothingEnabled=false;ctx.drawImage(ICNA,x-15*z,y-16*z,ICNA.width*z,ICNA.height*z)}else{const z=Math.round(24*(n.t===1?MPSZ.e:MPSZ.n));ctx.imageSmoothingEnabled=false;const tt=n.t===7?1:n.t;ctx.drawImage(ic?(tt===1?micT(1,'#4e2224','#a86a60'):micT(tt,ic[0],ic[1])):micn(tt),x-z/2,y-z/2,z,z)}
  if(vi(f,j)&&!cur)ell(x,y,r+3,r+3,20,2,th.hi);ctx.globalAlpha=1;})}
 if(MPON())mpDrawMap(X,Y);
-// 悪魔マス（第1層の最初）。第2層以降は入口の印
-{const x=8+MX(-1)-MSC,y=184,dm=P.act===1&&P.nw!==undefined,can=dm&&P.nw===0&&CUR.f===-1,r=Math.round(18*MPSZ.b);
+// 悪魔マス（第1層の最初）。Ver4.33 第2・3層の最初は古の者のマス（ユーザー指定：ボスの後ではなく層の初めに）
+{const x=8+MX(-1)-MSC,y=184,dm=P.act===1&&P.nw!==undefined,an=ancP(),ad=P.act>=2&&P.act<=3,can=(dm&&P.nw===0&&CUR.f===-1)||an,r=Math.round(18*MPSZ.b),ic=th.ic||['#2e2838','#8a7e9a'];
  MP[0].forEach((n,j)=>{if(!n)return;const x2=X(0,n),y2=Y(0,j,n),sd=j*13+5;if(vi(0,j))trail(x,y,x2,y2,sd,th.hi,3);else if(CUR.f===-1&&!can)trail(x,y,x2,y2,sd,th.hi,3,1);else{ctx.globalAlpha=CUR.f>=0?.3:.9;trail(x,y,x2,y2,sd,th.ink,2);ctx.globalAlpha=1}});
- if(dm){if(can){mGlow(x,y,r,'#c9a0ff');if(x>8&&x<632)hit(Math.max(10,x-r-2),y-r-2,r*2+4,r*2+4,()=>{sfx('pk');P.nw=1;NE.t0=T;go('neow')})}else if(CUR.f===-1)mGlow(x,y,r,th.cur,1);
-  ctx.imageSmoothingEnabled=false;{const z=Math.round(28*MPSZ.b);ctx.drawImage(SPR.qc_cube||SPR.qcube,x-z/2,y-z/2-1+Math.round(Math.sin(T*2)),z,z)}if(P.nw===1&&CUR.f>=0)ell(x,y,r+3,r+3,20,2,th.hi);}
+ if(dm||ad){if(can){mGlow(x,y,r,an?'#8a6ab0':'#c9a0ff');if(x>8&&x<632)hit(Math.max(10,x-r-2),y-r-2,r*2+4,r*2+4,()=>{sfx('pk');if(an){openAnc();return}P.nw=1;NE.t0=T;go('neow')})}else if(CUR.f===-1)mGlow(x,y,r,th.cur,1);
+  ctx.imageSmoothingEnabled=false;const im=ad?mBig('emb_anc','#2e2440','#9a8ab4',2):mBig('qcube',ic[0],ic[1],1.25),w=ad?im.width*2:im.width;if(CUR.f>=0)ctx.globalAlpha=.55;ctx.drawImage(im,x-w/2,y-w/2-1+Math.round(Math.sin(T*2)),w,w);ctx.globalAlpha=1;if(CUR.f>=0)ell(x,y,r+3,r+3,20,2,th.hi);}
  else{pc(x,y,9,th.ring);pc(x,y,7,th.nb);txt('入口',x,y-16,th.sub,'center',10)}}
 ctx.restore();
 // スクロールの目印：両はしの矢印と下のバー
 const pu=Math.floor(T*3)%2;if(MSC>2){ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(10,170,18,30);txt('◀',19,191,pu?'#fff':th.hi,'center',14)}if(MSC<mx-2){ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(612,170,18,30);txt('▶',621,191,pu?'#fff':th.hi,'center',14)}
 if(P.act!==4){ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillRect(20,296,600,3);ctx.fillStyle=th.hi;ctx.fillRect(20+Math.round(600*MSC/MSW),296,Math.round(600*624/MSW),3)}
 txt('第'+P.act+'層　'+(MPON()?(MPR.votes[LK]&&MPR.votes[LK].f===CUR.f+1&&MPR.votes[LK].a===P.act?'投票済み・仲間を待っている':'進路を投票（多数決）'):'進路を選べ'),320,80,th.tx,'center',14);if(S==='map'&&P.back&&!(MPON()&&MPR.votes[LK]&&MPR.votes[LK].f===CUR.f+1&&MPR.votes[LK].a===P.act)&&((P.back.pot&&!P.back.pt&&!has('sozu'))||!P.back.ct))btn(14,66,150,24,'◀ 前のマスに戻る',()=>{RW=P.back;sfx('cl');S='reward'},'#3a3068',11);if(P.act!==4)txt('◀ ドラッグで動かせる ▶',622,80,th.sub,'right',10);
-if(MPON()){mpParty();return}const lg=[['戦闘',0],['エリート',1],['ショップ',2],['休憩',3],['？',4],['宝箱',5]];lg.forEach((a,i)=>{ctx.drawImage(micn(a[1]),16+i*100,310,24,24);txt(a[0],44+i*100,328,'#cfc8ee','left',11)})}
-function after(){if(RW.nx){const x=RW.nx;RW.nx=null;if(x==='act')btNext();else go(x);return}if(RW.boss){if(P.act<3)openBossChest();else go('win')}else{const n=CUR&&MP[CUR.f]&&MP[CUR.f][CUR.j];P.back=n&&(n.t===0||n.t===1)?{...RW,g:0,rel:null,shd:0,title:'戦利品の回収'}:null;go('map')}}
+if(MPON()){mpParty();return}const lg=[['戦闘',0],['エリート',1],['ショップ',2],['休憩',3],['？',4],['宝箱',5]];lg.forEach((a,i)=>{ctx.drawImage(P.act<4?micT(a[1],'#6a6070','#d8d0d8'):micn(a[1]),16+i*100,310,24,24);txt(a[0],44+i*100,328,'#cfc8ee','left',11)})}
+function after(){if(RW.nx){const x=RW.nx;RW.nx=null;if(x==='act')btNext();else go(x);return}if(RW.boss){if(P.act<3)btNext();else go('win')}else{const n=CUR&&MP[CUR.f]&&MP[CUR.f][CUR.j];P.back=n&&(n.t===0||n.t===1)?{...RW,g:0,rel:null,shd:0,title:'戦利品の回収'}:null;go('map')}}
 let BT=null;const OCH=mk(['.bbbbbb.','b.yyyy.b','..yyyy..','bbbbbbbb','bbbyybbb','bbbbbbbb','bbbbbbbb','........'],{b:'#8a5a3a',y:'#ffe14a'},3);
 // ボスレリックの「拾うと〜」で選ぶもの（古びた魔導書・空の檻）を順に処理してから次の層へ
 function btNext(){const q=P.bq;if(q&&q.length){const k=q.shift();if(k==='tome'){RW={g:0,rel:null,pot:null,title:'古びた魔導書：レアカードを選択',cards:rare3(),boss:false,nx:'act'};go('reward');return}
- if(k==='cage'){let n=0;const one=()=>openPick('空の檻：消すカードを選択（'+(n+1)+'/2）',P.deck.map((_,i)=>i),i=>{P.deck.splice(i,1);sfx('pk');if(++n<2)one();else btNext()},0);if(P.deck.length>2){one();return}}}startAct()}
+ if(k==='cage'){let n=0;const one=()=>openPick('空の檻：消すカードを選択（'+(n+1)+'/2）',P.deck.map((_,i)=>i),i=>{P.deck.splice(i,1);sfx('pk');if(++n<2)one();else btNext()},0);if(P.deck.length>2){one();return}}}if(P.anM){P.anM=0;P.anA=P.act;go('map');return}startAct()}
 // Ver3.03 ボスの宝箱の代わりに「古の者」（ユーザー指定：スレスパ2の古の者を参考に、絵と中身は独自）。輪郭なし・光のにじみ・かすみで淡く描く
 const anGi=(rows,pal)=>mk(rows,Object.assign({k:'#0a0608'},pal),2);
 const ANPL=(pts,c)=>{ctx.fillStyle=c;ctx.beginPath();pts.forEach(p=>ctx.lineTo(p[0],p[1]));ctx.closePath();ctx.fill()};
@@ -6902,7 +6923,8 @@ const ANEN={eshp:['sharp',0],egla:['glam',3],espi:['spiral',1],eimb:['imbued',2]
 function anTxt(k){if(k==='relup'){const a=CH[P.cls].rel,b=RLUP[a]||'burn2',A=RL[a]||RL.burn;return['昇華の儀','「'+A[0]+'」を「'+RL[b][0]+'」に変える','初期レリック「'+A[0]+'」（'+A[1]+'）が、上位の「'+RL[b][0]+'」（'+RL[b][1]+'）に変わる。']}if(/^ac\d$/.test(k)){const c=C[CI(ACN[+k[2]])];return['「'+c.n+'」','カード「'+c.n+'」を得る','古の者の姿を写した特別なカード。'+dl(c).join('・')+'。']}if(k==='fang'){const f=FAN[P.cls]||['',''];return['古の牙','「'+f[0]+'」を古の版「'+f[1]+'」に変える','初期カード「'+f[0]+'」1枚が、古の版「'+f[1]+'」に変わる。古の版は普通の強化よりさらに強い。強化してあれば強化も引き継ぐ。']}return ANGT[k]||[RL[k][0],RL[k][1],RL[k][1]]}
 const anIco=k=>ANIC[k]||(k==='relup'?rIcon(RLUP[CH[P.cls].rel]||'burn2'):ANEN[k]?enIcon(ANEN[k][0]):/^ac\d$/.test(k)?ANIC.acard:rIcon(k));
 function anOk(k){if(k==='fang')return faTgt()>=0;if(k==='relup'){const a=CH[P.cls]&&CH[P.cls].rel;return!!(RLUP[a]&&has(a))}if(ANEN[k])return anEL(k).length>0;if(k==='ash'||k==='sand')return P.deck.length>4;if(ANGT[k])return true;return!!RL[k]&&!has(k)}
-function openBossChest(){const seen=P.ancS||[],l=[0,1,2,3,4,5].filter(i=>!seen.includes(i)),a=shuf(l.length?l:[0,1,2,3,4,5])[0];P.ancS=seen.concat([a]);const ok=ANC[a].pool.filter(anOk),gf=shuf(ok.filter(k=>ANGT[k]||k==='fang')),rl=shuf(ok.filter(k=>!ANGT[k]&&k!=='fang')),nr=rl.length&&(gf.length<3||Math.random()<.35)?1:0,rs=shuf(gf.slice(0,3-nr).concat(rl.slice(0,nr)));if(!rs.length){startAct();return}BT={anc:a,rs,pick:-1,t0:T,cf:0,sel:null,lp:null};go('btr')}
+const ancP=()=>P&&P.act>=2&&P.act<=3&&P.anA!==P.act&&CUR&&CUR.f===-1;
+function openAnc(){P.anM=1;const seen=P.ancS||[],l=[0,1,2,3,4,5].filter(i=>!seen.includes(i)),a=shuf(l.length?l:[0,1,2,3,4,5])[0];P.ancS=seen.concat([a]);const ok=ANC[a].pool.filter(anOk),gf=shuf(ok.filter(k=>ANGT[k]||k==='fang')),rl=shuf(ok.filter(k=>!ANGT[k]&&k!=='fang')),nr=rl.length&&(gf.length<3||Math.random()<.35)?1:0,rs=shuf(gf.slice(0,3-nr).concat(rl.slice(0,nr)));if(!rs.length){P.anM=0;P.anA=P.act;go('map');return}BT={anc:a,rs,pick:-1,t0:T,cf:0,sel:null,lp:null};go('btr')}
 // 選んだ恵みの効果。画面を開くものは、終わったら btNext（次の層へ）
 function anDo(k){if(RL[k]&&!ANGT[k]&&k!=='fang'){gain(k);return 0}
  if(k==='fang'){const i=faTgt(),o={...P.deck[i]};P.deck[i]={i:CI(FAN[P.cls][1]),u:o.u||0};tfFx([[o,{...P.deck[i]}]]);return 0}
