@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.22';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.23';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -4394,7 +4394,7 @@ function drawTip2(o){if(!o)return;const sz=10,ts=11,mw=o.w||190,ic=o.ic,L=rtok(o
  ctx.fillStyle='rgba(0,0,0,.4)';ctx.fillRect(x+2,y+3,W,H);ctx.fillStyle='rgba(16,12,30,.96)';ctx.fillRect(x,y,W,H);const g=ctx.createLinearGradient(x,y,x,y+H);g.addColorStop(0,'rgba(255,255,255,.05)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(x,y,W,H);ctx.fillStyle=o.c||'#c8a040';ctx.fillRect(x,y,2,H);
  let ox=x+10;if(ic){ctx.drawImage(ic,x+7,y+5,16,16);ox=x+28}txt(o.t,ox,y+16,'#efc851','left',ts);ctx.fillStyle='rgba(239,200,81,.22)';ctx.fillRect(ox,y+20,W-(ox-x)-8,1);L.forEach((l,i)=>rtxt(l,ox,y+33+i*(sz+4),'ctx',sz,ekOf({k:P?P.cls:0}),'#d8d4ec','l'))}
 // 説明の札を出す（tx,ty は押した物の位置。下に出し、はみ出す時は上に）
-function tipAt(t,b,tx,ty,th,c,ic){TIP2={t,b,c,ic,x:tx-10,y:ty+th+4,S,ty};if(ty>180)TIP2.up=1;sfx('cl')}
+function tipAt(t,b,tx,ty,th,c,ic){TIP2={t,b,c,ic,x:tx-10,y:ty+th+4,S,ty,t0:performance.now()};if(ty>180)TIP2.up=1;sfx('cl')}
 function card0(x,y,o,dim,gl,pv){{const m=ctx.getTransform();LPC.push({x:(m.a*x+m.c*y+m.e)/K,y:(m.b*x+m.d*y+m.f)/K,w:84*m.a/K,h:106*m.d/K,o})}if(C[o.i]&&C[o.i].fa){cardFA(x,y,o,dim,gl,pv);return}const c=cd(o),rare=c.r===2,bk=c.t>=3,col=bk?(c.t===4?'#7a3a8a':'#5a5a66'):c.k===5||c.r===-2?'#a8a8b8':TC[c.t],parts=dl(c,pv),ls=[],lc=[],ek=ekOf(c),PL=parts.map((p,i)=>[rtok(p),parts.cl[i]||(p==='廃棄'?'#ffd23f':'#e8e4ff')]);PL.sort((a,b)=>(a[0]==='廃棄')-(b[0]==='廃棄'));
  // 説明が長い時は、まず文字を小さくして1行の字数を増やす。絵の窓はなるべく縮めない（44〜32、ユーザー指定：絵の大きさがカードで大きく違うのは違和感）
  let sz=10,ah=44;for(const[s2,a2]of[[10,44],[9,40],[8,36],[7,32]]){ls.length=0;lc.length=0;PL.forEach(([p,cl])=>{for(const l of wrap(p,Math.floor(80/s2))){ls.push(l);lc.push(cl)}});sz=s2;ah=a2;if(32+a2+ls.length*(s2+1)<=104)break}
@@ -7670,7 +7670,7 @@ if(P&&P.hz&&!['title','splash','select','help','over','win'].includes(S)){const 
  if(ms<=0){P.slept=1;P.killer=null;sfx('ls');go('over')}}
 lpTick();drawLPV();drawEnTip();drawTfx();if(PZ){if(['title','splash','select','over','win','mpm','mpj','mpn','mpl','rank'].includes(S))PZ=null;else drawPause()}
 if(VP){if(PZ||['title','splash','select','over','win','mpm','mpj','mpn','mpl','rank','help','lib','eyein'].includes(S))VP=0;else drawVol()}
-if(TIP2&&TIP2.S===S){const o=TIP2;if(o.up&&o.h==null){}drawTip2(o)}if(tip){ctx.globalAlpha=Math.min(1,tip.t);ctx.fillStyle='rgba(0,0,0,.8)';const L=wrap(tip.s,44),w=Math.min(620,Math.max(...L.map(l=>l.length))*13+24);ctx.fillRect(320-w/2,62,w,L.length*17+6);L.forEach((l,k)=>txt(l,320,78+k*17,'#fff','center',13));ctx.globalAlpha=1}}
+if(TIP2&&TIP2.S===S){/* Ver4.23 3秒見せて0.6秒でフェードアウト */const o=TIP2,el=(performance.now()-(o.t0||0))/1000,al=el<3?1:1-(el-3)/.6;if(al<=0)TIP2=null;else{ctx.save();ctx.globalAlpha=al;drawTip2(o);ctx.restore()}}if(tip){ctx.globalAlpha=Math.min(1,tip.t);ctx.fillStyle='rgba(0,0,0,.8)';const L=wrap(tip.s,44),w=Math.min(620,Math.max(...L.map(l=>l.length))*13+24);ctx.fillRect(320-w/2,62,w,L.length*17+6);L.forEach((l,k)=>txt(l,320,78+k*17,'#fff','center',13));ctx.globalAlpha=1}}
 function update(dt){T+=dt;if(P&&!/^(title|splash|select|over|win|lib|rank|emv|mp)/.test(S))P.rt=(P.rt||0)+dt;updFx(dt);
 if(S==='battle'||(MPB&&MPB.on)){const b=B;if(MPB)for(const q of PL)if(q.B&&q.B!==b){q.B.lg=Math.max(0,q.B.lg-dt);q.B.sh=Math.max(0,q.B.sh-dt)}if(b.bn){if(b.bn.dl>0){b.bn.dl-=dt;if(b.bn.dl<=0&&b.bn.sf)sfx(b.bn.sf)}else b.bn.t-=dt}if(b.sp)b.sp.t+=dt;b.lg=Math.max(0,b.lg-dt);b.sh=Math.max(0,b.sh-dt);for(const e of b.en){e.fl=Math.max(0,e.fl-dt);e.sh=Math.max(0,e.sh-dt);e.lg=Math.max(0,e.lg-dt)}
 // 詰み防止：敵が全滅しているのに勝利になっていない／手札が無いのに捨てる選択が残っている／ターン終了の途中で止まった
