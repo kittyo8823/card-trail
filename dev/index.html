@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.15';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.16';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -4673,12 +4673,12 @@ let FAEK=0;function cardFA(x,y,o,dim,gl,pv){const c=cd(o),b=C[o.i],parts=(q=>{co
 const E={slime:{n:'スライム',hp:[16,20],mv:[{a:6},{a:4,wk:1,sc:['粘液',1]},{a:7}]},goblin:{n:'ゴブリン',hp:[18,22],mv:[{a:7},{b:6},{a:5,h:2}]},bat:{n:'コウモリ',hp:[11,15],mv:[{a:3,h:2},{a:5,vu:1}]},
 skel:{n:'骸骨兵',hp:[22,28],mv:[{b:8},{a:10},{a:6,wk:1}]},spider:{n:'毒蜘蛛',hp:[18,22],mv:[{a:6},{a:7},{b:6,wk:1}]},ghost:{n:'怨霊',hp:[24,30],mv:[{vu:2,wk:1,sc:['目眩',2]},{a:8},{a:5,h:2}]},
 ogre:{n:'オーク',hp:[40,46],mv:[{a:13},{st:3},{a:6,h:2,b:6}]},golem:{n:'岩のゴーレム',hp:[48,56],mv:[{b:16},{a:17},{a:8,wk:2}]},
-colony:{n:'岩殻の群れ',hp:[78,82],el:1,cap:20,mv:[{a:6,h:2},{a:6,h:2},{b:14,st:2},{a:5,h:4,sx:1}]},
-phrog:{n:'苗床の大蛙',hp:[62,66],el:1,dsp:'wrig',mv:[{sc:['寄生卵',3]},{a:4,h:4,sx:1},{a:11,wk:1}]},
+colony:{n:'岩殻の群れ',hp:[101,107],el:1,cap:20,mv:[{a:6,h:2},{a:6,h:2},{b:14,st:2},{a:5,h:4,sx:1}]},
+phrog:{n:'苗床の大蛙',hp:[81,86],el:1,dsp:'wrig',mv:[{sc:['寄生卵',3]},{a:4,h:4,sx:1},{a:11,wk:1}]},
 wrig:{n:'這い出る寄生虫',hp:[13,15],mv:[{a:6},{a:5}]},
 magik:{n:'減衰の機術騎士',hp:[230,244],el:1,dmp:1,mv:[{a:10,b:12},{b:16,lb:'溜'},{a:34,sx:1},{a:7,h:3}]},
 spek:{n:'霊炎の騎士',hp:[236,250],el:1,hex:1,mv:[{a:5,h:3},{a:17},{b:15,st:3},{a:26,sx:1}]},
-nob:{n:'鬼の隊長',hp:[60,66],el:1,en:1,mv:[{vu:2},{a:14},{a:14,sx:1},{a:6,h:3}]},hound:{n:'ケルベロス',hp:[70,76],el:1,mv:[{a:4,h:3},{a:9,b:9},{a:5,h:3,st:1,sx:1}]},
+nob:{n:'鬼の隊長',hp:[66,72],el:1,en:1,mv:[{vu:2},{a:14},{a:14,sx:1},{a:6,h:3}]},hound:{n:'ケルベロス',hp:[91,99],el:1,mv:[{a:4,h:3},{a:9,b:9},{a:5,h:3,st:1,sx:1}]},
 imp:{n:'小鬼',hp:[30,36],mv:[{a:7},{st:2,sc:['火傷',1]},{a:10}]},bonedog:{n:'骸骨犬',hp:[38,44],mv:[{a:6,h:2},{a:12},{b:8,a:5}]},wisp:{n:'鬼火',hp:[26,32],mv:[{a:4,h:3},{vu:2,wk:1},{a:9}]},ooze:{n:'どろの怪',hp:[48,54],mv:[{a:9,wk:2,sc:['粘液',2]},{b:12},{a:14,vu:1}]},
 knight:{n:'亡霊の騎士',hp:[54,60],mv:[{b:14},{a:17},{a:8,wk:1}]},mage:{n:'呪術師',hp:[34,40],mv:[{wk:1,sc:['目眩',2]},{a:13},{b:9,a:5}]},gargoyle:{n:'ガーゴイル',hp:[46,52],mv:[{a:15},{b:10,st:2},{a:7,h:2}]},armor:{n:'動く鎧',hp:[62,70],mv:[{b:18},{a:19},{a:6,h:3}]},
 oni:{n:'赤鬼',hp:[144,156],el:1,mv:[{st:3,b:10},{a:18},{a:8,h:3},{a:25,sx:1}]},necro:{n:'死霊術師',hp:[132,141],el:1,mv:[{wk:2,vu:2,ps:5,sc:['負傷',2]},{a:15},{ps:6,b:12},{a:10,h:3,sx:1}]},
@@ -4739,8 +4739,8 @@ Object.assign(E,{
  ucoral:{n:'珊瑚の蠢き',hp:[15,18],mv:[{a:3,h:3},{st:2},{a:5,vu:1}]},
  uink:{n:'墨溜まり',hp:[14,17],mv:[{a:4,wk:1},{a:7},{a:3,sc:['粘液',1]}]},
  ubell:{n:'沈鐘',hp:[20,24],mv:[{a:9},{b:8,vu:1},{a:5,h:2}]},
- udrown:{n:'海に呑まれた者',hp:[80,86],el:1,mv:[{a:6,h:3},{st:3,b:10},{a:18,sx:1},{a:9,wk:2}]},
- ugeel:{n:'鎧鱗の大ウツボ',hp:[88,94],el:1,mv:[{a:12},{a:5,h:3},{b:14,st:2},{a:24,sx:1}]},
+ udrown:{n:'海に呑まれた者',hp:[104,112],el:1,mv:[{a:6,h:3},{st:3,b:10},{a:18,sx:1},{a:9,wk:2}]},
+ ugeel:{n:'鎧鱗の大ウツボ',hp:[114,122],el:1,mv:[{a:12},{a:5,h:3},{b:14,st:2},{a:24,sx:1}]},
  userp:{n:'灯腸の大魚',hp:[230,230],el:2,fly:6,mv:[{a:5,h:2},{b:14,st:2},{a:31,nm:'深淵の呑み込み',fc:'#5ac8c0'},{a:9,vu:1}]},
  ulight:{n:'沈んだ灯台',hp:[240,240],el:2,mv:[{a:4,h:3},{vu:2,b:10},{a:19,nm:'灯光の薙ぎ',fc:'#d8ffe0'},{b:13,st:2}]}});
 const FIS=[[['ushell'],['ulens','ulens'],['ueel'],['uink'],['ushell','ulens']],[['udiver'],['uboat'],['ueel','uink'],['ucoral','ulens'],['ubell']],[['ubell','ulens'],['udiver','ushell'],['uboat','ucoral'],['uink','uink','ulens']]],ELS=['udrown','ugeel'];
