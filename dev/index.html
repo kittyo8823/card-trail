@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.10';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.11';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -43,6 +43,7 @@ function tone(f1,f2,d,ty,v,dl){if(!AC||muted)return;const t0=AC.currentTime+(dl|
 function noise(d,v,fc,t,dst){if(!AC||(muted&&!dst))return;const n=Math.floor(AC.sampleRate*d),b=AC.createBuffer(1,n,AC.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=(Math.random()*2-1)*(1-i/n);const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();f.type='bandpass';f.frequency.value=fc;g.gain.value=v;s.buffer=b;s.connect(f);f.connect(g);g.connect(dst||MG);s.start(t||0)}
 function sfx(k){if(!AC||muted||QT)return;const n=AC.currentTime;if(n-(sT[k]||0)<.04)return;sT[k]=n;
 // 武器ごと・敵の技ごとの効果音（ユーザー指定）
+if(k==='gakon'){/* 天秤が止め具に当たる重い音：低いドンと金属のガコン、鎖の鳴り */tone(70,38,.5,'sine',.5);tone(120,60,.25,'triangle',.3);noise(.2,.5,500,n);noise(.08,.35,2400,n+.01);tone(330,300,.4,'square',.05,.01);tone(495,470,.35,'triangle',.05,.02);for(let i=0;i<4;i++)tone(2100+i*400,2000+i*380,.06,'triangle',.025,.06+i*.05);return}
 if(k==='wsw'){noise(.16,.18,1700,n);noise(.1,.12,3200,n+.03);tone(380,140,.12,'sawtooth',.025);return}
 if(k==='spa'){noise(.05,.18,5200,n);noise(.1,.16,2800,n+.012);noise(.08,.08,1300,n+.03);return}
 if(k==='spk'){noise(.04,.18,6800,n);noise(.08,.15,3800,n+.01);noise(.06,.07,1800,n+.025);return}
@@ -5249,9 +5250,14 @@ function mdFx(e,im,cx,by){const U=SD.maiden[2],w=im.width,h=im.height,X=x=>cx-w/
 // 永劫の天秤：竿を傾け、両端に皿を吊るし、皿に色の玉を載せる。行動に合った色の側へ傾き、その玉が光る
 const SCT={};
 function scDraw(e,i,w,h){const U=SD.scales[2],X=x=>-w/2+w-(x*U+2),Y=y=>-h+(y*U+2),it=e.it||{},cs=it.sc2||['r','b'],sd=it.sd==null?-1:it.sd,pX=X(22),pY=Y(13.1),hp=[[X(5),Y(13.1)],[X(39),Y(13.1)]];
- const tg=sd>=0?(hp[sd][0]>pX?1:-1)*.2:0,kk='s'+i;SCT[kk]=SCT[kk]==null?tg:SCT[kk]+(tg-SCT[kk])*.05;const a=SCT[kk]+.02*Math.sin(T*1.3+i),ca=Math.cos(a),sa=Math.sin(a),ga=ctx.globalAlpha;
+ /* Ver4.11 傾く時は「ガコン」：一瞬ためて少し逆へ浮き、一気に倒れ込んで止め具に当たり、重く跳ね返って揺れが収まる（ばねの動き）。当たった瞬間に重い音・揺れ・皿から土ぼこり */
+const tg=sd>=0?(hp[sd][0]>pX?1:-1)*.26:0,kk='s'+i,st=SCT[kk]||(SCT[kk]={a:tg,v:0,tg,t0:-9,hit:1}),dt=Math.min(.05,Math.max(0,T-(st.lt||T)));st.lt=T;
+ if(st.tg!==tg){st.tg=tg;st.t0=T;st.hit=0;st.from=st.a}
+ {const el=T-st.t0;if(el<.16){st.a=st.from-(tg-st.from)*.12*Math.sin(el/.16*Math.PI/2);st.v=0}else{const k=420,c=9;st.v+=((tg-st.a)*k-st.v*c)*dt*(el<.32?1.8:1);st.a+=st.v*dt;if(!st.hit&&Math.abs(st.a-st.from)>=Math.abs(tg-st.from)*.92){st.hit=1;sfx('gakon');shk=Math.max(shk,9);hstop(60);const sx=hp[sd>=0?sd:0];st.dust=T;st.dx=sx[0];st.dy=sx[1]+U*14+Math.abs(tg)*Math.abs(sx[0]-pX)}}}
+ const a=st.a+.012*Math.sin(T*1.3+i),ca=Math.cos(a),sa=Math.sin(a),ga=ctx.globalAlpha;
  ctx.save();ctx.translate(pX,pY);ctx.rotate(a);ctx.translate(-pX,-pY);ctx.drawImage(SPR.scales_pbm,-Math.round(w/2),-h);ctx.restore();
  ctx.drawImage(SPR.scales_pb,-Math.round(w/2),-h);
+ if(st.dust&&T-st.dust<.7){const u=(T-st.dust)/.7;for(let k=0;k<9;k++){const an=Math.PI+k/8*Math.PI,d=U*(3+u*12)*(.6+hs(k)*.6);ctx.globalAlpha=ga*.55*(1-u);ctx.fillStyle=k%2?'#8a8070':'#b8ae98';ctx.beginPath();ctx.arc(st.dx+Math.cos(an)*d,st.dy+Math.sin(an)*d*.35-u*U*3,U*(1.2+u*2),0,6.3);ctx.fill()}ctx.globalAlpha=ga}
  {const c=sd>=0?SCC[cs[sd]]:'#ffd23f';ctx.globalAlpha=ga*(.7+.3*Math.sin(T*5));ctx.fillStyle=c;ctx.fillRect(Math.round(pX-U*.9),Math.round(pY-U*.9),Math.round(U*1.8),Math.round(U*1.8));ctx.globalAlpha=ga}
  ['pl','pr'].forEach((n,j)=>{const dx0=hp[j][0]-pX,dy0=hp[j][1]-pY,dx=dx0*ca-dy0*sa-dx0,dy=dx0*sa+dy0*ca-dy0,sw=Math.sin(T*1.7+j*2)*1.2;
   ctx.save();ctx.translate(Math.round(dx+sw),Math.round(dy));ctx.drawImage(SPR['scales_p'+n],-Math.round(w/2),-h);
