@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:1,e:28/24,b:2.1};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.56';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:1,e:28/24,b:2.1};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.57';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -439,25 +439,31 @@ const H3V=[[16,0,67,8],[16,8,70,8],[17,0,75,12],[17,12,74,4],[18,0,72,8],[18,8,7
 // Ver4.56 和風に聞こえたので（撥弦のハープ・太鼓）外し、教会の大鐘・パイプオルガン・合唱・弦・ティンパニの西洋の聖堂の響きに（ユーザー指定）
 // 大鐘を2つの高さで交互に鳴らす（鐘楼の響き）、オルガンの分散和音（トッカータ風）、弦の旋律の対旋律
 function hOrgS(m,t,d,v){const out=amBus(),g=AC.createGain();g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+.02);g.gain.setValueAtTime(v,t+d*.8);g.gain.linearRampToValueAtTime(.0001,t+d+.08);g.connect(out);[[1,1],[2,.45],[4,.2],[3,.12]].forEach(([r,a])=>{const o=AC.createOscillator(),og=AC.createGain();o.type='sine';o.frequency.value=mf(m)*r;og.gain.value=a;o.connect(og);og.connect(g);o.start(t);o.stop(t+d+.1)})}
-let H3B=null;function h3Step(n,t){const b0=BG,a0=AMB;if(!H3B||H3B.ctx!==AC||H3B.bg!==b0){const g=AC.createGain();g.gain.value=.75;g.connect(b0);H3B={ctx:AC,bg:b0,g,amb:null}}BG=H3B.g;AMB=H3B.amb;try{h3S(n,t)}finally{H3B.amb=AMB;BG=b0;AMB=a0}}
+let H3B=null;function h3Step(n,t){const b0=BG,a0=AMB;if(!H3B||H3B.ctx!==AC||H3B.bg!==b0){const g=AC.createGain();g.gain.value=1.15;g.connect(b0);H3B={ctx:AC,bg:b0,g,amb:null}}BG=H3B.g;AMB=H3B.amb;try{h3S(n,t)}finally{H3B.amb=AMB;BG=b0;AMB=a0}}
+// Ver4.57 沈没都市の曲（低い持続音とゆっくりした響き）に似ないよう、適度なスタッカートで刻む曲に（ユーザー指定）。
+// 弦の16分の刻み（強弱のある短い音）、チェンバロの短い分散和音、ピチカートの低音、合唱の短い「ハッ」という和音の打ち込み、金管の短い強打。長く伸ばすのは鐘と独唱だけに絞る
+const H3ST=[1,0,.6,.6,1,0,.6,0,1,0,.6,.6,1,.6,0,.6];
+function hPizz(m,t,v){const out=amBus(),o=AC.createOscillator(),f=AC.createBiquadFilter(),g=AC.createGain();o.type='triangle';o.frequency.value=mf(m);f.type='lowpass';f.frequency.value=900;aEnv(g,t,v,.004,.32);o.connect(f);f.connect(g);g.connect(out);o.start(t);o.stop(t+.35)}
 function h3S(n,t){const i=n%384,bar=i>>4,s=i&15,r=H3R[bar],ch=H3C[r]||H3C[43],D=bsp*16,sec=bar<8?0:bar<16?1:2;
- // 鐘楼：大鐘を1拍目、中盤からは3拍目にもう一つの高さの大鐘（5度上）。終盤は小鐘の連打も
- if(s===0)hBigBell(r-12,t,sec===0?.12:.14);if(s===8&&sec>0)hBigBell(r-5,t,.08);if(sec===2&&(s===4||s===12))hBell(ch[2]+12,t,.04);
- // 合唱とパイプオルガンの持続音
- if(s===0){hOoh(sec===2?ch.concat([ch[0]+12]):ch,t,D,sec===0?.014:.02);aOrgan([r-12,r],t,D,sec===0?.03:.035)}
- // オルガンの分散和音（序盤は8分でゆっくり、中盤から16分）
- {const A=[ch[0],ch[1],ch[2],ch[0]+12,ch[1]+12,ch[2],ch[1],ch[0]];if(sec===0&&!(s&1))hOrgS(A[(s>>1)%8],t,bsp*1.8,.025);if(sec>0)hOrgS(A[s%8]+(sec===2&&s>=8?12:0),t,bsp*.9,.02)}
- // 弦：中盤は低い刻み（8分）、終盤は長い対旋律
- if(sec===1&&!(s&1)){const B=[r-12,r-5,r,r-5,r-12,r-5,r+2,r-5][s>>1];hBow(B,t,bsp*1.6,.03)}
- if(sec===2&&s===0)aStrO([ch[1]-12,ch[2]],t,D,.022);
- // ティンパニ：中盤から小節の頭、区切りの前は連打
- if(sec>0&&s===0)aTimp(r-24,t,.09);if(bar%8===7&&s>=10&&!(s&1))aTimp(r-24,t,.05+(s-10)*.012);
- // 旋律
- for(const q of H3M)if(q[0]===bar&&q[1]===s){hCel(q[2],t,.06);hCel(q[2]+12,t+.01,.02)}
- for(const q of H3V)if(q[0]===bar&&q[1]===s){hVox(q[2],t,bsp*q[3],.055);aStrO([q[2]-12],t,bsp*q[3],.012)}
+ // 鐘：1拍目の大鐘、中盤から3拍目にもう一つ（5度上）
+ if(s===0)hBigBell(r-12,t,sec===0?.12:.13);if(s===8&&sec>0)hBigBell(r-5,t,.07);
+ // ピチカートの低音（序盤は4分、以降は8分で跳ねる）
+ if(sec===0?s%4===0:!(s&1)){const B=[r-12,r,r-12,r-5,r-12,r,r-5,r+2][s>>1];hPizz(B,t,.11)}
+ // チェンバロの短い分散和音（8分、終盤は16分）
+ {const A=[ch[0]+12,ch[1]+12,ch[2]+12,ch[1]+12,ch[0]+24,ch[2]+12,ch[1]+12,ch[2]];if(sec===2||!(s&1))aHarpsi(A[(sec===2?s:s>>1)%8],t,sec===2?.022:.03)}
+ // 弦の16分の刻み（中盤から。強弱つきの短い音）
+ if(sec>0){const a=H3ST[s];if(a){const B=[ch[0],ch[2],ch[1],ch[2]][s&3]-12;hBow(B,t,bsp*.45,.035*a);if(sec===2)hBow(B+12,t,bsp*.4,.02*a)}}
+ // 合唱：序盤だけ薄く伸ばし、中盤からは2拍目と4拍目に短い和音
+ if(sec===0&&s===0)hOoh(ch,t,D,.01);if(sec>0&&(s===4||s===12))hOoh(ch,t,bsp*1.2,.024);
+ // 金管の短い強打（終盤のシンコペーション）
+ if(sec===2&&(s===3||s===10))for(const m of[ch[0],ch[2]])aBrass(m,t,bsp*.6,.04);
+ // ティンパニ：中盤から小節の頭と3拍目、区切りの前は連打
+ if(sec>0&&(s===0||s===8))aTimp(r-24,t,s?.06:.09);if(bar%8===7&&s>=10&&!(s&1))aTimp(r-24,t,.05+(s-10)*.012);
+ // 旋律：中盤はチェレスタを短く切って、終盤は独唱（ここだけ長く伸ばす）
+ for(const q of H3M)if(q[0]===bar&&q[1]===s){const d=Math.min(q[3],4);for(let k=0;k<q[3];k+=4)if(k===0||q[3]>=8&&k%8===0)hCel(q[2],t+k*bsp,.06);hCel(q[2]+12,t+.01,.02)}
+ for(const q of H3V)if(q[0]===bar&&q[1]===s)hVox(q[2],t,bsp*q[3],.05);
  // 区切り：シンバルのふくらみ・小さな鐘の下降
- if(bar%8===7&&s===8)hCym(t,bsp*8,.05);if(s===12&&bar%4===3)for(let k=0;k<5;k++)hBell(ch[2]+24-k*2,t+k*bsp*.6,.025);
- if(s===0&&bar%4===1)hBreath(t,D*2,.012)}
+ if(bar%8===7&&s===8)hCym(t,bsp*8,.045);if(s===12&&bar%4===3)for(let k=0;k<5;k++)hBell(ch[2]+24-k*2,t+k*bsp*.6,.025)}
 
 // ---- h3x（ボス）：神聖なワルツ ----
 const H3XR=[52,48,45,47,52,55,50,47,48,50,47,52,45,47,52,52, 52,48,45,47,52,55,50,47,48,50,47,52,45,47,52,52];
