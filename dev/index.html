@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:1,e:28/24,b:2.1};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.51';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:1,e:28/24,b:2.1};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.52';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -94,7 +94,7 @@ else if(k==='ls')[392,330,262,196].forEach((f,i)=>tone(f,f*.9,.28,'sawtooth',.1,
 else if(k==='pk')tone(900,1500,.07,'square',.08);
 else if(k==='cl')tone(600,640,.03,'square',.05);else if(k==='tn'){tone(660,880,.1,'square',.1);tone(880,1320,.18,'square',.1,.1)}else if(k==='te'){tone(220,150,.2,'sawtooth',.14);tone(165,100,.3,'sawtooth',.14,.15)}}
 const TR={b:{lt:'square',lv:.11,dr:1,L:[76,0,71,76,79,76,71,0,72,0,67,72,76,72,67,0,74,0,69,74,78,74,69,0,71,0,66,71,75,71,78,75,83,0,79,76,83,0,79,76,84,0,79,76,84,0,79,76,81,0,78,74,81,0,78,74,83,0,78,75,71,0,75,78],B:[40,36,38,35,40,36,38,35]},
-x:{mt:1},t:{amb:1},au:{fn:'au'},gk:{fn:'gk'},e2:{fn:'e2'},b2:{fn:'b2'},b3:{fn:'b3'},x3:{fn:'x3'},v:{fn:'v'},b1s:{fn:'b1s'},b1x:{fn:'b1x'},
+x:{mt:1},t:{amb:1},au:{fn:'au'},gk:{fn:'gk'},e2:{fn:'e2'},b2:{fn:'b2'},b3:{fn:'b3'},x3:{fn:'x3'},v:{fn:'v'},b1s:{fn:'b1s'},b1x:{fn:'b1x'},h3:{fn:'h3'},h3x:{fn:'h3x'},
 m:{lt:'triangle',lv:.2,dr:0,L:[69,0,72,0,76,0,72,0,65,0,69,0,72,0,69,0,60,0,64,0,67,0,64,0,62,0,67,0,71,0,67,0],B:[45,41,48,43]}};
 function bnote(m,t,d,ty,v){const o=AC.createOscillator(),g=AC.createGain();o.type=ty;o.frequency.value=440*Math.pow(2,(m-69)/12);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(BG);o.start(t);o.stop(t+d)}
 // ボス曲用：ローパスを通した音（こもった重い音）、鐘、1ステップ分の演奏
@@ -261,7 +261,7 @@ function ambTick(){if(!AC||!ENV.g)return;const t=AC.currentTime,k=ENV.k,g=ENV.g;
  else if(k==='shop'){if(Math.random()<.018){ping(2400,2380,.35,.03,0);ping(3150,3120,.3,.022,.06)}if(Math.random()<.01)ping(660,655,1.2,.02,0);if(ENV.n[0])ENV.n[0].gg.gain.setTargetAtTime(.022+.012*Math.sin(t*.7),t,.3)}
  else if(k==='wind'&&ENV.w){const s2=.5+.5*Math.sin(t*.35)*Math.sin(t*.13+1);ENV.w.gg.gain.setTargetAtTime(.015+.04*s2,t,.4);ENV.w.f.frequency.setTargetAtTime(380+500*s2,t,.5)}
  else if(k==='drone'){if(Math.random()<.025)ping(1300,600,.25,.03,0)}}
-function bgmTick(){const tr=TR[cb];if(!AC||!tr)return;if(bnext<AC.currentTime-.3)bnext=AC.currentTime;while(bnext<AC.currentTime+.25){const t=bnext;if(tr.fn)({au:auStep,gk:gkStep,e2:e2Step,b2:b2Step,b3:b3Step,x3:x3Step,v:vStep,b1s:b1sStep,b1x:b1xStep})[tr.fn](bst,t);else if(tr.amb)ambStep(bst,t);else if(tr.mt)metalStep(bst%256,t);else if(tr.dr)batStep(bst,t);else if(tr.L.length===32)mapStep(bst,t);else{const i=bst%tr.L.length,bar=i>>3,s=i&7,l=tr.L[i],bs=tr.B[bar%tr.B.length];if(l)bnote(l,t,bsp*.8,tr.lt,tr.lv);
+function bgmTick(){const tr=TR[cb];if(!AC||!tr)return;if(bnext<AC.currentTime-.3)bnext=AC.currentTime;while(bnext<AC.currentTime+.25){const t=bnext;if(tr.fn)({au:auStep,gk:gkStep,e2:e2Step,b2:b2Step,b3:b3Step,x3:x3Step,v:vStep,b1s:b1sStep,b1x:b1xStep,h3:h3Step,h3x:h3xStep})[tr.fn](bst,t);else if(tr.amb)ambStep(bst,t);else if(tr.mt)metalStep(bst%256,t);else if(tr.dr)batStep(bst,t);else if(tr.L.length===32)mapStep(bst,t);else{const i=bst%tr.L.length,bar=i>>3,s=i&7,l=tr.L[i],bs=tr.B[bar%tr.B.length];if(l)bnote(l,t,bsp*.8,tr.lt,tr.lv);
 if(tr.dr){bnote(bs+(s===2||s===6?12:0),t,bsp*.85,'triangle',.35);if(s===0||s===4)kick(t);if(s===2||s===6)noise(.08,.25,1800,t,BG);else noise(.03,.1,7000,t,BG)}
 else if(!(s&1))bnote(bs,t,bsp*1.6,'triangle',.3)}
 bst++;bnext+=bsp}}
@@ -398,7 +398,72 @@ function auStep(n,t){const i=n%112,lp=Math.floor(n/112)%2,bar=Math.floor(i/7),s=
  for(const q of AUM)if(q[0]===bar&&q[1]===s){aBell(q[2]-12,t,.045);aBell(q[2]-11.7,t+.03,.018)}
  if(s===0&&(bar===4||bar===12))auGl(r+36,r+30,t,bsp*7,.02);if(s===2&&bar===8)auGl(r+31,r+37,t,bsp*5,.018);
  if(bar===15&&s===0)auRv(r,t,bsp*7,.05);if(bar===7&&s===3)aTimp(r-12,t,.08)}
-function bgm(n,sp){const v=sp||({au:60/96/2,gk:60/120/4,e2:60/96/4,b:.2,x:.115,t:60/76/2,b2:.19,b3:.13,x3:.17,v:.45,b1s:.15,b1x:.105})[n]||.3;if(cb===n&&bsp===v)return;if(cb==='v'&&n!=='v'&&VDK.vg&&AC){try{VDK.vg.gain.setTargetAtTime(0,AC.currentTime,.3)}catch(e){}VDK.ac=null}const fr=cb==='e2'&&n!=='e2';cb=n;bsp=v;if(fr)e2Stop();if(!AC)return;if(fr){newAC();return}if(!BG){BG=AC.createGain();BG.connect(MG)}bst=0;bnext=AC.currentTime+.1;clearInterval(btm);btm=setInterval(bgmTick,80);if(n==='e2')e2Play()}
+// ===== 天上の聖堂の曲（Ver4.52 ユーザー指定） =====
+// h3：通常・エリート。不気味さと神聖さの両立、荘厳な鐘。ニ短調、72BPM・16分＝1歩、24小節で1周。
+//   深い教会の鐘（うなりのある倍音）、低い合唱とオルガンの持続音、音程のずれたオルゴールの分散和音、少年の独唱のような旋律、息のさざめき、遠いティンパニ
+// h3x：ボス。神聖なワルツ（3拍子・138BPM・8分＝1歩、32小節で1周）。ホ短調→最後はホ長調。パイプオルガンと大合唱、金管の主題、チェンバロの刻み、
+//   鐘の連打（転調鐘）、ティンパニ・シンバル、弦のトレモロ。今までの曲にない「荘厳で豪華な舞踏」
+const HB={};
+// 大鐘：うなりのある教会の鐘の倍音（ハム・プライム・短3度・5度・ノミナル…）。長く鳴る
+function hBigBell(m,t,v){const out=amBus(),f=mf(m);[[.5,.7,9],[1,1,7],[1.19,.55,5],[1.5,.35,4],[2,.5,4],[2.51,.22,3],[3.01,.18,2.4],[4.07,.1,1.6]].forEach(([r,a,d],k)=>{for(const dt of[-1.5,1.5]){const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=f*r*(1+dt/1200);g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v*a/2,t+.004);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(out);o.start(t);o.stop(t+d+.05)}});mnoise(.06,v*.5,2400,t)}
+// 小さな鐘（明るい鐘の連打用）
+function hBell(m,t,v){const out=amBus(),f=mf(m);[[1,1,2.2],[2,.4,1.4],[2.76,.3,1.2],[5.4,.12,.6]].forEach(([r,a,d])=>{const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=f*r;aEnv(g,t,v*a,.003,d);o.connect(g);g.connect(out);o.start(t);o.stop(t+d+.05)})}
+// オルゴール（少し音程をずらして不気味に）＋こだま
+function hBox(m,t,v,dt){const out=amBus(),f=mf(m)*(1+(dt||0)/1200);for(const[dl,a]of[[0,1],[.42,.35],[.84,.14]]){[[1,1,1.4],[3,.18,.5],[4.2,.08,.3]].forEach(([r,aa,d])=>{const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=f*r;aEnv(g,t+dl,v*a*aa,.002,d);o.connect(g);g.connect(out);o.start(t+dl);o.stop(t+dl+d+.05)})}}
+// 少年の独唱のような声（ア の母音・ゆっくりしたビブラート）
+function hVox(m,t,d,v){const out=amBus(),g=AC.createGain(),f1=AC.createBiquadFilter(),f2=AC.createBiquadFilter(),mx=AC.createGain(),o=AC.createOscillator(),lf=AC.createOscillator(),lg=AC.createGain();
+ o.type='sawtooth';o.frequency.value=mf(m);lf.frequency.value=5.2;lg.gain.setValueAtTime(0,t);lg.gain.linearRampToValueAtTime(mf(m)*.012,t+Math.min(.6,d*.5));lf.connect(lg);lg.connect(o.frequency);
+ f1.type=f2.type='bandpass';f1.frequency.value=820;f2.frequency.value=1250;f1.Q.value=f2.Q.value=6;mx.gain.value=3;o.connect(f1);o.connect(f2);f1.connect(mx);f2.connect(mx);mx.connect(g);
+ g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+Math.min(.25,d*.3));g.gain.setValueAtTime(v,t+d*.8);g.gain.linearRampToValueAtTime(.0001,t+d+.2);g.connect(out);o.start(t);o.stop(t+d+.3);lf.start(t);lf.stop(t+d+.3)}
+// 息のさざめき（ささやく合唱）
+function hBreath(t,d,v){if(!NB||NB.ctx!==AC)mnoise(.01,0,1000,t);const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain(),out=amBus();s.buffer=NB.b;s.loop=true;f.type='bandpass';f.frequency.value=1600;f.Q.value=1.5;g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+d*.5);g.gain.linearRampToValueAtTime(.0001,t+d);s.connect(f);f.connect(g);g.connect(out);s.start(t);s.stop(t+d+.05)}
+// シンバルのふくらみ
+function hCym(t,d,v){if(!NB||NB.ctx!==AC)mnoise(.01,0,1000,t);const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain(),out=amBus();s.buffer=NB.b;s.loop=true;f.type='highpass';f.frequency.value=5000;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+d);g.gain.exponentialRampToValueAtTime(.0001,t+d+1.6);s.connect(f);f.connect(g);g.connect(out);s.start(t);s.stop(t+d+1.7)}
+
+// ---- h3（通常・エリート） ----
+// 和音（根音とその上の声部）。後半は不協和の重なり（2度）を足して不気味に
+const H3R=[50,46,43,45,50,51,48,45,50,46,55,49,50,51,46,45,43,44,50,45,46,51,49,50];
+const H3C={50:[62,65,69],46:[58,62,65],43:[55,58,62],45:[57,61,64],51:[58,63,67],48:[60,64,67],55:[55,59,62],49:[56,59,62],44:[56,59,62]};
+// 独唱の旋律（小節,歩,音,長さ歩）。9〜16小節と21〜24小節
+const H3M=[[8,0,74,8],[8,8,72,4],[8,12,74,4],[9,0,77,12],[9,12,76,4],[10,0,74,8],[10,8,71,8],[11,0,73,16],[12,0,74,6],[12,6,76,2],[12,8,77,8],[13,0,79,8],[13,8,77,4],[13,12,75,4],[14,0,74,12],[14,12,72,4],[15,0,73,16],
+ [20,0,69,8],[20,8,70,8],[21,0,72,8],[21,8,70,4],[21,12,69,4],[22,0,68,12],[22,12,69,4],[23,0,62,16]];
+function h3Step(n,t){const i=n%384,bar=i>>4,s=i&15,r=H3R[bar],ch=H3C[r]||H3C[50],lp=Math.floor(n/384),D=bsp*16,sec=bar<8?0:bar<16?1:2;
+ // 大鐘：2小節ごと（中盤は毎小節）。根音の2オクターブ下と5度
+ if(s===0&&(bar%2===0||sec===1))hBigBell(r%12===2?38:r-12,t,.11);if(s===8&&bar%4===3)hBigBell(r-5,t,.06);
+ // 低い持続音：オルガン（オクターブ）と合唱
+ if(s===0){aOrgan([r-12,r],t,D,.035);aChoir(sec===2?ch.concat([ch[0]+2]):ch,t,D,sec===0?.012:.02);if(sec>0)aStrO([ch[0]-12,ch[2]-12],t,D,.018)}
+ // オルゴールの分散和音（8分。少し音程がずれる）
+ if(!(s&1)){const a=[ch[0]+12,ch[1]+12,ch[2]+12,ch[1]+24,ch[2]+12,ch[1]+12,ch[0]+24,ch[2]+12][s>>1];hBox(a,t,sec===1?.028:.04,(lp%2?-14:9)+(s>>1)*2)}
+ // 独唱の旋律
+ for(const q of H3M)if(q[0]===bar&&q[1]===s)hVox(q[2],t,bsp*q[3],.05);
+ // 息のさざめき・ティンパニ・ハープのような上昇
+ if(s===0&&bar%4===1)hBreath(t,D*2,.02);if(bar%8===7&&s>=8&&!(s&1))aTimp(r-24,t,.05+(s-8)*.01);if(bar%8===0&&s===0&&n>0)hCym(t-bsp*2,bsp*2,.05);
+ if(s===12&&bar%2===1)for(let k=0;k<6;k++)hBell(ch[k%3]+24+Math.floor(k/3)*12,t+k*bsp*.5,.025)}
+
+// ---- h3x（ボス）：神聖なワルツ ----
+const H3XR=[52,48,45,47,52,55,50,47,48,50,47,52,45,47,52,52, 52,48,45,47,52,55,50,47,48,50,47,52,45,47,52,52];
+const H3XC={52:[64,67,71],48:[60,64,67],45:[57,60,64],47:[59,63,66],55:[55,59,62],50:[62,66,69]};
+// 主題（小節,歩(0-5),音,長さ）：金管（前半）／合唱（後半は1オクターブ上を声で）
+const H3XM=[[0,0,76,3],[0,3,79,2],[0,5,78,1],[1,0,76,4],[1,4,72,2],[2,0,72,3],[2,3,76,2],[2,5,74,1],[3,0,71,6],[4,0,76,3],[4,3,79,2],[4,5,83,1],[5,0,83,4],[5,4,81,2],[6,0,78,3],[6,3,81,2],[6,5,79,1],[7,0,78,6],
+ [8,0,79,2],[8,2,77,2],[8,4,76,2],[9,0,78,3],[9,3,74,3],[10,0,75,2],[10,2,78,2],[10,4,81,2],[11,0,83,6],[12,0,84,3],[12,3,81,3],[13,0,78,3],[13,3,75,3],[14,0,76,6],[15,0,80,6]];
+// ボス曲は音が厚いので、専用の小さな出口（音量0.55）を通す
+let HXB=null;function h3xStep(n,t){const b0=BG,a0=AMB;if(!HXB||HXB.ctx!==AC||HXB.bg!==b0){const g=AC.createGain();g.gain.value=.55;g.connect(b0);HXB={ctx:AC,bg:b0,g,amb:null}}BG=HXB.g;AMB=HXB.amb;try{h3xS(n,t)}finally{HXB.amb=AMB;BG=b0;AMB=a0}}
+function h3xS(n,t){const i=n%192,bar=Math.floor(i/6),s=i%6,lp=Math.floor(n/192),r=H3XR[bar],ch=bar===15||bar===31?[64,68,71]:H3XC[r],B2=bar>=16,b16=bar%16,D=bsp*6;
+ // ワルツの伴奏：1拍目に低音（オルガンの足鍵盤＋ピチカート）、2・3拍目に和音（チェンバロと弦の刻み）
+ if(s===0){aOrgan([r-24,r-12],t,D*.95,.05);uNote(r-12,t,bsp*1.6,'triangle',.12,700,0,.005);aTimp(r-24,t,b16%4===0?.13:.08)}
+ if(s===2||s===4){for(const m of ch)aHarpsi(m,t,.035);aStr(ch.map(m=>m-12),t,bsp*1.4,.03)}
+ if(s&1&&B2)for(const m of ch)uNote(m+12,t,bsp*.45,'sawtooth',.008,2400,0,.005);
+ // 大合唱とオルガンの和音（後半はさらに厚く）
+ if(s===0){aChoir(ch,t,D,B2?.035:.022);aOrgan(ch,t,D,B2?.035:.022);if(B2)aStrO([ch[0]+12,ch[2]+12],t,D,.025)}
+ // 主題：前半は金管、後半は合唱の声＋金管のオクターブ下
+ for(const q of H3XM)if(q[0]===b16&&q[1]===s){if(!B2)aBrass(q[2],t,bsp*q[3]*.95,.07);else{hVox(q[2],t,bsp*q[3],.06);aBrass(q[2]-12,t,bsp*q[3]*.95,.06)}}
+ // 鐘の連打（転調鐘：8つの鐘が下りの音階を鳴らす）。4小節ごと、後半は毎小節の頭に大鐘
+ if(b16%4===3){const SC=[88,86,84,83,81,79,78,76];hBell(SC[(s*2+lp)%8],t,.05);hBell(SC[(s*2+1+lp)%8],t+bsp*.5,.04)}
+ if(s===0&&(b16%4===0||B2&&b16%2===0))hBigBell(r-12,t,.09);
+ // シンバルのふくらみ・ティンパニの連打で区切りを大きく
+ if(b16===7&&s===3||b16===15&&s===3)hCym(t,bsp*3,.07);if((b16===7||b16===15)&&s>=3)for(let k=0;k<2;k++)aTimp(r-24,t+k*bsp*.5,.07+s*.012)}
+
+function bgm(n,sp){const v=sp||({au:60/96/2,gk:60/120/4,e2:60/96/4,b:.2,x:.115,t:60/76/2,b2:.19,b3:.13,x3:.17,v:.45,b1s:.15,b1x:.105,h3:60/72/4,h3x:60/138/2})[n]||.3;if(cb===n&&bsp===v)return;if(cb==='v'&&n!=='v'&&VDK.vg&&AC){try{VDK.vg.gain.setTargetAtTime(0,AC.currentTime,.3)}catch(e){}VDK.ac=null}const fr=cb==='e2'&&n!=='e2';cb=n;bsp=v;if(fr)e2Stop();if(!AC)return;if(fr){newAC();return}if(!BG){BG=AC.createGain();BG.connect(MG)}bst=0;bnext=AC.currentTime+.1;clearInterval(btm);btm=setInterval(bgmTick,80);if(n==='e2')e2Play()}
 /* ===== 描画ヘルパー ===== */
 function mk(rows,pal,s){const h=rows.length,w=rows[0].length,c=document.createElement('canvas');c.width=w*s;c.height=h*s;const x=c.getContext('2d');rows.forEach((r,j)=>{for(let i=0;i<w;i++){const k=r[i];if(pal[k]){x.fillStyle=pal[k];x.fillRect(i*s,j*s,s,s)}}});return c}
 function txt(s,x,y,c,al,sz){ctx.font=(sz||12)+'px DotGothic16,sans-serif';ctx.textAlign=al||'left';ctx.fillStyle='#000';ctx.fillText(s,x+1,y+1);ctx.fillStyle=c||'#fff';ctx.fillText(s,x,y)}
@@ -2032,16 +2097,16 @@ SD.hray=[36,34,3,({r,p,q,l,t,e,m,sh,pt})=>{
  sh();
  for(let k=0;k<4;k++)q(8+k*6.4,5,HGL);hHalo(l,19,-1,6,1.2)}];
 
-// 寵愛の巨兵：赤子の顔の大男。胴が太く翼は小さい。巨大な両刃の斧を担ぐ
+// 寵愛の巨兵（堕ちた肌の紫）：赤子の顔の大男。胴が太く翼は小さい。巨大な両刃の斧を担ぐ
 SD.hbrute=[40,42,3,({r,p,q,l,t,e,m,sh,pt})=>{
- pt('ab',()=>{t([[9,13],[5,17],[4,25],[7,26],[9,19]],HFD)});
+ pt('ab',()=>{t([[9,13],[5,17],[4,25],[7,26],[9,19]],'#4a3a52')});
  pt('wb',()=>{t([[13,11],[9,4],[6,6],[9,9],[6,10],[11,14]],HWD)});
  pt('lb',()=>{t([[10,30],[16,30],[15,40],[16,42],[9,42],[10,36]],HGD)});
  pt('lf',()=>{t([[19,30],[25,30],[26,38],[28,42],[20,42],[20,36]],HG)});
- t([[8,11],[27,10],[30,18],[28,31],[9,31],[6,20]],HF);t([[8,11],[14,11],[12,31],[9,31],[6,20]],HFD);
+ t([[8,11],[27,10],[30,18],[28,31],[9,31],[6,20]],'#6a5874');t([[8,11],[14,11],[12,31],[9,31],[6,20]],'#4a3a52');
  t([[8,22],[29,22],[29,33],[8,33]],HG);for(let k=0;k<5;k++)l(9+k*4,23,9+k*4,33,HGD,.3);
  pt('hd',()=>{hBaby(t,e,l,q,22,7,1.35);for(let k=0;k<4;k++)e(17+k*2.2,2.6,1.4,1.3,HGL)});
- pt('af',()=>{t([[26,12],[33,15],[35,22],[31,23],[30,18],[25,17]],HF);l(33,-2,32,34,HGD,1);t([[34,-1],[40,-3],[40,9],[34,7]],HW);t([[31,-1],[25,-3],[25,9],[31,7]],HWD);t([[34,-1],[40,-3],[39,1],[34,2]],'#f8f0e0');r(31,1,3,6,HG)});
+ pt('af',()=>{t([[26,12],[33,15],[35,22],[31,23],[30,18],[25,17]],'#6a5874');l(33,-2,32,34,HGD,1);t([[34,-1],[40,-3],[40,9],[34,7]],HW);t([[31,-1],[25,-3],[25,9],[31,7]],HWD);t([[34,-1],[40,-3],[39,1],[34,2]],'#f8f0e0');r(31,1,3,6,HG)});
  sh();
  q(20,7,HR);q(18,26,HR);q(22,26,HR)}];
 
@@ -2100,17 +2165,19 @@ SD.htwR=[28,38,3,hTwin(HR,HRD,(l,t,q)=>{t([[25,13],[27,8],[26,4],[28,1],[29.6,6]
 SD.htwB=[28,38,3,hTwin(HT,HTD,(l,t,q)=>{l(25,13,27,9,'#a8e8f0',.4);l(27,9,25.6,6,'#a8e8f0',.4);l(25.6,6,28,1,'#e8ffff',.4)})];
 
 // ===== エリート =====
-// 公正の獣：獅子の体に陶器の仮面の顔、金のたてがみ、背に金の刃の翼、尾の先は針
-SD.hgrif=[52,38,3,({r,p,q,l,t,e,m,sh,pt})=>{
- pt('wb',()=>{for(let k=0;k<4;k++)t([[22,12],[12+k*3,-2+k*2],[16+k*3,1+k*2],[24,13]],k%2?HGD:HG)});
- pt('lb',()=>{t([[10,24],[15,24],[14,33],[16,38],[9,38],[10,32]],HWD);t([[29,24],[34,24],[33,33],[35,38],[28,38],[29,32]],HWD)});
- pt('ab',()=>{for(let k=0;k<10;k++)l(9-k*.7,18+Math.sin(k*.8)*2,8-k*.7,18.6+Math.sin(k*.8+.6)*2,HW,.8);t([[1,15],[3,13],[2.6,17]],HGL)});
- t([[8,15],[30,13],[40,16],[41,25],[36,29],[11,29],[7,23]],HW);t([[8,15],[30,13],[30,17],[10,20],[7,23]],'#f4ecdc');for(let k=0;k<5;k++)l(12+k*5,16,11+k*5,28,HWD,.3);
- pt('lf',()=>{t([[16,24],[22,24],[22,33],[25,38],[17,38],[17,32]],HW);t([[34,24],[40,23],[41,33],[43,38],[35,38],[35,32]],HW);for(const x of[18,36])r(x,33,4,1.4,HG)});
- pt('hd',()=>{for(let k=0;k<9;k++){const a=-2.6+k*.5;t([[44+Math.cos(a)*5,13+Math.sin(a)*6],[44+Math.cos(a-.2)*11,13+Math.sin(a-.2)*11],[44+Math.cos(a+.25)*11,13+Math.sin(a+.25)*11]],k%2?HG:HGL)}
-  t([[40,8],[47,7],[51,11],[50,17],[46,20],[41,18],[39,13]],HF);t([[40,8],[43,7.6],[42,19],[41,18],[39,13]],HFD);l(45,11,48.6,10.6,HK,.35);t([[46,15.6],[50,15],[49,17.4],[46.4,17.6]],HK);for(let k=0;k<3;k++)q(46.6+k*1.2,15.8,'#f0e8d8')});
- sh();
- q(24,20,HR);q(30,20,HR)}];
+// 災いの鳥（黒い悪魔のエリート）：深い緑の鱗の体、大きく広げた暗い紅の羽（先は青）、三日月の角、青く光る三つ目、曲がった嘴、鉤爪、蛇の頭の尾が二本。浮かぶ
+SD.hgrif=[56,46,3,({r,p,q,l,t,e,m,sh,pt})=>{
+ const GN='#2a4a44',GD='#1a302e',GL='#3e6a5e',FR='#6a1a26',FD='#46101a',FB='#3a5ab0';
+ const wing=(ox,oy,a0,a1,n,ln,c1,c2)=>{for(let k=0;k<n;k++){const a=a0+(a1-a0)*k/(n-1),L=ln*(.7+.3*Math.sin(k/(n-1)*3.1)),ex=ox+Math.cos(a)*L,ey=oy+Math.sin(a)*L,px=-Math.sin(a)*3.4,py=Math.cos(a)*3.4;t([[ox+px,oy+py],[ox-px,oy-py],[ex,ey]],k%2?c1:c2);t([[ex-px*.4,ey-py*.4],[ex+Math.cos(a)*3,ey+Math.sin(a)*3],[ex+px*.4,ey+py*.4]],FB)}};
+ pt('wb',()=>{wing(24,20,-2.7,-1.5,7,22,FD,'#3a0c14')});
+ pt('lb',()=>{for(let k=0;k<14;k++){const s2=k/13,x=16-s2*14,y=28+Math.sin(s2*4)*4+s2*10;e(x,y,2-s2*.8,1.8,k%2?GN:GD)}t([[0,40],[3,38],[3,42]],FR);q(1,39,'#e8c040');for(let k=0;k<12;k++){const s2=k/11,x=18-s2*12,y=30+s2*14-Math.sin(s2*3)*3;e(x,y,1.8-s2*.6,1.6,k%2?GD:GN)}t([[5,46],[8,43],[9,46]],FR)});
+ t([[20,20],[32,17],[40,22],[38,32],[28,36],[20,32],[16,26]],GN);t([[20,20],[26,18.6],[24,35],[20,32],[16,26]],GL);for(let k=0;k<5;k++)q(30,20+k*3,'#c050c0');
+ pt('lf',()=>{l(28,34,27,40,GD,1.1);for(let k=0;k<3;k++)t([[25+k*1.6,40],[26.2+k*1.6,40],[24.6+k*1.6,43.6]],FR);l(36,32,38,39,GD,1.1);for(let k=0;k<3;k++)t([[36+k*1.6,39],[37.2+k*1.6,39],[35.6+k*1.6,42.6]],FR)});
+ pt('hd',()=>{l(36,22,42,15,GN,2.2);t([[40,9],[48,8],[52,12],[50,17],[44,18],[39,15]],GN);t([[50,11],[56,14],[53,19],[51,16]],'#4a4040');t([[53,19],[55,17],[54,21]],'#2a2424');
+  for(const[x,y]of[[45,11],[47.4,10.8],[46.2,13.4]]){e(x,y,1.1,1.1,'#10202a');q(x,y,'#6af0ff')}
+  for(let k=0;k<8;k++){const a=-2.6+k*.3,x=41+Math.cos(a)*7,y=11+Math.sin(a)*8;t([[41+Math.cos(a)*5,11+Math.sin(a)*6],[x,y],[41+Math.cos(a+.2)*5,11+Math.sin(a+.2)*6]],k%2?FR:'#c89a3a')}});
+ pt('wf',()=>{wing(30,19,-2.1,-.5,8,26,FR,'#8a2030')});
+ sh()}];
 
 // 熱誠の盾天使：紅い重鎧の天使。体を隠すほどの大盾（金の縁に顔の浮き彫り）、後ろに剣
 SD.hshld=[38,44,3,({r,p,q,l,t,e,m,sh,pt})=>{
@@ -2133,18 +2200,21 @@ SD.hilu=[20,18,3,({r,p,q,l,t,e,m,sh,pt})=>{
  sh();
  hHalo(l,10,2.4,4.4,1)}];
 
-// 燃える熾天使：六枚の翼（縁が燃える）、顔は翼に隠れて仮面の目だけが並ぶ。炎の剣
-SD.hser=[42,48,3,({r,p,q,l,t,e,m,sh,pt})=>{
- const FL='#d8602a',FY='#f0b040';
- pt('wb',()=>{for(let k=0;k<3;k++){const y=4+k*9;t([[17,y+8],[4-k,y-2],[0,y+3],[3,y+6],[1,y+10],[15,y+12]],k===1?HWD:'#c8beac');l(4-k,y-2,0,y+3,FL,.6);l(0,y+3,1,y+10,FY,.5)}});
- pt('lb',()=>{t([[14,32],[19,32],[18,46],[13,48],[12,46]],HWD)});
- t([[13,14],[25,13],[27,24],[29,36],[30,46],[11,46],[11,34],[12,24]],HW);t([[13,14],[17,13.6],[15,46],[11,46],[11,34],[12,24]],'#f4ecdc');for(let k=0;k<4;k++)l(15+k*3.4,24,14+k*4,46,HWD,.3);
- r(13,22,15,2,HG);
- pt('hd',()=>{t([[15,4],[24,3],[27,8],[26,14],[16,14],[14,9]],HF);for(let k=0;k<3;k++)for(let j=0;j<2;j++){const x=17.6+k*2.8,y=6.4+j*3.6;e(x,y,1,.7,HK);q(x+.3,y,FY)}});
- pt('af',()=>{l(25,16,31,20,HF,.9);l(31,20,33,15,HF,.8);t([[32,15],[42,-4],[40,-5],[30.6,14]],FY);t([[33,13],[41,-2],[40.4,-3],[32,13.6]],'#fff0c0');r(30,14,5,1.6,HG)});
- pt('wf',()=>{for(let k=0;k<3;k++){const y=4+k*9;t([[24,y+8],[36+k,y-2],[40,y+3],[37,y+6],[39,y+10],[26,y+12]],k===1?HW:'#f0e8d8');l(36+k,y-2,40,y+3,FL,.6);l(40,y+3,39,y+10,FY,.5)}});
+// 首なしの聖使：首のない白い細身の天使。首の上に光輪だけが浮かぶ。青緑の渦の紋の白い法衣、紅い肩当て、金の翼、手足には穴があき、金の茨が巻く。太陽の輪の杖
+SD.hser=[40,52,3,({r,p,q,l,t,e,m,sh,pt})=>{
+ const WB='#e4e0d8',WD='#b0aaa0',TQ='#2a7a74',TD='#1a4a48';
+ pt('wb',()=>{l(20,13,28,3,HG,1.2);l(28,3,37,1,HG,1);for(let k=0;k<6;k++){const x=22+k*2.6,y=10-k*1.4;t([[x-1.2,y],[x+1.6,y-.6],[x+3+k*.4,y+11-k*.6]],k%2?WB:'#cfc8bc')}})
+ pt('lb',()=>{t([[17,36],[20,36],[21,48],[18,52],[16,48]],WD);e(18.6,42,1.4,1.4,'#3a3434');for(let k=0;k<3;k++)t([[16+k,51],[17+k,52],[15.6+k,53.4]],HG)});
+ pt('lf',()=>{t([[22,36],[26,36],[28,48],[26,52],[24,48]],WB);e(25,42,1.4,1.4,'#3a3434');for(let k=0;k<3;k++)t([[24+k*1.4,51],[25+k*1.4,52],[23.6+k*1.4,53.4]],HGL);l(22,38,27,44,HG,.3)});
+ pt('ab',()=>{l(15,15,12,25,WD,1.1);l(12,25,14,32,WD,1);e(12.6,22,1,1,'#3a3434');for(let k=0;k<3;k++)l(14,32,13+k*1.2,35,HG,.3)});
+ t([[15,12],[25,12],[27,24],[28,40],[14,40],[14,24]],WB);t([[15,12],[19,12],[18,40],[14,40],[14,24]],'#f4f0e8');
+ t([[17,16],[24,16],[25,34],[17,34]],'#efe8d8');for(let k=0;k<3;k++){e(21,20+k*5,2.4,1.6,TQ);e(21.6,20+k*5,1,.8,'#efe8d8')}l(17,36,25,36,TQ,.6);for(let k=0;k<4;k++)t([[17.6+k*2,37.4],[18.6+k*2,36.6],[19.6+k*2,37.4],[18.6+k*2,38.2]],TD);
+ t([[14,11],[19,9],[21,13],[15,15]],HR);t([[23,11],[27,10],[28,14],[24,14]],'#c8beb0');l(19.6,11,21.4,11,'#5a4a4a',.6);
+ pt('af',()=>{l(25,14,31,20,WB,1);l(31,20,32,26,WB,.9);e(30,18,1,1,'#3a3434');for(let k=0;k<3;k++)l(32,26,31+k*1.2,29,HG,.3);
+  l(33,52,33,4,'#efe8d8',.6);for(const y of[16,30,46])r(32,y,2.4,1,HG);
+  for(let k=0;k<12;k++){const a=k/12*6.283,c=Math.cos(a),s2=Math.sin(a),L=k%3?7:10;l(33+c*2,1+s2*2,33+c*L,1+s2*L,k%2?HG:HGL,.45);if(!(k%3))l(33+c*L,1+s2*L,33+c*L-s2*2.6,1+s2*L+c*2.6,HG,.45)}e(33,1,2,2,HG);e(33,1,1,1,HGL)});
  sh();
- hHalo(l,20,0,7,1.4,FY)}];
+ hHalo(l,20,4,4,1.2);l(16,22,26,20,HG,.25);l(15,30,26,28,HG,.25)}];
 
 // ===== ボス =====
 // 至高の御顔：宙に浮かぶ巨大な陶器の顔。金の刃の後光と冠。左右に竜の首（別の敵 hfL/hfR）
@@ -2174,25 +2244,31 @@ SD.hbloom=[64,64,3,({r,p,q,l,t,e,m,sh,pt})=>{
  pt('af',()=>{for(let k=0;k<5;k++){const x=22+k*5,ln=7+k%2*4;l(x,38,x+.4,38+ln,HGD,.3);e(x+.4,39+ln,1.2,1.5,HG)}});
  sh();
  hHalo(l,32,6,9,1.6)}];
-// 節制の巨像：巨大な鎧の天使の上半身。両腕が異様に大きく、頭は小さな仮面。肩に棘、背に折れた翼
-SD.hgiant=[62,62,3,({r,p,q,l,t,e,m,sh,pt})=>{
- pt('wb',()=>{t([[22,14],[10,-2],[5,1],[9,6],[2,8],[8,13],[3,17],[18,22]],'#bab0a0')});
- pt('ab',()=>{t([[16,16],[8,24],[5,40],[10,44],[14,30],[20,24]],HGD);t([[3,40],[13,40],[14,50],[2,50]],'#7a5a2a')});
- t([[16,14],[44,12],[48,26],[44,44],[40,58],[22,58],[18,44],[14,26]],HW);t([[16,14],[24,13.6],[22,58],[18,44],[14,26]],'#f0e8d8');
- t([[18,20],[44,18],[46,30],[42,40],[22,40],[16,30]],HG);t([[18,20],[26,19.6],[24,40],[22,40],[16,30]],HGL);for(let k=0;k<4;k++)l(20+k*6,22,21+k*6,39,HGD,.35);
- t([[22,40],[42,40],[44,58],[20,58]],HR);for(let k=0;k<5;k++)l(22+k*5,41,21+k*5.4,58,HRD,.35);
- m(()=>{});
- pt('hd',()=>{t([[27,4],[35,3],[38,7],[37,12],[33,14],[28,13],[26,9]],HF);l(31,7.6,35.6,7.2,HK,.4);t([[26,4],[30,-2],[33,1],[37,-3],[38,4]],HG)});
- pt('af',()=>{t([[42,14],[54,18],[58,30],[56,42],[50,44],[50,30],[44,24]],HG);t([[42,14],[48,15],[50,30],[50,44],[50,30],[44,24]],HGL);t([[48,42],[60,41],[62,52],[58,58],[48,56],[46,48]],HGD);for(let k=0;k<3;k++)l(50+k*3.6,44,50+k*3.6,56,'#6a4a1a',.4);
-  for(let k=0;k<3;k++)t([[44+k*4,15+k],[47+k*4,8+k],[48+k*4,16+k]],HGL)});
- sh();
- e(31,29,2.2,2.2,HR);q(31,28,'#f0b0a0')}];
+// 深淵の大公（黒い悪魔のボス）：紫黒の甲殻の体が低く構える。金の環の付いた多関節の脚（先は刃）、紅い角の冠と無数の赤い目、背から金の三叉の爪の尾が二本反り上がる
+SD.hgiant=[74,58,3,({r,p,q,l,t,e,m,sh,pt})=>{
+ const PU='#4a2c5e',PD='#2c1a3c',PL='#6c4a84',RD='#8a1a2a',RH='#a02434';
+ const tail=(x0,y0,dir,c1,c2)=>{let px=x0,py=y0;for(let k=0;k<16;k++){const s2=k/15,a=-1.57+dir*(.7-s2*1.9),w=2.4-s2*1.1,nx=px+Math.cos(a)*2.3,ny=py+Math.sin(a)*2.3;t([[px-w,py],[px+w,py],[nx+w*.8,ny],[nx-w*.8,ny]],k%2?c1:c2);if(k%4===2)r(Math.min(px,nx)-w,py-1,w*2+1,1.4,HG);px=nx;py=ny}
+  const a=-1.57+dir*(-1.4);l(px,py,px+Math.cos(a)*6,py+Math.sin(a)*6,HG,1.2);t([[px-2,py],[px+Math.cos(a-.9)*7,py+Math.sin(a-.9)*7],[px+1,py+1]],HGL);t([[px+2,py],[px+Math.cos(a+.9)*7,py+Math.sin(a+.9)*7],[px,py+1]],HG)};
+ const leg=(x0,y0,x1,y1,x2,y2,c)=>{l(x0,y0,x1,y1,c,1.8);l(x1,y1,x2,y2,c,1.4);t([[x2-1,y2-1],[x2+1,y2-1],[x2+(x2-x1)*.4,y2+3]],'#9a8aa8');e(x1,y1,1.4,1.4,HG)};
+ pt('wb',()=>{tail(22,30,-1,PD,PU)});
+ pt('ab',()=>{leg(26,40,12,34,4,50,PD);leg(30,42,20,44,14,56,PD)});
+ t([[22,28],[34,22],[50,22],[60,30],[58,42],[44,48],[28,46],[18,38]],PU);t([[22,28],[30,24],[28,46],[18,38]],PL);
+ for(let k=0;k<6;k++)t([[26+k*5,25-(k%2)],[28+k*5,17-(k%2)*2],[30+k*5,24-(k%2)]],k%2?'#3a2440':PD);
+ for(let k=0;k<5;k++){r(24+k*7,40,3,2,HG);q(25+k*7,34,RD)}
+ pt('hd',()=>{t([[46,16],[58,14],[66,22],[66,34],[60,42],[50,42],[44,32]],PU);t([[46,16],[51,15],[49,41],[44,32]],PL);
+  for(let k=0;k<8;k++)r(54,17+k*3,4.6,1.8,k%2?HGD:HG);
+  for(const[x,y]of[[50,24],[62,22],[52,30],[64,28],[57,36],[60,34]]){e(x,y,1.3,1,RD);q(x+.3,y,'#ff6a50')}
+  for(let k=0;k<6;k++){const x=48+k*3.4,a=-1.57+(k-2.5)*.3,ln=10+(k%2)*5;l(x,16,x+Math.cos(a)*ln*.6,16+Math.sin(a)*ln*.6,k%2?RD:RH,1.1);l(x+Math.cos(a)*ln*.6,16+Math.sin(a)*ln*.6,x+Math.cos(a+(k<3?-.6:.6))*ln,16+Math.sin(a)*ln,k%2?RD:RH,.7)}
+  t([[50,40],[64,40],[62,46],[57,48],[52,46]],HG);t([[53,42],[61,42],[60,45],[54,45]],HK);for(let k=0;k<4;k++)q(54+k*2,42.4,'#e8e0c8')});
+ pt('af',()=>{leg(52,42,62,40,70,52,PU);leg(46,46,52,50,56,58,PU)});
+ pt('wf',()=>{tail(56,26,1,PU,PD)});
+ sh()}];
 
 SD.hfL=SD.hdrg;SD.hfR=SD.hdrg;
 // 地図のボスの紋章（天上の聖堂）
 SD.emb_hface=[16,16,3,({t,e,l,sh})=>{for(let k=0;k<12;k++){const a=k/12*6.283;t([[8+Math.cos(a-.2)*5,8+Math.sin(a-.2)*5],[8+Math.cos(a)*7.8,8+Math.sin(a)*7.8],[8+Math.cos(a+.2)*5,8+Math.sin(a+.2)*5]],'#b8963a')}e(8,8,4.6,5.4,'#d8d0c4');t([[5.6,7],[7.4,6.6],[7.4,7.6],[5.6,7.8]],'#2a2430');t([[8.8,6.6],[10.6,7],[10.6,7.8],[8.8,7.6]],'#2a2430');sh()}];
 SD.emb_hbloom=[16,16,3,({t,e,sh})=>{for(let k=0;k<10;k++){const a=k/10*6.283,c=Math.cos(a),s2=Math.sin(a);t([[8+c*3-s2*1.6,8+s2*3+c*1.6],[8+c*7.6,8+s2*7.6],[8+c*3+s2*1.6,8+s2*3-c*1.6]],k%2?'#c8c0b0':'#a89c88')}e(8,8,3.4,3.4,'#b8963a');e(8,8,2.2,2.4,'#d8d0c4');sh()}];
-SD.emb_hgiant=[16,16,3,({t,r,sh})=>{t([[3,5],[11,4],[14,8],[13,13],[4,14],[2,9]],'#b8963a');for(let k=0;k<3;k++)r(4+k*3,4,2.2,4,'#9a7a2a');r(4,11,9,1.4,'#7a2030');sh()}];
+SD.emb_hgiant=[16,16,3,({t,e,q,sh})=>{t([[3,7],[13,7],[14,12],[11,15],[5,15],[2,12]],'#4a2c5e');for(let k=0;k<4;k++)t([[4+k*2.6,8],[5.6+k*2.6,8],[3+k*3.2-1,1+(k%2)*2]],'#8a1a2a');for(const[x,y]of[[6,10],[10,10],[8,12]])e(x,y,.9,.8,'#c8342a');t([[6,13],[10,13],[9,15],[7,15]],'#b8963a');sh()}];
 if(SD.qcube&&!SD.qc_cube)SD.qc_cube=[48,48,1,SD.qcube[3]];for(const k in SD){const d=SD[k];if(!d)continue;PNOOL=/^(emb_|qc_)/.test(k)?1:0;let im=paint(d[0],d[1],d[3],d[2]);if(d[2]===6){const h=MKC(im.width/2,im.height/2),hx=h.getContext('2d');hx.imageSmoothingEnabled=false;hx.drawImage(im,0,0,h.width,h.height);im=h}if(PNOOL){const x=im.getContext('2d'),D=x.getImageData(0,0,im.width,im.height),a=D.data;for(let i=0;i<a.length;i+=4)if(a[i+3]){a[i]=Math.round(a[i]*.78+58*.22);a[i+1]=Math.round(a[i+1]*.78+42*.22);a[i+2]=Math.round(a[i+2]*.78+30*.22)}x.putImageData(D,0,0)}PNOOL=0;SPR[k]=NOFL.test(k)?im:flipC(im)}
 // 霊騎士：上半身と兜だけが鎧、下は青い炎の尾で浮く。手前の手で光の三叉槍を地面に立てて持つ（k3 の胴＋kwS の腕）
 // 鎧の色の組（中身の色ごとに合わせる）。S 鎧4段・RD/RD2 外套・GD 縁取り・PL 兜の飾り2色・V 面頬の光
@@ -2513,14 +2589,14 @@ Object.assign(EPT,{hcher:[{n:'wb',pv:[12,13],z:'b',r:'wb'},{n:'lb',pv:[12,25],z:
  hcens:[{n:'hd',pv:[15,20],z:'f',r:'hd'},{n:'wf',pv:[5,18],z:'b',r:'tl'}],
  hstat:[{n:'wb',pv:[13,10],z:'b',r:'wb'},{n:'lb',pv:[12,22],z:'b',r:'lb'},{n:'lf',pv:[18,22],z:'b',r:'lf'},{n:'af',pv:[20,11],z:'f',r:'af'},{n:'wf',pv:[19,10],z:'f',r:'wf'}],
  htwR:[{n:'wb',pv:[12,12],z:'b',r:'wb'},{n:'lb',pv:[13,23],z:'b',r:'lb'},{n:'lf',pv:[15,23],z:'b',r:'lf'},{n:'hd',pv:[15,10],z:'f',r:'hd'},{n:'af',pv:[18,13],z:'f',r:'af'},{n:'wf',pv:[17,13],z:'f',r:'wf'}],
- hgrif:[{n:'wb',pv:[22,12],z:'b',r:'wb'},{n:'lb',pv:[12,24],z:'b',r:'lb'},{n:'ab',pv:[9,18],z:'b',r:'tl'},{n:'lf',pv:[19,24],z:'b',r:'lf'},{n:'hd',pv:[42,14],z:'f',r:'hd'}],
+ hgrif:[{n:'wb',pv:[26,19],z:'b',r:'wb'},{n:'lb',pv:[16,28],z:'b',r:'tl'},{n:'lf',pv:[32,33],z:'b',r:'lf'},{n:'hd',pv:[40,18],z:'f',r:'hd'},{n:'wf',pv:[30,19],z:'f',r:'wf'}],
  hshld:[{n:'wb',pv:[13,13],z:'b',r:'wb'},{n:'ab',pv:[12,15],z:'b',r:'ab'},{n:'lb',pv:[14,29],z:'b',r:'lb'},{n:'lf',pv:[20,29],z:'b',r:'lf'},{n:'hd',pv:[18,11],z:'f',r:'hd'},{n:'af',pv:[24,14],z:'f',r:'af'}],
  hilu:[{n:'wb',pv:[7,8],z:'b',r:'wb'},{n:'wf',pv:[14,8],z:'f',r:'wf'}],
- hser:[{n:'wb',pv:[17,14],z:'b',r:'wb'},{n:'lb',pv:[16,32],z:'b',r:'lb'},{n:'hd',pv:[20,12],z:'f',r:'hd'},{n:'af',pv:[25,16],z:'f',r:'af'},{n:'wf',pv:[24,14],z:'f',r:'wf'}],
+ hser:[{n:'wb',pv:[21,12],z:'b',r:'wb'},{n:'lb',pv:[18,36],z:'b',r:'lb'},{n:'lf',pv:[24,36],z:'b',r:'lf'},{n:'ab',pv:[15,15],z:'b',r:'ab'},{n:'af',pv:[25,14],z:'f',r:'af'}],
  hface:[{n:'wb',pv:[30,30],z:'b',sp:.15,w:[-.4],s:[.6]},{n:'hd',pv:[35,23],z:'f',r:'hd'},{n:'af',pv:[36,40],z:'f',r:'jw'}],
  hfL:[{n:'hd',pv:[16,15],z:'f',r:'hd'}],hfR:[{n:'hd',pv:[16,15],z:'f',r:'hd'}],
  hbloom:[{n:'lb',pv:[30,42],z:'b',r:'lb'},{n:'wb',pv:[32,27],z:'b',sp:.08,w:[-.3],s:[.5]},{n:'hd',pv:[32,27],z:'f',r:'hd'},{n:'af',pv:[32,38],z:'f',r:'tl'}],
- hgiant:[{n:'wb',pv:[22,14],z:'b',r:'wb'},{n:'ab',pv:[16,16],z:'b',r:'ab'},{n:'hd',pv:[32,12],z:'f',r:'hd'},{n:'af',pv:[44,16],z:'f',r:'af'}]});EPT.htwB=EPT.htwR;
+ hgiant:[{n:'wb',pv:[22,30],z:'b',r:'tl'},{n:'ab',pv:[28,41],z:'b',r:'lb'},{n:'hd',pv:[54,30],z:'f',r:'hd'},{n:'af',pv:[50,44],z:'f',r:'lf'},{n:'wf',pv:[56,26],z:'f',r:'tl',o:1.3}]});EPT.htwB=EPT.htwR;
 for(const k in EPT){const d=SD[k];PPART='body';SPR[k+'_pb']=flipC(paint(d[0],d[1],d[3],d[2]));for(const q of EPT[k]){PPART=q.n;SPR[k+'_p'+q.n]=flipC(paint(d[0],d[1],d[3],d[2]))}PPART=null}
 // Ver2.01 四肢を分けた敵の動き（役割 r：hd 頭／af 手前の腕・武器／ab 奥の腕／lf lb 脚／tl 尾）。待機は呼吸・頭の揺れ・腕の振り・体重移動、攻撃は型の系統ごとの溜め→振り抜き→戻り
 const RFAM={slash:'sl',lash:'sl',bash:'bs',slam:'sm',stab:'st',claw:'cl',bite:'bt',magic:'cs',beam:'cs',ice:'cs',bolt:'cs',holy:'cs',curse:'cs',shadow:'cs',water:'cs',fire:'th',rock:'th',saw:'th',acid:'th',needle:'th',sonic:'ro'};
@@ -5122,15 +5198,15 @@ Object.assign(E,{hcher:{n:'讃美の嬰兵',hp:[26,30],stk:2,mv:[{a:8},{a:4,h:2}
  hstat:{n:'祈りの石像',hp:[80,86],slw:1,lp:2,mv:[{lb:'祈り'},{st:6,lb:'目覚め'},{a:11}]},
  htwR:{n:'紅の天使',hp:[34,38],avg:3,mv:[{tnd:1,a:4,lb:'熱の囁き'},{a:9},{a:4,h:2}]},
  htwB:{n:'蒼の天使',hp:[34,38],avg:3,mv:[{a:3,h:3},{fr:1,a:6},{a:10}]},
- hgrif:{n:'公正の獣',hp:[236,248],el:1,art:3,mv:[{a:16},{a:6,h:3},{st:4,b:12,vu:1,lb:'咆哮'},{a:28,sx:1}]},
+ hgrif:{n:'災いの鳥',hp:[236,248],el:1,art:3,mv:[{a:16},{a:6,h:3},{st:4,b:12,vu:1,lb:'咆哮'},{a:28,sx:1}]},
  hshld:{n:'熱誠の盾天使',hp:[200,212],el:1,mv:[{ab:12,lb:'庇護'},{a:14},{a:7,h:2},{a:26,sx:1}]},
  hilu:{n:'幻の嬰児',hp:[14,16],ilu:1,mv:[{a:5},{a:3,wk:1}]},
- hser:{n:'燃える熾天使',hp:[244,256],el:1,lp:1,mv:[{a:22,lb:'突撃'},{sch:['火傷',3],lb:'浄火'},{b:15,st:4,lb:'光輪の誓い'},{a:32,sx:1}]},
+ hser:{n:'首なしの聖使',hp:[244,256],el:1,lp:1,mv:[{a:22,lb:'突撃'},{sch:['火傷',3],lb:'浄火'},{b:15,st:4,lb:'光輪の誓い'},{a:32,sx:1}]},
  hface:{n:'至高の御顔',hp:[440,440],el:2,mv:[{a:8,h:2},{st:3,b:15,lb:'威光'},{a:30,nm:'神罰の光',fc:'#f0d890'},{tng:1,a:10,lb:'凝視'}]},
  hfL:{n:'左の竜首',hp:[70,70],el:2,pt:1,ilu:1,mv:[{a:7},{tnd:1,a:4,lb:'噛みつき'}]},
  hfR:{n:'右の竜首',hp:[70,70],el:2,pt:1,ilu:1,mv:[{a:4,h:2},{wk:1,a:6}]},
  hbloom:{n:'叡智の花冠',hp:[540,540],el:2,lp:1,mv:[{stS:2,lb:'魅惑の香'},{a:6,h:3},{b:18,cst:2,lb:'絡む蔓'},{a:28,nm:'花弁の嵐',fc:'#e8d0c0'},{tnd:1,a:9,lb:'甘い毒'}]},
- hgiant:{n:'節制の巨像',hp:[560,560],el:2,art:2,mv:[{a:12,esc:4,lb:'振り下ろし'},{a:4,h:4},{b:20,st:3},{a:34,nm:'天鎚',fc:'#f0d080'},{sch:['火傷',2],a:8,lb:'灼熱の拳'}]}});
+ hgiant:{n:'深淵の大公',hp:[560,560],el:2,art:2,mv:[{a:12,esc:4,lb:'振り下ろし'},{a:4,h:4},{b:20,st:3},{a:34,nm:'天鎚',fc:'#f0d080'},{sch:['火傷',2],a:8,lb:'灼熱の拳'}]}});
 const FI3H=[[['hcher'],['hring','hring'],['hcens'],['htwR','htwB'],['hray']],[['hbrute'],['hdance'],['hstat'],['hcher','hring'],['hray','hcens'],['htwR','htwB','hring']],[['hbrute','hcens'],['hdance','hring'],['hstat','hcher'],['hray','hray'],['htwR','htwB','hcer'.replace('hcer','hcher')],['hdance','hcens']]],ELH=['hgrif',['hilu','hshld','hilu'],'hser'];
 
 // Ver2.78 眼の欠片（ユーザー指定）：一度でもクリアすると各層のエリートの1つがオーラのマスになり、眼に関わる異形のエリート（通常の約1.2倍）が出る。倒すと眼の欠片。3つで眼が去り、4層（ショップ→休憩→門番→弱まった眼）へ
@@ -5185,7 +5261,7 @@ function clrGet(c){const a=clrAll()[c];return new Set(Array.isArray(a)?a:[])}
 const anyClr=()=>Object.values(clrAll()).some(l=>Array.isArray(l)&&l.length);
 // Ver2.25 初めてのクリアで、タイトルの D への誘導を出す（cardtower_hdg）
 function clrAdd(c,a){if(!anyClr()&&!HDU)try{localStorage.setItem('cardtower_hdg','1')}catch(e){}const d=clrAll(),l=Array.isArray(d[c])?d[c]:[];if(!l.includes(a)){l.push(a);d[c]=l;try{localStorage.setItem('cardtower_clr',JSON.stringify(d))}catch(e){}}}
-function go(s){ENTIP=null;if((s==='win'||s==='over')&&P)rkEnd(s==='win');if(s==='map'||s==='over'||s==='win'||s==='title')rkFlush();try{ambSet(s==='event'?'drone':null)}catch(e){}if(s==='win'&&P)clrAdd(P.cls,P.asc||0);if(!MPON()&&(s==='map'||s==='act'))saveRun();if(s==='map'&&P&&CUR&&CUR.f<0&&P.ainA!==P.act){P.ainA=P.act;AIN={t0:T,a:P.act,n:ANM()}}if(s==='map'&&CUR)MSC=Math.max(0,Math.min(MSW-624,MX(CUR.f)-200));if((s==='over'||s==='win')&&!MPON())clearSave();S=s;scr=0;mpGo(s);if(B)B.sel=-1;const bt=s==='battle'&&B;bgm(s==='title'||s==='select'?'t':bt&&B.en.some(e=>e.k==='eye2')?'e2':bt&&B.en.some(e=>E[e.k]&&E[e.k].au)?'au':bt&&B.en.some(e=>/^gate/.test(e.k))?'gk':s==='eyein'||(bt&&B.en.some(e=>e.k==='eye'))?'v':bt&&A1S()?(B.boss?'b1x':'b1s'):bt&&B.boss?(P.act===3?'x3':'x'):bt?['b','b2','b3'][P.act-1]:'m',0)}
+function go(s){ENTIP=null;if((s==='win'||s==='over')&&P)rkEnd(s==='win');if(s==='map'||s==='over'||s==='win'||s==='title')rkFlush();try{ambSet(s==='event'?'drone':null)}catch(e){}if(s==='win'&&P)clrAdd(P.cls,P.asc||0);if(!MPON()&&(s==='map'||s==='act'))saveRun();if(s==='map'&&P&&CUR&&CUR.f<0&&P.ainA!==P.act){P.ainA=P.act;AIN={t0:T,a:P.act,n:ANM()}}if(s==='map'&&CUR)MSC=Math.max(0,Math.min(MSW-624,MX(CUR.f)-200));if((s==='over'||s==='win')&&!MPON())clearSave();S=s;scr=0;mpGo(s);if(B)B.sel=-1;const bt=s==='battle'&&B;bgm(s==='title'||s==='select'?'t':bt&&B.en.some(e=>e.k==='eye2')?'e2':bt&&B.en.some(e=>E[e.k]&&E[e.k].au)?'au':bt&&B.en.some(e=>/^gate/.test(e.k))?'gk':s==='eyein'||(bt&&B.en.some(e=>e.k==='eye'))?'v':bt&&A1S()?(B.boss?'b1x':'b1s'):bt&&A3H()?(B.boss?'h3x':'h3'):bt&&B.boss?(P.act===3?'x3':'x'):bt?['b','b2','b3'][P.act-1]:'m',0)}
 function gain(k){P.relics.push(k);if(k==='astro')shuf(P.deck.filter(canUp)).slice(0,3).forEach(o=>o.u=1);if(k==='pandora'){const L=[];for(const o of P.deck)if(C[o.i].r===-1){const a={...o};o.i=cardPick(0);o.u=0;L.push([a,{...o}])}tfFx(L)}if(k==='calling'){P.deck.push({i:randCurse(),u:0});for(let j=0;j<3;j++){const r=relicPick();if(r)gain(r)}}if(k==='heart'){P.mhp+=14;P.hp+=14}if(k==='ring'){P.mhp-=8;P.hp=Math.min(P.hp,P.mhp)}if(k==='apple'){P.mhp+=10;P.hp+=10}if(k==='clover')P.gold+=100;if(k==='bottle')P.ps++;if(k==='fruit'){P.mhp+=30;P.hp+=30}if(k==='coffer'){P.ps++;while(P.pot.length<P.ps)P.pot.push(potPick())}if(k==='tome'||k==='cage')(P.bq=P.bq||[]).push(k);if(k==='kifuda')shuf(P.deck.filter(o=>encFor(o).length)).slice(0,3).forEach(o=>ench(o,pk(encFor(o))));say('レリック：'+RL[k][0]+'！ '+RL[k][1])}
 const CH=[{n:'ユウキング',hp:80,rel:'burn',s:'pl',col:'#e8505b',dk:'#3a0c14',lt:'#ff9a7a',dk:[0,0,0,0,0,1,1,1,1,2],dkt:'斬撃×5　防御×4　強打×1',st:'筋力と重い一撃で押し切る屈強な戦士。強化とブロックを得意とする。',key:'得意：筋力・ブロック・全体攻撃'},
 {n:'坂井',hp:70,rel:'snake',s:'si',col:'#58d46a',dk:'#0c2a14',lt:'#a8ffb0',dk:[0,0,0,0,0,1,1,1,1,1,44,45],dkt:'斬撃×5　防御×5　しびれ薬　見逃し',st:'毒と小ナイフで素早く仕留める暗殺者。カードを捨てて手札を回す。',key:'得意：毒・小ナイフ・ドロー'},
@@ -5300,7 +5376,7 @@ const SCC={r:'#ff4a4a',w:'#f0f0f6',b:'#4a8aff',g:'#5aff7a',p:'#b05ae0',y:'#ffd23
 {const d=SD.scales;PPART='body';SPR.scales_pb=flipC(paint(d[0],d[1],d[3],d[2]));for(const n of['bm','pl','pr']){PPART=n;SPR['scales_p'+n]=flipC(paint(d[0],d[1],d[3],d[2]))}PPART=null;}
 for(const k of MUTE1)for(const n of Object.keys(SPR))if(n===k||n===k+'_z'||n.startsWith(k+'_p'))SPR[n]=muteC(SPR[n]);
 // 飛ぶ雑魚：本当に宙に浮かせ、種類ごとに凝った飛び方（eMot の flyIdle）。h 浮く高さ・tr 残像
-const FLYP={hring:{h:24,k:'drone'},hray:{h:16,k:'ser'},hcens:{h:18,k:'garg'},hilu:{h:26,k:'wisp',tr:1},hface:{h:14,k:'ser'},mfly:{h:18,k:'moth'},ubone:{h:20,k:'garg'},rscroll:{h:22,k:'drone'},mowl:{h:14,k:'ser'},ulens:{h:22,k:'drone'},bat:{h:30,k:'bat'},gargoyle:{h:20,k:'garg'},wisp:{h:26,k:'wisp',tr:1},drone:{h:24,k:'drone'},seraph:{h:18,k:'ser'},mothF:{h:22,k:'moth'},mothF2:{h:22,k:'moth'}};for(const k in FLYP)if(E[k])E[k].fly=FLYP[k].h;
+const FLYP={hgrif:{h:12,k:'garg'},hring:{h:24,k:'drone'},hray:{h:16,k:'ser'},hcens:{h:18,k:'garg'},hilu:{h:26,k:'wisp',tr:1},hface:{h:14,k:'ser'},mfly:{h:18,k:'moth'},ubone:{h:20,k:'garg'},rscroll:{h:22,k:'drone'},mowl:{h:14,k:'ser'},ulens:{h:22,k:'drone'},bat:{h:30,k:'bat'},gargoyle:{h:20,k:'garg'},wisp:{h:26,k:'wisp',tr:1},drone:{h:24,k:'drone'},seraph:{h:18,k:'ser'},mothF:{h:22,k:'moth'},mothF2:{h:22,k:'moth'}};for(const k in FLYP)if(E[k])E[k].fly=FLYP[k].h;
 
 // Ver3.27 敵が2体以上の時、行動の開始位置をずらす（ユーザー指定：全員一斉に攻撃・全員一斉に防御のような極端なターンを避ける）。最初の6ターンで「全員が攻撃」「誰も攻撃しない」ターンと、同じ敵が同じ行動をそろえるのを減らす組を選ぶ。ボス・睡眠・連動の腕などは動かさない。乱数は R()（マルチで全員一致）
 function eStag(en,kind){const L=en.filter(e=>!(E[e.k]&&(E[e.k].rnd||E[e.k].lp||E[e.k].rat))&&!e.sl&&!e.pr&&!e.ld&&!e.mn&&e.mv&&e.mv.length>1&&!['eye','eye2','maiden','scales'].includes(e.k));if(kind===2||L.length<2)return;
@@ -5592,12 +5668,12 @@ function plDraw(k,x,y){const b=SPR[k+'_b'],W=WPN[k],pa=B&&B.pa;if(!b){ctx.drawIm
 // 敵の動き：見た目の分類 ECAT（hum 人型・beast 獣・cast 術師・heavy 重い・blob 不定形・fly 飛ぶ）ごとに、攻撃・多段・強化・防御・妨害の動きを変える
 const ECAT={};for(const[c,l]of[['beast','hound spider bonedog serpent phrog dragon wrig'],['cast','scales ghost mage necro priest oracle judge silencer sentry mothP chronos deus phase reaper magik spek imp'],['stat','maiden'],['heavy','archdemon archdemon2 golem colossus behemoth king cube dormant gilL gilR protoA protoB protoC colony splitter ogre armor'],['blob','slime ooze shard'],['fly','bat wisp drone seraph gargoyle mothF mothF2']])for(const k of l.split(' '))ECAT[k]=c;
 for(const[k,c]of[['hollow','heavy'],['mfly','fly'],['megg','blob'],['maggot','blob'],['fab','heavy'],['sbot','hum'],['gbot','heavy'],['lanA','heavy'],['lanB','heavy'],['lanC','heavy'],['shroom','hum'],['kodama','hum'],['caterp','beast'],['bear','beast'],['ubone','fly'],['uclam','heavy'],['ucrab','beast'],['uleech','blob'],['doll','hum'],['rbeetle','heavy'],['mole','beast'],['pill','heavy'],['rscroll','fly'],['mowl','fly'],['bshield','heavy'],['gunner','heavy'],['sculpt','hum'],['ushell','beast'],['ueel','beast'],['uboat','heavy'],['ulens','cast'],['udiver','heavy'],['ucoral','blob'],['uink','blob'],['ubell','heavy'],['udrown','hum'],['ugeel','beast'],['userp','beast'],['ulight','stat']])ECAT[k]=c;
-for(const[k,c]of[['hcher','hum'],['hring','fly'],['hray','fly'],['hbrute','heavy'],['hdance','hum'],['hcens','fly'],['hstat','heavy'],['htwR','hum'],['htwB','hum'],['hgrif','beast'],['hshld','heavy'],['hilu','fly'],['hser','cast'],['hface','stat'],['hfL','beast'],['hfR','beast'],['hbloom','stat'],['hgiant','heavy']])ECAT[k]=c;
+for(const[k,c]of[['hcher','hum'],['hring','fly'],['hray','fly'],['hbrute','heavy'],['hdance','hum'],['hcens','fly'],['hstat','heavy'],['htwR','hum'],['htwB','hum'],['hgrif','fly'],['hshld','heavy'],['hilu','fly'],['hser','hum'],['hface','stat'],['hfL','beast'],['hfR','beast'],['hbloom','stat'],['hgiant','beast']])ECAT[k]=c;
 const ECT={hum:.2,beast:.26,cast:.26,heavy:.3,blob:.27,fly:.25};
 // 敵の技の種類（ユーザー指定：体ごと突っ込むのは四足の獣と不定形だけ。他は上半身で斬る・引っ掻く・噛む・殴る・鞭打つ・突く・魔法・光線）
 const AST={};for(const[c,l]of[['slash','goblin skel knight armor mirrorK spek reaper archdemon archdemon2 protoB mothF mothF2'],['bash','ogre nob oni gilL protoA'],['claw','gargoyle hound'],['bite','bonedog spider'],['lash','chainer'],['stab','shard'],['beam','sentry gilR deus splitter'],['magic','magik chronos scales'],['fire','dragon imp'],['ice','wisp ghost silencer'],['bolt','judge oracle'],['acid','slime ooze phrog wrig serpent'],['rock','golem colony colossus'],['needle','drone cube'],['shadow','necro phase'],['sonic','bat behemoth'],['slam','king dormant'],['holy','seraph priest'],['saw','protoC'],['water','maiden'],['curse','mage mothP']])for(const k of l.split(' '))AST[k]=c;
 for(const[k,c]of[['hollow','bash'],['mfly','acid'],['maggot','bite'],['fab','claw'],['sbot','stab'],['gbot','bash'],['lanA','ice'],['lanB','ice'],['lanC','ice'],['shroom','acid'],['kodama','stab'],['caterp','bite'],['bear','claw'],['ubone','bite'],['uclam','water'],['ucrab','claw'],['uleech','bite'],['doll','stab'],['rbeetle','bash'],['mole','claw'],['pill','bash'],['rscroll','bite'],['mowl','claw'],['bshield','bash'],['gunner','needle'],['sculpt','bash'],['ushell','claw'],['ueel','bite'],['uboat','bash'],['ulens','beam'],['udiver','bash'],['ucoral','stab'],['uink','acid'],['ubell','sonic'],['udrown','claw'],['ugeel','bite'],['userp','water'],['ulight','beam']])AST[k]=c;
-for(const[k,c]of[['hcher','stab'],['hring','holy'],['hray','lash'],['hbrute','slash'],['hdance','slash'],['hcens','fire'],['hstat','slash'],['htwR','fire'],['htwB','bolt'],['hgrif','claw'],['hshld','bash'],['hilu','holy'],['hser','fire'],['hface','holy'],['hfL','bite'],['hfR','bite'],['hbloom','lash'],['hgiant','slam']])AST[k]=c;
+for(const[k,c]of[['hcher','stab'],['hring','holy'],['hray','lash'],['hbrute','slash'],['hdance','slash'],['hcens','fire'],['hstat','slash'],['htwR','fire'],['htwB','bolt'],['hgrif','claw'],['hshld','bash'],['hilu','holy'],['hser','stab'],['hface','holy'],['hfL','bite'],['hfR','bite'],['hbloom','lash'],['hgiant','claw']])AST[k]=c;
 const eSty=e=>AST[e.k]||({hum:'slash',beast:'bite',cast:'magic',heavy:'bash',blob:'bash',fly:'claw'})[ECAT[e.k]||'hum'];
 const EHT={slash:.2,claw:.22,bite:.22,bash:.26,lash:.22,stab:.2,magic:.26,beam:.24,fire:.56,ice:.46,bolt:.5,acid:.52,rock:.6,needle:.42,shadow:.52,sonic:.46,slam:.56,holy:.5,saw:.46,water:.5,curse:.56};
 // Ver2.00 飛び道具・前触れのある攻撃（ユーザー指定：通常攻撃の演出を増やす）。溜めの途中（EHT×.45）で ep を出し、当たりの時刻に着く。g＝地面から出すもの
@@ -6622,7 +6698,7 @@ function drawVol(){const x=436,y=32,w=200,h=72;hit(0,0,640,360,()=>{VP=0});ctx.f
 BFX.archdemon2=BFX.archdemon;
 // エリートの強攻撃の演出（ボスより控えめ。技名・「必殺」表示なし）。a=気をためる位置（反転後の絵の割合）
 Object.assign(ECAT,{auA1:'blob',auA2:'cast',auA3:'cast',eyeC:'cast',auA2s:'cast',auA2t:'cast',gateS:'cast',gateP:'cast'});Object.assign(AST,{eyeC:'magic',auA2s:'bite',auA2t:'bite',auA1:'acid',auA2:'lash',auA3:'magic',gateS:'bash',gateP:'stab'});
-const EFX={mowl:{c:'#5ff6ff',t:'slam'},auA1:{c:'#ff3b5c',t:'stab',a:[.5,.5]},auA2:{c:'#c9a0ff',t:'beam',a:[.6,.25]},auA3:{c:'#ff2a4a',t:'pillar',a:[.5,.2]},gateS:{c:'#ff3b5c',t:'slam'},gateP:{c:'#ff8a3a',t:'stab',a:[.5,.5]},nob:{c:'#ffd23f',t:'slam'},hound:{c:'#ff8a2a',t:'fire',a:[.09,.45]},oni:{c:'#ff3b3b',t:'slam'},necro:{c:'#7dff9a',t:'orb',a:[.18,.12]},behemoth:{c:'#d8a060',t:'slam'},colossus:{c:'#ff4fd8',t:'beam',a:[.42,.17]},oracle:{c:'#ff4fd8',t:'beam',a:[.42,.44]},judge:{c:'#5ff6ff',t:'pillar',a:[.5,.2]},colony:{c:'#e8c88a',t:'stab',a:[.5,.5]},phrog:{c:'#9aff6a',t:'orb',a:[.12,.45]},magik:{c:'#9ab0ff',t:'bomb',a:[.09,.47]},spek:{c:'#5ff6ff',t:'fire',a:[.05,.15],pl:['#1a6aff','#5ff6ff','#9af6ff','#ffffff']}};Object.assign(EFX,{hgrif:{c:'#f0d080',t:'slam'},hshld:{c:'#ffd890',t:'pillar',a:[.5,.2]},hser:{c:'#ff9a40',t:'fire',a:[.7,.2],pl:['#ffe0a0','#ff9a40','#c84a20']}});
+const EFX={mowl:{c:'#5ff6ff',t:'slam'},auA1:{c:'#ff3b5c',t:'stab',a:[.5,.5]},auA2:{c:'#c9a0ff',t:'beam',a:[.6,.25]},auA3:{c:'#ff2a4a',t:'pillar',a:[.5,.2]},gateS:{c:'#ff3b5c',t:'slam'},gateP:{c:'#ff8a3a',t:'stab',a:[.5,.5]},nob:{c:'#ffd23f',t:'slam'},hound:{c:'#ff8a2a',t:'fire',a:[.09,.45]},oni:{c:'#ff3b3b',t:'slam'},necro:{c:'#7dff9a',t:'orb',a:[.18,.12]},behemoth:{c:'#d8a060',t:'slam'},colossus:{c:'#ff4fd8',t:'beam',a:[.42,.17]},oracle:{c:'#ff4fd8',t:'beam',a:[.42,.44]},judge:{c:'#5ff6ff',t:'pillar',a:[.5,.2]},colony:{c:'#e8c88a',t:'stab',a:[.5,.5]},phrog:{c:'#9aff6a',t:'orb',a:[.12,.45]},magik:{c:'#9ab0ff',t:'bomb',a:[.09,.47]},spek:{c:'#5ff6ff',t:'fire',a:[.05,.15],pl:['#1a6aff','#5ff6ff','#9af6ff','#ffffff']}};Object.assign(EFX,{hgrif:{c:'#6af0ff',t:'beam',a:[.12,.3]},hshld:{c:'#ffd890',t:'pillar',a:[.5,.2]},hser:{c:'#f0d890',t:'pillar',a:[.5,.15]}});
 EFX.udrown={c:'#9ab8a0',t:'stab'};EFX.ugeel={c:'#5ac8c0',t:'stab'};
 function efxCh(o,ef,p){const a=ef.a||[.5,.45],ax=o.x+o.w*a[0],ay=o.y+o.h*a[1];ctx.globalAlpha=p;for(let k=0;k<14;k++){const an=hs(k)*6.283,r=(1-((p*1.4+hs(k+2))%1))*56;sq(ax+Math.cos(an)*r,ay+Math.sin(an)*r*.7,k%3?3:4,k%4?ef.c:'#fff')}
  for(let w=0;w<3;w++){const q=1-((T*1.6+w/3)%1);ctx.globalAlpha=p*(1-q)*.9;ell(o.x+o.w/2,o.y+o.h*.55,o.w*.35+q*60,o.h*.3+q*40,28,3,w%2?'#fff':ef.c,T)}ctx.globalAlpha=p;
@@ -8020,7 +8096,7 @@ function emvTr(d){const t=[],a=(c,l)=>{if(c)t.push(l)};a(d.rnd,'行動はラン�
 function emvMove(m){const e=EMV.e;if(e.dead){e.dead=0;e.dT=null}EMV.d=0;e.it=m;if(m.nm||m.sx){B.sp={e,t:0,lt:!m.nm};EMV.sp=T;EMV.sm=m;sfx('ch');return}emvDo(m)}
 function emvDo(m){const e=EMV.e,k=m.a?((m.h||1)>1?'mh':'at'):(m.st||m.ab||m.hl||m.smn||m.cp||m.sa||m.gzA||m.rt||m.sor)?'bf':m.b?'bk':'db';e.an={k,t0:T,h:m.h||1,m};if(XA[e.k])XA[e.k](e,m);if(m.a){const h=m.h||1,st=eSty(e),q=ePos(0),im=SPR[e.k];if(!XA[e.k]&&EPJ[st]&&!eWb(e))epLaunch(e,q,h);for(let j=0;j<h;j++){const dl=eHT2(e,j);fxs('eh',110,166,{d:.4,dl,s:st,ex:{ex:q.x-20,ey:150}});setTimeout(()=>{if(S!=='emv')return;sfx('e'+st);EMV.ph=T},dl*1000)}}}
 // 曲の一覧（敵一覧の「曲」から全曲を聴ける）
-const EMUS=[['t','タイトル'],['m','地図'],['b','1層の戦闘'],['b1s','沈没都市の戦闘'],['x','1・2層のボス'],['b1x','沈没都市のボス'],['b2','2層の戦闘'],['b3','3層の戦闘'],['x3','3層のボス'],['v','虚空の眼（最上階）'],['au','眼の欠片のエリート'],['gk','門番'],['e2','虚空の眼（4層）']];
+const EMUS=[['t','タイトル'],['m','地図'],['b','1層の戦闘'],['b1s','沈没都市の戦闘'],['x','1・2層のボス'],['b1x','沈没都市のボス'],['b2','2層の戦闘'],['b3','3層の戦闘'],['x3','3層のボス'],['h3','天上の聖堂の戦闘'],['h3x','天上の聖堂のボス'],['v','虚空の眼（最上階）'],['au','眼の欠片のエリート'],['gk','門番'],['e2','虚空の眼（4層）']];
 function emvOpen(){SPR.eye2=SPR.eye;EMV={oB:B,i:0,ph:0};emvSet(0);S='emv';scr=0}
 function emvClose(){B=EMV.oB;EMV=null;S='title';XF=[];bgm('t')}
 function emvAct(k){const e=EMV.e;if(e.dead){e.dead=0;e.dT=null}EMV.d=0;if(k==='hit'){e.fl=.3;e.flS=T;e.sh=.2;sfx('hsw');return}if(k==='die'){e.dead=1;e.dT=T;EMV.d=T+1.1;sfx('hv');return}
