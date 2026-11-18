@@ -8,5 +8,5 @@ const d=await p.evaluate(async([code,fn,sp,steps])=>{(0,eval)(code);const SR=320
  const n=L.length,ab=new ArrayBuffer(44+n*4),dv=new DataView(ab),ws=(o,s)=>{for(let i=0;i<s.length;i++)dv.setUint8(o+i,s.charCodeAt(i))};ws(0,'RIFF');dv.setUint32(4,36+n*4,true);ws(8,'WAVEfmt ');dv.setUint32(16,16,true);dv.setUint16(20,1,true);dv.setUint16(22,2,true);dv.setUint32(24,SR,true);dv.setUint32(28,SR*4,true);dv.setUint16(32,4,true);dv.setUint16(34,16,true);ws(36,'data');dv.setUint32(40,n*4,true);
  for(let i=0;i<n;i++){dv.setInt16(44+i*4,Math.max(-1,Math.min(1,L[i]))*32767,true);dv.setInt16(46+i*4,Math.max(-1,Math.min(1,R[i]))*32767,true)}
  let s='';const u=new Uint8Array(ab);for(let i=0;i<u.length;i+=32768)s+=String.fromCharCode.apply(null,u.subarray(i,i+32768));return [btoa(s),mx]},[code,fn,+sp,+steps]);
-fs.writeFileSync('/tmp/claude-0/ser/r.wav',Buffer.from(d[0],'base64'));console.log('peak',d[1],er);
-execSync(`ffmpeg -y -loglevel error -i /tmp/claude-0/ser/r.wav -b:a 128k ${out}`);await b.close()})();
+fs.writeFileSync(out+'.wav',Buffer.from(d[0],'base64'));console.log('peak',d[1],er);
+execSync(`ffmpeg -y -loglevel error -i ${out}.wav -b:a 128k ${out}`);await b.close()})();

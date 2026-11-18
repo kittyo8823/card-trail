@@ -10,7 +10,7 @@ const BOT=`window.__bot=setInterval(()=>{try{
  if(S==='neow'){NE.opts[(MPR.me.charCodeAt(0))%NE.opts.length][1]();return}
  if(S==='map'){if(P.nw===0&&CUR.f===-1&&P.act===1){P.nw=1;NE.t0=T;go('neow');return}const v=MPR.votes[LK];if(!v||v.f!==CUR.f+1||v.a!==P.act){const a=avail();if(a.length)enter(a[(MPR.me.charCodeAt(1)+CUR.f)%a.length])}return}
  if(S==='battle'&&MPB&&MPB.on){const b=B;if(b.ph!=='p'||b.dn||b.down||b.vt)return;if(b.dsc>0){discardCard(0);return}
-  for(let i=0;i<b.hand.length;i++){const c=cd(b.hand[i]);if(!c.un&&(c.X||b.me>=c.c)&&!b.hand[i].sld&&!(c.ms&&b.pl>0)&&!(c.solo&&b.hand.length>1)&&!(c.pay&&P.gold<c.pay)&&b.pl<cLim()&&!(c.hp&&P.hp<=c.hp+5)){const al=alive();play(i,b.en.indexOf(al[(i+b.turn)%al.length]));return}}
+  for(let i=0;i<b.hand.length;i++){const c=cd(b.hand[i]);if(!c.un&&(c.X||b.me>=c.c)&&!b.hand[i].sld&&!(c.ms&&b.pl>0)&&!(c.solo&&b.hand.length>1)&&!(c.pay&&P.gold<c.pay)&&b.pl<cLim()&&(typeof jgSkOk!=="function"||jgSkOk(c,b))&&!(c.hp&&P.hp<=c.hp+5)){const al=alive();play(i,b.en.indexOf(al[(i+b.turn)%al.length]));return}}
   if(P.pot.length&&Math.random()<.05){usePot(0);return}endTurn();return}
  if(S==='reward'){if(RW.pot)givePot(RW.pot);if(RW.cards&&RW.cards.length)P.deck.push({i:RW.cards[0],u:0});after();return}
  if(S==='btr'){if(BT.pick<0){BT.pick=0;BT.t0=T;gain(BT.rs[0])}btNext();return}

@@ -6,16 +6,16 @@ const URL='file://'+path.resolve(__dirname,'../index.html'),OUT=path.join(__dirn
 (async()=>{fs.mkdirSync(OUT,{recursive:true});const br=await chromium.launch();const pg=await br.newPage({viewport:{width:1280,height:720}});
 const errs=[];pg.on('pageerror',e=>errs.push(e.message));
 await pg.route('**/fonts.googleapis.com/**',r=>r.abort());
-if(process.env.V3)await pg.addInitScript(v=>{window.__V3=v},process.env.V3);
+if(process.env.V3)await pg.addInitScript(v=>{window.__V3=v},process.env.V3);if(process.env.V2)await pg.addInitScript(v=>{window.__V2=v},process.env.V2);
 await pg.goto(URL);await pg.waitForTimeout(300);let bad=0;
 for(const cl of[0,1,2,3,4,6,10])for(let run=0;run<RUNS;run++){
 const res=await pg.evaluate(async cl=>{const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-newRun(cl);if(window.__V3)P.v3=window.__V3;P.mhp=P.hp=400;NE.opts[0][1]();if(S==='pick'){PICK.cb&&PICK.cb(PICK.list[0])}if(S==='conf'){P.deck[CONF.i].u=1;CONF.done()}if(S==='reward'){P.deck.push({i:RW.cards[0],u:0});after()}
+newRun(cl);if(window.__V3)P.v3=window.__V3;if(window.__V2)P.v2=window.__V2;P.mhp=P.hp=400;NE.opts[0][1]();if(S==='pick'){PICK.cb&&PICK.cb(PICK.list[0])}if(S==='conf'){P.deck[CONF.i].u=1;CONF.done()}if(S==='reward'){P.deck.push({i:RW.cards[0],u:0});after()}
 let steps=0,stuck=0,lastSig='';
 while(steps++<15000){if(S==='battle'&&B.ph==='lv'){startAct();continue}if(S==='over'||S==='win'||(S==='battle'&&B.ph==='L'))break;
  if(S==='map'){if(ancP()){window.ANCN=(window.ANCN||0)+1;openAnc();continue}const a=avail();enter(a[a.length*Math.random()|0]);}
  else if(S==='battle'){const b=B;
-  if(b.ph==='p'&&!b.vt){if(b.dsc>0){discardCard(0)}else{let done=0;for(let i=0;i<b.hand.length;i++){const c=cd(b.hand[i]);if(!c.un&&(c.X||b.me>=c.c)&&!(c.tc&&PS.ki<c.tc)&&!(has('choker')&&b.pl>=6)&&!b.hand[i].sld&&!(c.ms&&b.pl>0)&&!(c.solo&&b.hand.length>1)&&!(c.pay&&P.gold<c.pay)&&b.pl<cLim()&&!(c.hp&&P.hp<=c.hp+5)){const al=alive();play(i,b.en.indexOf(al[al.length*Math.random()|0]));done=1;break}}if(!done)endTurn()}}
+  if(b.ph==='p'&&!b.vt){if(b.dsc>0){discardCard(0)}else{let done=0;for(let i=0;i<b.hand.length;i++){const c=cd(b.hand[i]);if(!c.un&&(c.X||b.me>=c.c)&&!(c.tc&&PS.ki<c.tc)&&!(has('choker')&&b.pl>=6)&&!b.hand[i].sld&&!(c.ms&&b.pl>0)&&!(c.solo&&b.hand.length>1)&&!(c.pay&&P.gold<c.pay)&&b.pl<cLim()&&(typeof jgSkOk!=="function"||jgSkOk(c,b))&&!(c.hp&&P.hp<=c.hp+5)){const al=alive();play(i,b.en.indexOf(al[al.length*Math.random()|0]));done=1;break}}if(!done)endTurn()}}
   update(0.05);if(Math.random()<.02&&P.pot.length&&b.ph==='p'&&!b.vt)usePot(0);if(B.turn>60){if(B.en.some(e=>e.k==='eye')){P.hp=0;lose()}else return{err:'60ターン以上つづく戦闘'}}}
  else if(S==='reward'){if(RW.pot)givePot(RW.pot);P.deck.push({i:RW.cards[0],u:0});after()}
  else if(S==='btr'){if(BT.pick<0){BT.pick=0;BT.t0=T;if(BT.anc!=null){if(anDo(BT.rs[0]))continue}else gain(BT.rs[0])}btNext()}
