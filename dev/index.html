@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:1,e:28/24,b:2.1};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.60';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:1,e:28/24,b:2.1};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.61';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -2317,7 +2317,7 @@ SD.hgiant=[74,58,3,({r,p,q,l,t,e,m,sh,pt})=>{
  const tail=(x0,y0,dir,c1,c2,sp,a0,n)=>{sp=sp||2.3;a0=a0==null?.7:a0;n=n||16;let px=x0,py=y0;for(let k=0;k<n;k++){const s2=k/(n-1),a=-1.57+dir*(a0-s2*1.9),w=2.4-s2*1.1,nx=px+Math.cos(a)*sp,ny=py+Math.sin(a)*sp;t([[px-w,py],[px+w,py],[nx+w*.8,ny],[nx-w*.8,ny]],k%2?c1:c2);if(k%4===2)r(Math.min(px,nx)-w,py-1,w*2+1,1.4,HG);px=nx;py=ny}
   const a=-1.57+dir*(-1.4);l(px,py,px+Math.cos(a)*6,py+Math.sin(a)*6,HG,1.2);t([[px-2,py],[px+Math.cos(a-.9)*7,py+Math.sin(a-.9)*7],[px+1,py+1]],HGL);t([[px+2,py],[px+Math.cos(a+.9)*7,py+Math.sin(a+.9)*7],[px,py+1]],HG)};
  const leg=(x0,y0,x1,y1,x2,y2,c)=>{l(x0,y0,x1,y1,c,1.8);l(x1,y1,x2,y2,c,1.4);t([[x2-1,y2-1],[x2+1,y2-1],[x2+(x2-x1)*.4,y2+3]],'#9a8aa8');e(x1,y1,1.4,1.4,HG)};
- pt('wb',()=>{tail(30,26,-.7,'#3a2248',PD,1.9,.15,13);tail(26,28,-1,PD,PU,2.1,.45,15);tail(22,30,-1,PD,PU)});/* Ver4.60 触手（三叉の尾）を6本に（ユーザー指定） */
+ /* Ver4.61 触手（三叉の尾）6本を、甲殻の別々の場所から1本ずつ生やし、部位 t1〜t6 でそれぞれ別に動かす（ユーザー指定） */pt('t1',()=>{tail(20,32,-1,PD,PU,2.2,.75,15)});pt('t2',()=>{tail(28,25,-.8,PD,'#3a2248',2,.4,14)});pt('t3',()=>{tail(37,22,-.45,'#3a2248',PD,1.9,.1,13)});
  pt('ab',()=>{leg(26,40,12,34,4,50,PD);leg(30,42,20,44,14,56,PD)});
  t([[22,28],[34,22],[50,22],[60,30],[58,42],[44,48],[28,46],[18,38]],PU);t([[22,28],[30,24],[28,46],[18,38]],PL);
  for(let k=0;k<6;k++)t([[26+k*5,25-(k%2)],[28+k*5,17-(k%2)*2],[30+k*5,24-(k%2)]],k%2?'#3a2440':PD);
@@ -2328,7 +2328,7 @@ SD.hgiant=[74,58,3,({r,p,q,l,t,e,m,sh,pt})=>{
   for(let k=0;k<6;k++){const x=48+k*3.4,a=-1.57+(k-2.5)*.3,ln=10+(k%2)*5;l(x,16,x+Math.cos(a)*ln*.6,16+Math.sin(a)*ln*.6,k%2?RD:RH,1.1);l(x+Math.cos(a)*ln*.6,16+Math.sin(a)*ln*.6,x+Math.cos(a+(k<3?-.6:.6))*ln,16+Math.sin(a)*ln,k%2?RD:RH,.7)}
   t([[50,40],[64,40],[62,46],[57,48],[52,46]],HG);t([[53,42],[61,42],[60,45],[54,45]],HK);for(let k=0;k<4;k++)q(54+k*2,42.4,'#e8e0c8')});
  pt('af',()=>{leg(52,42,62,40,70,52,PU);leg(46,46,52,50,56,58,PU)});
- pt('wf',()=>{tail(48,24,.7,PU,'#3a2248',1.9,.15,13);tail(52,25,1,PD,PU,2.1,.45,15);tail(56,26,1,PU,PD)});
+ pt('t4',()=>{tail(45,21,.45,PU,'#3a2248',1.9,.1,13)});pt('t5',()=>{tail(53,23,.8,PU,PD,2,.4,14)});pt('t6',()=>{tail(60,30,1,PU,PD,2.2,.75,15)});
  sh()}];
 
 SD.hfL=SD.hdrg;SD.hfR=SD.hdrg;
@@ -2756,7 +2756,7 @@ Object.assign(EPT,{hwheel:[{n:'wb',pv:[18,14],z:'b',r:'wb'},{n:'ab',pv:[17,16],z
  hface:[{n:'wb',pv:[30,30],z:'b',sp:.15,w:[-.4],s:[.6]},{n:'hd',pv:[35,23],z:'f',r:'hd'},{n:'af',pv:[36,40],z:'f',r:'jw'}],
  hfL:[{n:'hd',pv:[16,15],z:'f',r:'hd'}],hfR:[{n:'hd',pv:[16,15],z:'f',r:'hd'}],
  hbloom:[{n:'lb',pv:[30,42],z:'b',r:'lb'},{n:'wb',pv:[32,27],z:'b',sp:.08,w:[-.3],s:[.5]},{n:'hd',pv:[32,27],z:'f',r:'hd'},{n:'af',pv:[32,38],z:'f',r:'tl'}],
- hgiant:[{n:'wb',pv:[22,30],z:'b',r:'tl'},{n:'ab',pv:[28,41],z:'b',r:'lb'},{n:'hd',pv:[54,30],z:'f',r:'hd'},{n:'af',pv:[50,44],z:'f',r:'lf'},{n:'wf',pv:[56,26],z:'f',r:'tl',o:1.3}]});EPT.htwB=EPT.htwR;
+ hgiant:[{n:'t1',pv:[20,32],z:'b',r:'tl',o:0},{n:'t2',pv:[28,25],z:'b',r:'tl',o:2.3},{n:'t3',pv:[37,22],z:'b',r:'tl',o:4.1},{n:'ab',pv:[28,41],z:'b',r:'lb'},{n:'hd',pv:[54,30],z:'f',r:'hd'},{n:'af',pv:[50,44],z:'f',r:'lf'},{n:'t4',pv:[45,21],z:'f',r:'tl',o:1.2},{n:'t5',pv:[53,23],z:'f',r:'tl',o:3.4},{n:'t6',pv:[60,30],z:'f',r:'tl',o:5.3}]});EPT.htwB=EPT.htwR;
 for(const k in EPT){const d=SD[k];PPART='body';SPR[k+'_pb']=flipC(paint(d[0],d[1],d[3],d[2]));for(const q of EPT[k]){PPART=q.n;SPR[k+'_p'+q.n]=flipC(paint(d[0],d[1],d[3],d[2]))}PPART=null}
 // Ver2.01 四肢を分けた敵の動き（役割 r：hd 頭／af 手前の腕・武器／ab 奥の腕／lf lb 脚／tl 尾）。待機は呼吸・頭の揺れ・腕の振り・体重移動、攻撃は型の系統ごとの溜め→振り抜き→戻り
 const RFAM={slash:'sl',lash:'sl',bash:'bs',slam:'sm',stab:'st',claw:'cl',bite:'bt',magic:'cs',beam:'cs',ice:'cs',bolt:'cs',holy:'cs',curse:'cs',shadow:'cs',water:'cs',fire:'th',rock:'th',saw:'th',acid:'th',needle:'th',sonic:'ro'};
@@ -2782,7 +2782,7 @@ function hhRig(e,q,i){const j=q.hi,ph=T+i*1.7;let a=.07*Math.sin(ph*(1.05+.37*j)
 // Ver4.19 被弾の大げさな動き（ユーザー指定）：一瞬で大きく吹き飛び、ばねのように揺れ戻る形。u＝当たってからの秒
 const KB=u=>u<0?0:u<.05?u/.05:Math.exp(-(u-.05)*5.5)*Math.cos((u-.05)*12);
 function rigA(e,q,i){if(q.hi!=null&&e.k==='hound')return hhRig(e,q,i);const r=q.r,ph=T+i*1.7+(q.o||0),br=Math.sin(ph*2.2);let a=0,dx=0,dy=0;
- if(r==='hd'){a=.05*Math.sin(ph*1.3);dy=.3*br}else if(r==='af'){a=.1*Math.sin(ph*1.6)+.04*br}else if(r==='ab'){a=-.1*Math.sin(ph*1.6+.6)-.04*br}else if(r==='lf'){a=.03*Math.sin(ph*1.1)}else if(r==='lb'){a=-.03*Math.sin(ph*1.1)}else if(r==='tl'){a=.14*Math.sin(ph*1.8)}else if(r==='jw'){a=.06+.05*Math.sin(ph*2.2)}else if(r==='wf'){a=.22*Math.sin(ph*4.4)}else if(r==='wb'){a=-.22*Math.sin(ph*4.4)}else if(r==='cp'){a=.05*Math.sin(ph*1.7)}
+ if(r==='hd'){a=.05*Math.sin(ph*1.3);dy=.3*br}else if(r==='af'){a=.1*Math.sin(ph*1.6)+.04*br}else if(r==='ab'){a=-.1*Math.sin(ph*1.6+.6)-.04*br}else if(r==='lf'){a=.03*Math.sin(ph*1.1)}else if(r==='lb'){a=-.03*Math.sin(ph*1.1)}else if(r==='tl'){a=.14*Math.sin(ph*(1.8+(q.o||0)*.08))}else if(r==='jw'){a=.06+.05*Math.sin(ph*2.2)}else if(r==='wf'){a=.22*Math.sin(ph*4.4)}else if(r==='wb'){a=-.22*Math.sin(ph*4.4)}else if(r==='cp'){a=.05*Math.sin(ph*1.7)}
  /* Ver4.18 部位で動く敵の共通の動きを凝る（ユーザー指定）
   待機：時々首をかしげて見回す・重心を左右の脚に移す・腕がそれに遅れてついてくる */
  {const c=(T*.17+i*.31+(e.mh%7)*.11)%1,s2=(Math.floor(T*.17+i*.31+(e.mh%7)*.11)%2)?1:-1;if(c<.16){const u=Math.sin(c/.16*Math.PI);if(r==='hd'){a+=.13*s2*u;dy-=.3*u}else if(r==='af'||r==='ab')a+=.04*s2*u}
