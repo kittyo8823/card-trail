@@ -6,10 +6,11 @@ const URL='file://'+path.resolve(__dirname,'../index.html'),OUT=path.join(__dirn
 (async()=>{fs.mkdirSync(OUT,{recursive:true});const br=await chromium.launch();const pg=await br.newPage({viewport:{width:1280,height:720}});
 const errs=[];pg.on('pageerror',e=>errs.push(e.message));
 await pg.route('**/fonts.googleapis.com/**',r=>r.abort());
+if(process.env.V3)await pg.addInitScript(v=>{window.__V3=v},process.env.V3);
 await pg.goto(URL);await pg.waitForTimeout(300);let bad=0;
 for(const cl of[0,1,2,3,4,6,10])for(let run=0;run<RUNS;run++){
 const res=await pg.evaluate(async cl=>{const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-newRun(cl);P.mhp=P.hp=400;NE.opts[0][1]();if(S==='pick'){PICK.cb&&PICK.cb(PICK.list[0])}if(S==='conf'){P.deck[CONF.i].u=1;CONF.done()}if(S==='reward'){P.deck.push({i:RW.cards[0],u:0});after()}
+newRun(cl);if(window.__V3)P.v3=window.__V3;P.mhp=P.hp=400;NE.opts[0][1]();if(S==='pick'){PICK.cb&&PICK.cb(PICK.list[0])}if(S==='conf'){P.deck[CONF.i].u=1;CONF.done()}if(S==='reward'){P.deck.push({i:RW.cards[0],u:0});after()}
 let steps=0,stuck=0,lastSig='';
 while(steps++<15000){if(S==='battle'&&B.ph==='lv'){startAct();continue}if(S==='over'||S==='win'||(S==='battle'&&B.ph==='L'))break;
  if(S==='map'){if(ancP()){window.ANCN=(window.ANCN||0)+1;openAnc();continue}const a=avail();enter(a[a.length*Math.random()|0]);}
