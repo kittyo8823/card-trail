@@ -1,0 +1,13 @@
+const {chromium}=require('playwright'),path=require('path');
+(async()=>{const b=await chromium.launch();const p=await b.newPage();const er=[];p.on('pageerror',e=>er.push(e.message));await p.goto('file://'+path.resolve(__dirname,'../index.html'));await p.waitForTimeout(600);await p.evaluate(()=>{window.requestAnimationFrame=()=>0});
+const r=await p.evaluate(()=>{const out={};const st=()=>{B.bn=null;for(let i=0;i<10;i++)update(.05)};newRun(0);P.v3='h';P.act=3;go('map');
+ fight(['hwheel'],0);st();out.dbl=eOrd();
+ fight(['hgear'],0);st();let e=B.en[0];e.it=e.mv[1];enemyAct(e);out.chg1=[e.chgB,e.i];hitE(e,40,0,0,1);out.chg2=[e.chgB,e.stn,e.i];
+ fight(['hwis'],0);st();e=B.en[0];e.it=e.mv[0];enemyAct(e);out.drn=B.nte;
+ fight(['hdrag'],0);st();e=B.en[0];e.hp-=20;const h0=e.hp;e.it=e.mv[2];enemyAct(e);out.rgn=e.hp-h0;
+ fight(['htau','hcand'],0);st();const ta=B.en.find(x=>x.k==='htau'),ot=B.en.find(x=>x.k!=='htau');B.me=9;B.hand.push({i:0,u:0});const hp0=ta.hp+ta.blk;play(B.hand.length-1,B.en.indexOf(ot));out.tau=[hp0,ta.hp+ta.blk,ot.hp===ot.mh];
+ e=B.en.find(x=>x.k==='hcand');e.it=e.mv[0];const d0=B.dr.length,x0=B.ex.length;enemyAct(e);out.ex2=[d0-B.dr.length,B.ex.length-x0];
+ fight(['hscr'],0);st();e=B.en[0];const dk=P.deck.length;e.it=e.mv[2];enemyAct(e);e.it=e.mv[2];enemyAct(e);out.crs=P.deck.length-dk;
+ fight(['hnun','hcher'],0);st();const ch=B.en.find(x=>x.k==='hcher');ch.stk=0;hitE(ch,999,0,0,1);const nu=B.en.find(x=>x.k==='hnun');nu.it=nu.mv[0];enemyAct(nu);out.rvv=[ch.dead,ch.hp,ch.mh];
+ fight(['hthf'],0);st();e=B.en[0];B.blk=15;e.it=e.mv[0];enemyAct(e);out.bst=[B.blk,e.blk];
+ return out});console.log(JSON.stringify(r));console.log(er);await b.close()})();
