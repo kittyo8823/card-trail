@@ -38,24 +38,28 @@ BFULL.hbloom=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(622),VN=['#3a5a3a','#2a
  for(let k=0;k<60;k++){const px=rn()*640,py=212+rn()*140;x.fillStyle=k%3?'rgba(90,140,80,.5)':'#d8d4c0';x.fillRect(BF.F(px),BF.F(py),k%3?4:4,2)}
  BF.gl(x,320,236,220,26,'rgba(200,240,170,.18)');BF.vig(x,.62)};
 
-// 深淵の大公：天上の聖堂が裂けて深淵がのぞく。中央の床と壁が割れて紫黒の渦、赤い光が漏れる。崩れた金の柱、垂れる鎖、逆さの光輪
-BFULL.hgiant=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(633),GD=['#a8823a','#6a4e22'],PU=['#1a0c22','#2e1640','#4a2a62'];
- BF.sky(x,'#050208','#120818','#1c0a1a');
- // 裂け目の向こうの深淵の渦
- for(let k=0;k<14;k++){x.strokeStyle=k%2?'rgba(120,40,140,.35)':'rgba(180,30,60,.3)';x.lineWidth=6;x.beginPath();for(let a=0;a<9;a+=.1){const r2=8+a*12+k*2,px=320+Math.cos(a+k*.45)*r2,py=110+Math.sin(a+k*.45)*r2*.6;a===0?x.moveTo(px,py):x.lineTo(px,py)}x.stroke()}
- BF.gl(x,320,110,160,110,'rgba(200,30,70,.45)');BF.gl(x,320,110,60,50,'rgba(255,80,90,.5)');
- // 裂けた聖堂の壁（ギザギザの縁が金で光る）
- for(const s of[-1,1]){x.fillStyle='#24161e';x.beginPath();x.moveTo(320+s*320,0);x.lineTo(320+s*96,0);for(let y=0;y<=206;y+=14)x.lineTo(320+s*(96+((y*7)%30)+y*.25),y);x.lineTo(320+s*320,206);x.fill();x.strokeStyle=GD[0];x.lineWidth=2;x.beginPath();x.moveTo(320+s*96,0);for(let y=0;y<=206;y+=14)x.lineTo(320+s*(96+((y*7)%30)+y*.25),y);x.stroke()}
- // 崩れた金の柱
- for(const[cx,top,bk]of[[40,30,0],[120,60,1],[520,50,1],[600,24,0]]){BF.pil(x,cx,top,26,206-top,'#3a2a2a','#5a4a3a','#8a6a40',4,cx<320?1:-1,0);if(bk)for(let k=0;k<26;k+=4)R(cx-13+k,top-((k*7)%12),4,(k*7)%12+2,'#3a2a2a')}
- // 垂れる鎖
- for(const cx of[180,250,390,460]){const ln=60+((cx*13)%70);for(let y=0;y<ln;y+=6)R(cx-2,y,4,4,y%12?GD[1]:'#4a3a2a')}
- // 逆さの光輪
- for(let k=0;k<4;k++){const hx=200+k*80,hy=60+(k%2)*24;x.strokeStyle='#7a1a2a';x.lineWidth=2;x.beginPath();x.ellipse(hx,hy,13,4,0,0,6.3);x.stroke();for(let j=0;j<5;j++)R(hx-8+j*4,hy+4,2,4+j%2*4,'#7a1a2a')}
- // 床：割れた大理石、裂け目から赤い光
- let g=x.createLinearGradient(0,206,0,360);g.addColorStop(0,'#2a1c24');g.addColorStop(1,'#08040a');x.fillStyle=g;x.fillRect(0,206,640,154);R(0,206,640,2,GD[1]);
- for(let k=0;k<5;k++){let px=150+k*85,py=208;x.strokeStyle='#8a1a2a';x.lineWidth=2;x.beginPath();x.moveTo(px,py);for(let j=0;j<4;j++){px+=rn()*30-15;py+=10+rn()*8;x.lineTo(px,py)}x.stroke()}
- BF.gl(x,320,230,240,30,'rgba(200,30,60,.25)');
- for(let k=0;k<30;k++)R(rn()*640,210+rn()*140,4,2,rn()<.5?'#3a2a30':'#4a2a3a');
- for(let k=0;k<40;k++)R(rn()*640,rn()*200,2,2,'rgba(255,90,110,.6)');
- BF.vig(x,.7)};
+// 深淵の大公：堕ちた聖堂の地下の身廊。黒い大理石の柱が奥へ連なり、天井から金と黒の逆さの尖塔が垂れる。壁の縦の裂け目から赤い光が漏れ、床は黒い水鏡。左に倒れた天使像の首、右に傾いた柱
+BFULL.hgiant=(x)=>{const R=(...a)=>BF.R(x,...a),rn=bgRng(647),GD=['#a8823a','#6a4e22'],MB=['#16101a','#221a28','#30263a'];
+ BF.sky(x,'#030204','#0c0810','#140a12');
+ // 奥の祭壇（崩れて赤く光る）
+ BF.gl(x,330,150,140,70,'rgba(170,20,40,.45)');R(296,120,68,86,'#1c1218');for(let k=0;k<6;k++)R(298+k*11,110-((k*7)%14),9,12+((k*7)%14),'#1c1218');R(310,140,40,4,GD[1]);R(320,124,20,60,'#3a0c14');BF.gl(x,330,150,40,50,'rgba(255,60,70,.4)');
+ // 柱の列（遠近で小さく）。柱頭は金
+ for(const s of[-1,1])for(let k=5;k>=0;k--){const d=k/5,cx=330+s*(30+(1-d)*250),w=8+(1-d)*30,top=60-(1-d)*60,bot=150+(1-d)*58;R(cx-w/2,top,w,bot-top,MB[1+(k%2)]);R(cx-w/2,top,w*.25,bot-top,MB[2]);R(cx-w/2-3,top,w+6,4,GD[1]);R(cx-w/2-3,top,w+6,2,GD[0]);R(cx-w/2-3,bot-4,w+6,4,MB[0])}
+ // 壁の縦の裂け目から漏れる赤い光
+ for(const[cx,top,h]of[[150,40,90],[210,70,60],[460,60,80],[520,30,110]]){x.fillStyle='#ff2a3a';for(let y=0;y<h;y+=4)x.fillRect(BF.F(cx+((y*13)%5)-2),top+y,2,4);BF.gl(x,cx,top+h/2,20,h*.6,'rgba(220,30,50,.4)')}
+ // 天井から垂れる逆さの尖塔（金と黒）
+ for(const[cx,ln,w]of[[90,90,22],[200,60,16],[262,40,12],[400,46,12],[470,70,18],[580,100,24]]){x.fillStyle=MB[2];x.beginPath();x.moveTo(cx-w/2,0);x.lineTo(cx+w/2,0);x.lineTo(cx,ln);x.fill();x.fillStyle=GD[1];x.beginPath();x.moveTo(cx-w/2,0);x.lineTo(cx-w/2+3,0);x.lineTo(cx,ln);x.fill();for(let y=10;y<ln-10;y+=16)R(cx-(w/2)*(1-y/ln),y,w*(1-y/ln),2,GD[0])}
+ // 鎖と吊られた檻
+ for(const[cx,ln]of[[330,58],[240,30]]){for(let y=0;y<ln;y+=6)R(cx-2,y,4,4,y%12?GD[1]:'#3a2a2a');R(cx-10,ln,20,24,'#2a2026');for(let k=0;k<5;k++)R(cx-9+k*4,ln,2,24,GD[1]);R(cx-10,ln,20,2,GD[0]);R(cx-10,ln+22,20,2,GD[0])}
+ // 倒れた天使像の首（左）と傾いた柱（右）
+ x.fillStyle='#4a4048';x.beginPath();x.ellipse(70,192,34,22,-.3,0,6.3);x.fill();x.fillStyle='#5e5460';x.beginPath();x.ellipse(64,188,28,17,-.3,0,6.3);x.fill();R(52,184,10,3,'#1a1218');R(70,180,10,3,'#1a1218');R(60,194,14,3,'#2a2026');R(84,176,2,30,'#2a2026');x.strokeStyle='#7a1a2a';x.lineWidth=2;x.beginPath();x.ellipse(52,168,16,5,-.3,0,6.3);x.stroke();
+ x.save();x.translate(588,206);x.rotate(.22);R(-14,-180,28,180,MB[2]);R(-14,-180,7,180,'#3e3448');R(-17,-184,34,5,GD[1]);x.restore();
+ // 床：黒い水鏡（柱と赤い光が映る）
+ let g=x.createLinearGradient(0,206,0,360);g.addColorStop(0,'#1a1218');g.addColorStop(1,'#050306');x.fillStyle=g;x.fillRect(0,206,640,154);R(0,206,640,2,GD[1]);
+ for(const s of[-1,1])for(let k=0;k<6;k++){const d=k/5,cx=330+s*(30+(1-d)*250),w=8+(1-d)*30;x.fillStyle='rgba(60,46,70,.35)';x.fillRect(BF.F(cx-w/2),208,BF.F(w),BF.F(30+(1-d)*80))}
+ for(const cx of[150,210,460,520]){x.fillStyle='rgba(220,30,50,.25)';for(let y=0;y<90;y+=6)x.fillRect(BF.F(cx-2+Math.sin(y*.3)*3),210+y,2,3)}
+ BF.gl(x,330,226,120,18,'rgba(200,30,50,.3)');
+ for(let k=0;k<14;k++){const y=214+k*10+k*k*.6;R(0,y,640,2,'rgba(80,60,90,'+(.14-k*.008).toFixed(3)+')')}
+ for(let k=0;k<10;k++){const fx=rn()*640,fy=226+rn()*120;x.fillStyle='rgba(180,170,190,.5)';x.beginPath();x.ellipse(BF.F(fx),BF.F(fy),6+rn()*5,2,rn()*.6-.3,0,6.3);x.fill()}
+ for(let k=0;k<30;k++)R(rn()*640,rn()*200,2,2,'rgba(255,80,100,.5)');
+ BF.vig(x,.72)};
