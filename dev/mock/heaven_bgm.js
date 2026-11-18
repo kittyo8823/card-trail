@@ -20,25 +20,38 @@ function hBreath(t,d,v){if(!NB||NB.ctx!==AC)mnoise(.01,0,1000,t);const s=AC.crea
 // シンバルのふくらみ
 function hCym(t,d,v){if(!NB||NB.ctx!==AC)mnoise(.01,0,1000,t);const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain(),out=amBus();s.buffer=NB.b;s.loop=true;f.type='highpass';f.frequency.value=5000;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+d);g.gain.exponentialRampToValueAtTime(.0001,t+d+1.6);s.connect(f);f.connect(g);g.connect(out);s.start(t);s.stop(t+d+1.7)}
 
-// ---- h3（通常・エリート） ----
-// 和音（根音とその上の声部）。後半は不協和の重なり（2度）を足して不気味に
-const H3R=[50,46,43,45,50,51,48,45,50,46,55,49,50,51,46,45,43,44,50,45,46,51,49,50];
-const H3C={50:[62,65,69],46:[58,62,65],43:[55,58,62],45:[57,61,64],51:[58,63,67],48:[60,64,67],55:[55,59,62],49:[56,59,62],44:[56,59,62]};
-// 独唱の旋律（小節,歩,音,長さ歩）。9〜16小節と21〜24小節
-const H3M=[[8,0,74,8],[8,8,72,4],[8,12,74,4],[9,0,77,12],[9,12,76,4],[10,0,74,8],[10,8,71,8],[11,0,73,16],[12,0,74,6],[12,6,76,2],[12,8,77,8],[13,0,79,8],[13,8,77,4],[13,12,75,4],[14,0,74,12],[14,12,72,4],[15,0,73,16],
- [20,0,69,8],[20,8,70,8],[21,0,72,8],[21,8,70,4],[21,12,69,4],[22,0,68,12],[22,12,69,4],[23,0,62,16]];
-function h3Step(n,t){const i=n%384,bar=i>>4,s=i&15,r=H3R[bar],ch=H3C[r]||H3C[50],lp=Math.floor(n/384),D=bsp*16,sec=bar<8?0:bar<16?1:2;
- // 大鐘：2小節ごと（中盤は毎小節）。根音の2オクターブ下と5度
- if(s===0&&(bar%2===0||sec===1))hBigBell(r%12===2?38:r-12,t,.11);if(s===8&&bar%4===3)hBigBell(r-5,t,.06);
- // 低い持続音：オルガン（オクターブ）と合唱
- if(s===0){aOrgan([r-12,r],t,D,.035);aChoir(sec===2?ch.concat([ch[0]+2]):ch,t,D,sec===0?.012:.02);if(sec>0)aStrO([ch[0]-12,ch[2]-12],t,D,.018)}
- // オルゴールの分散和音（8分。少し音程がずれる）
- if(!(s&1)){const a=[ch[0]+12,ch[1]+12,ch[2]+12,ch[1]+24,ch[2]+12,ch[1]+12,ch[0]+24,ch[2]+12][s>>1];hBox(a,t,sec===1?.028:.04,(lp%2?-14:9)+(s>>1)*2)}
- // 独唱の旋律
- for(const q of H3M)if(q[0]===bar&&q[1]===s)hVox(q[2],t,bsp*q[3],.05);
- // 息のさざめき・ティンパニ・ハープのような上昇
- if(s===0&&bar%4===1)hBreath(t,D*2,.02);if(bar%8===7&&s>=8&&!(s&1))aTimp(r-24,t,.05+(s-8)*.01);if(bar%8===0&&s===0&&n>0)hCym(t-bsp*2,bsp*2,.05);
- if(s===12&&bar%2===1)for(let k=0;k<6;k++)hBell(ch[k%3]+24+Math.floor(k/3)*12,t+k*bsp*.5,.025)}
+// ---- h3（通常・エリート）Ver4.55：ボス曲（ユーザーが用意した録音）の雰囲気に合わせて作り直し。ト短調（ラ♭が混じる不気味な響き）・80BPM・24小節。
+// 新しい音色：撥弦のハープ（カルプラス・ストロング）`hHarp`、チェレスタ（FM）`hCel`、厚い合唱（4声のずれ＋3つの母音の響き）`hOoh`、儀式の大太鼓 `hTaiko`、弦の刻み `hBow`
+const HKS={};
+function hHarp(m,t,v){const out=amBus(),k=AC.sampleRate+'_'+m;if(!HKS[k]||HKS[k].ctx!==AC){const sr=AC.sampleRate,N=Math.round(sr/mf(m)),L=Math.floor(sr*2.2),b=AC.createBuffer(1,L,sr),d=b.getChannelData(0),buf=new Float32Array(N);for(let i=0;i<N;i++)buf[i]=Math.random()*2-1;let p=0;for(let i=0;i<L;i++){const a=buf[p],q=buf[(p+1)%N];d[i]=a;buf[p]=(a+q)*.4985;p=(p+1)%N}HKS[k]={ctx:AC,b}}
+ const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=HKS[k].b;f.type='lowpass';f.frequency.value=3200;g.gain.value=v;s.connect(f);f.connect(g);g.connect(out);s.start(t)}
+function hCel(m,t,v){const out=amBus(),o=AC.createOscillator(),md=AC.createOscillator(),mg=AC.createGain(),g=AC.createGain();o.type='sine';o.frequency.value=mf(m);md.type='sine';md.frequency.value=mf(m)*3.5;mg.gain.setValueAtTime(mf(m)*2.2,t);mg.gain.exponentialRampToValueAtTime(1,t+.6);md.connect(mg);mg.connect(o.frequency);aEnv(g,t,v,.003,1.8);o.connect(g);g.connect(out);o.start(t);o.stop(t+1.9);md.start(t);md.stop(t+1.9)}
+function hOoh(ns,t,d,v){const out=amBus(),g=AC.createGain(),mx=AC.createGain();g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+Math.min(.8,d*.4));g.gain.setValueAtTime(v,t+d*.8);g.gain.linearRampToValueAtTime(.0001,t+d+.8);mx.gain.value=2.2;mx.connect(g);g.connect(out);
+ const fs=[[400,5],[800,6],[2600,8]].map(([fr,q])=>{const f=AC.createBiquadFilter();f.type='bandpass';f.frequency.value=fr;f.Q.value=q;f.connect(mx);return f});
+ for(const n of ns)for(const dt of[-11,-4,4,11]){const o=AC.createOscillator(),lf=AC.createOscillator(),lg=AC.createGain();o.type='sawtooth';o.frequency.value=mf(n);o.detune.value=dt;lf.frequency.value=4.6+dt*.03;lg.gain.value=mf(n)*.006;lf.connect(lg);lg.connect(o.frequency);for(const f of fs)o.connect(f);o.start(t);o.stop(t+d+.9);lf.start(t);lf.stop(t+d+.9)}}
+function hTaiko(t,v,lo){const out=amBus(),o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.setValueAtTime(lo?70:110,t);o.frequency.exponentialRampToValueAtTime(lo?38:60,t+.35);g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+(lo?1.1:.6));o.connect(g);g.connect(out);o.start(t);o.stop(t+1.2);mnoise(.12,v*.5,lo?160:300,t)}
+function hBow(m,t,d,v){const out=amBus(),f=AC.createBiquadFilter(),g=AC.createGain();f.type='lowpass';f.Q.value=1;f.frequency.setValueAtTime(600,t);f.frequency.linearRampToValueAtTime(1800,t+.04);f.frequency.exponentialRampToValueAtTime(700,t+d);g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d+.05);f.connect(g);g.connect(out);for(const dt of[-7,7]){const o=AC.createOscillator();o.type='sawtooth';o.frequency.value=mf(m);o.detune.value=dt;o.connect(f);o.start(t);o.stop(t+d+.1)}}
+const H3R=[43,39,48,50,43,44,41,50, 39,46,44,43,48,44,50,50, 43,39,48,50,43,44,50,43];
+const H3C={43:[55,58,62],39:[55,58,63],48:[55,60,63],50:[54,57,62],44:[56,60,63],41:[57,60,65],46:[58,62,65]};
+// チェレスタの旋律（9〜16小節）と独唱の旋律（17〜24小節）：[小節,歩,音,長さ]
+const H3M=[[8,0,74,4],[8,4,75,4],[8,8,74,8],[9,0,70,8],[9,8,72,4],[9,12,74,4],[10,0,75,6],[10,6,74,2],[10,8,72,4],[10,12,70,4],[11,0,69,8],[11,8,66,8],[12,0,67,6],[12,6,69,2],[12,8,70,8],[13,0,68,8],[13,8,72,8],[14,0,74,8],[14,8,75,4],[14,12,74,4],[15,0,74,16]];
+const H3V=[[16,0,67,8],[16,8,70,8],[17,0,75,12],[17,12,74,4],[18,0,72,8],[18,8,75,4],[18,12,74,4],[19,0,74,16],[20,0,67,8],[20,8,69,4],[20,12,70,4],[21,0,72,8],[21,8,68,8],[22,0,67,8],[22,8,66,8],[23,0,67,16]];
+function h3Step(n,t){const i=n%384,bar=i>>4,s=i&15,r=H3R[bar],ch=H3C[r]||H3C[43],D=bsp*16,sec=bar<8?0:bar<16?1:2,lp=Math.floor(n/384);
+ // 大鐘（最初は2小節ごと、中盤からは毎小節）
+ if(s===0&&(bar%2===0||sec>0))hBigBell(r-12,t,sec===0?.08:.1);
+ // 合唱と低い持続音
+ if(s===0){hOoh(sec===2?ch.concat([ch[0]+12]):ch,t,D,sec===0?.012:.018);aOrgan([r-12],t,D,.03)}
+ // ハープの16分の分散和音（上がって下がる）
+ {const A=[ch[0],ch[1],ch[2],ch[0]+12,ch[1]+12,ch[2]+12,ch[0]+24,ch[2]+12];const k=s<8?s:15-s;if(sec!==1||s%2===0)hHarp(A[k%8]+(sec===2?12:0),t,sec===1?.09:.12)}
+ // 中盤からの弦の刻み（8分）と儀式の大太鼓
+ if(sec>0&&!(s&1)){const B=[r-12,r-5,r,r-5,r-12,r-5,r+2,r-5][s>>1];hBow(B,t,bsp*1.6,.04)}
+ if(sec>0){if(s===0)hTaiko(t,.22,1);if(s===8)hTaiko(t,.16,1);if(sec===2&&(s===6||s===14))hTaiko(t,.1,0);if(sec===2&&s===12&&bar%2)hTaiko(t,.12,0)}
+ // 旋律
+ for(const q of H3M)if(q[0]===bar&&q[1]===s){hCel(q[2],t,.07);hCel(q[2]+12,t+.01,.025)}
+ for(const q of H3V)if(q[0]===bar&&q[1]===s){hVox(q[2],t,bsp*q[3],.05);hCel(q[2]+12,t,.03)}
+ // 区切り：シンバルのふくらみ・小さな鐘の下降
+ if(bar%8===7&&s===8)hCym(t,bsp*8,.05);if(s===12&&bar%4===3)for(let k=0;k<5;k++)hBell(ch[2]+24-k*2,t+k*bsp*.6,.025);
+ if(s===0&&bar%4===1)hBreath(t,D*2,.015)}
 
 // ---- h3x（ボス）：神聖なワルツ ----
 const H3XR=[52,48,45,47,52,55,50,47,48,50,47,52,45,47,52,52, 52,48,45,47,52,55,50,47,48,50,47,52,45,47,52,52];
