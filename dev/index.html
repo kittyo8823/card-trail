@@ -54,13 +54,13 @@ function drn(fs,d,v,dl,lp,ty){const t=AC.currentTime+(dl||0),f=AC.createBiquadFi
 const CHGT={dragon:'fire',hound:'fire',king:'quake',colony:'quake',behemoth:'quake',gateS:'quake',golem:'quake',mothP:'wing',hgrif:'wing',maiden:'water',userp:'water',udrown:'water',ugeel:'water',phrog:'water',ulight:'bell',scales:'bell',hser:'bell',reaper:'metal',gateP:'metal',archdemon:'dark',archdemon2:'dark',necro:'dark',spek:'dark',lanA:'dark',lanB:'dark',lanC:'dark',auA2:'dark',gilL:'mech',gilR:'mech',deus:'mech',protoA:'mech',protoB:'mech',protoC:'mech',magik:'mech',colossus:'mech',oracle:'mech',mowl:'mech',chronos:'clock',eye:'heart',eye2:'heart',auA1:'heart',auA3:'heart',hface:'holy',hshld:'holy',judge:'holy',hbloom:'petal',hgiant:'abyss',nob:'beast',oni:'beast'};
 function chgSfx(e){if(!AC||muted||QT)return;const ty=CHGT[e.k]||(e.el===2?'dark':'beast'),D=1.2;
  if(ty==='fire'){swl(D,.32,250,2600,.8);swl(D,.2,90,400,1);drn([55],D,.06,0,[150,600])}
- else if(ty==='quake'){drn([41,41.6],D,.12,0,[90,220],'triangle');swl(D,.35,80,320,1);for(let k=0;k<8;k++)nsw(.06,.12+k*.02,2400,1800,3,k*.13+.1)}
+ else if(ty==='quake'){drn([41,41.6],D,.12,0,[90,220],'triangle');swl(D,.35,80,320,1);amN(D,.14,160,3,0,1.5,1);swl(D,.1,250,700,2,0,'bandpass')}
  else if(ty==='wing'){amN(D,.28,1100,14,0,1.5,1);amN(D,.16,2600,19,.1,2,1);swl(D,.12,600,3000,2,0,'bandpass')}
  else if(ty==='water'){swl(D,.3,300,1600,.7);amN(D,.16,700,6,0,2,1);nsw(.5,.1,4000,1500,2,.75)}
  else if(ty==='bell'){shm([220,220*2.76,220*5.4,440*1.19],D,.08,0,1);swl(D,.12,1500,6000,1,0,'highpass');shm([330,330*2.76],1.6,.09,D-.05)}
  else if(ty==='metal'){shm([780,780*1.41,780*2.17,780*3.1],D,.05,0,1);nsw(D,.18,600,5200,4,0,'bandpass',D*.8)}
  else if(ty==='dark'){drn([55,58.3,82.4],D,.07,0,[120,900]);swl(D,.14,300,1200,3,0,'bandpass');amN(D,.08,400,3,0,1,1)}
- else if(ty==='mech'){drn([65],D,.06,0,[200,2600],'square');for(let k=0;k<12;k++)nsw(.03,.18,3200,2600,4,D*(1-Math.pow(1-k/12,1.6))*.95);swl(D,.12,400,3200,6,0,'bandpass')}
+ else if(ty==='mech'){drn([65],D,.06,0,[200,1800],'square');swl(D,.14,300,2400,8,0,'bandpass');amN(D,.08,140,6,0,1.2,1)}
  else if(ty==='clock'){for(let k=0;k<14;k++)nsw(.025,.22,4200,3600,6,D*(1-Math.pow(1-k/14,1.8))*.95);shm([110,110*2.76],D,.06,0,1);shm([523,523*2.76,523*5.4],2,.07,D)}
  else if(ty==='heart'){for(let k=0;k<6;k++){const dl=D*(1-Math.pow(1-k/6,1.5));thp(70,40,.25,.35+k*.06,dl);thp(60,36,.22,.25+k*.05,dl+.16)}drn([46,48.7],D,.06,0,[100,400])}
  else if(ty==='holy'){drn([440,554,659,880],D,.012,0,[500,3000]);swl(D,.1,2000,9000,1,0,'highpass');shm([880,1320*1.004,1760],D,.03,0,1)}
@@ -2317,7 +2317,7 @@ SD.hgiant=[74,58,3,({r,p,q,l,t,e,m,sh,pt})=>{
  const tail=(x0,y0,dir,c1,c2,sp,a0,n)=>{sp=sp||2.3;a0=a0==null?.7:a0;n=n||16;let px=x0,py=y0;for(let k=0;k<n;k++){const s2=k/(n-1),a=-1.57+dir*(a0-s2*1.9),w=2.4-s2*1.1,nx=px+Math.cos(a)*sp,ny=py+Math.sin(a)*sp;t([[px-w,py],[px+w,py],[nx+w*.8,ny],[nx-w*.8,ny]],k%2?c1:c2);if(k%4===2)r(Math.min(px,nx)-w,py-1,w*2+1,1.4,HG);px=nx;py=ny}
   const a=-1.57+dir*(-1.4);l(px,py,px+Math.cos(a)*6,py+Math.sin(a)*6,HG,1.2);t([[px-2,py],[px+Math.cos(a-.9)*7,py+Math.sin(a-.9)*7],[px+1,py+1]],HGL);t([[px+2,py],[px+Math.cos(a+.9)*7,py+Math.sin(a+.9)*7],[px,py+1]],HG)};
  const leg=(x0,y0,x1,y1,x2,y2,c)=>{l(x0,y0,x1,y1,c,1.8);l(x1,y1,x2,y2,c,1.4);t([[x2-1,y2-1],[x2+1,y2-1],[x2+(x2-x1)*.4,y2+3]],'#9a8aa8');e(x1,y1,1.4,1.4,HG)};
- /* Ver4.61 触手（三叉の尾）6本を、甲殻の別々の場所から1本ずつ生やし、部位 t1〜t6 でそれぞれ別に動かす（ユーザー指定） */pt('t1',()=>{tail(20,32,-1,PD,PU,2.2,.75,15)});pt('t2',()=>{tail(28,25,-.8,PD,'#3a2248',2,.4,14)});pt('t3',()=>{tail(37,22,-.45,'#3a2248',PD,1.9,.1,13)});
+ /* Ver4.62 触手（三叉の尾）6本を、甲殻の別々の場所から1本ずつ生やし、部位 t1〜t6 でそれぞれ別に動かす（ユーザー指定） */pt('t1',()=>{tail(20,32,-1,PD,PU,2.2,.75,15)});pt('t2',()=>{tail(28,25,-.8,PD,'#3a2248',2,.4,14)});pt('t3',()=>{tail(37,22,-.45,'#3a2248',PD,1.9,.1,13)});
  pt('ab',()=>{leg(26,40,12,34,4,50,PD);leg(30,42,20,44,14,56,PD)});
  t([[22,28],[34,22],[50,22],[60,30],[58,42],[44,48],[28,46],[18,38]],PU);t([[22,28],[30,24],[28,46],[18,38]],PL);
  for(let k=0;k<6;k++)t([[26+k*5,25-(k%2)],[28+k*5,17-(k%2)*2],[30+k*5,24-(k%2)]],k%2?'#3a2440':PD);
