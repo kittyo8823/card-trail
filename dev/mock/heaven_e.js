@@ -192,10 +192,10 @@ SD.hbloom=[64,64,3,({r,p,q,l,t,e,m,sh,pt})=>{
 // 深淵の大公（黒い悪魔のボス）：紫黒の甲殻の体が低く構える。金の環の付いた多関節の脚（先は刃）、紅い角の冠と無数の赤い目、背から金の三叉の爪の尾が二本反り上がる
 SD.hgiant=[74,58,3,({r,p,q,l,t,e,m,sh,pt})=>{
  const PU='#4a2c5e',PD='#2c1a3c',PL='#6c4a84',RD='#8a1a2a',RH='#a02434';
- const tail=(x0,y0,dir,c1,c2)=>{let px=x0,py=y0;for(let k=0;k<16;k++){const s2=k/15,a=-1.57+dir*(.7-s2*1.9),w=2.4-s2*1.1,nx=px+Math.cos(a)*2.3,ny=py+Math.sin(a)*2.3;t([[px-w,py],[px+w,py],[nx+w*.8,ny],[nx-w*.8,ny]],k%2?c1:c2);if(k%4===2)r(Math.min(px,nx)-w,py-1,w*2+1,1.4,HG);px=nx;py=ny}
+ const tail=(x0,y0,dir,c1,c2,sp,a0,n)=>{sp=sp||2.3;a0=a0==null?.7:a0;n=n||16;let px=x0,py=y0;for(let k=0;k<n;k++){const s2=k/(n-1),a=-1.57+dir*(a0-s2*1.9),w=2.4-s2*1.1,nx=px+Math.cos(a)*sp,ny=py+Math.sin(a)*sp;t([[px-w,py],[px+w,py],[nx+w*.8,ny],[nx-w*.8,ny]],k%2?c1:c2);if(k%4===2)r(Math.min(px,nx)-w,py-1,w*2+1,1.4,HG);px=nx;py=ny}
   const a=-1.57+dir*(-1.4);l(px,py,px+Math.cos(a)*6,py+Math.sin(a)*6,HG,1.2);t([[px-2,py],[px+Math.cos(a-.9)*7,py+Math.sin(a-.9)*7],[px+1,py+1]],HGL);t([[px+2,py],[px+Math.cos(a+.9)*7,py+Math.sin(a+.9)*7],[px,py+1]],HG)};
  const leg=(x0,y0,x1,y1,x2,y2,c)=>{l(x0,y0,x1,y1,c,1.8);l(x1,y1,x2,y2,c,1.4);t([[x2-1,y2-1],[x2+1,y2-1],[x2+(x2-x1)*.4,y2+3]],'#9a8aa8');e(x1,y1,1.4,1.4,HG)};
- pt('wb',()=>{tail(22,30,-1,PD,PU)});
+ pt('wb',()=>{tail(30,26,-.7,'#3a2248',PD,1.9,.15,13);tail(26,28,-1,PD,PU,2.1,.45,15);tail(22,30,-1,PD,PU)});/* Ver4.60 触手（三叉の尾）を6本に（ユーザー指定） */
  pt('ab',()=>{leg(26,40,12,34,4,50,PD);leg(30,42,20,44,14,56,PD)});
  t([[22,28],[34,22],[50,22],[60,30],[58,42],[44,48],[28,46],[18,38]],PU);t([[22,28],[30,24],[28,46],[18,38]],PL);
  for(let k=0;k<6;k++)t([[26+k*5,25-(k%2)],[28+k*5,17-(k%2)*2],[30+k*5,24-(k%2)]],k%2?'#3a2440':PD);
@@ -206,5 +206,5 @@ SD.hgiant=[74,58,3,({r,p,q,l,t,e,m,sh,pt})=>{
   for(let k=0;k<6;k++){const x=48+k*3.4,a=-1.57+(k-2.5)*.3,ln=10+(k%2)*5;l(x,16,x+Math.cos(a)*ln*.6,16+Math.sin(a)*ln*.6,k%2?RD:RH,1.1);l(x+Math.cos(a)*ln*.6,16+Math.sin(a)*ln*.6,x+Math.cos(a+(k<3?-.6:.6))*ln,16+Math.sin(a)*ln,k%2?RD:RH,.7)}
   t([[50,40],[64,40],[62,46],[57,48],[52,46]],HG);t([[53,42],[61,42],[60,45],[54,45]],HK);for(let k=0;k<4;k++)q(54+k*2,42.4,'#e8e0c8')});
  pt('af',()=>{leg(52,42,62,40,70,52,PU);leg(46,46,52,50,56,58,PU)});
- pt('wf',()=>{tail(56,26,1,PU,PD)});
+ pt('wf',()=>{tail(48,24,.7,PU,'#3a2248',1.9,.15,13);tail(52,25,1,PD,PU,2.1,.45,15);tail(56,26,1,PU,PD)});
  sh()}];
