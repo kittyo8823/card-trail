@@ -1,0 +1,14 @@
+function jgStone(x,y,s,a){ctx.globalAlpha=a;ctx.fillStyle='#4a4e44';ctx.fillRect(Math.round(x-s),Math.round(y-s*.8),Math.round(s*2),Math.round(s*1.6));ctx.fillStyle='#868a7a';ctx.fillRect(Math.round(x-s),Math.round(y-s*.8),Math.round(s*2),2)}
+Object.assign(XA,{
+ // 鼓腹の楽師：腹の太鼓を叩くと音の輪が広がる／雷鳴の太鼓（帯電：緑の稲光が手札へ）／舞を促す（仲間に守りの輪）
+ jdrum(e,m){const E=XEP(e),Pp=XPL(),bx=E.x+E.w*.05,by=E.top+E.h*.55;if(m.a&&!m.nm){const h=m.h||1;for(let k=0;k<h;k++){const ht=eHT2(e,k);xRing(bx,by,'#e0b060',10,50,ht-.25,.4,3);xfAdd(ht-.18,.3,u=>{ctx.globalAlpha=(1-u)*.8;ctx.strokeStyle='#c8a060';ctx.lineWidth=3;for(let j=0;j<3;j++){ctx.beginPath();ctx.arc(bx,by,20+j*14+u*(Pp.x<bx?bx-Pp.x:60),2.4,3.9);ctx.stroke()}});xBurst(Pp.x,Pp.y,'#c8a060',12,ht,3);if(m.vu)xRing(Pp.x,Pp.y,'#a03030',6,40,ht,.5,2)}}
+  if(m.gal){xGlow(bx,by,70,'rgba(170,240,120,1)',0,.8);for(let j=0;j<3;j++){const tx=280+j*40;xfAdd(.2+j*.1,.5,u=>{ctx.globalAlpha=1-u;ctx.strokeStyle=j%2?'#c8f090':'#f0fff0';ctx.lineWidth=2;ctx.beginPath();let x=bx,y=by;ctx.moveTo(x,y);for(let s=1;s<=8;s++){x=bx+(tx-bx)*s/8+(hs(s+j*9)-.5)*20;y=by+(250-by)*s/8;ctx.lineTo(x,y)}ctx.stroke()})}}
+  if(m.ab){for(let j=0;j<3;j++)xRing(bx,by,'#e0b060',8,120,j*.12,.7,3);for(const x of alive()){const q=XEP(x);xGlow(q.x,q.y,q.w*.5,'rgba(224,176,96,1)',.2,.7)}}},
+ // 鈴の踊り子：跳んで蹴る（残像）、種の鈴を投げる、跳ねる（気合）
+ jdancA(e,m){const E=XEP(e),Pp=XPL();if(m.a){const h=m.h||1;for(let k=0;k<h;k++){const ht=eHT2(e,k);if(h===1){xGhost(e,-20,-20,ht-.18,.22);xGhost(e,-40,-26,ht-.1,.22);xBurst(Pp.x,Pp.y,'#a07a3a',10,ht,3)}else{for(let j=0;j<3;j++)xProj(E.x-E.w*.3,E.y-6,Pp.x+(j-1)*6,Pp.y-6+j*4,ht-.28+j*.02,.28,24,(x,y)=>{sq(x,y,3,'#a07a3a');sq(x+1,y-1,1,'#e8d070')});xBurst(Pp.x,Pp.y,'#e8d070',6,ht,2)}}}
+  if(m.vig){for(let j=0;j<10;j++)xProj(E.x,E.top+8,E.x+(hs(j)-.5)*50,E.top-20-hs(j+1)*20,0,.6,10,(x,y,u)=>{ctx.globalAlpha=1-u;jgLeaf(x,y,u*8+j,j%2?'#2e7a6a':'#a03030',3)})}},
+ jdancB(e,m){XA.jdancA(e,m)}
+});
+BFX.jdrum={tn:'rgba(30,20,10,',ch(o){const p=o.p;for(let k=0;k<4;k++){const r=((T*1.8+k/4)%1)*90*(.4+p);ctx.globalAlpha=(1-((T*1.8+k/4)%1))*(.3+p*.6);ctx.strokeStyle=k%2?'#e0b060':'#a03030';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(o.cx,o.cy,r,r*.6,0,0,6.3);ctx.stroke()}ctx.globalAlpha=p;for(let k=0;k<16;k++){const t=(T*.9+hs(k))%1;jgLeaf(o.cx+(hs(k+3)-.5)*160,o.cy-60+t*120,t*6+k,k%2?'#2e7a6a':'#a03030',3)}ctx.globalAlpha=1},
+ hit(f,p){const X=f.x,Y=f.y,en=p<.7?1:Math.max(0,1-(p-.7)/.3);flash(.45*(1-p/.15),'#ffe8b0');ctx.globalAlpha=en;for(let w=0;w<4;w++)ell(X,208,10+p*150-w*24,4+p*26-w*4,28,3,w%2?'#e0b060':'#a03030');for(let k=0;k<3;k++){ctx.strokeStyle='#e0b060';ctx.lineWidth=4-k;ctx.beginPath();ctx.arc(X,Y,20+p*80+k*16,0,6.3);ctx.stroke()}for(let k=0;k<20;k++){const a=hs(k)*6.283,r=p*(50+hs(k+2)*60);sq(X+Math.cos(a)*r,Y+Math.sin(a)*r*.5,2,k%2?'#e0b060':'#5a3a2a')}ctx.globalAlpha=1}};
+Object.assign(CHGT,{jdrum:'quake',jmaw:'quake'});
