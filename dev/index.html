@@ -21,7 +21,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:1,e:28/24,b:2.1};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.68';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:1,e:28/24,b:2.1};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.69';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -5391,6 +5391,28 @@ function drawTip2(o){if(!o)return;const sz=10,ts=11,mw=o.w||190,ic=o.ic,L=rtok(o
  ctx.fillStyle='rgba(0,0,0,.4)';ctx.fillRect(x+2,y+3,W,H);ctx.fillStyle='rgba(16,12,30,.96)';ctx.fillRect(x,y,W,H);const g=ctx.createLinearGradient(x,y,x,y+H);g.addColorStop(0,'rgba(255,255,255,.05)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(x,y,W,H);ctx.fillStyle=o.c||'#c8a040';ctx.fillRect(x,y,2,H);
  let ox=x+10;if(ic){ctx.drawImage(ic,x+7,y+5,16,16);ox=x+28}txt(o.t,ox,y+16,'#efc851','left',ts);ctx.fillStyle='rgba(239,200,81,.22)';ctx.fillRect(ox,y+20,W-(ox-x)-8,1);L.forEach((l,i)=>rtxt(l,ox,y+33+i*(sz+4),'ctx',sz,ekOf({k:P?P.cls:0}),'#d8d4ec','l'))}
 // 説明の札を出す（tx,ty は押した物の位置。下に出し、はみ出す時は上に）
+// Ver4.69 敵の次の行動の札を押すと、行動の中身と言葉の意味を出す（ユーザー指定）
+function cdTxt(n){const i=CI(n);if(i<0)return'';try{return String(dl(C[i])).replace(/\n/g,' ')}catch(e){return''}}
+function intDet(e,m){const L=[],A=s=>L.push(s);
+ if(e.stn){A('行動不能：このターンは何もしない');return L}if(e.sl>0){A('睡眠：ダメージを受けるか、'+e.sl+'ターンたつと目覚める');return L}if(e.reb){A('再起動：次の行動で新しい姿になって起き上がる');return L}
+ if(m.nm)A('必殺「'+m.nm+'」：ためてから放つ大技');else if(m.sx)A('強攻撃：ためてから強く攻撃する');
+ if(m.wf)A('即死級の一撃：ブロックをすべて剥がして攻撃する');
+ if(m.a){const d=calcP(e,m.a),h=m.h||1;A('攻撃：'+d+'ダメージ'+(h>1?'×'+h+'回（合計'+d*h+'）':'')+(PS&&PS.vuln>0?'（あなたは弱体中のため1.5倍で計算）':''));if(e.vig>0)A('（気合'+e.vig+'込み。攻撃すると気合は消える）')}
+ if(m.b)A('ブロック+'+m.b+'：この敵が受けるダメージを先に防ぐ');
+ if(m.st&&stG(e,m))A('筋力+'+m.st+'：この敵の攻撃のダメージが'+m.st+'増える');
+ if(m.wk)A('脆弱+'+m.wk+'：あなたが与えるダメージが0.75倍になる（'+m.wk+'ターン）');
+ if(m.vu)A('弱体+'+m.vu+'：あなたが受けるダメージが1.5倍になる（'+m.vu+'ターン）');
+ if(m.fr)A('虚弱+'+m.fr+'：カードで得るブロックが0.75倍になる（'+m.fr+'ターン）');
+ if(m.ps)A('毒+'+m.ps+'：あなたのターン終了時に毒の数だけダメージ。毎ターン1ずつ減る');
+ if(m.sc)A('捨て札に「'+m.sc[0]+'」×'+m.sc[1]+'：'+cdTxt(m.sc[0]));
+ if(m.sch)A('手札に「'+m.sch[0]+'」×'+m.sch[1]+'：'+cdTxt(m.sch[0]));
+ if(m.ab)A('護衛：仲間全員にブロック+'+m.ab);if(m.hl)A('回復：傷ついた仲間のHPを'+m.hl+'回復');if(m.smn)A('召喚：仲間を呼び出す（出たターンは動かない）');
+ if(m.rt)A('儀式+'+m.rt+'：行動するたびに筋力+'+m.rt);if(m.dd)A('次のドロー-'+m.dd+'：次のターンに引くカードが減る');if(m.fl)A('逃走：戦闘から逃げ去る');if(m.sor)A('飛翔：次に攻撃するまで、受ける攻撃のダメージが半分');if(m.bur)A('潜る：ブロックが消えなくなる。ブロックを削り切ると行動不能');if(m.hch)A('孵化：別の姿にかわる');if(m.sa)A('仲間の筋力+'+m.sa);if(m.cp)A('写し取り：あなたの筋力と同じだけ筋力を得る');if(m.gzA)A('視線+'+m.gzA+'：溜まると瞳から光線を撃つ');
+ if(m.tnd)A('軟化+'+m.tnd+'：このターン、カードを使うたびに筋力・敏捷-1（ターン終わりに戻る）');if(m.tng)A('もつれ+'+m.tng+'：攻撃カードのコスト+1');if(m.cst)A('束縛+'+m.cst+'：この敵が生きている間、あなたのターン終わりにダメージ（ブロック無視）');if(m.stS)A('筋力を奪う'+m.stS+'：あなたの筋力-'+m.stS+'、この敵の筋力+'+m.stS+'（倒すと戻る）');if(m.art)A('加護+'+m.art+'：あなたのカードによる悪い効果を'+m.art+'回打ち消す');if(m.esc)A('高揚：この攻撃は使うたびに+'+m.esc+'（3回まで）');
+ if(m.drn)A('エナジーを奪う：次のターンのエナジー-'+m.drn);if(m.crs)A('呪いの刻印：デッキに呪いを1枚加える');if(m.bst)A('ブロックを奪う：攻撃の前に、あなたのブロックを奪って自分のものにする');if(m.ex2)A('山札を焼く：山札の上から'+m.ex2+'枚を廃棄する');if(m.rvv)A('蘇生：倒れた仲間をHP半分で起こす');if(m.chg)A('溜め：'+m.cb+'ダメージを与えると崩れて行動不能になる');
+ if(m.vig)A('気合+'+m.vig+'：次の攻撃のダメージ+'+m.vig);if(m.tg)A('棘+'+m.tg+'：この敵を攻撃すると、そのたびに'+((e.thr||0)+m.tg)+'ダメージを受ける');if(m.tl)A('攻撃のあと棘-'+m.tl);if(m.smg)A('眩惑：次のターン、スキルは'+m.smg+'枚しか使えない');if(m.tai)A('汚染+'+m.tai+'：この敵が生きている間、スキルを使うたびにHP-');if(m.gal)A('帯電+'+m.gal+'：この敵が生きている間、パワーを使うたびにHP-');if(m.bm)A('自爆：攻撃したあと弾けて消える');
+ if(!L.length)A(mvTxt(m)||'行動');return L}
+function intHit(e,m,t,cx,y){if(has('dome')||!t.length)return;ctx.font='13px DotGothic16,sans-serif';const tot=t.reduce((s,a)=>s+ctx.measureText(a[0]).width+6,0),x0=cx-tot/2-4;hit(x0,y-15,tot+8,18,()=>tipAt(m.nm?'必殺「'+m.nm+'」':(m.lb||'次の行動'),intDet(e,m).join('\n'),x0,y-15,18,'#ffd23f');TIP2.w=250})}
 function tipAt(t,b,tx,ty,th,c,ic){TIP2={t,b,c,ic,x:tx-10,y:ty+th+4,S,ty,t0:performance.now()};if(ty>180)TIP2.up=1;sfx('cl')}
 function card0(x,y,o,dim,gl,pv){{const m=ctx.getTransform();LPC.push({x:(m.a*x+m.c*y+m.e)/K,y:(m.b*x+m.d*y+m.f)/K,w:84*m.a/K,h:106*m.d/K,o})}if(C[o.i]&&C[o.i].fa){cardFA(x,y,o,dim,gl,pv);return}const c=cd(o),rare=c.r===2,bk=c.t>=3,col=bk?(c.t===4?'#7a3a8a':'#5a5a66'):c.k===5||c.r===-2?'#a8a8b8':TC[c.t],parts=dl(c,pv),ls=[],lc=[],ek=ekOf(c),PL=parts.map((p,i)=>[rtok(p),parts.cl[i]||(p==='廃棄'?'#ffd23f':'#e8e4ff')]);PL.sort((a,b)=>(a[0]==='廃棄')-(b[0]==='廃棄'));
  // 説明が長い時は、まず文字を小さくして1行の字数を増やす。絵の窓はなるべく縮めない（44〜32、ユーザー指定：絵の大きさがカードで大きく違うのは違和感）
@@ -7834,7 +7856,7 @@ if(e.sl>0){for(let k=0;k<3;k++){const q=(T*.5+k/3)%1;ctx.globalAlpha=Math.sin(q*
 if(b.ph==='lv')return;const by=eBarY(e,SPR[e.k]||im,p0);if(e.gz){const n=e.gz,gw=64/n;for(let k=0;k<n;k++){ctx.fillStyle='#000';ctx.fillRect(Math.round(p.x-32+k*gw),by-9,Math.ceil(gw)-1,6);ctx.fillStyle=k<(e.gzc||0)?(e.gzc>=n-2&&Math.floor(T*6)%2?'#ffe0e0':'#ff2a3a'):'#3a1018';ctx.fillRect(Math.round(p.x-32+k*gw)+1,by-8,Math.ceil(gw)-3,4)}}{const bw=HPV===4?Math.max(56,Math.min(b.en.length>2?110:b.en.length===2?170:280,Math.round(w*.9))):64;hpBar(p.x-bw/2,by,bw,Math.min(e.mh,e.hp+(e.vq?e.vq.reduce((s2,q)=>s2+(q.at>T?q.d:0),0):0)),e.mh,e.el?'#c9a0ff':'#e8505b',e.blk,e.poison*(PS&&PS.pmul?2:1),e.doom||0)}txt(e.n,p.x,by+20,e.el===1?'#e0b0ff':'#cfc8ee','center',10);
 chips(stat(e,0),p.x,by+22,'c',b.en.length>2?106:150);
 const m=e.it,t=[];if(m.nm)t.push(['必殺',Math.floor(T*4)%2?'#ff3b5c':'#ffd23f']);if(m.wf)t.push(['即死','#ff3b5c']);else if(m.a)t.push(['攻'+calcP(e,m.a)+(m.h>1?'×'+m.h:''),'#ff6a6a']);if(m.b)t.push(['防'+m.b,'#7ec8ff']);if(stG(e,m))t.push(['強+'+m.st,'#ffd23f']);if(m.wk||m.vu||m.fr)t.push(['弱','#c9a0ff']);if(m.ab)t.push(['護'+m.ab,'#7ec8ff']);if(m.hl)t.push(['癒'+m.hl,'#7dff9a']);if(m.sa)t.push(['与'+m.sa,'#ffd23f']);if(m.gzA)t.push(['視+'+m.gzA,'#ff4a5a']);if(m.smn)t.push(['召','#5ff6ff']);if(m.rt)t.push(['儀+'+m.rt,'#ff8c2e']);if(m.fl)t.push(['逃','#c8c8d8']);if(m.dd)t.push(['鈍','#c8c8d8']);if(m.ps)t.push(['毒'+m.ps,'#7dff9a']);if(m.sc)t.push(['妨','#c8c8d8']);jgInt(e,m,t);
-if(m.lb)t.push([m.lb,'#c9a0ff']);if(e.nat)t.push(['封','#c8c8d8']);if(e.stn){t.length=0;t.push(['行動不能','#c8c8d8'])}if(e.sl>0){t.length=0;t.push(['睡眠','#9ab0ff'])}if(e.reb){t.length=0;t.push(['再起動','#5ff6ff'])}if(has('dome')&&!e.stn&&!(e.sl>0)&&!e.reb){t.length=0;t.push(['？','#8a8aa0'])}if(IV&&!e.stn&&!(e.sl>0)&&!e.reb&&!(has('dome')))itDraw(e,m,p.x,Math.max(46,p.y-h-8));else tok(t,p.x,Math.max(46,p.y-h-8),13,1);if(b.ph==='e'&&b.en[b.eo?b.eo[b.ei]:b.ei]===e){ctx.fillStyle='#ff6a6a';const by=Math.round(Math.sin(T*10)*3);ctx.fillRect(p.x-6,p.y-h-34+by,12,4);ctx.fillRect(p.x-4,p.y-h-30+by,8,4);ctx.fillRect(p.x-2,p.y-h-26+by,4,4)}
+if(m.lb)t.push([m.lb,'#c9a0ff']);if(e.nat)t.push(['封','#c8c8d8']);if(e.stn){t.length=0;t.push(['行動不能','#c8c8d8'])}if(e.sl>0){t.length=0;t.push(['睡眠','#9ab0ff'])}if(e.reb){t.length=0;t.push(['再起動','#5ff6ff'])}if(has('dome')&&!e.stn&&!(e.sl>0)&&!e.reb){t.length=0;t.push(['？','#8a8aa0'])}if(IV&&!e.stn&&!(e.sl>0)&&!e.reb&&!(has('dome')))itDraw(e,m,p.x,Math.max(46,p.y-h-8));else{tok(t,p.x,Math.max(46,p.y-h-8),13,1);intHit(e,m,t,p.x,Math.max(46,p.y-h-8))}if(b.ph==='e'&&b.en[b.eo?b.eo[b.ei]:b.ei]===e){ctx.fillStyle='#ff6a6a';const by=Math.round(Math.sin(T*10)*3);ctx.fillRect(p.x-6,p.y-h-34+by,12,4);ctx.fillRect(p.x-4,p.y-h-30+by,8,4);ctx.fillRect(p.x-2,p.y-h-26+by,4,4)}
 ER.push({i,...tfR(p.x-w/2,p.y-h,w,h+12)});hit(p.x-w/2,p.y-h,w,h+12,()=>{if(e.rtc){say(e.n+'は崩れている（あと'+e.rtc+'ターンで再結合）');return}if(b.sel>=0&&needT(cd(b.hand[b.sel])))play(b.sel,i);else say(e.n+'  HP'+e.hp+'  '+(m.nm?'必殺「'+m.nm+'」':m.a?'攻撃':m.b?'防御':'行動'))})});
 if(!MPB&&P.cls===2&&B.fgx!=null)fgAura(b,B.fgx,1);serFx();drawXF();drawFx();ctx.restore();drawBossIntro(b);
 if(b.ph==='e'){ctx.fillStyle='rgba(140,10,40,.2)';ctx.fillRect(0,24,640,206)}
