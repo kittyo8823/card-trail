@@ -22,7 +22,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:1,e:28/24,b:2.1};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.72';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:1,e:28/24,b:2.1};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.73';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -5934,10 +5934,10 @@ Object.assign(E,{hcher:{n:'讃美の嬰兵',hp:[26,30],stk:2,mv:[{a:8},{a:4,h:2}
  hstat:{n:'祈りの石像',hp:[80,86],slw:1,lp:2,mv:[{lb:'祈祷'},{st:6,lb:'覚醒'},{a:11}]},
  htwR:{n:'紅の天使',hp:[34,38],avg:3,mv:[{tnd:1,a:4,lb:'灼語'},{a:9},{a:4,h:2}]},
  htwB:{n:'蒼の天使',hp:[34,38],avg:3,mv:[{a:3,h:3},{fr:1,a:6},{a:10}]},
- hgrif:{n:'災いの鳥',hp:[236,248],el:1,art:3,mv:[{a:16},{a:6,h:3},{st:3,b:12,vu:1,lb:'咆哮'},{a:28,sx:1}]},
- hshld:{n:'熱誠の盾天使',hp:[200,212],el:1,mv:[{ab:12,lb:'庇護'},{a:14},{a:7,h:2},{a:26,sx:1}]},
+ hgrif:{n:'災いの鳥',hp:[208,218],el:1,art:3,mv:[{a:14},{a:5,h:3},{st:3,b:12,vu:1,lb:'咆哮'},{a:25,sx:1}]},
+ hshld:{n:'熱誠の盾天使',hp:[176,186],el:1,mv:[{ab:12,lb:'庇護'},{a:12},{a:6,h:2},{a:23,sx:1}]},
  hilu:{n:'幻の嬰児',hp:[14,16],ilu:1,mv:[{a:5},{a:3,wk:1}]},
- hser:{n:'首なしの聖使',hp:[244,256],el:1,lp:1,mv:[{a:22,lb:'突撃'},{sch:['火傷',3],lb:'浄火'},{b:15,st:3,lb:'光誓'},{a:32,sx:1}]},
+ hser:{n:'首なしの聖使',hp:[214,226],el:1,lp:1,mv:[{a:19,lb:'突撃'},{sch:['火傷',3],lb:'浄火'},{b:15,st:3,lb:'光誓'},{a:28,sx:1}]},
  hface:{n:'至高の御顔',hp:[440,440],el:2,mv:[{a:8,h:2},{st:2,b:15,lb:'威光'},{a:30,nm:'神罰の光',fc:'#f0d890'},{tng:1,a:10,lb:'凝視'}]},
  hfL:{n:'左の竜首',hp:[70,70],el:2,pt:1,ilu:1,mv:[{a:7},{tnd:1,a:4,lb:'咬撃'}]},
  hfR:{n:'右の竜首',hp:[70,70],el:2,pt:1,ilu:1,mv:[{a:4,h:2},{wk:1,a:6}]},
