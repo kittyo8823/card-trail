@@ -8822,7 +8822,7 @@ const NEB=(()=>{const c=MKC(640,360),x=c.getContext('2d'),rn=bgRng(41);const g=x
  for(let i=0;i<120;i++){x.fillStyle=rn()<.25?'#9af6ff':'#24466a';x.fillRect(Math.floor(rn()*320)*2,Math.floor(rn()*100)*2,2,2)}
  x.fillStyle='rgba(95,246,255,.16)';for(let y=212,dy=3;y<360;dy*=1.3,y+=dy)x.fillRect(0,Math.floor(y/2)*2,640,2);for(let i=-14;i<=14;i++){const x0=470+i*26,x1=470+i*120;for(let yy=212;yy<360;yy+=2)x.fillRect(Math.floor((x0+(x1-x0)*(yy-212)/148)/2)*2,yy,2,2)}
  x.fillStyle='#5ff6ff';x.fillRect(0,210,640,2);bgVig(x,.5);return c})();
-function drawNeow(){ctx.drawImage(NEB,0,0);const cx=470,cy=128+Math.sin(T*1.3)*5,cb=SPR.qcube;
+function drawNeowOld(){ctx.drawImage(NEB,0,0);const cx=470,cy=128+Math.sin(T*1.3)*5,cb=SPR.qcube;
  const bm=ctx.createLinearGradient(cx-60,0,cx+60,0);bm.addColorStop(0,'rgba(95,246,255,0)');bm.addColorStop(.5,'rgba(95,246,255,.13)');bm.addColorStop(1,'rgba(95,246,255,0)');ctx.fillStyle=bm;ctx.fillRect(cx-60,cy,120,212-cy);
  const fl=ctx.createRadialGradient(cx,212,4,cx,212,110);fl.addColorStop(0,'rgba(95,246,255,.35)');fl.addColorStop(1,'rgba(95,246,255,0)');ctx.fillStyle=fl;ctx.fillRect(cx-110,180,220,64);
  const ring=(rx,ry,n,sp,c,back)=>{for(let k=0;k<n;k++){const a=k/n*6.283+T*sp,s=Math.sin(a);if(back?s>0:s<=0)continue;ctx.fillStyle=k%7?c:'#ff4fd8';ctx.fillRect(Math.round(cx+Math.cos(a)*rx),Math.round(cy+s*ry),2,2)}};
@@ -8839,6 +8839,22 @@ function drawNeow(){ctx.drawImage(NEB,0,0);const cx=470,cy=128+Math.sin(T*1.3)*5
  NE.opts.forEach((o,i)=>nwOpt(20,226+i*32,420,28,o[0],o[1],i));
  // フルアートカードの選択肢は長押しでカードの詳細（ユーザー指定）
  let fa=0;NE.opts.forEach((o,i)=>{const m=o[0].match(/「(.+?)」を得る/);if(m&&CI(m[1])>=0){fa=1;LPC.push({x:20,y:226+i*32,w:420,h:28,o:{i:CI(m[1]),u:0}})}});if(fa&&T-(NE.t0||0)>.8)txt('カードは長押しで詳細',440,221,'#8ab8c8','right',9)}
+/* Ver4.70 ？？？の画面を古の者の画面と同じ作りに（ユーザー採用の案 dev/mock/neow_anc.png）：中央に立方体、吹き出し、選択肢（左に古の者と同じ作りのアイコン）、左下に名前、右に「これを選ぶ」。選んでから決める */
+function nwIco(l){const t=l.includes('＋')?l.split('＋').pop():l,A=k=>ANIC[k],Rr=k=>rIcon(k);return t.includes('強化')?Rr('stsw'):t.includes('消す')?A('ash'):t.includes('複製')?A('page'):t.includes('書き換え')?A('sand'):t.includes('エリート')?Rr('skull'):t.includes('ショップ')?Rr('coffer'):t.includes('エナジー')?Rr('lamp'):t.includes('ボスレリック')?Rr('crown'):t.includes('レアなレリック')?Rr('ruby'):t.includes('レリック')?Rr('pandora'):t.includes('ポーション')?Rr('bottle'):t.includes('ゴールド')?Rr('purse'):t.includes('最大HP')?Rr('heart'):t.includes('レア')?A('seed'):A('acard')}
+function drawNeow(){ctx.drawImage(NEB,0,0);const el=T-(NE.t0||0),cx=320,cy=104+Math.sin(T*1.3)*4,cb=SPR.qcube;ctx.imageSmoothingEnabled=false;
+ const ring=(rx,ry,n,sp,c,back)=>{for(let k=0;k<n;k++){const a=k/n*6.283+T*sp,sn=Math.sin(a);if(back?sn>0:sn<=0)continue;ctx.fillStyle=k%7?c:'#ff4fd8';ctx.fillRect(Math.round(cx+Math.cos(a)*rx),Math.round(cy+sn*ry),2,2)}};
+ const pu=.5+.5*Math.sin(T*2.4),cg=ctx.createRadialGradient(cx,cy,10,cx,cy,150);cg.addColorStop(0,'rgba(95,246,255,'+(.2+pu*.12)+')');cg.addColorStop(1,'rgba(95,246,255,0)');ctx.fillStyle=cg;ctx.fillRect(cx-150,cy-150,300,300);
+ ring(140,28,90,.5,'#5ff6ff',1);ring(118,40,60,-.35,'#9af6ff',1);ctx.drawImage(cb,Math.round(cx-cb.width/2),Math.round(cy-cb.height/2));ring(140,28,90,.5,'#5ff6ff',0);ring(118,40,60,-.35,'#9af6ff',0);
+ let g=ctx.createLinearGradient(0,180,0,360);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.8)');ctx.fillStyle=g;ctx.fillRect(0,180,640,180);topbar();
+ const say='……観測対象を確認。選択を一つ、許可する。',sh=Math.min(say.length,Math.floor(el*24)),qx=170,qy=196;ctx.fillStyle='rgba(6,10,16,.92)';anRR(qx,qy,300,26,6);ctx.fill();ctx.strokeStyle='rgba(95,246,255,.35)';ctx.lineWidth=1;anRR(qx+.5,qy+.5,299,25,6);ctx.stroke();txt(say.slice(0,sh),qx+10,qy+17,'#e8f6ff','left',11);
+ const sel=NE.sel==null?-1:NE.sel;
+ NE.opts.forEach((o,i)=>{const R=o[0].startsWith('【代償】'),l=o[0].replace('【代償】',''),y=230+i*32,x=140,w=360,h=28,me=sel===i,ap=Math.max(0,Math.min(1,(el-.3-i*.12)/.3));if(ap<=0)return;ctx.globalAlpha=ap;
+  ctx.fillStyle=me?'rgba(20,40,52,.96)':'rgba(6,10,14,.9)';anRR(x,y,w,h,6);ctx.fill();ctx.strokeStyle=me?'#5ff6ff':R?'rgba(255,110,110,.35)':'rgba(95,246,255,.22)';anRR(x+.5,y+.5,w-1,h-1,6);ctx.stroke();
+  ctx.drawImage(nwIco(o[0]),x+6,y+2,24,24);const tx=x+(R?62:36),fs=l.length*12>w-(tx-x)-8?11:12;if(R)txt('代償',x+36,y+18,'#ff8a8a','left',10);txt(l,tx,y+18,'#ffd23f','left',fs);ctx.globalAlpha=1;
+  if(ap>=1){hit(x,y,w,h,()=>{NE.sel=i;sfx('cl')});const m=o[0].match(/「(.+?)」を得る/);if(m&&CI(m[1])>=0)LPC.push({x,y,w,h,o:{i:CI(m[1]),u:0}})}});
+ if(NE.opts.some(o=>/「(.+?)」を得る/.test(o[0]))&&el>.8)txt('カードは長押しで詳細',500,224,'#8ab8c8','right',9);
+ txt('？？？',20,336,'#e8f6ff','left',26);txt('宙に浮かぶ立方体',22,352,'#8ab8c8','left',10);
+ if(sel>=0&&NE.opts[sel])btn(512,282,116,30,'これを選ぶ',()=>{const o=NE.opts[sel];NE.sel=null;sfx('pk');o[1]()},'#2a6a8a',14)}
 // Ver2.53 ？？？の選択肢（ユーザー指定：チープ感をなくす）。角を落とした半透明の板・左に番号の菱形・光の走査・右に流れる矢印。代償は赤い札と「代償／得るもの」で色分け。順に左から現れる
 function nwOpt(x,y,w,h,l,f,i){const R=l.startsWith('【代償】'),a=Math.max(0,Math.min(1,(T-(NE.t0||0)-.25-i*.12)/.3)),q=1-Math.pow(1-a,3),ox=Math.round((1-q)*-30);if(a<=0)return;ctx.save();ctx.globalAlpha=q;ctx.translate(ox,0);
  const c=R?['#ff5a7a','#2a0c18','#160610','#ff9ab0']:['#5ff6ff','#0e2238','#08121e','#bff8ff'],k=7,pth=()=>{ctx.beginPath();ctx.moveTo(x+k,y);ctx.lineTo(x+w-k,y);ctx.lineTo(x+w,y+k);ctx.lineTo(x+w,y+h-k);ctx.lineTo(x+w-k,y+h);ctx.lineTo(x+k,y+h);ctx.lineTo(x,y+h-k);ctx.lineTo(x,y+k);ctx.closePath()};
