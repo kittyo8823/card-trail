@@ -31,10 +31,12 @@ const SIG=`(()=>{if(!MPB||!MPB.on||!SB)return null;const pd=MPB.pred&&MPB.pred.l
  for(let i=1;i<N;i++){await pages[i].evaluate(([c,i])=>{S='title';MPR={cls:i%4};mpJoin(c,0)},[code,i])}
  await pages[0].waitForTimeout(3500);console.log('lobby',await pages[0].evaluate(()=>JSON.stringify(MPR.lob)));
  await pages[0].evaluate(()=>mpStartGame());await pages[0].waitForTimeout(800);
+ // DB2=1：アセンション10の第3層ボス→ダブル・ボスを全員で（ボスのHPを全員同じに小さくして、すぐ倒せるようにする）
+ if(process.env.DB2)for(const pg of pages)await pg.evaluate(()=>{for(const q of PL){q.P.act=3;q.P.asc=10}MPR.asc=10;for(const g of bossG())for(const k of g){E[k].hp=[6,6];E[k].rv=0}withRng(MPR.seed+4242,()=>fight(bossG()[bossI()],2))});
  for(const pg of pages){await pg.evaluate(BOT);await pg.evaluate('window.__H={};setInterval(()=>{const x='+SIG+';if(x&&!(x.k in __H))__H[x.k]=x.s},15)')}
  const t0=Date.now();let cmp=0,bad=0,last='';const HS=pages.map(()=>({})),done=new Set();
  while(Date.now()-t0<SEC*1000){await pages[0].waitForTimeout(400);
-  const st=await Promise.all(pages.map(pg=>pg.evaluate(()=>S+'/'+(P?P.act+'-'+(CUR?CUR.f:'')+' hp'+P.hp:'')+(window.__err?' ERR '+window.__err.slice(0,200):''))));
+  const st=await Promise.all(pages.map(pg=>pg.evaluate(()=>S+'/'+(P?P.act+'-'+(CUR?CUR.f:'')+' hp'+P.hp+(P.db2?' db2':'')+(MPB&&MPB.on&&SB?' '+SB.en.map(e=>e.k).join('+'):''):'')+(window.__err?' ERR '+window.__err.slice(0,200):''))));
   const hs=await Promise.all(pages.map(pg=>pg.evaluate(()=>{const h=__H;__H={};return h})));hs.forEach((h,i)=>Object.assign(HS[i],h));
   for(const k in HS[0]){if(done.has(k)||!HS.every(h=>k in h))continue;done.add(k);const ss=HS.map(h=>h[k]);cmp++;if(!ss.every(x=>x===ss[0])){bad++;if(bad<4)console.log('MISMATCH',k,'\n '+ss.join('\n '))}}
   const line=st.join(' || ');if(line!==last){last=line;console.log(((Date.now()-t0)/1000|0)+'s',line)}
