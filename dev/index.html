@@ -22,7 +22,7 @@ canvas{image-rendering:auto;background:#000;flex:none}
 // バージョン（公開するたびに1つ上げてユーザーに伝える）
 // 手札を扇形に並べる見本（HFAN=1）
 // Ver4.00 戦闘の配置（ユーザー採用）：場（キャラ・敵・演出）を dy 下げて cx を中心に sc 倍、背景の床を bg 下げ、手札・エナジーを hy 下げる。押せる範囲は hit()/ER が今の変形を反映（tfR）
-const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:1,e:28/24,b:2.1};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.77';let RNG=null,QT=0,PMODE=0,HSU=0;
+const FMV={dy:0,sc:1,hy:30,cx:380,bg:0},CSC=.92;/* CSC：キャラと敵をそれぞれの足元を中心に縮める倍率（Ver4.03） */let MPSEL=0;/* マルチの待合室からキャラ選択画面に来ている（Ver4.13） *//* Ver4.27 見本：地図のマスの大きさ（n＝普通のマス、b＝ボス・？？？） */const MPSZ={n:1,e:28/24,b:2.1};let HFAN=1,HUP=54,HSC=1.2;/* HSC：選んだカードの大きさ *//* 選んだカードを指より上へずらす量（Ver3.98） */const GVER='4.78';let RNG=null,QT=0,PMODE=0,HSU=0;
 // ヒットストップ：大きな一撃が当たった瞬間だけ、ほんの少し時間を止める（ms ミリ秒、dl 秒後）
 function hstop(ms,dl){if(QT)return;const f=()=>{HSU=Math.max(HSU,performance.now()+ms)};if(dl>0)setTimeout(f,dl*1000);else f()}const cv=document.getElementById('c'),ctx=cv.getContext('2d'),R=()=>RNG?RNG():Math.random(),RI=n=>R()*n|0,pk=a=>a[RI(a.length)];
 ctx.imageSmoothingEnabled=false;
@@ -6355,7 +6355,8 @@ for(let r=0;r<=PS.echo;r++){const dl=r*.5;fxs('mcs',110,110,{d:.55,dl,c:col,s:el
  for(const e of alive()){if(c.vuA){e.vuln+=c.vuA;pop(e,'弱体+'+c.vuA,'#ff9a6a')}if(c.wkA){e.weak+=c.wkA;pop(e,'脆弱+'+c.wkA,'#c9a0ff')}if(c.psA){e.poison+=c.psA;pop(e,'毒+'+c.psA,'#7dff9a')}}
  if(c.b){B.blk+=bkF(c.b+PS.dex);fxs('sh',110,175,{d:.4,dl});sfx('bk')}}
 if(PS.chs)B.blk+=PS.chs;if(has('quill'))for(const e of alive())hitE(e,2,.4,0,0);chk()}
-function pvw(o,tg){if(!B||!PS)return null;const c=cd(o),spc=c.lhx||c.tm||c.tmE||c.kh||c.pct||c.rv||c.bsm;if(!(c.a||c.bs||c.aa||c.b||spc||c.saa||c.mxA||c.kb||c.mb||c.lhb))return null;const fa=c.t===0&&!B.fa&&!c.sp,bon=(c.ia&&B.pl===0?c.ia:0)+(fa?PS.iai+((has('kensei')?4:0)+(has('stsw')?3:0)):0)+(c.kx?PS.ki*c.kx:0)+(c.mx?PS.mana*c.mx:0)+(c.sp?PS.arc*PS.mana:0)+xBon(c,o,tg,B.hand.length-1),db=c.t===0&&has('pen')&&((B.atks||0)+1)%10===0?2:1,r={},t0=tg||{vuln:0,hp:1,mh:1};
+/* 挑発：生きている挑発の敵がいれば、敵1体を狙うカードはその敵に当たる（照準・予測も合わせる） */function tauT(c){if(!B||!B.en||!c||c.rnd||!(c.a||c.bs||c.sm||c.vu||c.wk||c.ps))return null;return B.en.find(q=>q.tau&&!q.dead&&!q.rtc)||null}
+function pvw(o,tg){if(!B||!PS)return null;{const tt=tauT(cd(o));if(tt)tg=tt}const c=cd(o),spc=c.lhx||c.tm||c.tmE||c.kh||c.pct||c.rv||c.bsm;if(!(c.a||c.bs||c.aa||c.b||spc||c.saa||c.mxA||c.kb||c.mb||c.lhb))return null;const fa=c.t===0&&!B.fa&&!c.sp,bon=(c.ia&&B.pl===0?c.ia:0)+(fa?PS.iai+((has('kensei')?4:0)+(has('stsw')?3:0)):0)+(c.kx?PS.ki*c.kx:0)+(c.mx?PS.mana*c.mx:0)+(c.sp?PS.arc*PS.mana:0)+xBon(c,o,tg,B.hand.length-1),db=c.t===0&&has('pen')&&((B.atks||0)+1)%10===0?2:1,r={},t0=tg||{vuln:0,hp:1,mh:1};
 if(c.a||c.bs||c.lhx||c.tm||c.tmE||c.pct||c.rv||c.bsm)r.a=calcC(c,(c.bs?B.blk:c.bsm?B.blk*c.bsm:c.a||0)+(o.i===SHIV?(has('sheath')?2:0)+PS.shvd:0)+bon+(c.pct&&tg?Math.floor(tg.mh*c.pct/100):0),t0,c.sm||1)*db*xMul(c,t0);if(r.a!=null)r.a=Math.floor(r.a);if(c.kh)r.a=calcE(c.kh+bon,t0)*xMul(c,t0);
 if(c.aa){const al=alive();r.aa=calcC(c,c.aa+bon,{vuln:al.length&&al.every(e=>e.vuln>0)?1:0})*db}if(c.saa){const al=alive();r.aa=calcE(strB()*(c.saa-1),{vuln:al.length&&al.every(e=>e.vuln>0)?1:0})}if(c.mxA){const al=alive();r.aa=Math.floor(PS.mana*c.mxA*(PS.weak>0?.75:1)*(al.length&&al.every(e=>e.vuln>0)?1.5:1))}if(c.b)r.b=Math.max(0,bkF(c.b+PS.dex));return r}
 function calcP(e,base){let d=(Aa(9)&&base<500?Math.ceil(base*1.1):base)+e.str+(e.vig||0);if(e.weak>0)d*=.75;if(PS.vuln>0)d*=1.5;return Math.max(0,Math.floor(d))}
@@ -9460,7 +9461,8 @@ if(needT(c)&&alive().length>1){say('カードを敵へドラッグして使用')
 // Ver4.06 カードを持ち上げている時の狙い：カードは指より上に浮いているので、カードの位置 → 指の位置の順で敵を探す（指が敵の上に来なくても使える。ユーザー指定）
 // Ver4.07 使う位置まで持ち上げたか：指が y236 より上、または扇形の時は押した所から45以上上へ動かした（ユーザー指定：指をあまり上げなくても使える）
 function dgUp(d){return d.y<236||(HFAN&&d.sy-d.y>=45)}
-function erAtD(d){if(HFAN&&d.cx!=null){const t=erAt(d.cx,d.cy);if(t>=0)return t;const t2=erAt(d.cx,(d.cy+d.y)/2);if(t2>=0)return t2}const f=erAt(d.x,d.y);if(f>=0||d.cx==null)return f;/* カードの四角が敵の枠に重なっていれば、重なりの一番大きい敵 */const hs=HFAN?HSC:1,L=d.cx-42*hs,R2=d.cx+42*hs,U=d.cy-53*hs,D=d.cy+53*hs;let bi=-1,ba=300;for(const r of ER){const e=B.en[r.i];if(!e||e.rtc||e.dead)continue;const ov=Math.max(0,Math.min(R2,r.x+r.w)-Math.max(L,r.x))*Math.max(0,Math.min(D,r.y+r.h)-Math.max(U,r.y));if(ov>ba){ba=ov;bi=r.i}}return bi}
+function erAtD(d){{const o=B&&B.hand&&B.hand[d.i],tt=o&&tauT(cd(o));if(tt){const r=erAtD0(d);return r>=0?B.en.indexOf(tt):-1}}return erAtD0(d)}
+function erAtD0(d){if(HFAN&&d.cx!=null){const t=erAt(d.cx,d.cy);if(t>=0)return t;const t2=erAt(d.cx,(d.cy+d.y)/2);if(t2>=0)return t2}const f=erAt(d.x,d.y);if(f>=0||d.cx==null)return f;/* カードの四角が敵の枠に重なっていれば、重なりの一番大きい敵 */const hs=HFAN?HSC:1,L=d.cx-42*hs,R2=d.cx+42*hs,U=d.cy-53*hs,D=d.cy+53*hs;let bi=-1,ba=300;for(const r of ER){const e=B.en[r.i];if(!e||e.rtc||e.dead)continue;const ov=Math.max(0,Math.min(R2,r.x+r.w)-Math.max(L,r.x))*Math.max(0,Math.min(D,r.y+r.h)-Math.max(U,r.y));if(ov>ba){ba=ov;bi=r.i}}return bi}
 function erAt(x,y){let bi=-1,bd=1e9;for(const r of ER){const e=B.en[r.i];if(!e||e.rtc||e.dead)continue;if(x>=r.x-14&&x<=r.x+r.w+14&&y>=r.y-14&&y<=r.y+r.h+14){const d=Math.abs(x-(r.x+r.w/2));if(d<bd){bd=d;bi=r.i}}}return bi}
 function dropCard(){const d=dg;dg=null;if(!B||B.ph!=='p'||B.vt)return;const o=B.hand[d.i];if(!o)return;
 if(!d.mv){tapCard(d.i);return}if(B.dsc>0)return;
