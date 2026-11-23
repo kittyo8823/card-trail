@@ -17,7 +17,8 @@ rd.outputColorSpace=THREE.SRGBColorSpace;document.body.appendChild(rd.domElement
 const ui=document.createElement('canvas');ui.id='ui';document.body.appendChild(ui);const g=ui.getContext('2d');
 const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(38,1,.5,200);
 const CAMO=new THREE.Vector3(0,16.5,10.5);/* 見下ろす角度（LoL 風、約57度） */
-let W=1,H=1,U=1;function fit(){W=innerWidth;H=innerHeight;rd.setSize(W,H);const d=Math.min(2,devicePixelRatio||1);ui.width=W*d;ui.height=H*d;ui.style.width=W+'px';ui.style.height=H+'px';g.setTransform(d,0,0,d,0,0);cam.aspect=W/H;cam.updateProjectionMatrix();U=Math.min(W/960,H/540)}
+let TOUCH=matchMedia('(pointer:coarse)').matches?1:0;const JOY={on:0,id:-1,ox:0,oy:0,x:0,y:0};
+let W=1,H=1,U=1;function fit(){W=innerWidth;H=innerHeight;rd.setSize(W,H);const d=Math.min(2,devicePixelRatio||1);ui.width=W*d;ui.height=H*d;ui.style.width=W+'px';ui.style.height=H+'px';g.setTransform(d,0,0,d,0,0);cam.aspect=W/H;cam.updateProjectionMatrix();U=TOUCH?Math.min(W/700,H/400):Math.min(W/960,H/540)}
 addEventListener('resize',fit);fit();
 
 /* ===== 絵（Card Trail の SPR を板として立てる） ===== */
@@ -202,7 +203,7 @@ function useSkill(i){const p=P,s=CHR.pl.sk[i];if(MODE!=='play'||PAUSE)return;if(
  else if(i===1){p.shield=Math.round(40+p.mhp*.18);p.shT=4;p.bub.visible=true;snd('tn');txtAt(p.x,2.4,p.z,'鉄壁','#8ad0ff')}
  else if(i===2){/* 踏み込み：6進み、通り道を斬る */const x0=p.x,z0=p.z;p.x+=a.x*6;p.z+=a.z*6;collide(p,.45);const len=hyp(p.x-x0,p.z-z0);for(const e of EN){if(e.dead)continue;const t=cl(((e.x-x0)*(p.x-x0)+(e.z-z0)*(p.z-z0))/(len*len||1),0,1),cx=x0+(p.x-x0)*t,cz=z0+(p.z-z0)*t;if(hyp(e.x-cx,e.z-cz)<e.r+.9)dealHit(e,1.3,8)}lineFx(x0,z0,p.x,p.z,0xffb050);p.mv=null;p.tgt=null;snd('spk')}
  else if(i===3){p.spin=1.3;p.spinTk=0;snd('wsw')}}
-function aimDir(){const p=P;let tx,tz;if(MOUSE.ok){tx=MOUSE.gx;tz=MOUSE.gz}else{const e=nearE(12);if(e){tx=e.x;tz=e.z}else{tx=p.x+p.face;tz=p.z}}const dx=tx-p.x,dz=tz-p.z,d=hyp(dx,dz)||1;return{x:dx/d,z:dz/d}}
+function aimDir(){const p=P;let tx,tz;const gm=MOUSE.ok&&ground(MOUSE.x,MOUSE.y);if(gm){tx=gm.x;tz=gm.z}else{const e=nearE(8);if(e){tx=e.x;tz=e.z}else if(JOY.on&&hyp(JOY.x-JOY.ox,JOY.y-JOY.oy)>8){tx=p.x+(JOY.x-JOY.ox);tz=p.z+(JOY.y-JOY.oy)}else{tx=p.x+p.face;tz=p.z}}const dx=tx-p.x,dz=tz-p.z,d=hyp(dx,dz)||1;return{x:dx/d,z:dz/d}}
 function nearE(r){let b=null,bd=r;for(const e of EN){if(e.dead)continue;const d=hyp(e.x-P.x,e.z-P.z)-e.r;if(d<bd){bd=d;b=e}}return b}
 function dealHit(e,mul,add){const p=P;let v=(p.atk*mul+(add||0))*(p.fx.weak?.75:1);let cr=R()<p.crit;if(cr)v*=1.5+p.critD*.5;v=Math.round(v*(.92+R()*.16));const d=hurtE(e,v,cr?'#ffd23f':'#fff',cr);
  if(p.ls&&d)p.hp=Math.min(p.mhp,p.hp+d*p.ls);const f=p.w.fx;
@@ -230,11 +231,12 @@ function enemyAt(sx,sy){let b=null,bd=1e9;for(const e of EN){if(e.dead)continue;
 let BTN=[];function hitBtn(x,y){for(let i=BTN.length-1;i>=0;i--){const b=BTN[i];if(x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h){b.f();return 1}}return 0}
 function cmdAt(sx,sy){const p=P;if(mmHit(sx,sy))return;const e=enemyAt(sx,sy);if(e){p.tgt=e;p.mv=null;return}const g0=ground(sx,sy);if(g0){p.mv={x:cl(g0.x,-SW,SW),z:cl(g0.z,-SD,SD)};p.tgt=null;ringFx(p.mv.x,p.mv.z,.45,0x60ff90,.35);const it=IT.find(i=>hyp(i.x-g0.x,i.z-g0.z)<1&&(i.ty==='wp'||i.ty==='eq'));if(it)p.pick=it}}
 ui.addEventListener('contextmenu',e=>e.preventDefault());
-ui.addEventListener('pointermove',e=>{MOUSE.x=e.clientX;MOUSE.y=e.clientY;if(e.pointerType==='mouse')MOUSE.ok=1;if(MOUSE.rd&&MODE==='play'&&!PAUSE&&e.pointerType==='mouse'){const g0=ground(e.clientX,e.clientY);if(g0&&!mmHit(e.clientX,e.clientY,1)){P.mv={x:g0.x,z:g0.z};P.tgt=null}}});
-ui.addEventListener('pointerdown',e=>{audioOn();MOUSE.x=e.clientX;MOUSE.y=e.clientY;if(e.pointerType!=='mouse')MOUSE.ok=0;if(hitBtn(e.clientX,e.clientY))return;
- if(MODE==='title'){newRun();return}if(MODE==='over'||MODE==='win'){MODE='title';music('t');return}if(PAUSE)return;
+ui.addEventListener('pointermove',e=>{if(e.pointerId===JOY.id&&JOY.on){JOY.x=e.clientX;JOY.y=e.clientY;return}MOUSE.x=e.clientX;MOUSE.y=e.clientY;if(e.pointerType==='mouse')MOUSE.ok=1;if(MOUSE.rd&&MODE==='play'&&!PAUSE&&e.pointerType==='mouse'){const g0=ground(e.clientX,e.clientY);if(g0&&!mmHit(e.clientX,e.clientY,1)){P.mv={x:g0.x,z:g0.z};P.tgt=null}}});
+ui.addEventListener('pointerdown',e=>{audioOn();if(e.pointerType==='touch'&&!TOUCH){TOUCH=1;fit()}MOUSE.x=e.clientX;MOUSE.y=e.clientY;if(e.pointerType!=='mouse')MOUSE.ok=0;if(hitBtn(e.clientX,e.clientY))return;
+ if(MODE==='play'&&!PAUSE&&e.pointerType!=='mouse'&&e.clientX<W*.5&&!mmHit(e.clientX,e.clientY,1)){Object.assign(JOY,{on:1,id:e.pointerId,ox:e.clientX,oy:e.clientY,x:e.clientX,y:e.clientY});P.mv=null;P.tgt=null;return}
+ if(MODE==='title'){newRun();return}if(MODE==='over'||MODE==='win'){MODE='title';music('t');return}if(PAUSE){if(TOUCH)PAUSE=0;return}
  if(MODE==='play'){MOUSE.rd=1;cmdAt(e.clientX,e.clientY)}});
-addEventListener('pointerup',()=>{MOUSE.rd=0});
+const joyOff=e=>{if(e.pointerId===JOY.id){JOY.on=0;JOY.id=-1}};addEventListener('pointerup',e=>{MOUSE.rd=0;joyOff(e)});addEventListener('pointercancel',joyOff);
 addEventListener('keydown',e=>{audioOn();const k=e.key.toLowerCase();KEY[k]=1;if(MODE==='title'&&(k==='enter'||k===' ')){newRun();return}if((MODE==='over'||MODE==='win')&&(k==='enter'||k===' ')){MODE='title';music('t');return}
  if(MODE!=='play')return;if(k==='escape'||k==='p'){PAUSE=!PAUSE;return}const i='qwer'.indexOf(k);if(i>=0)useSkill(i);if(k==='f')tryPick();if(k==='m')toggleMute();if(k==='s'){P.mv=null;P.tgt=null}});
 addEventListener('keyup',e=>{KEY[e.key.toLowerCase()]=0});
@@ -247,9 +249,10 @@ function update(dt){T+=dt;if(MSG){MSG.t-=dt;if(MSG.t<=0)MSG=null}if(MODE!=='play
  for(let i=0;i<4;i++)p.cd[i]=Math.max(0,p.cd[i]-dt);p.mp=Math.min(p.mmp,p.mp+dt*(5+p.mmp*.02)*(1+p.mrM));p.hp=Math.min(p.mhp,p.hp+p.rgn*dt);for(const k in p.fx){p.fx[k]-=dt;if(p.fx[k]<=0)delete p.fx[k]}
  if(p.shT>0){p.shT-=dt;if(p.shT<=0||p.shield<=0){p.shield=0;p.bub.visible=false}}
  // 移動（矢印キーでも動ける）
- let kx=(KEY.arrowright?1:0)-(KEY.arrowleft?1:0),kz=(KEY.arrowdown?1:0)-(KEY.arrowup?1:0);let moving=0;
+ let kx=(KEY.arrowright?1:0)-(KEY.arrowleft?1:0),kz=(KEY.arrowdown?1:0)-(KEY.arrowup?1:0),kv=1;let moving=0;
+ if(JOY.on){const jx=JOY.x-JOY.ox,jy=JOY.y-JOY.oy,jl=hyp(jx,jy),R0=46*U;if(jl>R0){JOY.ox=JOY.x-jx/jl*R0;JOY.oy=JOY.y-jy/jl*R0}if(jl>6*U){kx=jx;kz=jy;kv=Math.min(1,jl/R0*1.4)}}
  if(p.spin>0){p.spin-=dt;p.spinTk-=dt;if(p.spinTk<=0){p.spinTk=.26;for(const e of EN)if(!e.dead&&hyp(e.x-p.x,e.z-p.z)<4+e.r)dealHit(e,.75,4);ringFx(p.x,p.z,4,0xffd0a0,.28);snd('spa')}}
- if(kx||kz){const d=hyp(kx,kz);p.x+=kx/d*p.spd*dt;p.z+=kz/d*p.spd*dt;p.mv=null;p.tgt=null;moving=1;p.face=kx?kx:p.face}
+ if(kx||kz){const d=hyp(kx,kz);p.x+=kx/d*p.spd*kv*dt;p.z+=kz/d*p.spd*kv*dt;p.mv=null;p.tgt=null;moving=1;p.face=kx?kx:p.face}
  else if(p.tgt&&!p.tgt.dead){const e=p.tgt,d=hyp(e.x-p.x,e.z-p.z);if(d>p.w.rg+e.r){mvTo(e.x,e.z,dt);moving=1}else attack(e,dt)}
  else if(p.mv){if(mvTo(p.mv.x,p.mv.z,dt))p.mv=null;else moving=1}
  if(!moving&&!p.mv){p.tgt=p.tgt&&!p.tgt.dead?p.tgt:null;const e=p.tgt||nearE(p.w.rg+.2);if(e&&hyp(e.x-p.x,e.z-p.z)<p.w.rg+e.r+.1)attack(e,dt)}
@@ -299,9 +302,9 @@ function panel(x,y,w,h,a){g.fillStyle=`rgba(12,14,20,${a==null?.82:a})`;g.fillRe
 function bar(x,y,w,h,v,c,bg){g.fillStyle=bg||'#1a1c22';g.fillRect(x,y,w,h);g.fillStyle=c;g.fillRect(x,y,w*cl(v,0,1),h)}
 function btn(x,y,w,h,f){BTN.push({x,y,w,h,f})}
 function drawUI(){g.clearRect(0,0,W,H);BTN=[];if(MODE==='title')return drawTitle();
- if(MODE==='play'||MODE==='over'||MODE==='win'){drawWorldText();drawHUD();drawMini()}
+ if(MODE==='play'||MODE==='over'||MODE==='win'){drawWorldText();if(TOUCH)drawHUDT();else drawHUD();drawMini();if(TOUCH&&MODE==='play')drawJoy()}
  if(MSG){const a=Math.min(1,MSG.t*2);g.globalAlpha=a;const w=Math.max(300,MSG.s.length*20)*U;panel(W/2-w/2,70*U,w,40*U,.6);tx(MSG.s,W/2,97*U,'#f0e6c8','center',20);g.globalAlpha=1}
- if(PAUSE){panel(0,0,W,H,.55);tx('一時停止',W/2,H/2-10*U,'#fff','center',30);tx('Esc で再開',W/2,H/2+26*U,'#aab','center',15)}
+ if(PAUSE){panel(0,0,W,H,.55);tx('一時停止',W/2,H/2-10*U,'#fff','center',30);tx(TOUCH?'画面を押して再開':'Esc で再開',W/2,H/2+26*U,'#aab','center',15)}
  if(MODE==='over')drawEnd('力尽きた',P.killer?P.killer+' に倒された':'');if(MODE==='win')drawEnd('踏破','三つの層を越えた')}
 function drawWorldText(){const p=P;
  // 敵のHPバー・技名
@@ -337,7 +340,29 @@ function drawHUD(){const p=P,pw=470*U,ph=92*U,x0=W/2-pw/2,y0=H-ph-8*U;panel(x0,y
  // 右上
  const s=`${AREA.n}　撃破 ${KILLS}　G ${GOLD}`;g.font=FONT(14*U);const tw=g.measureText(s).width+24*U;panel(W-tw-10*U,10*U,tw,28*U,.7);tx(s,W-tw+2*U,29*U,'#f0e6c8','left',14);
  tx(['第一層','第二層','第三層'][STG],W-20*U,56*U,'#a8b0c0','right',12)}
-function mmRect(){const w=190*U,h=w*SD/SW;return{x:W-w-12*U,y:H-h-12*U,w,h}}
+function nearItem(){let b=null,bd=2.2;for(const it of IT){if(it.ty!=='wp'&&it.ty!=='eq')continue;const d=hyp(it.x-P.x,it.z-P.z);if(d<bd){bd=d;b=it}}return b}
+function rbtn(x,y,r,ic,lab,sub,cdv,cdm,dim,f){g.fillStyle='rgba(14,16,26,.78)';g.beginPath();g.arc(x,y,r,0,7);g.fill();if(ic&&ic.complete){g.save();g.beginPath();g.arc(x,y,r-3*U,0,7);g.clip();g.drawImage(ic,x-r*.62,y-r*.62,r*1.24,r*1.24);g.restore()}
+ if(cdv>0){g.fillStyle='rgba(0,0,0,.62)';g.beginPath();g.moveTo(x,y);g.arc(x,y,r,-Math.PI/2,-Math.PI/2+Math.PI*2*cdv/cdm);g.closePath();g.fill();tx(String(Math.ceil(cdv)),x,y+8*U,'#fff','center',20)}else if(dim){g.fillStyle='rgba(20,30,80,.5)';g.beginPath();g.arc(x,y,r,0,7);g.fill()}
+ g.strokeStyle='rgba(240,224,176,.35)';g.lineWidth=1.5*U;g.beginPath();g.arc(x,y,r,0,7);g.stroke();if(lab)tx(lab,x,y+r+12*U,'#f0e0b0','center',11);if(sub)tx(sub,x+r*.7,y-r*.55,'#8ab8ff','center',10);BTN.push({x:x-r,y:y-r,w:r*2,h:r*2,f})}
+function drawHUDT(){const p=P;
+ // 左上：顔・HP・魔力・武器・装備
+ panel(8*U,8*U,236*U,74*U,.72);const fi=img(A.ch.pl.img);g.imageSmoothingEnabled=false;if(fi&&fi.complete){const s=56*U/fi.height;g.drawImage(fi,14*U,14*U,fi.width*s,fi.height*s)}
+ bar(70*U,16*U,166*U,10*U,p.hp/p.mhp,'#40b050');tx(Math.ceil(p.hp)+' / '+p.mhp,153*U,25*U,'#fff','center',9,0);if(p.shield>0){g.fillStyle='#9ad8ff';g.fillRect(70*U,13*U,166*U*Math.min(1,p.shield/p.mhp),2.5*U)}bar(70*U,29*U,166*U,6*U,p.mp/p.mmp,'#3a70d0');
+ const w=p.w;tx(wName(w)+' '+'★'.repeat(w.star),70*U,50*U,w.star===3?'#ffd23f':WFX[w.fx].c==='#d8d8d8'?'#e8e0d0':WFX[w.fx].c,'left',12);tx('攻撃 '+p.atk+'　会心 '+Math.round(p.crit*100)+'%',70*U,65*U,'#b8c0d0','left',10);
+ for(let i=0;i<6;i++){const x=12*U+i*26*U,y=86*U;g.fillStyle='rgba(20,22,34,.7)';g.fillRect(x,y,24*U,24*U);const k=p.eq[i];if(k){const ic=RIC(k);if(ic&&ic.complete)g.drawImage(ic,x+2*U,y+2*U,20*U,20*U)}}
+ let sx=12*U;for(const[k,n,c]of[['weak','脆弱','#c08aff'],['vuln','弱体','#c08aff']])if(p.fx[k]){tx(n,sx,126*U,c,'left',12);sx+=40*U}
+ // 右上：場所・撃破・G（小地図の上）
+ const s=`${AREA.n}　撃破 ${KILLS}　G ${GOLD}`;g.font=FONT(12*U);const tw=g.measureText(s).width+18*U;panel(W-tw-10*U,10*U,tw,26*U,.7);tx(s,W-tw-1*U,28*U,'#f0e6c8','left',12);
+ // 右下：攻撃と技
+ if(MODE!=='play')return;const sk=CHR.pl.sk,cx=W-72*U,cy=H-60*U,big=40*U;
+ rbtn(cx,cy,big,RIC('stsw'),'攻撃',null,0,1,0,()=>{const e=nearE(9);if(e){P.tgt=e;P.mv=null}});
+ const pos=[[-100,12],[-88,-58],[-40,-104],[22,-118]];sk.forEach((k,i)=>{const[dx,dy]=pos[i];rbtn(cx+dx*U,cy+dy*U,27*U,RIC(k.ic),k.n,String(k.mp),p.cd[i],k.cd*(1-p.cdr),p.mp<k.mp,()=>useSkill(i))});
+ const it=nearItem();if(it){const x=cx-170*U,y=cy+6*U;rbtn(x,y,25*U,it.ty==='eq'?RIC(it.v):img(A.spr[it.v.sp]),it.ty==='wp'?'持ち替える':'拾う',null,0,1,0,()=>pickUp(it))}
+ // 一時停止
+ panel(W/2-26*U,8*U,52*U,24*U,.6);tx('停止',W/2,25*U,'#c8d0e0','center',12);BTN.push({x:W/2-30*U,y:0,w:60*U,h:40*U,f:()=>{PAUSE=!PAUSE}})}
+function drawJoy(){const R0=46*U;if(JOY.on){g.fillStyle='rgba(255,255,255,.08)';g.beginPath();g.arc(JOY.ox,JOY.oy,R0,0,7);g.fill();g.strokeStyle='rgba(255,255,255,.25)';g.lineWidth=2*U;g.stroke();g.fillStyle='rgba(240,230,200,.45)';g.beginPath();g.arc(JOY.x,JOY.y,20*U,0,7);g.fill()}
+ else{const x=80*U,y=H-80*U;g.globalAlpha=.5;g.strokeStyle='rgba(255,255,255,.22)';g.lineWidth=2*U;g.beginPath();g.arc(x,y,R0,0,7);g.stroke();g.fillStyle='rgba(240,230,200,.18)';g.beginPath();g.arc(x,y,20*U,0,7);g.fill();g.globalAlpha=1;tx('左側をなぞって移動',x,y+R0+16*U,'rgba(200,205,220,.6)','center',10)}}
+function mmRect(){if(TOUCH){const w=128*U,h=w*SD/SW;return{x:W-w-10*U,y:46*U,w,h}}const w=190*U,h=w*SD/SW;return{x:W-w-12*U,y:H-h-12*U,w,h}}
 function mmHit(sx,sy,q){const r=mmRect();if(sx<r.x||sx>r.x+r.w||sy<r.y||sy>r.y+r.h)return 0;if(!q&&P){P.mv={x:((sx-r.x)/r.w*2-1)*SW,z:((sy-r.y)/r.h*2-1)*SD};P.tgt=null}return 1}
 function drawMini(){const r=mmRect(),m=(x,z)=>[r.x+(x/SW+1)/2*r.w,r.y+(z/SD+1)/2*r.h];panel(r.x-4*U,r.y-4*U,r.w+8*U,r.h+8*U,.85);g.fillStyle=TM.g[0];g.globalAlpha=.6;g.fillRect(r.x,r.y,r.w,r.h);g.globalAlpha=1;
  if(AREA.path){g.save();g.beginPath();g.rect(r.x,r.y,r.w,r.h);g.clip();const[c0,c1]=m(0,AREA.path.z);g.translate(c0,c1);g.rotate(AREA.path.a);g.fillStyle=TM.p[0];g.fillRect(-r.w,-2.5/SD*r.h/2,r.w*2,5/SD*r.h/2);g.restore()}
@@ -351,12 +376,12 @@ function drawMini(){const r=mmRect(),m=(x,z)=>[r.x+(x/SW+1)/2*r.w,r.y+(z/SD+1)/2
 function drawEnd(t,s){panel(0,0,W,H,.6);tx(t,W/2,H/2-60*U,MODE==='win'?'#ffd23f':'#e05050','center',40);if(s)tx(s,W/2,H/2-24*U,'#d0c8c0','center',16);
  tx(`到達　${['第一層','第二層','第三層'][STG]} ${AREA.n}　　撃破 ${KILLS}　　G ${GOLD}`,W/2,H/2+14*U,'#e8e0d0','center',16);tx('武器　'+wName(P.w)+' '+'★'.repeat(P.w.star),W/2,H/2+42*U,'#c8c0b0','center',14);
  const n=P.eq.length;P.eq.forEach((k,i)=>{const ic=RIC(k);if(ic&&ic.complete)g.drawImage(ic,W/2+(i-n/2)*40*U,H/2+56*U,34*U,34*U)});
- tx('クリックで最初から',W/2,H/2+124*U,'#fff','center',16)}
+ tx(TOUCH?'押して最初から':'クリックで最初から',W/2,H/2+124*U,'#fff','center',16)}
 function drawTitle(){g.fillStyle='#090b12';g.fillRect(0,0,W,H);const fi=img(A.ch.pl.img);g.imageSmoothingEnabled=false;
  const ks=['pl','si','sm','nn','hori','neb','seres'];ks.forEach((k,i)=>{const im=img(A.ch[k].img);if(!im||!im.complete)return;const s=1.3*U,x=W/2+(i-3)*120*U;g.globalAlpha=k==='pl'?1:.35;g.drawImage(im,x-im.width*s/2,H*.62-im.height*s,im.width*s,im.height*s);g.globalAlpha=1});
  tx('戦場（仮題）',W/2,H*.2,'#f0e6c8','center',42);tx('Card Trail の層を、自分の足で越えていく',W/2,H*.2+34*U,'#a8b0c0','center',15);
- tx('クリックで開始',W/2,H*.75,(T*2|0)%2?'#fff':'#c8c0b0','center',20);
- tx('右クリック／左クリック：移動・攻撃　Q W E R：技　F：武器を拾う　矢印キー：移動　Esc：一時停止　M：音',W/2,H*.75+40*U,'#8890a0','center',12);
+ tx(TOUCH?'押して開始':'クリックで開始',W/2,H*.75,(T*2|0)%2?'#fff':'#c8c0b0','center',20);
+ tx(TOUCH?'左側をなぞって移動　右下のボタンで攻撃・技　敵を押すとその敵を狙う':'右クリック／左クリック：移動・攻撃　Q W E R：技　F：武器を拾う　矢印キー：移動　Esc：一時停止　M：音',W/2,H*.75+40*U,'#8890a0','center',12);
  tx('今はユウキングだけ（ほかのキャラは後で）',W/2,H*.75+62*U,'#6a7080','center',11)}
 
 /* ===== 回す ===== */
